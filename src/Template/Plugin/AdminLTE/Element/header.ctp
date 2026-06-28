@@ -80,7 +80,7 @@
         </span>
         <div id="session-countdown" class="session-countdown-bar" style="display:none;">
             <span class="session-countdown-msg">
-                <i class="fa fa-clock-o"></i>&nbsp;Su sesión finalizará en <span class="countdown-seconds">60</span>s
+                <i class="fa fa-clock-o"></i>&nbsp;ATENCIÓN: Su sesión finalizará en <span class="countdown-seconds">60</span>s
             </span>
             <button type="button" class="btn btn-xs btn-warning" onclick="Inactividad.cancel()">
                 <i class="fa fa-hand-stop-o"></i> Cancelar
