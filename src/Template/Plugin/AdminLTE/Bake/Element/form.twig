@@ -27,19 +27,19 @@
     {%- if keyFields[field] %}
         {%- set fieldData = Bake.columnData(field, schema) %}
         {%- if fieldData.null %}
-                    echo $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}, 'empty' => true]);
+                    echo $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}, 'prepend' => '<i class="fa fa-asterisk"></i>' ,'empty' => true]);
             {{- "\n" }}
         {%- else %}
-                    echo $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}]);
+                    echo $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}, 'prepend' => '<i class="fa fa-asterisk"></i>']);
             {{- "\n" }}
         {%- endif %}
     {%- elseif field not in ['created', 'modified', 'updated'] %}
         {%- set fieldData = Bake.columnData(field, schema) %}
         {%- if fieldData.type in ['date', 'datetime', 'time'] and fieldData.null %}
-                    echo $this->Form->control('{{ field }}', ['empty' => true]);
+                    echo $this->Form->control('{{ field }}', ['prepend' => '<i class="fa fa-asterisk"></i>','empty' => true]);
             {{- "\n" }}
         {%- else %}
-                    echo $this->Form->control('{{ field }}');
+                    echo $this->Form->control('{{ field }}',['prepend' => '<i class="fa fa-asterisk"></i>']);
     {{- "\n" }}
         {%- endif %}
     {%- endif %}

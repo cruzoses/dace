@@ -20,7 +20,7 @@
 		        </div>
             </div>                    
             <?= $this->Form->create($usuario, [
-                'role' => 'form', 
+                'role' => 'form',
                 'align' => [
                     'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],
                     'md' => ['left' => 2,'middle' => 9,'right' => 1]
@@ -48,6 +48,12 @@
                         'required' => true,
                     ]);
                 ?>
+                <hr>
+                <?= $this->Html->css('sace.css') ?>
+                <?= $this->Captcha->render([
+                    'captcha_id' => $captchaId,
+                    'input_text' => __('Retype the characters from the picture:'),
+                ]) ?>
             </div>            
             <div class="box-footer">
 		        <?= $this->Form->button('<i class="fa fa-save"></i>&nbsp;Guardar',

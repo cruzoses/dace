@@ -37,9 +37,7 @@
                     echo $this->Form->control('email');
                     echo $this->Form->control('telefonos');
                     echo $this->Form->control('username',[
-                        'placeholder' => 'Nombre de Usuario',
-		                'beforeInput' => '<div class="input-group"><span class="input-group-addon">*</span>',
-		                'afterInput' => '</div>'
+                        'placeholder' => 'Nombre de Usuario', 'prepend' => '<i class="fa fa-user"></i>'
                     ]);
                     echo $this->Form->control('password');
                     echo $this->Form->hidden('activo',['value' => 1]);

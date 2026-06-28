@@ -74,6 +74,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/cambiaclave', ['controller' => 'Usuarios', 'action' => 'cambiaclave']);
 
     $routes->connect('/captcha-image/:id', ['controller' => 'Captcha', 'action' => 'image'], ['id' => '.+', 'pass' => ['id']]);
+    $routes->connect('/captcha-reload', ['controller' => 'Captcha', 'action' => 'reload']);
 
     /*
      * Connect catchall routes for all controllers.

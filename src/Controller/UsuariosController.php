@@ -23,9 +23,15 @@ class UsuariosController extends AppController
         $this->Auth->allow(['login', 'logout']);
 	}
 
+    public function initialize()
+    {
+        parent::initialize();
+        $this->loadComponent('Captcha', ['preset' => 'Default']);
+    }
+
     /**
      * 
-    */
+     */
 	public function isAuthorized($user)
 	{
 		return parent::isAuthorized($user);
@@ -63,20 +69,25 @@ class UsuariosController extends AppController
     {
         $userId = $this->Auth->user('id');
         $usuario = $this->Usuarios->get($userId);
+        $captchaId = $this->Captcha->generate();
 
-        if ($this->request->is('post')) 
+        if ($this->request->is(['patch', 'post', 'put'])) 
         {
             $data = $this->request->getData();
             $hasher = new \Cake\Auth\DefaultPasswordHasher();
 
-            pr($data);exit;
-
-            if (!$hasher->check($data['password_actual'], $usuario->password)) {
+            if (!isset($data['captcha_id']) || !$this->Captcha->validate($data['CaptchaCode'], $data['captcha_id'])) {
+                $this->Flash->error(__('Código captcha incorrecto.'));
+                $captchaId = $this->Captcha->generate();
+            } elseif (!$hasher->check($data['password_actual'], $usuario->password)) {
                 $this->Flash->error(__('La contraseña actual no es correcta.'));
+                $captchaId = $this->Captcha->generate();
             } elseif (empty($data['password_nueva'])) {
                 $this->Flash->error(__('La contraseña nueva no puede estar vacía.'));
+                $captchaId = $this->Captcha->generate();
             } elseif ($data['password_nueva'] !== $data['password_confirmar']) {
                 $this->Flash->error(__('La confirmación no coincide con la contraseña nueva.'));
+                $captchaId = $this->Captcha->generate();
             } else {
                 $usuario = $this->Usuarios->patchEntity($usuario, ['password' => $data['password_nueva']]);
                 if ($this->Usuarios->save($usuario)) {
@@ -85,10 +96,11 @@ class UsuariosController extends AppController
                     return $this->redirect(['action' => 'index']);
                 }
                 $this->Flash->error(__('No se pudo guardar la contraseña. Intente de nuevo.'));
+                $captchaId = $this->Captcha->generate();
             }
         }
 
-        $this->set(compact('usuario'));
+        $this->set(compact('usuario', 'captchaId'));
     }
 
     public function register()

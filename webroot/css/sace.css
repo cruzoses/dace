@@ -42,3 +42,48 @@ body.home-page .logo-container img {
 .dace-captcha .dace-captcha-input {
     max-width: 270px;
 }
+
+.dace-captcha-image-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.dace-captcha-image-wrapper .dace-captcha-image {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.dace-captcha-reload {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f9f9f9;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    padding: 0;
+}
+
+.dace-captcha-reload:hover {
+    background-color: #e9e9e9;
+}
+
+.dace-captcha-reload:active {
+    background-color: #ddd;
+}
+
+@keyframes rotating {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.rotating {
+  animation: rotating 1.5s linear infinite;
+}
