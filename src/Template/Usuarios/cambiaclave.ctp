@@ -52,11 +52,13 @@
                     ]);
                 ?>
                 <hr>
-                <div class="center-block">
-                <?= $this->Captcha->render([
-                    'captcha_id' => $captchaId,
-                    'input_text' => __('Retype the characters from the picture:'),
-                ]) ?>
+                <div class="dace-captcha-wrapper text-center">
+                    <?= $this->Captcha->render([
+                        'captcha_id' => $captchaId,
+                        'input_text' => __('Retype the characters from the picture:'),
+                        'input_attributes' => ['class' => 'form-control', 'placeholder' => ''],
+                        'image_attributes' => ['style' => 'display:inline;vertical-align:middle;'],
+                    ]) ?>
                 </div>
             </div>            
             <div class="box-footer">

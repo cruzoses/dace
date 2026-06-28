@@ -96,6 +96,7 @@
         <?= $this->Html->script('AdminLTE./bower_components/fastclick/lib/fastclick'); ?>
         <!-- Funciones de la aplicacion -->
         <?= $this->Html->script('sace'); ?>
+        <?= $this->Html->script('inactividad'); ?>
         <?= $this->fetch('script'); ?>
         <?= $this->fetch('scriptBottom'); ?>
         <script type="text/javascript">
@@ -108,7 +109,14 @@
                 var a = $('a[href="<?= $this->Url->build() ?>"]');
                 if (!a.parent().hasClass('treeview') && !a.parent().parent().hasClass('pagination')) {
                     a.parent().addClass('active').parents('.treeview').addClass('active');
-                }            
+                }
+                <?php if (isset($userActivo)) : ?>
+                Inactividad.init({
+                    timeout: <?= Configure::read('Inactividad.timeout') ?: 300000 ?>,
+                    countdown: <?= Configure::read('Inactividad.countdown') ?: 60 ?>,
+                    keepaliveInterval: <?= Configure::read('Inactividad.keepaliveInterval') ?: 120000 ?>
+                });
+                <?php endif; ?>
             });
             var basePath = "<?= $this->Url->build('/'); ?>"
             DateAndTime();

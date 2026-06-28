@@ -17,7 +17,7 @@ class UsuariosController extends AppController
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
-        $this->Auth->allow(['login', 'logout']);
+        $this->Auth->allow(['login', 'logout', 'keepalive']);
 	}
 
     public function initialize()
@@ -57,6 +57,20 @@ class UsuariosController extends AppController
     {
         $this->Auditorias->registrar('SALE', 'Sale del sistema');
         return $this->redirect($this->Auth->logout());
+    }
+
+    public function keepalive()
+    {
+        $this->autoRender = false;
+        $this->response = $this->response->withType('application/json');
+
+        if ($this->Auth->user()) {
+            $this->getRequest()->getSession()->write('_keepalive', time());
+            $this->response = $this->response->withStringBody(json_encode(['status' => 'ok']));
+        } else {
+            $this->response = $this->response->withStringBody(json_encode(['status' => 'expired']));
+        }
+        return $this->response;
     }
 
     public function cambiaclave()

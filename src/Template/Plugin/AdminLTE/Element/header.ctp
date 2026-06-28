@@ -80,6 +80,15 @@
         </span>
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
+                <li id="session-countdown" class="dropdown" style="display:none;">
+                    <a href="#" class="dropdown-toggle" style="background:#f39c12;color:#fff;">
+                        <i class="fa fa-clock-o"></i>&nbsp;
+                        <span>Su sesión finalizará en <span class="countdown-seconds">60</span>s</span>
+                        <button type="button" class="btn btn-xs btn-warning" onclick="Inactividad.cancel()" style="margin-left:6px;color:#fff;border-color:#fff;">
+                            <i class="fa fa-hand-stop-o"></i> Cancelar
+                        </button>
+                    </a>
+                </li>
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <?= isset($userActivo) ? $this->Html->image('logos/logouptbal.png',['class' => 'user-image', 'alt' => 'User Image']) : "";?>

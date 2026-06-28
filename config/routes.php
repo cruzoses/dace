@@ -77,6 +77,8 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     $routes->connect('/sedes', ['controller' => 'Sedes', 'action' => 'index']);
 
+    $routes->connect('/keepalive', ['controller' => 'Usuarios', 'action' => 'keepalive']);
+
     $routes->connect('/captcha-image/:id', ['controller' => 'Captcha', 'action' => 'image'], ['id' => '.+', 'pass' => ['id']]);
     $routes->connect('/captcha-reload', ['controller' => 'Captcha', 'action' => 'reload']);
 

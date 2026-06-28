@@ -402,4 +402,10 @@ return [
     'Session' => [
         'defaults' => 'php',
     ],
+
+    'Inactividad' => [
+        'timeout' => 300000,
+        'countdown' => 60,
+        'keepaliveInterval' => 120000,
+    ],
 ];

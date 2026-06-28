@@ -28,56 +28,20 @@ body.home-page .logo-container img {
     right:10px;
 }
 
-.dace-captcha {
+.dace-captcha-wrapper {
     margin-bottom: 15px;
 }
 
-.dace-captcha .dace-captcha-image {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 10px;
+.dace-captcha-wrapper label {
     display: block;
+    text-align: center;
+    margin: 10px 0 5px;
 }
 
-.dace-captcha .dace-captcha-input {
+.dace-captcha-wrapper input.form-control {
     max-width: 270px;
-}
-
-.dace-captcha-image-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-.dace-captcha-image-wrapper .dace-captcha-image {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.dace-captcha-reload {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #f9f9f9;
-    cursor: pointer;
-    flex-shrink: 0;
-    font-size: 18px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #555;
-    padding: 0;
-}
-
-.dace-captcha-reload:hover {
-    background-color: #e9e9e9;
-}
-
-.dace-captcha-reload:active {
-    background-color: #ddd;
+    margin: 0 auto;
+    text-align: center;
 }
 
 @keyframes rotating {
@@ -87,4 +51,23 @@ body.home-page .logo-container img {
 
 .rotating {
   animation: rotating 1.5s linear infinite;
+}
+
+/* Inactividad - Countdown en navbar */
+#session-countdown > a {
+    padding: 8px 12px !important;
+    line-height: 34px;
+    white-space: nowrap;
+}
+#session-countdown .countdown-seconds {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+#session-countdown button.btn {
+    line-height: 1.2;
+    padding: 2px 6px;
+    font-size: 12px;
+}
+#session-countdown button.btn:hover {
+    background: rgba(255,255,255,0.2) !important;
 }
