@@ -91,12 +91,13 @@
                             <p>
                                 <?= isset($userActivo) ? $userActivo['name'] : "" ;?>
                                 <small>
-                                    <?= isset($userActivo) ? $this->Time->format($userActivo['created'],\IntlDateFormatter::SHORT,null.'America/Caracas') : "";?>
+                                    <?= isset($userActivo) ? $userActivo['created']->format('d-m-Y g:i a') : "";?>
                                     <br>
                                     <?= isset($userActivo) ? implode(', ', array_column($userActivo['rols'], 'nombre')) : ""; ?>
                                 </small>
                             </p>
                         </li>
+                        <?php if( isset($userActivo['rols']) && !empty($userActivo['rols']) ) : ?>
                         <li class="user-body">
                             <div class="row">
                                 <div class="col-xs-12 text-center">
@@ -112,6 +113,7 @@
                                 <a href="<?= $this->Url->build('/logout');?>" class="btn btn-sm bg-maroon"><i class="fa fa-sign-out"></i>&nbsp;Cerrar</a>
                             </div>
                         </li>
+                        <?php endif; ?>
                     </ul>					
                 </li>
                 <?php if( $this->Permiso->tiene(1) ) : ?>

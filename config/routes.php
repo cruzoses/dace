@@ -72,6 +72,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/login', ['controller' => 'Usuarios', 'action' => 'login']);
     $routes->connect('/logout', ['controller' => 'Usuarios', 'action' => 'logout']);
 
+    $routes->connect('/captcha-image/:id', ['controller' => 'Captcha', 'action' => 'image'], ['id' => '.+', 'pass' => ['id']]);
+
     /*
      * Connect catchall routes for all controllers.
      *

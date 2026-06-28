@@ -27,3 +27,18 @@ body.home-page .logo-container img {
     bottom:55px;
     right:10px;
 }
+
+.dace-captcha {
+    margin-bottom: 15px;
+}
+
+.dace-captcha .dace-captcha-image {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.dace-captcha .dace-captcha-input {
+    max-width: 270px;
+}

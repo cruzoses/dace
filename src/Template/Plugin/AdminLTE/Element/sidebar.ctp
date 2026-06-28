@@ -28,7 +28,7 @@
     </form>
     <ul class="sidebar-menu" data-widget="tree">
     	<li class="header text-center">OPCIONES</li>
-		<?php if( isset($userActivo) && $userActivo['activo'] ) : ?>
+		<?php if( isset($userActivo) && $userActivo['activo'] && isset($userActivo['rols']) && !empty($userActivo['rols']) ) : ?>
 			<?php if( $this->Permiso->tiene([1,2,3,4]) ) : ?>
 				<!-- Arcivos -->
 				<li class="treeview">

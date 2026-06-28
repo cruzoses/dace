@@ -36,7 +36,11 @@
                     echo $this->Form->control('sexo',['type' => 'select', 'options' => $aGeneros, 'class' => 'select2', 'empty' => true]);
                     echo $this->Form->control('email');
                     echo $this->Form->control('telefonos');
-                    echo $this->Form->control('username');
+                    echo $this->Form->control('username',[
+                        'placeholder' => 'Nombre de Usuario',
+		                'beforeInput' => '<div class="input-group"><span class="input-group-addon">*</span>',
+		                'afterInput' => '</div>'
+                    ]);
                     echo $this->Form->control('password');
                     echo $this->Form->hidden('activo',['value' => 1]);
                 echo $this->Form->control('rols._ids', ['options' => $rols]);
