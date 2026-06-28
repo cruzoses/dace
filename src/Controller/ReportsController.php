@@ -40,7 +40,8 @@ class ReportsController extends AppController
             'Estatus' => ['justification' => 'center', 'width' => 80],
             'Creado' => ['justification' => 'center', 'width' => 120],
         ]);
-        $pdfOutput = $pdfBuilder->generateSimpleReport($data, $userAlias, 'ROLS');
+        
+        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'TIPOS DE USUARIO');
 
         $this->autoRender = false;
         $this->viewBuilder()->setClassName(null);

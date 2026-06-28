@@ -7,6 +7,7 @@ use Cezpdf;
 class PdfBuilder
 {
     private $pdf;
+    private $user;
 
     private $aConfig = [
         'showHeadings'  => 1,
@@ -23,15 +24,23 @@ class PdfBuilder
         'cols'          => [],
     ];
 
-    public function __construct()
+    public function __construct($user = null)
     {
         $this->pdf = new Cezpdf('LETTER', 'portrait');
         $this->pdf->ezSetCmMargins(2.8, 1.5, 1.5, 1.5);
+        if ($user) 
+        {
+            $this->user = $user;
+        } else {
+            $session = new \Cake\Http\Session();
+            $this->user = $session->read('Auth.User.alias');
+        }
     }
 
-    public function generateSimpleReport($data, $user, $title = 'REPORTE')
+    public function generateSimpleReport($data, $title = 'REPORTE')
     {
-        $this->pageHeader($user, $title);
+        $this->pageHeader($title);
+
         $this->pdf->ezText("\n", 10);
 
         $this->pdf->ezTable($data, null, '', $this->aConfig);
@@ -44,7 +53,12 @@ class PdfBuilder
         $this->aConfig['cols'] = $columns;
     }
 
-    private function pageHeader($userAlias, $title)
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    private function pageHeader($title)
     {
         $oImage = WWW_ROOT . 'img/site/cintillo.png';
         $nWidthArea = $this->pdf->ez['pageWidth'];
@@ -54,6 +68,8 @@ class PdfBuilder
 
         $this->pdf->addPngFromFile($oImage, 30, 740, 540, 30);
 
+        $userAlias = isset($this->user['alias']) ? $this->user['alias'] : '---';
+
         $siglas = Configure::read('Universidad.Siglas');
         $this->pdf->addText(40, 722, 12, $siglas);
         $this->pdf->addText(306 - ($this->pdf->getTextWidth(12, $title) / 2), 722, 12, $title);
@@ -62,7 +78,7 @@ class PdfBuilder
 
         $this->pdf->line(40, 713, 570, 713);
 
-        $this->pdf->addText(40, 50, 6, 'Generado por: ' . $userAlias . '    ' . date('d/m/Y h:i A'));
+        $this->pdf->addText(40, 50, 6, 'Generado por: ' . $this->user . '    ' . date('d/m/Y h:i A'));
         $this->pdf->line(40, 42, 570, 42);
 
         $this->pdf->restoreState();
