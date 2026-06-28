@@ -64,9 +64,12 @@ class UsuariosController extends AppController
         $userId = $this->Auth->user('id');
         $usuario = $this->Usuarios->get($userId);
 
-        if ($this->request->is('post')) {
+        if ($this->request->is('post')) 
+        {
             $data = $this->request->getData();
             $hasher = new \Cake\Auth\DefaultPasswordHasher();
+
+            pr($data);exit;
 
             if (!$hasher->check($data['password_actual'], $usuario->password)) {
                 $this->Flash->error(__('La contraseña actual no es correcta.'));

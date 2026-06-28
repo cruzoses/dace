@@ -132,6 +132,11 @@ class AppController extends Controller
         return false;
     }
 
+    public function homepage()
+    {
+        return $this->redirect($this->Auth->redirectUrl());
+    }
+
     /**
      * Verifica si el usuario autenticado tiene al menos uno de los roles especificados.
      *
