@@ -1,8 +1,9 @@
 <?php
 
 return [
+    'captcha' => [
     'Default' => [
-        'captcha_type'        => 'string',
+        'captcha_type'        => 'math',
         'code_length'         => 6,
         'charset'             => 'abcdefghijkmnopqrstuvwxzyABCDEFGHJKLMNPQRSTUVWXZY23456789',
         'case_sensitive'      => false,
@@ -64,5 +65,6 @@ return [
         'image_signature'     => '',
         'signature_color'     => '#707070',
         'timeout'             => 300,
+    ],
     ],
 ];

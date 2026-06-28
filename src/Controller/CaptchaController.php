@@ -28,6 +28,10 @@ class CaptchaController extends AppController
         ];
 
         $config = Configure::read('captcha.Default');
+        if (!$config) {
+            Configure::load('captcha', 'default');
+            $config = Configure::read('captcha.Default');
+        }
         if ($config) {
             $config = array_merge($defaults, $config);
         } else {
@@ -83,7 +87,7 @@ class CaptchaController extends AppController
                 break;
         }
 
-        $id = uniqid('captcha_', true);
+        $id = 'captcha_' . bin2hex(random_bytes(16));
 
         $this->request->getSession()->write('Captcha.' . $id, [
             'code'         => $code,
@@ -100,6 +104,10 @@ class CaptchaController extends AppController
 
     public function image($id = null)
     {
+        ob_start();
+
+        $response = null;
+
         if ($id) {
             $session = $this->request->getSession();
             $stored  = $session->read('Captcha.' . $id);
@@ -117,50 +125,54 @@ class CaptchaController extends AppController
                     $code_display = isset($stored['code_display']) ? $stored['code_display'] : $code;
                     $config       = $stored['config'];
                 } else {
-                    return $this->generateEmptyImage();
+                    $response = $this->generateEmptyImage();
                 }
             }
         } else {
-            return $this->generateEmptyImage();
+            $response = $this->generateEmptyImage();
         }
 
-        $captcha = new SecurimageCaptcha();
+        if (!$response) {
+            $captcha = new SecurimageCaptcha();
 
-        $captcha->image_width         = isset($config['image_width'])  ? $config['image_width']  : 215;
-        $captcha->image_height        = isset($config['image_height']) ? $config['image_height'] : 80;
-        $captcha->font_ratio          = isset($config['font_ratio'])   ? $config['font_ratio']   : 0.4;
-        $captcha->image_bg_color      = isset($config['image_bg_color']) ? $config['image_bg_color'] : '#ffffff';
-        $captcha->text_color          = isset($config['text_color'])     ? $config['text_color']     : '#707070';
-        $captcha->line_color          = isset($config['line_color'])     ? $config['line_color']     : '#707070';
-        $captcha->noise_color         = isset($config['noise_color'])    ? $config['noise_color']    : '#707070';
-        $captcha->num_lines           = isset($config['num_lines'])      ? $config['num_lines']      : 5;
-        $captcha->noise_level         = isset($config['noise_level'])    ? $config['noise_level']    : 2;
-        $captcha->perturbation        = isset($config['perturbation'])   ? $config['perturbation']   : 0.85;
-        $captcha->use_random_spaces   = isset($config['use_random_spaces'])   ? $config['use_random_spaces']   : false;
-        $captcha->use_text_angles     = isset($config['use_text_angles'])     ? $config['use_text_angles']     : false;
-        $captcha->use_random_baseline = isset($config['use_random_baseline']) ? $config['use_random_baseline'] : false;
-        $captcha->use_random_boxes    = isset($config['use_random_boxes'])    ? $config['use_random_boxes']    : false;
-        $captcha->background_directory = isset($config['background_directory']) ? $config['background_directory'] : null;
-        $captcha->image_signature     = isset($config['image_signature']) ? $config['image_signature'] : '';
-        $captcha->signature_color     = isset($config['signature_color']) ? $config['signature_color'] : '#707070';
+            $captcha->image_width         = isset($config['image_width'])  ? $config['image_width']  : 215;
+            $captcha->image_height        = isset($config['image_height']) ? $config['image_height'] : 80;
+            $captcha->font_ratio          = isset($config['font_ratio'])   ? $config['font_ratio']   : 0.4;
+            $captcha->image_bg_color      = isset($config['image_bg_color']) ? $config['image_bg_color'] : '#ffffff';
+            $captcha->text_color          = isset($config['text_color'])     ? $config['text_color']     : '#707070';
+            $captcha->line_color          = isset($config['line_color'])     ? $config['line_color']     : '#707070';
+            $captcha->noise_color         = isset($config['noise_color'])    ? $config['noise_color']    : '#707070';
+            $captcha->num_lines           = isset($config['num_lines'])      ? $config['num_lines']      : 5;
+            $captcha->noise_level         = isset($config['noise_level'])    ? $config['noise_level']    : 2;
+            $captcha->perturbation        = isset($config['perturbation'])   ? $config['perturbation']   : 0.85;
+            $captcha->use_random_spaces   = isset($config['use_random_spaces'])   ? $config['use_random_spaces']   : false;
+            $captcha->use_text_angles     = isset($config['use_text_angles'])     ? $config['use_text_angles']     : false;
+            $captcha->use_random_baseline = isset($config['use_random_baseline']) ? $config['use_random_baseline'] : false;
+            $captcha->use_random_boxes    = isset($config['use_random_boxes'])    ? $config['use_random_boxes']    : false;
+            $captcha->background_directory = isset($config['background_directory']) ? $config['background_directory'] : null;
+            $captcha->image_signature     = isset($config['image_signature']) ? $config['image_signature'] : '';
+            $captcha->signature_color     = isset($config['signature_color']) ? $config['signature_color'] : '#707070';
 
-        if (!empty($config['ttf_files'])) {
-            $captcha->ttf_file = $config['ttf_files'];
-        } else {
-            $captcha->ttf_file = [
-                WWW_ROOT . 'fonts' . DIRECTORY_SEPARATOR . 'BDLatn1.ttf',
-                WWW_ROOT . 'fonts' . DIRECTORY_SEPARATOR . 'BDLatn2.ttf',
-                WWW_ROOT . 'fonts' . DIRECTORY_SEPARATOR . 'BDLatn3.ttf',
-                WWW_ROOT . 'fonts' . DIRECTORY_SEPARATOR . 'AHGBold.ttf',
-            ];
+            if (!empty($config['ttf_files'])) {
+                $captcha->ttf_file = $config['ttf_files'];
+            } else {
+                $captcha->ttf_file = [
+                    WWW_ROOT . 'fonts' . DIRECTORY_SEPARATOR . 'BDLatn1.ttf',
+                    WWW_ROOT . 'fonts' . DIRECTORY_SEPARATOR . 'BDLatn2.ttf',
+                    WWW_ROOT . 'fonts' . DIRECTORY_SEPARATOR . 'BDLatn3.ttf',
+                    WWW_ROOT . 'fonts' . DIRECTORY_SEPARATOR . 'AHGBold.ttf',
+                ];
+            }
+
+            $imageData = $captcha->generate($code, $code_display);
+            $response = $this->response->withType('png')
+                ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+                ->withHeader('Pragma', 'no-cache')
+                ->withHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+                ->withStringBody($imageData);
         }
 
-        $imageData = $captcha->generate($code, $code_display);
-        $response = $this->response->withType('png')
-            ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
-            ->withHeader('Pragma', 'no-cache')
-            ->withHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
-            ->withStringBody($imageData);
+        ob_clean();
         return $response;
     }
 
@@ -176,6 +188,10 @@ class CaptchaController extends AppController
             'timeout'       => 900,
         ];
         $config = Configure::read('captcha.Default');
+        if (!$config) {
+            Configure::load('captcha', 'default');
+            $config = Configure::read('captcha.Default');
+        }
         if ($config) {
             $config = array_merge($defaults, $config);
         } else {

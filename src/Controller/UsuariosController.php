@@ -14,9 +14,6 @@ use Cake\I18n\Time;
  */
 class UsuariosController extends AppController
 {
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
@@ -29,9 +26,6 @@ class UsuariosController extends AppController
         $this->loadComponent('Captcha', ['preset' => 'Default']);
     }
 
-    /**
-     * 
-     */
 	public function isAuthorized($user)
 	{
 		return parent::isAuthorized($user);

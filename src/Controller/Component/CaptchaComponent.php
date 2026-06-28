@@ -65,7 +65,7 @@ class CaptchaComponent extends Component
     public function generate($id = null)
     {
         if (!$id) {
-            $id = uniqid('captcha_', true);
+            $id = 'captcha_' . bin2hex(random_bytes(16));
         }
 
         $captcha_type = $this->config['captcha_type'];

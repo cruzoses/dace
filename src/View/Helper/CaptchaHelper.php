@@ -26,7 +26,7 @@ class CaptchaHelper extends Helper
             'icon_size'         => 32,
             'show_text_input'   => true,
             'input_id'          => 'captcha_code',
-            'input_name'        => 'captcha_code',
+            'input_name'        => 'CaptchaCode',
             'input_text'        => 'Type the text:',
             'input_required'    => true,
             'input_attributes'  => [],
