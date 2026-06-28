@@ -1,0 +1,29 @@
+.oculto {
+    display: none;
+}
+
+body.home-page .content {
+    min-height: calc(100vh - 300px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+body.home-page .logo-container {
+    max-width: 90vw;
+}
+
+body.home-page .logo-container img {
+    max-width: 100%;
+    max-height: 75vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.logoAbajo{
+	position:absolute;
+    bottom:55px;
+    right:10px;
+}

@@ -1,0 +1,65 @@
+msgid "New"
+msgstr "Nuevo"
+
+msgid "Go Back"
+msgstr "Regresar"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Success"
+msgstr "Exito"
+
+msgid "Alert"
+msgstr "Alerta!"
+
+msgid "Pages"
+msgstr "Inicio"
+
+msgid "Display"
+msgstr "Index"
+
+msgid "first"
+msgstr "Primero"
+
+msgid "previous"
+msgstr "Anterior"
+
+msgid "next"
+msgstr "Siguiente"
+
+msgid "last"
+msgstr "Ultima"
+
+msgid "Created"
+msgstr "Creado"
+
+msgid "Modified"
+msgstr "Modificado"
+
+msgid "Actions"
+msgstr "Opciones"
+
+msgid "Username or password is incorrect"
+msgstr "El nombre de usuario o la contraseña son incorrectos."
+
+msgid "Woopsie, you are not authorized to access this area."
+msgstr "¡Ups! No tienes autorización para acceder a esta área."
+
+msgid "Did you really think you are allowed to see that?"
+msgstr "¿De verdad creías que tenías permiso para ver eso?"
+
+msgid "The {0} has been saved."
+msgstr "El ó la {0} se ha guardado."
+
+msgid "The {0} could not be saved. Please, try again."
+msgstr "No se pudo guardar el {0}. Inténtalo de nuevo."
+
+msgid "Are you sure you want to delete # {0}?"
+msgstr "¿Seguro de que quieres eliminar # {0}?"
+
+msgid "Retype the characters from the picture:"
+msgstr "Vuelve a escribir los caracteres de la imagen:"
+
+msgid "Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total"
+msgstr "Página {{page}} de {{pages}}, mostrando {{current}} registro(s) de un total de {{count}}"
