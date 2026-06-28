@@ -55,6 +55,9 @@ msgstr "El ó la {0} se ha guardado."
 msgid "The {0} could not be saved. Please, try again."
 msgstr "No se pudo guardar el {0}. Inténtalo de nuevo."
 
+msgid "Retype the characters from the picture:"
+msgstr "Vuelve a escribir los caracteres de la imagen:"
+
 msgid "Are you sure you want to delete # {0}?"
 msgstr "¿Seguro de que quieres eliminar # {0}?"
 

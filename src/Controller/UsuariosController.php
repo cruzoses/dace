@@ -170,7 +170,6 @@ class UsuariosController extends AppController
         $this->set(compact('usuario', 'rols','aGeneros'));
     }
 
-
     /**
      * Edit method
      *
@@ -206,7 +205,6 @@ class UsuariosController extends AppController
         $this->set(compact('usuario', 'rols','aGeneros'));
     }
 
-
     /**
      * Delete method
      *
@@ -227,4 +225,44 @@ class UsuariosController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id Usuario id.
+     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+    */
+    public function perfil()
+    {
+        $userId = $this->Auth->user('id');
+        $usuario = $this->Usuarios->get($userId, [
+            'contain' => ['Rols']
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) 
+        {
+            /*
+            $aDatos = $this->request->getData();
+            if (!empty($aDatos['fecha_nacimiento'])) 
+            {
+                $fecha = str_replace('/', '-', $aDatos['fecha_nacimiento']);
+                $aDatos['fecha_nacimiento'] = Time::createFromFormat('d-m-Y', $fecha)->format('Y-m-d');
+            }
+            $usuario = $this->Usuarios->patchEntity($usuario, $aDatos);
+            if ($this->Usuarios->save($usuario)) 
+            {
+                $this->Flash->success(__('The {0} has been saved.', 'Usuario'));
+                $this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS Usuarios ' . json_encode($aDatos));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Usuario'));
+            */
+        }
+        $rols = $this->Usuarios->Rols->find('list', ['limit' => 200]);
+        $aGeneros = \Cake\Core\Configure::read('aGeneros');
+        $this->set(compact('usuario', 'rols','aGeneros'));
+    }
+
 }
