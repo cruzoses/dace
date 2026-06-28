@@ -21,15 +21,21 @@
 
         setupActivityListeners: function() {
             var self = this;
-            $(document).on('mousemove keydown click scroll touchstart', function() {
-                self.resetTimer();
+            $(document).on('mousemove', function() {
+                if (!self.warningVisible) {
+                    self.resetTimer();
+                }
+            });
+            $(document).on('keydown click scroll touchstart', function() {
+                if (self.warningVisible) {
+                    self.cancel();
+                } else {
+                    self.resetTimer();
+                }
             });
         },
 
         resetTimer: function() {
-            if (this.warningVisible) {
-                this.hideWarning();
-            }
             clearTimeout(this.timer);
             this.timer = setTimeout($.proxy(this.showWarning, this), this.config.timeout);
         },
