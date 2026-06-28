@@ -59,6 +59,35 @@ class UsuariosController extends AppController
         return $this->redirect($this->Auth->logout());
     }
 
+    public function cambiaclave()
+    {
+        $userId = $this->Auth->user('id');
+        $usuario = $this->Usuarios->get($userId);
+
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+            $hasher = new \Cake\Auth\DefaultPasswordHasher();
+
+            if (!$hasher->check($data['password_actual'], $usuario->password)) {
+                $this->Flash->error(__('La contraseña actual no es correcta.'));
+            } elseif (empty($data['password_nueva'])) {
+                $this->Flash->error(__('La contraseña nueva no puede estar vacía.'));
+            } elseif ($data['password_nueva'] !== $data['password_confirmar']) {
+                $this->Flash->error(__('La confirmación no coincide con la contraseña nueva.'));
+            } else {
+                $usuario = $this->Usuarios->patchEntity($usuario, ['password' => $data['password_nueva']]);
+                if ($this->Usuarios->save($usuario)) {
+                    $this->Auditorias->registrar('MODIFICA', 'Cambia la contraseña');
+                    $this->Flash->success(__('Contraseña actualizada correctamente.'));
+                    return $this->redirect(['action' => 'index']);
+                }
+                $this->Flash->error(__('No se pudo guardar la contraseña. Intente de nuevo.'));
+            }
+        }
+
+        $this->set(compact('usuario'));
+    }
+
     public function register()
     {
         $user = $this->Users->newEntity($this->request->getData());
