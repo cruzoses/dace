@@ -17,7 +17,7 @@ class UsuariosController extends AppController
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
-        $this->Auth->allow(['login', 'logout', 'keepalive']);
+        $this->Auth->allow(['login', 'logout']);
 	}
 
     public function initialize()
@@ -57,20 +57,6 @@ class UsuariosController extends AppController
     {
         $this->Auditorias->registrar('SALE', 'Sale del sistema');
         return $this->redirect($this->Auth->logout());
-    }
-
-    public function keepalive()
-    {
-        $this->autoRender = false;
-        $this->response = $this->response->withType('application/json');
-
-        if ($this->Auth->user()) {
-            $this->getRequest()->getSession()->write('_keepalive', time());
-            $this->response = $this->response->withStringBody(json_encode(['status' => 'ok']));
-        } else {
-            $this->response = $this->response->withStringBody(json_encode(['status' => 'expired']));
-        }
-        return $this->response;
     }
 
     public function cambiaclave()
@@ -225,7 +211,7 @@ class UsuariosController extends AppController
      * @param string|null $id Usuario id.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+    */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);

@@ -76,8 +76,7 @@ class AppController extends Controller
 
     public function beforeFilter(Event $event)
     {
-        parent::beforeFilter($event);
-        $this->Auth->allow(['display']);
+        parent::beforeFilter($event);        
         $userActivo = $this->getRequest()->getSession()->read('Auth.User');
         //$userActivo = $this->Auth->user();
         if ( $userActivo ) 
@@ -97,6 +96,7 @@ class AppController extends Controller
                 $aPermisosNombre[] = $rol['nombre'];
             }
         }
+        $this->Auth->allow(['display','keepalive']);
         $this->set(compact('aPermisosId', 'aPermisosNombre'));
     }
 
@@ -130,6 +130,20 @@ class AppController extends Controller
         }
         $this->Flash->error(__('Woopsie, you are not authorized to access this area.'));
         return false;
+    }
+
+    public function keepalive()
+    {
+        $this->autoRender = false;
+        $this->response = $this->response->withType('application/json');
+
+        if ($this->Auth->user()) {
+            $this->getRequest()->getSession()->write('_keepalive', time());
+            $this->response = $this->response->withStringBody(json_encode(['status' => 'ok']));
+        } else {
+            $this->response = $this->response->withStringBody(json_encode(['status' => 'expired']));
+        }
+        return $this->response;
     }
 
     public function homepage()
