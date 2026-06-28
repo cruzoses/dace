@@ -404,8 +404,8 @@ return [
     ],
 
     'Inactividad' => [
-        'timeout' => 120000,
+        'timeout' => 300000,
         'countdown' => 60,
-        'keepaliveInterval' => 60000,
+        'keepaliveInterval' => 120000,
     ],
 ];
