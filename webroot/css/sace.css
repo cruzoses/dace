@@ -53,21 +53,32 @@ body.home-page .logo-container img {
   animation: rotating 1.5s linear infinite;
 }
 
-/* Inactividad - Countdown en navbar */
-#session-countdown > a {
-    padding: 8px 12px !important;
-    line-height: 34px;
-    white-space: nowrap;
+/* Inactividad - Barra full-width en navbar */
+.session-countdown-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 50px;
+    background: #f39c12;
+    color: #fff;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
 }
-#session-countdown .countdown-seconds {
+.session-countdown-bar .countdown-seconds {
     font-weight: bold;
     font-size: 1.1em;
 }
-#session-countdown button.btn {
+.session-countdown-bar .btn {
     line-height: 1.2;
-    padding: 2px 6px;
+    padding: 3px 10px;
     font-size: 12px;
+    border-color: rgba(255,255,255,0.8);
+    color: #fff;
 }
-#session-countdown button.btn:hover {
+.session-countdown-bar .btn:hover {
     background: rgba(255,255,255,0.2) !important;
 }
