@@ -68,11 +68,11 @@ class PdfBuilder
 
         $this->pdf->addPngFromFile($oImage, 30, 740, 540, 30);
 
-        $userAlias = isset($this->user['alias']) ? $this->user['alias'] : '---';
+        $userAlias = isset($this->user['alias']) ? $this->user['alias'] : 'SACE UPTBAL';
 
         $siglas = Configure::read('Universidad.Siglas');
-        $this->pdf->addText(40, 722, 12, $siglas);
-        $this->pdf->addText(306 - ($this->pdf->getTextWidth(12, $title) / 2), 722, 12, $title);
+        $this->pdf->addText(40, 722, 12, "<b>".$siglas."</b>");
+        $this->pdf->addText(306 - ($this->pdf->getTextWidth(12, $title) / 2), 722, 12, "<b>".$title."</b>");
         $this->pdf->addText(484, 730, 8, 'Fecha: ' . date('d-m-Y'));
         $this->pdf->addText(484, 720, 8, 'Hora: ' . date('h:i a'));
 

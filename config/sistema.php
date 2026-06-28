@@ -7,8 +7,8 @@
             'RIF'          => 'G-20009566-0',
             'Sistema'      => '.:: S.A.C.E :',
             'Departamento' => 'Coordinación de Admisión, Seguimiento, Registro y Control de Estudios',
-            'Fisrst'       => 'UNIVERSIDAD POLITECNICA TERRITORIAL DE BARLOVENTO',
-            'Last'         => '&ldquo; ARGELIA LAYA &rdquo;',
+            'Title1'       => 'UNIVERSIDAD POLITECNICA TERRITORIAL DE BARLOVENTO',
+            'Title2'       => '&ldquo; ARGELIA LAYA &rdquo;',
             'CopyRihgt'    => 'Copyright &copy; 2022 O.T.I.C - '
         ],
         'Sistema' => [

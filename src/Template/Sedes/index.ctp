@@ -66,7 +66,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="8" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination">
                                         <?= $this->Paginator->first('<< ' . __('first')) ?>

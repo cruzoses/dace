@@ -1,43 +1,46 @@
 <?php
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
-
-$this->layout = 'error';
-
-if (Configure::read('debug')) :
-    $this->layout = 'dev_error';
-
-    $this->assign('title', $message);
-    $this->assign('templateName', 'error500.ctp');
-
-    $this->start('file');
 ?>
-<?php if (!empty($error->queryString)) : ?>
-    <p class="notice">
-        <strong>SQL Query: </strong>
-        <?= h($error->queryString) ?>
-    </p>
-<?php endif; ?>
-<?php if (!empty($error->params)) : ?>
-        <strong>SQL Query Params: </strong>
-        <?php Debugger::dump($error->params) ?>
-<?php endif; ?>
-<?php if ($error instanceof Error) : ?>
-        <strong>Error in: </strong>
-        <?= sprintf('%s, line %s', str_replace(ROOT, 'ROOT', $error->getFile()), $error->getLine()) ?>
-<?php endif; ?>
-<?php
-    echo $this->element('auto_table_warning');
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-danger box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-exclamation-triangle"></i>&nbsp;Error interno del servidor</h3>
+            </div>
+            <div class="box-body">
+                <div class="callout callout-danger">
+                    <h4><i class="fa fa-warning"></i>&nbsp;Error en la aplicacion</h4>
+                    <p><?= h($message) ?></p>
+                </div>
 
-    if (extension_loaded('xdebug')) :
-        xdebug_print_function_stack();
-    endif;
+                <?php if (Configure::read('debug')): ?>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h4 class="box-title">Depuracion</h4>
+                    </div>
+                    <div class="box-body">
+                        <pre class="prettyprint" style="font-size:12px;"><?= h($error->getMessage()) ?></pre>
 
-    $this->end();
-endif;
-?>
-<h2><?= __d('cake', 'An Internal Error Has Occurred') ?></h2>
-<p class="error">
-    <strong><?= __d('cake', 'Error') ?>: </strong>
-    <?= h($message) ?>
-</p>
+                        <p><strong>Archivo:</strong> <code><?= h($error->getFile()) ?></code></p>
+                        <p><strong>Linea:</strong> <code><?= h($error->getLine()) ?></code></p>
+
+                        <?php if (!empty($error->queryString)): ?>
+                        <p><strong>SQL Query:</strong></p>
+                        <pre class="prettyprint"><?= h($error->queryString) ?></pre>
+                        <?php endif; ?>
+
+                        <?php if (!empty($error->params)): ?>
+                        <p><strong>Parametros SQL:</strong></p>
+                        <pre class="prettyprint"><?= Debugger::dump($error->params) ?></pre>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+            <div class="box-footer">
+                <?= $this->Html->link('<i class="fa fa-home"></i>&nbsp;Ir al inicio', '/', ['class' => 'btn btn-default', 'escape' => false]) ?>
+            </div>
+        </div>
+    </div>
+</div>
