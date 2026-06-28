@@ -69,9 +69,11 @@
                         <?= $this->fetch('content'); ?>
                     </section>                
                 </div>
-                <!-- /.container -->
             </div>
             <?= $this->element('footer'); ?>
+            <aside class="control-sidebar control-sidebar-dark">
+                <?= $this->element('control'); ?>
+            </aside>
             <div class="control-sidebar-bg"></div>
         </div>
         <!-- Bootstrap 3.3.7 -->

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-default box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Sedes</h3>
                 <div class="box-tools pull-right">
@@ -17,15 +17,16 @@
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('codigo') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('codigo',['Código']) ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
                             <!--
                             <th scope="col"><?= $this->Paginator->sort('telefonos') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('responsable') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('activa') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('responsable') ?></th>                            
                             -->
-                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('principal') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('activa') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
@@ -33,15 +34,28 @@
                         <?php foreach ($sedes as $sede): ?>
                         <tr>
                             <td><?= $this->Number->format($sede->id) ?></td>
-                                <td><?= h($sede->codigo) ?></td>
-                                <td><?= h($sede->nombre) ?></td>
-                                <!--
-                                <td><?= h($sede->telefonos) ?></td>
-                                <td><?= h($sede->responsable) ?></td>
-                                <td><?= h($sede->activa) ?></td>
-                                -->
-                                <td><?= h($sede->created->format('d-m-Y g:i a')) ?></td>
-                                <td><?= h($sede->modified->format('d-m-Y g:i a')) ?></td>
+                            <td><?= h($sede->codigo) ?></td>
+                            <td><?= h($sede->nombre) ?></td>
+                            <!--
+                            <td><?= h($sede->telefonos) ?></td>
+                            <td><?= h($sede->responsable) ?></td>
+                            -->
+                            <td class="text-center">
+                                <?php if ($sede->principal): ?>
+                                    <span class="label label-success">Si</span>
+                                <?php else: ?>
+                                    <span class="label label-danger">No</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center">
+                                <?php if ($sede->activa): ?>
+                                    <span class="label label-success">Activo</span>
+                                <?php else: ?>
+                                    <span class="label label-danger">Inactivo</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center"><?= h($sede->created->format('d-m-Y g:i a')) ?></td>
+                            <td class="text-center"><?= h($sede->modified->format('d-m-Y g:i a')) ?></td>
                             <td class="actions text-center">
                                 <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $sede->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                 <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $sede->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>

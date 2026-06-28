@@ -12,6 +12,7 @@ use Cake\ORM\Entity;
  * @property string $direccion
  * @property string|null $telefonos
  * @property string $responsable
+ * @property bool $principal
  * @property bool $activa
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -19,7 +20,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Curso[] $cursos
  * @property \App\Model\Entity\EstudiantePrograma[] $estudiante_programas
  * @property \App\Model\Entity\Carrera[] $carreras
- */
+*/
 class Sede extends Entity
 {
     /**
@@ -30,13 +31,14 @@ class Sede extends Entity
      * (or remove it), and explicitly make individual fields accessible as needed.
      *
      * @var array
-     */
+    */
     protected $_accessible = [
         'codigo' => true,
         'nombre' => true,
         'direccion' => true,
         'telefonos' => true,
         'responsable' => true,
+        'principal' => true,
         'activa' => true,
         'created' => true,
         'modified' => true,

@@ -201,6 +201,7 @@ CREATE TABLE IF NOT EXISTS `sedes`
   `direccion` Text NOT NULL,
   `telefonos` Varchar(40),
   `responsable` Varchar(50) NOT NULL,
+  `principal` Tinyint(1) NOT NULL,
   `activa` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,

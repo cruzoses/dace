@@ -35,25 +35,29 @@
                     echo $this->Form->control('password_actual', [
                         'type' => 'password',
                         'label' => 'Contraseña actual',
-                        'required' => true,
+                        'prepend' => '<i class="fa fa-key"></i>',
+                        'required' => true,                        
                     ]);
                     echo $this->Form->control('password_nueva', [
                         'type' => 'password',
                         'label' => 'Contraseña nueva',
+                        'prepend' => '<i class="fa fa-asterisk"></i>',
                         'required' => true,
                     ]);
                     echo $this->Form->control('password_confirmar', [
                         'type' => 'password',
                         'label' => 'Confirmar contraseña',
+                        'prepend' => '<i class="fa fa-asterisk"></i>',
                         'required' => true,
                     ]);
                 ?>
                 <hr>
-                <?= $this->Html->css('sace.css') ?>
+                <div class="center-block">
                 <?= $this->Captcha->render([
                     'captcha_id' => $captchaId,
                     'input_text' => __('Retype the characters from the picture:'),
                 ]) ?>
+                </div>
             </div>            
             <div class="box-footer">
 		        <?= $this->Form->button('<i class="fa fa-save"></i>&nbsp;Guardar',

@@ -8,7 +8,7 @@
     <div class="col-md-12">    
         <div class="box box-primary box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Sedes</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Editar Sede</h3>
 		        <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
@@ -29,13 +29,20 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('codigo', ['prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('nombre', ['prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('direccion', ['prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('telefonos', ['prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('responsable', ['prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('codigo', [
+                        'label' => 'Código','class' => 'isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('nombre', ['class' => 'isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('direccion', [
+                        'label' => 'Dirección','rows' => 2, 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('telefonos', [
+                        'label' => 'Teléfonos','prepend' => '<i class="fa fa-phone"></i>']
+                    );
+                    echo $this->Form->control('responsable', ['class' => 'isUpper', 'prepend' => '<i class="fa fa-user"></i>']);
+                    echo $this->Form->control('carreras._ids', ['prepend' => '<i class="fa fa-asterisk"></i>','options' => $carreras]);
+                    echo $this->Form->control('principal', ['label' => 'Sede Principal']);
                     echo $this->Form->control('activa', ['prepend' => '<i class="fa fa-asterisk"></i>']);
-                echo $this->Form->control('carreras._ids', ['prepend' => '<i class="fa fa-asterisk"></i>','options' => $carreras]);
               ?>
             </div>            
             <div class="box-footer">

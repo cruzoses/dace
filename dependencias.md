@@ -9,3 +9,5 @@ composer require captcha-com/cakephp-captcha:"4.*"
 
 https://www.cakedc.com/yevgeny_tomenko/2024/12/21/cakedc-search-filter-plugin
 composer require cakedc/search-filter
+
+https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/extended-ui-sweetalert2.html

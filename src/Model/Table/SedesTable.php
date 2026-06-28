@@ -37,7 +37,7 @@ class SedesTable extends Table
         parent::initialize($config);
 
         $this->setTable('sedes');
-        $this->setDisplayField('id');
+        $this->setDisplayField('nombre');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -96,10 +96,47 @@ class SedesTable extends Table
             ->notEmptyString('responsable');
 
         $validator
+            ->boolean('principal')
+            ->requirePresence('principal', 'create')
+            ->notEmptyString('principal');
+
+        $validator
             ->boolean('activa')
             ->requirePresence('activa', 'create')
             ->notEmptyString('activa');
 
         return $validator;
     }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+    */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->isUnique(['codigo'], 'Ya existe una sede con este código.'));
+        $rules->add($rules->isUnique(['nombre'], 'Ya existe una sede on este nombre.'));
+        $rules->add(function (EntityInterface $entity, array $options) {
+            if ($entity->principal) 
+            {
+                $count = $this->find()
+                    ->where(['principal' => true])
+                    ->count();
+
+                if (!$entity->isNew()) {
+                    $count--;
+                }
+
+                if ($count > 0) {
+                    return 'Ya existe una sede principal. Solo puede haber una.';
+                }
+            }
+            return true;
+        }, 'uniquePrincipal', ['errorField' => 'principal']);
+
+        return $rules;
+    }    
 }
