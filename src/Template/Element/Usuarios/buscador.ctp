@@ -15,7 +15,8 @@
 			    ?>
 		    </div>
         </div>                    
-        <?= $this->Form->create(null, ['type' => 'get', 'role' => 'form', 'id' => 'buscadorForm',
+        <?= $this->Form->create(null, ['url' => ['action' => 'buscar'],
+            'role' => 'form', 'id' => 'buscadorForm',
             'align' => [
                 'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],
                 'md' => ['left' => 2,'middle' => 9,'right' => 1]

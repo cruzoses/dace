@@ -115,30 +115,24 @@ class UsuariosController extends AppController
      *
      * @return \Cake\Http\Response|null
     */
+    public function buscar()
+    {
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+            unset($data['_csrfToken']);
+            $url = array_map('trim', array_filter($data));
+            return $this->redirect(['action' => 'index', '?' => $url]);
+        }
+        return $this->redirect(['action' => 'index']);
+    }
+
     public function index()
     {
-        $query = $this->Usuarios->find();
-        $filtros = $this->request->getQuery();
-
-        if (!empty($filtros['id'])) {
-            $query->where(['Usuarios.id' => $filtros['id']]);
-        }
-        if (!empty($filtros['cedula'])) {
-            $query->where(['Usuarios.cedula' => $filtros['cedula']]);
-        }
-        if (!empty($filtros['nombres'])) {
-            $query->where(['Usuarios.nombres LIKE' => '%' . $filtros['nombres'] . '%']);
-        }
-        if (!empty($filtros['apellidos'])) {
-            $query->where(['Usuarios.apellidos LIKE' => '%' . $filtros['apellidos'] . '%']);
-        }
-        if (!empty($filtros['email'])) {
-            $query->where(['Usuarios.email LIKE' => '%' . $filtros['email'] . '%']);
-        }
-
-        $usuarios = $this->paginate($query);
+        $conditions = $this->Usuarios->formatConditions($this->request->getQueryParams());
+        $this->paginate['conditions'] = $conditions;
+        $usuarios = $this->paginate($this->Usuarios);
         $this->set(compact('usuarios'));
-        $this->set('filtros', $filtros);
+        $this->set('filtros', $this->request->getQuery());
     }
 
     /**

@@ -8,7 +8,7 @@
     <div class="col-md-12">    
         <div class="box box-primary box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Usuarios</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Registrar Usuario</h3>
 		        <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
@@ -28,19 +28,23 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('cedula',['class' => 'isNumeric']);
-                    echo $this->Form->control('nombres');
-                    echo $this->Form->control('apellidos');
-                    echo $this->Form->control('fecha_nacimiento', ['type' => 'text', 'class' => 'datepicker', 'append' => '<i class="fa fa-calendar"></i>']);
-                    echo $this->Form->control('sexo',['type' => 'select', 'options' => $aGeneros, 'class' => 'select2', 'empty' => true]);
-                    echo $this->Form->control('email');
-                    echo $this->Form->control('telefonos');
-                    echo $this->Form->control('username',[
-                        'placeholder' => 'Nombre de Usuario', 'prepend' => '<i class="fa fa-user"></i>'
-                    ]);
-                    echo $this->Form->control('password');
+                    echo $this->Form->control('cedula',['type' => 'text', 'label' => 'Cédula',
+                        'class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('nombres',['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('apellidos',['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('fecha_nacimiento', ['type' => 'text', 'class' => 'datepicker', 
+                        'prepend' => '<i class="fa fa-calendar"></i>']
+                    );
+                    echo $this->Form->control('sexo',['type' => 'select', 'options' => $aGeneros, 
+                        'class' => 'select2', 'prepend' => '<i class="fa fa-calendar"></i>', 'empty' => true]
+                    );
+                    echo $this->Form->control('email',['class' => 'isLower','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('telefonos',['label' => 'Teléfonos','prepend' => '<i class="fa fa-phone"></i>']);
+                    echo $this->Form->control('username',['label' => 'Usuario', 'prepend' => '<i class="fa fa-user"></i>']);
+                    echo $this->Form->control('password',['label' => 'Contraseña', 'prepend' => '<i class="fa fa-key"></i>']);
+                    echo $this->Form->control('rols._ids', ['options' => $rols,'prepend' => '<i class="fa fa-user"></i>']);
                     echo $this->Form->hidden('activo',['value' => 1]);
-                echo $this->Form->control('rols._ids', ['options' => $rols]);
               ?>
             </div>            
             <div class="box-footer">

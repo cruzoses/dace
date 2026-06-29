@@ -23,7 +23,7 @@
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('cedula') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('cedula',['Cédula']) ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombres') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('apellidos') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('fecha_nacimiento') ?></th>

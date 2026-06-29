@@ -186,6 +186,47 @@ class UsuariosTable extends Table
         return $user->password;
     }
 
+    public function formatConditions($passedArgs = [])
+    {
+        $conditions = [];
+        foreach ($passedArgs as $searchKey => $searchValue) 
+        {
+            if ($searchValue === '' || $searchValue === null) {
+                continue;
+            }
+            switch ($searchKey) 
+            {
+                case 'id':
+                    $conditions[] = ['Usuarios.id' => $searchValue];
+                    break;
+                case 'cedula':
+                    $conditions[] = ['Usuarios.cedula' => $searchValue];
+                    break;
+                case 'nombres':
+                    $conditions[] = ['Usuarios.nombres LIKE' => "%{$searchValue}%"];
+                    break;
+                case 'apellidos':
+                    $conditions[] = ['Usuarios.apellidos LIKE' => "%{$searchValue}%"];
+                    break;
+                case 'email':
+                    $conditions[] = ['Usuarios.email LIKE' => "%{$searchValue}%"];
+                    break;
+                case 'page':
+                case 'sort':
+                case 'direction':
+                case 'limit':
+                    break;
+                default:
+                    $conditions[] = ['Usuarios.' . $searchKey => $searchValue];
+                    break;
+            }
+        }
+        if (empty($conditions)) {
+            return [];
+        }
+        return array_merge(...$conditions);
+    }
+
     public function findAuth(Query $query, array $options)
     {
         $query
