@@ -18,8 +18,11 @@
     <div class="col-xs-12">
         <div class="box box-info box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;{{ pluralHumanName }}</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de {{ pluralHumanName }}</h3>
                 <div class="box-tools pull-right">
+			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
+				        <i class="fa fa-search"></i>
+			        </button>
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
 			        </button>
@@ -29,6 +32,9 @@
                 </div>
             </div>        
             <div class="box-body table-responsive no-padding">
+		        <div class="oculto" id="buscar">
+			        <?= $this->element('buscador');?>
+		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
@@ -40,13 +46,13 @@
                     </thead>
                     <tbody>
                         <?php foreach (${{ pluralVar }} as ${{ singularVar }}): ?>
-                        <tr>
+                            <tr>
     {% for field in fields %}
     {% set isKey = false %}
     {% if associations.BelongsTo %}
     {% for alias, details in associations.BelongsTo if field == details.foreignKey %}
     {% set isKey = true %}
-                <td><?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?></td>
+<td><?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?></td>
     {% endfor %}
     {% endif %}
     {% if isKey is not same as(true) %}
@@ -54,17 +60,17 @@
     {% if columnData.type not in ['integer', 'float', 'decimal', 'biginteger', 'smallinteger', 'tinyinteger'] %}
 <td><?= h(${{ singularVar }}->{{ field }}) ?></td>
     {% else %}
-    <td><?= $this->Number->format(${{ singularVar }}->{{ field }}) ?></td>
+<td><?= $this->Number->format(${{ singularVar }}->{{ field }}) ?></td>
     {% endif %}
     {% endif %}
     {% endfor %}
     {% set pk = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}
-            <td class="actions text-center">
-                                <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', {{ pk|raw }}], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', {{ pk|raw }}], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', {{ pk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ pk|raw }}), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
-                            </td>
-                        </tr>
+                <td class="actions text-center">
+                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', {{ pk|raw }}], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', {{ pk|raw }}], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', {{ pk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ pk|raw }}), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                     <tfoot class="no-padding">

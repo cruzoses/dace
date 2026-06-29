@@ -16,13 +16,10 @@
 {% set fields = Bake.filterFields(fields, schema, modelObject) %}
 <div class="row">
     <div class="col-md-12">    
-        <div class="box box-primary box-solid">
+        <div class="box box-warning box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;{{ pluralHumanName }}</h3>
 		        <div class="box-tools pull-right">
-			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
-				        <i class="fa fa-minus"></i>
-			        </button>
 			        <?= $this->Html->link('<i class="fa fa-close"></i>',
 				        ['action' => 'index'],
 				        ['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
@@ -43,19 +40,19 @@
     {%- if keyFields[field] %}
         {%- set fieldData = Bake.columnData(field, schema) %}
         {%- if fieldData.null %}
-                    echo $this->Form->control('{{ field }}', ['prepend' => '<i class="fa fa-asterisk"></i>','options' => ${{ keyFields[field] }}, 'empty' => true]);
+                    echo $this->Form->control('{{ field }}', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => ${{ keyFields[field] }}, 'empty' => true]);
             {{- "\n" }}
         {%- else %}
-                    echo $this->Form->control('{{ field }}', ['prepend' => '<i class="fa fa-asterisk"></i>','options' => ${{ keyFields[field] }}]);
+                    echo $this->Form->control('{{ field }}', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => ${{ keyFields[field] }}]);
             {{- "\n" }}
         {%- endif %}
     {%- elseif field not in ['created', 'modified', 'updated'] %}
         {%- set fieldData = Bake.columnData(field, schema) %}
         {%- if fieldData.type in ['date', 'datetime', 'time'] and fieldData.null %}
-                    echo $this->Form->control('{{ field }}', ['prepend' => '<i class="fa fa-asterisk"></i>','empty' => true]);
+                    echo $this->Form->control('{{ field }}', ['type' => 'text','class' => 'calendario','prepend' => '<i class="fa fa-asterisk"></i>','empty' => true]);
             {{- "\n" }}
         {%- else %}
-                    echo $this->Form->control('{{ field }}', ['prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('{{ field }}', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
     {{- "\n" }}
         {%- endif %}
     {%- endif %}

@@ -60,6 +60,7 @@
                     <th scope="col"><?= __('Direccion') ?></th>
                     <th scope="col"><?= __('Telefonos') ?></th>
                     <th scope="col"><?= __('Responsable') ?></th>
+                    <th scope="col"><?= __('Principal') ?></th>
                     <th scope="col"><?= __('Activa') ?></th>
                     <th scope="col"><?= __('Created') ?></th>
                     <th scope="col"><?= __('Modified') ?></th>
@@ -73,6 +74,7 @@
                     <td><?= h($sedes->direccion) ?></td>
                     <td><?= h($sedes->telefonos) ?></td>
                     <td><?= h($sedes->responsable) ?></td>
+                    <td><?= h($sedes->principal) ?></td>
                     <td><?= h($sedes->activa) ?></td>
                     <td><?= h($sedes->created) ?></td>
                     <td><?= h($sedes->modified) ?></td>

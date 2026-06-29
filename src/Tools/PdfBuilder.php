@@ -3,7 +3,7 @@ namespace App\Tools;
 
 use Cake\Core\Configure;
 use Cezpdf;
-
+// https://epsilon-eridani.com/php/creacion-de-documentos-pdf-desde-php/
 class PdfBuilder
 {
     private $pdf;

@@ -2,7 +2,7 @@
     <div class="col-xs-12">
         <div class="box box-info box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Carreras</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Mension Carreras</h3>
                 <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
@@ -23,42 +23,32 @@
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('codigo',['Código']) ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                            <!--
-                            <th scope="col"><?= $this->Paginator->sort('mension_carrera_id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('titulo_otorgado') ?></th>
-                            -->
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('activa') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('activa') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($carreras as $carrera): ?>
+                        <?php foreach ($mensionCarreras as $mensionCarrera): ?>
                             <tr>
-                                <td><?= $this->Number->format($carrera->id) ?></td>
-                                <td><?= h($carrera->codigo) ?></td>
-                                <td><?= h($carrera->nombre) ?></td>
-                                <!--
-                                <td><?= $carrera->has('mension_carrera') ? $this->Html->link($carrera->mension_carrera->id, ['controller' => 'MensionCarreras', 'action' => 'view', $carrera->mension_carrera->id]) : '' ?></td>
-                                <td><?= h($carrera->titulo_otorgado) ?></td>
-                                -->
-                                <td class="text-center"><?= h($carrera->activa) ? 'SI' : 'NO' ?></td>
-                                <td class="text-center"><?= h($carrera->created->format('d-m-Y g:i a')) ?></td>
-                                <td class="text-center"><?= h($carrera->modified->format('d-m-Y g:i a')) ?></td>
+                        <td><?= $this->Number->format($mensionCarrera->id) ?></td>
+                                <td><?= h($mensionCarrera->nombre) ?></td>
+                                <td><?= h($mensionCarrera->activa) ?></td>
+                                <td><?= h($mensionCarrera->created) ?></td>
+                                <td><?= h($mensionCarrera->modified) ?></td>
                                 <td class="actions text-center">
-                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $carrera->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $carrera->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $carrera->id], ['confirm' => __('Are you sure you want to delete # {0}?', $carrera->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $mensionCarrera->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $mensionCarrera->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $mensionCarrera->id], ['confirm' => __('Are you sure you want to delete # {0}?', $mensionCarrera->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="7" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination">
                                         <?= $this->Paginator->first('<< ' . __('first')) ?>

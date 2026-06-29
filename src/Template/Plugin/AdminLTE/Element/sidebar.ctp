@@ -85,7 +85,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/carreras')?>">
+							<a href="<?= $this->Url->build(['controller' => 'carreras','action' => 'index','fullBase' => true])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Carreras
 							</a>
 						</li>
