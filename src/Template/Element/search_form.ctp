@@ -41,9 +41,10 @@ $title = $title ?? 'Buscar';
                                 'type' => 'select',
                                 'options' => $options,
                                 'empty' => $empty,
-                                'class' => $class,
-                                'value' => $value,
                                 'prepend' => $prepend,
+                                'class' => 'form-control select2',
+                                'data-width' => '100%',
+                                'value' => $value,
                             ]) ?>
                         <?php break; ?>
                         <?php case 'date': ?>

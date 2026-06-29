@@ -26,8 +26,21 @@ use Cake\Validation\Validator;
 class MunicipiosTable extends AppTable
 {
     protected $searchFields = [
-        'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper'],
-        'estado_id' => ['type' => 'select', 'label' => 'Estado', 'class' => 'form-control select2', 'options' => [], 'empty' => '-- Seleccione --'],
+        'nombre' => [
+            'type' => 'text', 
+            'label' => 'Nombre',
+            'prepend' => '<i class="fa fa-asterisk"></i>',
+            'class' => 'form-control isUpper'
+        ],
+        'estado_id' => [
+            'type' => 'select', 
+            'label' => 'Estado', 
+            'class' => 'form-control select2', 
+            'data-width' => '100%',
+            'prepend' => '<i class="fa fa-asterisk"></i>',
+            'options' => [], 
+            'empty' => true //'-- Seleccione --'
+        ],
     ];
 
     /**
