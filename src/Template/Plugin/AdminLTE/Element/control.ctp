@@ -4,11 +4,11 @@
 </ul>
 <div class="tab-content">      
     <div class="tab-pane" id="control-sidebar-home-tab">
-    <h3 class="control-sidebar-heading text-center">Datos Básicos</h3>
+    	<h3 class="control-sidebar-heading text-center">Datos Básicos</h3>
         <ul class="control-sidebar-menu">
             <li>
-                <a href="<?= $this->Url->build('/sedes',true) ?>">
-                    <i class="menu-icon fa fa-home bg-red"></i>
+                <a href="<?= $this->Url->build(['controller' => 'sedes', 'action' => 'index']) ?>">
+                    <i class="menu-icon fa fa-building-o bg-green"></i>
                     <div class="menu-info">
                         <h4 class="control-sidebar-subheading">Datos de Sedes</h4>
                         <p>Sedes Académicas</p>
@@ -16,36 +16,44 @@
                 </a>
             </li>
             <li>
-                <a href="<?= $this->Url->build('/usuarios',true) ?>">
-                    <i class="menu-icon fa fa-user bg-yellow"></i>
+                <a href="<?= $this->Url->build(['controller' => 'usuarios', 'action' => 'index']) ?>">
+                    <i class="menu-icon fa fa-user bg-purple"></i>
                     <div class="menu-info">
-                        <h4 class="control-sidebar-subheading">Usuarios Rehistrados</h4>
+                        <h4 class="control-sidebar-subheading">Usuarios Registrados</h4>
                         <p>Datos de Usuarios</p>
                     </div>
                 </a>
             </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
-
-                <p>nora@example.com</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-file-code-o bg-green"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
-
-                <p>Execution time 5 seconds</p>
-              </div>
-            </a>
-          </li>
+		</ul>
+		<h3 class="control-sidebar-heading text-center">Ubicaci&oacute;n Geogr&aacute;fica</h3>
+		<ul class="control-sidebar-menu">
+          	<li>
+            	<a href="<?= $this->Url->build(['controller' => 'paises', 'action' => 'index']) ?>">
+              		<i class="menu-icon fa fa-envelope-o bg-orange"></i>
+              		<div class="menu-info">
+                		<h4 class="control-sidebar-subheading">Paises</h4>
+                		<p>Datos de Paises</p>
+              		</div>
+            	</a>
+          	</li>
+          	<li>
+            	<a href="<?= $this->Url->build(['controller' => 'estados', 'action' => 'index']) ?>">
+              		<i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
+              		<div class="menu-info">
+                		<h4 class="control-sidebar-subheading">Estados</h4>
+                		<p>Datos de Estados</p>
+              		</div>
+            	</a>
+          	</li>
+          	<li>
+            	<a href="<?= $this->Url->build(['controller' => 'municipios', 'action' => 'index']) ?>">
+              		<i class="menu-icon fa fa-envelope-o bg-red"></i>
+              		<div class="menu-info">
+                		<h4 class="control-sidebar-subheading">Municipios</h4>
+                		<p>Datos de Municipios</p>
+              		</div>
+            	</a>
+          	</li>
         </ul>
         <!-- /.control-sidebar-menu -->
 

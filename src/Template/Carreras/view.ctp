@@ -1,46 +1,40 @@
-<section class="content-header">
-  <h1>
-    Carrera
-    <small><?php echo __('View'); ?></small>
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
-  </ol>
-</section>
-
-<!-- Main content -->
-<section class="content">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="box box-solid">
-        <div class="box-header with-border">
-          <i class="fa fa-info"></i>
-          <h3 class="box-title"><?php echo __('Information'); ?></h3>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-          <dl class="dl-horizontal">
-            <dt scope="row"><?= __('Codigo') ?></dt>
-            <dd><?= h($carrera->codigo) ?></dd>
-            <dt scope="row"><?= __('Nombre') ?></dt>
-            <dd><?= h($carrera->nombre) ?></dd>
-            <dt scope="row"><?= __('Mension Carrera') ?></dt>
-            <dd><?= $carrera->has('mension_carrera') ? $this->Html->link($carrera->mension_carrera->id, ['controller' => 'MensionCarreras', 'action' => 'view', $carrera->mension_carrera->id]) : '' ?></dd>
-            <dt scope="row"><?= __('Titulo Otorgado') ?></dt>
-            <dd><?= h($carrera->titulo_otorgado) ?></dd>
-            <dt scope="row"><?= __('Id') ?></dt>
-            <dd><?= $this->Number->format($carrera->id) ?></dd>
-            <dt scope="row"><?= __('Created') ?></dt>
-            <dd><?= h($carrera->created) ?></dd>
-            <dt scope="row"><?= __('Modified') ?></dt>
-            <dd><?= h($carrera->modified) ?></dd>
-            <dt scope="row"><?= __('Activa') ?></dt>
-            <dd><?= $carrera->activa ? __('Yes') : __('No'); ?></dd>
-          </dl>
-        </div>
-      </div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="box box-info box-solid">
+			<div class="box-header with-border">
+				<h3 class="box-title"><i class="fa fa-info"></i>&nbsp;Carrera</h3>
+				<div class="box-tools pull-right">
+			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+				        <i class="fa fa-minus"></i>
+			        </button>
+					<?= $this->Html->link('<i class="fa fa-close"></i>',
+				        ['action' => 'index'],['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
+			        ?>
+		        </div>
+        	</div>
+        	<div class="box-body">
+				<dl class="dl-horizontal">
+					<dt scope="row"><?= __('Codigo') ?></dt>
+					<dd><?= h($carrera->codigo) ?></dd>
+					<dt scope="row"><?= __('Nombre') ?></dt>
+					<dd><?= h($carrera->nombre) ?></dd>
+					<dt scope="row"><?= __('Mension Carrera') ?></dt>
+					<dd><?= $carrera->has('mension_carrera') ? $this->Html->link($carrera->mension_carrera->id, ['controller' => 'MensionCarreras', 'action' => 'view', $carrera->mension_carrera->id]) : '' ?></dd>
+					<dt scope="row"><?= __('Titulo Otorgado') ?></dt>
+					<dd><?= h($carrera->titulo_otorgado) ?></dd>
+					<dt scope="row"><?= __('Id') ?></dt>
+					<dd><?= $this->Number->format($carrera->id) ?></dd>
+					<dt scope="row"><?= __('Created') ?></dt>
+					<dd><?= h($carrera->created) ?></dd>
+					<dt scope="row"><?= __('Modified') ?></dt>
+					<dd><?= h($carrera->modified) ?></dd>
+					<dt scope="row"><?= __('Activa') ?></dt>
+					<dd><?= $carrera->activa ? __('Yes') : __('No'); ?></dd>
+				</dl>
+        	</div>
+      	</div>
     </div>
-  </div>
+</div>
 
   <div class="row">
     <div class="col-md-12">
@@ -186,5 +180,5 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
+</div>
+

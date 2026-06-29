@@ -183,7 +183,7 @@ document.addEventListener('click', function(e) {
     Swal.fire({
         title: '¿Está seguro?',
         text: message,
-        icon: 'warning',
+        icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',

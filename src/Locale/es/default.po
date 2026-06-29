@@ -1,6 +1,9 @@
 msgid "New"
 msgstr "Nuevo"
 
+msgid "Edit"
+msgstr "Editar"
+
 msgid "Go Back"
 msgstr "Regresar"
 
