@@ -19,8 +19,7 @@
 			        ?>
 		        </div>
             </div>                    
-            <?= $this->Form->create($usuario, [
-                'role' => 'form', 
+            <?= $this->Form->create($usuario, ['role' => 'form', 
                 'align' => [
                     'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],
                     'md' => ['left' => 2,'middle' => 9,'right' => 1]

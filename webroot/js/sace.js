@@ -125,6 +125,22 @@ $(document).ready( function () {
         minuteStep: 5,
     });
 
+    $('#goSearch').click(function (e) {
+        e.preventDefault();
+        if ( $('#buscar').is(':visible') ) 
+        {
+            $('#load').hide();
+			$('#buscar').hide();
+		} else {
+			$('#buscar').show();
+		}
+	});
+
+	$('#buscadorForm').submit(function (e) { 
+		$('#load').show();
+	});
+
+
 });
 
 function DateAndTime() 

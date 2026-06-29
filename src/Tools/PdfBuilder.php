@@ -14,8 +14,8 @@ class PdfBuilder
         'fontSize'      => 8,
         'titleFontSize' => 10,
         'showLines'     => 1,
-        'shaded'        => 1,
-        'shadeCol'      => [0.9, 0.9, 0.9],
+        'shaded'        => 0,
+        'shadeCol'      => 0, //[0.9, 0.9, 0.9],
         'width'         => 500,
         'maxWidth'      => 500,
         'xOrientation'  => 'centre',
@@ -27,7 +27,9 @@ class PdfBuilder
     public function __construct($user = null)
     {
         $this->pdf = new Cezpdf('LETTER', 'portrait');
+        $this->pdf->selectFont('Helvetica.afm');
         $this->pdf->ezSetCmMargins(2.8, 1.5, 1.5, 1.5);
+        $this->pdf->ezStartPageNumbers(540,50,8,'','',1); 
         if ($user) 
         {
             $this->user = $user;
@@ -41,9 +43,11 @@ class PdfBuilder
     {
         $this->pageHeader($title);
 
-        $this->pdf->ezText("\n", 10);
+        //$this->pdf->ezText("\n", 10);
+        $this->pdf->ezSetY(680);
 
         $this->pdf->ezTable($data, null, '', $this->aConfig);
+        $this->pdf->ezStopPageNumbers(1,1);
 
         return $this->pdf->ezOutput();
     }
@@ -58,8 +62,10 @@ class PdfBuilder
         return $this->user;
     }
 
-    private function pageHeader($title)
+    private function pageHeader($sTitle)
     {
+        $sFullname = Configure::read('Universidad.Title1') ." \u{201C}" . Configure::read('Universidad.Title2') ."\u{201D}" ;
+        $userAlias = isset( $this->user['alias'] ) ? $this->user['alias'] : 'SACE UPTBAL';
         $oImage = WWW_ROOT . 'img/site/cintillo.png';
         $nWidthArea = $this->pdf->ez['pageWidth'];
 
@@ -68,17 +74,20 @@ class PdfBuilder
 
         $this->pdf->addPngFromFile($oImage, 30, 740, 540, 30);
 
-        $userAlias = isset($this->user['alias']) ? $this->user['alias'] : 'SACE UPTBAL';
+        $this->pdf->ezSetY(735);
+        $this->pdf->ezText("<b>".$sFullname."</b>", 12, ['justification' => 'center']);
 
-        $siglas = Configure::read('Universidad.Siglas');
-        $this->pdf->addText(40, 722, 12, "<b>".$siglas."</b>");
-        $this->pdf->addText(306 - ($this->pdf->getTextWidth(12, $title) / 2), 722, 12, "<b>".$title."</b>");
-        $this->pdf->addText(484, 730, 8, 'Fecha: ' . date('d-m-Y'));
-        $this->pdf->addText(484, 720, 8, 'Hora: ' . date('h:i a'));
+        $this->pdf->ezSetY(715);
+        $this->pdf->ezText("<b>".$sTitle."</b>", 12, ['justification' => 'center']);
 
-        $this->pdf->line(40, 713, 570, 713);
+        $this->pdf->ezSetY(695);
+        $this->pdf->addText(050, 695, 10, "<b>".Configure::read('Universidad.Siglas')."</b>");
+        $this->pdf->addText(490, 695, 8, "<b>R.I.F</b> " . Configure::read('Universidad.RIF'));
+        $this->pdf->ezSetY(690);
+              
+        $this->pdf->line(30, 690, 580, 690);
 
-        $this->pdf->addText(40, 50, 6, 'Generado por: ' . $this->user . '    ' . date('d/m/Y h:i A'));
+        $this->pdf->addText(40, 50, 8, 'Generado por: ' . $this->user . '    ' . date('d/m/Y h:i A'));
         $this->pdf->line(40, 42, 570, 42);
 
         $this->pdf->restoreState();

@@ -5,7 +5,7 @@
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Rols</h3>
                 <div class="box-tools pull-right">
 			        <?= $this->Html->link("<i class=\"fa fa-print\"></i>",
-                        ['controller' => 'Reports','action' => 'downloadPdf'],
+                        ['controller' => 'Reportes','action' => 'downloadPdf'],
 					    ['class' => 'btn btn-box-tool','title' => 'Imprimir','escape' => false]);
 			        ?>
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">

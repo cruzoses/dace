@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Core\Configure;
 
-class ReportesController extends AppController
+class ReportsController extends AppController
 {
     public function beforeFilter(Event $event)
     {

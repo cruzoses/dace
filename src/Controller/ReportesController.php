@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use App\Tools\PdfBuilder;
 use Cake\Event\Event;
 
-class ReportsController extends AppController
+class ReportesController extends AppController
 {
     public function beforeFilter(Event $event)
     {
@@ -41,7 +41,7 @@ class ReportsController extends AppController
             'Creado' => ['justification' => 'center', 'width' => 120],
         ]);
         
-        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'TIPOS DE USUARIO');
+        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'REPORTE DE TIPOS DE USUARIO');
 
         $this->autoRender = false;
         $this->viewBuilder()->setClassName(null);

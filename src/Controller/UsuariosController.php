@@ -117,8 +117,28 @@ class UsuariosController extends AppController
     */
     public function index()
     {
-        $usuarios = $this->paginate($this->Usuarios);
+        $query = $this->Usuarios->find();
+        $filtros = $this->request->getQuery();
+
+        if (!empty($filtros['id'])) {
+            $query->where(['Usuarios.id' => $filtros['id']]);
+        }
+        if (!empty($filtros['cedula'])) {
+            $query->where(['Usuarios.cedula' => $filtros['cedula']]);
+        }
+        if (!empty($filtros['nombres'])) {
+            $query->where(['Usuarios.nombres LIKE' => '%' . $filtros['nombres'] . '%']);
+        }
+        if (!empty($filtros['apellidos'])) {
+            $query->where(['Usuarios.apellidos LIKE' => '%' . $filtros['apellidos'] . '%']);
+        }
+        if (!empty($filtros['email'])) {
+            $query->where(['Usuarios.email LIKE' => '%' . $filtros['email'] . '%']);
+        }
+
+        $usuarios = $this->paginate($query);
         $this->set(compact('usuarios'));
+        $this->set('filtros', $filtros);
     }
 
     /**

@@ -4,6 +4,9 @@
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Usuarios</h3>
                 <div class="box-tools pull-right">
+			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
+				        <i class="fa fa-search"></i>
+			        </button>
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
 			        </button>
@@ -13,6 +16,9 @@
                 </div>
             </div>        
             <div class="box-body table-responsive no-padding">
+		        <div class="oculto" id="buscar">
+			        <?= $this->element('Usuarios/buscador');?>
+		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
@@ -35,6 +41,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $this->Paginator->options(['url' => $filtros]); ?>
                         <?php foreach ($usuarios as $usuario): ?>
                         <tr>
                             <td><?= $this->Number->format($usuario->id) ?></td>
@@ -95,3 +102,4 @@
         </div>
     </div>
 </div>
+
