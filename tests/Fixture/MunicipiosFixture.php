@@ -45,8 +45,8 @@ class MunicipiosFixture extends TestFixture
                 'id' => 1,
                 'estado_id' => 1,
                 'nombre' => 'Lorem ipsum dolor sit amet',
-                'created' => '2026-06-29 20:16:28',
-                'modified' => '2026-06-29 20:16:28',
+                'created' => '2026-06-29 22:32:15',
+                'modified' => '2026-06-29 22:32:15',
             ],
         ];
         parent::init();

@@ -132,6 +132,17 @@ class AppController extends Controller
         return false;
     }
 
+    public function buscar()
+    {
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+            unset($data['_csrfToken']);
+            $url = array_map('trim', array_filter($data));
+            return $this->redirect(['action' => 'index', '?' => $url]);
+        }
+        return $this->redirect(['action' => 'index']);
+    }
+
     public function keepalive()
     {
         $this->autoRender = false;

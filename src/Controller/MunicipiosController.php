@@ -10,7 +10,7 @@ use Cake\Event\Event;
  * @property \App\Model\Table\MunicipiosTable $Municipios
  *
  * @method \App\Model\Entity\Municipio[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class MunicipiosController extends AppController
 {
 
@@ -37,12 +37,16 @@ class MunicipiosController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Municipios->formatConditions($this->request->getQueryParams());
         $this->paginate = [
             'contain' => ['Estados'],
+            'conditions' => $conditions,
         ];
         $municipios = $this->paginate($this->Municipios);
-
-        $this->set(compact('municipios'));
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Municipios->getSearchFields();
+        $searchFields['estado_id']['options'] = $this->Municipios->Estados->find('list')->toArray();
+        $this->set(compact('municipios', 'filtros', 'searchFields'));
     }
 
     /**

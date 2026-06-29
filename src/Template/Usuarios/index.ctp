@@ -17,7 +17,7 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('Usuarios/buscador');?>
+			        <?= $this->element('search_form', ['title' => 'Buscar Usuario', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>

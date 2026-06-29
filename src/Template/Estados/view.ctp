@@ -14,16 +14,16 @@
         	</div>        
         	<div class="box-body">
           		<dl class="dl-horizontal">
+                    <dt scope="row"><?= __('Id') ?></dt>
+                    <dd><?= $this->Number->format($estado->id) ?></dd>
                     <dt scope="row"><?= __('Paise') ?></dt>
                     <dd><?= $estado->has('paise') ? $this->Html->link($estado->paise->nombre, ['controller' => 'Paises', 'action' => 'view', $estado->paise->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Nombre') ?></dt>
                     <dd><?= h($estado->nombre) ?></dd>
-                    <dt scope="row"><?= __('Id') ?></dt>
-                    <dd><?= $this->Number->format($estado->id) ?></dd>
                     <dt scope="row"><?= __('Created') ?></dt>
-                    <dd><?= h($estado->created) ?></dd>
+                    <dd><?= h($estado->created->format('d-m-Y g:i a')) ?></dd>
                     <dt scope="row"><?= __('Modified') ?></dt>
-                    <dd><?= h($estado->modified) ?></dd>
+                    <dd><?= h($estado->modified->format('d-m-Y g:i a')) ?></dd>
                 </dl>
             </div>
             <div class="box-footer">

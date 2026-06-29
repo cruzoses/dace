@@ -37,12 +37,16 @@ class EstadosController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Estados->formatConditions($this->request->getQueryParams());
         $this->paginate = [
             'contain' => ['Paises'],
+            'conditions' => $conditions,
         ];
         $estados = $this->paginate($this->Estados);
-
-        $this->set(compact('estados'));
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Estados->getSearchFields();
+        $searchFields['pais_id']['options'] = $this->Estados->Paises->find('list')->toArray();
+        $this->set(compact('estados', 'filtros', 'searchFields'));
     }
 
     /**

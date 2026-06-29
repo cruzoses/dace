@@ -3,7 +3,6 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 use Cake\Event\Event;
@@ -31,8 +30,16 @@ use Cake\I18n\Time;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class UsuariosTable extends Table
+class UsuariosTable extends AppTable
 {
+    protected $searchFields = [
+        'id' => ['type' => 'int', 'label' => 'No. de ID', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'cedula' => ['type' => 'exact', 'label' => 'Cédula', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'nombres' => ['type' => 'text', 'label' => 'Nombres', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'apellidos' => ['type' => 'text', 'label' => 'Apellidos', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'email' => ['type' => 'text', 'label' => 'Email', 'class' => 'form-control isLower', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+    ];
+
     /**
      * Initialize method
      *
@@ -184,47 +191,6 @@ class UsuariosTable extends Table
     {
         $user = $this->get($id);
         return $user->password;
-    }
-
-    public function formatConditions($passedArgs = [])
-    {
-        $conditions = [];
-        foreach ($passedArgs as $searchKey => $searchValue) 
-        {
-            if ($searchValue === '' || $searchValue === null) {
-                continue;
-            }
-            switch ($searchKey) 
-            {
-                case 'id':
-                    $conditions[] = ['Usuarios.id' => $searchValue];
-                    break;
-                case 'cedula':
-                    $conditions[] = ['Usuarios.cedula' => $searchValue];
-                    break;
-                case 'nombres':
-                    $conditions[] = ['Usuarios.nombres LIKE' => "%{$searchValue}%"];
-                    break;
-                case 'apellidos':
-                    $conditions[] = ['Usuarios.apellidos LIKE' => "%{$searchValue}%"];
-                    break;
-                case 'email':
-                    $conditions[] = ['Usuarios.email LIKE' => "%{$searchValue}%"];
-                    break;
-                case 'page':
-                case 'sort':
-                case 'direction':
-                case 'limit':
-                    break;
-                default:
-                    $conditions[] = ['Usuarios.' . $searchKey => $searchValue];
-                    break;
-            }
-        }
-        if (empty($conditions)) {
-            return [];
-        }
-        return array_merge(...$conditions);
     }
 
     public function findAuth(Query $query, array $options)

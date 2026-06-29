@@ -17,7 +17,7 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('buscador');?>
+			        <?= $this->element('search_form', ['title' => 'Buscar Mención Carrera', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
@@ -31,6 +31,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $this->Paginator->options(['url' => $filtros]); ?>
                         <?php foreach ($mensionCarreras as $mensionCarrera): ?>
                             <tr>
                         <td><?= $this->Number->format($mensionCarrera->id) ?></td>

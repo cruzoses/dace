@@ -3,7 +3,6 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -24,8 +23,13 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class EstadosTable extends Table
+class EstadosTable extends AppTable
 {
+    protected $searchFields = [
+        'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper'],
+        'pais_id' => ['type' => 'select', 'label' => 'País', 'class' => 'form-control select2', 'options' => [], 'empty' => '-- Seleccione --'],
+    ];
+
     /**
      * Initialize method
      *
@@ -84,6 +88,7 @@ class EstadosTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->isUnique(['nombre'], 'Ya existe un registro con este nombre.'));
         $rules->add($rules->existsIn(['pais_id'], 'Paises'));
 
         return $rules;

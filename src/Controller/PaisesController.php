@@ -37,8 +37,12 @@ class PaisesController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Paises->formatConditions($this->request->getQueryParams());
+        $this->paginate['conditions'] = $conditions;
         $paises = $this->paginate($this->Paises);
-        $this->set(compact('paises'));
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Paises->getSearchFields();
+        $this->set(compact('paises', 'filtros', 'searchFields'));
     }
 
     /**

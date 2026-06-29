@@ -115,24 +115,14 @@ class UsuariosController extends AppController
      *
      * @return \Cake\Http\Response|null
     */
-    public function buscar()
-    {
-        if ($this->request->is('post')) {
-            $data = $this->request->getData();
-            unset($data['_csrfToken']);
-            $url = array_map('trim', array_filter($data));
-            return $this->redirect(['action' => 'index', '?' => $url]);
-        }
-        return $this->redirect(['action' => 'index']);
-    }
-
     public function index()
     {
         $conditions = $this->Usuarios->formatConditions($this->request->getQueryParams());
         $this->paginate['conditions'] = $conditions;
         $usuarios = $this->paginate($this->Usuarios);
-        $this->set(compact('usuarios'));
-        $this->set('filtros', $this->request->getQuery());
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Usuarios->getSearchFields();
+        $this->set(compact('usuarios', 'filtros', 'searchFields'));
     }
 
     /**

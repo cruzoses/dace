@@ -17,7 +17,7 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('buscador');?>
+			        <?= $this->element('search_form', ['title' => 'Buscar Municipio', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
@@ -25,19 +25,20 @@
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('estado_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $this->Paginator->options(['url' => $filtros]); ?>
                         <?php foreach ($municipios as $municipio): ?>
                             <tr>
                                 <td><?= $this->Number->format($municipio->id) ?></td>
-                            <td><?= $municipio->has('estado') ? $this->Html->link($municipio->estado->nombre, ['controller' => 'Estados', 'action' => 'view', $municipio->estado->id]) : '' ?></td>
-                                            <td><?= h($municipio->nombre) ?></td>
-                                        <td><?= h($municipio->created) ?></td>
-                                        <td><?= h($municipio->modified) ?></td>
+                                <td><?= $municipio->has('estado') ? $this->Html->link($municipio->estado->nombre, ['controller' => 'Estados', 'action' => 'view', $municipio->estado->id]) : '' ?></td>
+                                <td><?= h($municipio->nombre) ?></td>
+                                <td class="text-center"><?= h($municipio->created->format('d-m-Y g:i a')) ?></td>
+                                <td class="text-center"><?= h($municipio->modified->format('d-m-Y g:i a')) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $municipio->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $municipio->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -50,12 +51,12 @@
                         <tr>
                             <td colspan="6" class="text-center">
                                 <div class="paginator">
-                                    <ul class="pagination">
-                                        <?= $this->Paginator->first('<< ' . __('first')) ?>
-                                        <?= $this->Paginator->prev('< ' . __('previous')) ?>
+                                    <ul class="pagination pagination-sm">
+                                        <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->prev('<i class="fa fa-angle-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                         <?= $this->Paginator->numbers(['before' => '','after' => '']) ?>
-                                        <?= $this->Paginator->next(__('next') . ' >') ?>
-                                        <?= $this->Paginator->last(__('last') . ' >>') ?>
+                                        <?= $this->Paginator->next('<i class="fa fa-angle-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->last('<i class="fa fa-angle-double-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                     </ul>
                                     <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
                                 </div>
