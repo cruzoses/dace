@@ -46,7 +46,6 @@
             <header class="main-header">
                 <?= $this->element('header', ['layout' => 'default']); ?>
             </header>
-            <!-- Full Width Column -->
             <div class="content-wrapper">
                 <div class="container-fluid">
                     <section class="content-header">
@@ -64,14 +63,12 @@
                         </div>
                     </section>
                     <section class="content">
-                        <?= $this->Flash->render(); ?>
-                        <?= $this->Flash->render('auth'); ?>
+                        <?= $this->Flash->render(); ?>                        
                         <?= $this->fetch('content'); ?>
                     </section>                
                 </div>
                 <!-- /.container -->
             </div>
-            <!-- /.content-wrapper -->
             <?= $this->element('footer'); ?>
         </div>
         <!-- Bootstrap 3.3.7 -->
