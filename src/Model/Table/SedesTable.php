@@ -127,7 +127,7 @@ class SedesTable extends Table
                     ->where(['principal' => true])
                     ->count();
 
-                if (!$entity->isNew()) {
+                if (!$entity->isNew() && $entity->getOriginal('principal')) {
                     $count--;
                 }
 
