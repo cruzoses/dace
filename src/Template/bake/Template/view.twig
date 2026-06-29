@@ -72,10 +72,17 @@
 {% endif %}
                 </dl>
             </div>
+            <div class="box-footer">
+		        <?= $this->Html->link('<i class="fa fa-pencil"></i>&nbsp;'.__('Edit'),
+			        ['action' => 'edit',${{ singularVar }}->id],['class' => 'btn bg-olive btn-flat pull-left','escape' => false]); 
+		        ?>
+		        <?= $this->Html->link('<i class="fa fa-power-off"></i>&nbsp;Cerrar',
+			        ['action' => 'index'],['class' => 'btn bg-maroon btn-flat pull-right','escape' => false]); 
+		        ?>
+            </div>
         </div>
     </div>
 </div>
-
 {% if groupedFields.text %}
 {% for field in groupedFields.text %}
 <div class="row">
@@ -98,40 +105,45 @@
 {% for alias, details in relations %}
 {% set otherSingularVar = alias|variable %}
 {% set otherPluralHumanName = details.controller|underscore|humanize %}
+
 <div class="row">
     <div class="col-md-12">
         <div class="box box-default box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-share-alt"></i>
-                <h3 class="box-title"><?= __('{{ otherPluralHumanName }}') ?></h3>
+            <div class="box-header with-border">                
+                <h3 class="box-title"><i class="fa fa-share-alt"></i>&nbsp;{{ otherPluralHumanName }}</h3>
             </div>
             <div class="box-body">
                 <?php if (!empty(${{ singularVar }}->{{ details.property }})): ?>
                     <table class="table table-bordered table-hover table-condensed">
-                        <tr>
-  {% for field in details.fields %}
-                            <th scope="col"><?= __('{{ field|humanize }}') ?></th>
-  {% endfor %}
-                            <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
-                        </tr>
-              <?php foreach (${{ singularVar }}->{{ details.property }} as ${{ otherSingularVar }}): ?>
-                        <tr>
-  {% for field in details.fields %}
-                            <td><?= h(${{ otherSingularVar }}->{{ field }}) ?></td>
-  {% endfor %}
-  {% set otherPk = '$' ~ otherSingularVar ~ '->' ~ details.primaryKey[0] %}
-                            <td class="actions text-center">
-                      <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => '{{ details.controller }}', 'action' => 'view', {{ otherPk|raw }}], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                      <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => '{{ details.controller }}', 'action' => 'edit', {{ otherPk|raw }}], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                      <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => '{{ details.controller }}', 'action' => 'delete', {{ otherPk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ otherPk|raw }}), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
-                  </td>
-              </tr>
-              <?php endforeach; ?>
-          </table>
-          <?php endif; ?>
+                        <thead>
+                            <tr>
+{% for field in details.fields %}
+                                <th scope="col"><?= __('{{ field|humanize }}') ?></th>
+{% endfor %}
+                                <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach (${{ singularVar }}->{{ details.property }} as ${{ otherSingularVar }}): ?>
+                                <tr>
+{% for field in details.fields %}
+                                    <td><?= h(${{ otherSingularVar }}->{{ field }}) ?></td>
+{% endfor %}
+{% set otherPk = '$' ~ otherSingularVar ~ '->' ~ details.primaryKey[0] %}
+                                    <td class="actions text-center">
+                                        <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => '{{ details.controller }}', 'action' => 'view', {{ otherPk|raw }}], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => '{{ details.controller }}', 'action' => 'edit', {{ otherPk|raw }}], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => '{{ details.controller }}', 'action' => 'delete', {{ otherPk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ otherPk|raw }}), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+            <div class="box-footer"></div>            
         </div>
-      </div>
     </div>
-  </div>
+</div>
 {% endfor %}
 

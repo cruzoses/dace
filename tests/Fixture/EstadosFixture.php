@@ -45,8 +45,8 @@ class EstadosFixture extends TestFixture
                 'id' => 1,
                 'pais_id' => 1,
                 'nombre' => 'Lorem ipsum dolor sit amet',
-                'created' => '2026-06-29 20:37:48',
-                'modified' => '2026-06-29 20:37:48',
+                'created' => '2026-06-29 22:19:21',
+                'modified' => '2026-06-29 22:19:21',
             ],
         ];
         parent::init();
