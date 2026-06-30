@@ -37,12 +37,16 @@ class ParroquiasController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Parroquias->formatConditions($this->request->getQueryParams());
         $this->paginate = [
             'contain' => ['Municipios'],
+            'conditions' => $conditions,
         ];
         $parroquias = $this->paginate($this->Parroquias);
-
-        $this->set(compact('parroquias'));
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Parroquias->getSearchFields();
+        $searchFields['municipio_id']['options'] = $this->Parroquias->Municipios->find('list')->toArray();
+        $this->set(compact('parroquias', 'filtros', 'searchFields'));
     }
 
     /**

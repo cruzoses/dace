@@ -3,7 +3,7 @@ namespace App\Tools;
 
 use Cake\Core\Configure;
 use Cezpdf;
-// https://epsilon-eridani.com/php/creacion-de-documentos-pdf-desde-php/
+
 class PdfBuilder
 {
     private $pdf;
@@ -21,14 +21,14 @@ class PdfBuilder
         'xOrientation'  => 'centre',
         'outerLineThickness' => 0.5,
         'innerLineThickness' => 0.5,
-        'cols'          => [],
+        'cols' => [],
     ];
 
     public function __construct($user = null)
     {
         $this->pdf = new Cezpdf('LETTER', 'portrait');
         $this->pdf->selectFont('Helvetica.afm');
-        $this->pdf->ezSetCmMargins(2.8, 1.5, 1.5, 1.5);
+        $this->pdf->ezSetCmMargins(4, 3, 2, 2);
         $this->pdf->ezStartPageNumbers(540,50,8,'','',1); 
         if ($user) 
         {

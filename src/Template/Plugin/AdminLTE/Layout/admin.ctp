@@ -34,7 +34,7 @@
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
         <?= $this->Html->css('AdminLTE.skins/_all-skins.min'); ?>
         <!-- Google Font -->
-        <?= $this->Html->css('google/css/fonts'); ?>
+        <!--?= $this->Html->css('google/css/fonts'); ?-->
         <!-- Sace style -->
         <?= $this->Html->css('sace'); ?>
         <!-- jQuery 3 -->

@@ -7,6 +7,14 @@
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
+                    <?= $this->Html->link('<i class="fa fa-file-excel-o"></i>',
+                        ['controller' => 'archivos','action' => 'exportarParroquias'],
+                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
+                    <?= $this->Html->link('<i class="fa fa-print"></i>',
+                        ['controller' => 'reportes','action' => 'listarParroquias'],
+                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
 			        </button>
@@ -17,7 +25,7 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('buscador');?>
+			        <?= $this->element('search_form', ['title' => 'Buscar Parroquia', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
@@ -31,6 +39,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $this->Paginator->options(['url' => $filtros]); ?>
                         <?php foreach ($parroquias as $parroquia): ?>
                             <tr>
                                 <td><?= $this->Number->format($parroquia->id) ?></td>

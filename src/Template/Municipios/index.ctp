@@ -7,6 +7,14 @@
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
+                    <?= $this->Html->link('<i class="fa fa-file-excel-o"></i>',
+                        ['controller' => 'archivos','action' => 'exportarMunicipios'],
+                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>                    
+                    <?= $this->Html->link('<i class="fa fa-print"></i>',
+                        ['controller' => 'reportes','action' => 'listarMunicipios'],
+                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
 			        </button>

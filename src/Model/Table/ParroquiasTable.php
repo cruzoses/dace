@@ -3,7 +3,6 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -23,8 +22,13 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class ParroquiasTable extends Table
+class ParroquiasTable extends AppTable
 {
+    protected $searchFields = [
+        'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper'],
+        'municipio_id' => ['type' => 'select', 'label' => 'Municipio', 'class' => 'form-control select2', 'data-width' => '100%', 'options' => [], 'empty' => true],
+    ];
+
     /**
      * Initialize method
      *

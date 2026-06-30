@@ -14,6 +14,7 @@
         "friendsofcake/cakepdf": "~3.0",
         "maiconpinto/cakephp-adminlte-theme": "^1.1",
         "mobiledetect/mobiledetectlib": "2.*",
+        "phpoffice/phpspreadsheet": "*",
         "rospdf/pdf-php": "^0.12.67",
         "tecnickcom/tcpdf": "~6.0"
     },
