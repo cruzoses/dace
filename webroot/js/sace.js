@@ -180,14 +180,17 @@ document.addEventListener('click', function(e) {
     var formMatch = onclick.match(/document\.(\w+)\.submit/);
     var formName = formMatch ? formMatch[1] : null;
 
+    var confirmText = target.getAttribute('data-confirm-text') || 'Sí, eliminar';
+    var confirmColor = target.getAttribute('data-confirm-color') || '#d33';
+
     Swal.fire({
         title: '¿Está seguro?',
         text: message,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
+        confirmButtonColor: confirmColor,
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: confirmText,
         cancelButtonText: 'Cancelar'
     }).then(function(result) {
         if (result.isConfirmed && formName) {

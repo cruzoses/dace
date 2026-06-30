@@ -168,14 +168,14 @@ class UsuariosTable extends AppTable
     {
         // Verifica si el campo de fecha existe en el request
         if ( isset( $data['fechadenacimiento'] ) ) 
-        {
-            $fechaOriginal = $data['fechadenacimiento'];
+        {            
+            $fechaOriginal = str_replace('/', '-',$data['fechadenacimiento']);
 
             // Si la fecha no está vacía, la convertimos
             if (!empty($fechaOriginal)) 
             {
                 // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
-                $fechaFormateada = Time::createFromFormat('d/m/Y', $fechaOriginal);
+                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
                 
                 // Asigna el valor corregido para que CakePHP lo guarde correctamente
                 $data['fechadenacimiento'] = $fechaFormateada->format('Y-m-d');

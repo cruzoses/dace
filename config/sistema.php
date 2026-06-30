@@ -92,6 +92,8 @@
             1 => 'UPTBAL',
             2 => 'MISION SUCRE',
         ],
+        'sEmailUser' => 'uptbal@gmail.com',
+        'sEmailPass' => 'dbea oojd frag nfdt',
         'Entorno' => 1
     ];
 ?>

@@ -2,7 +2,9 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Mailer\Email;
 
 /**
  * Empleados Controller
@@ -37,11 +39,15 @@ class EmpleadosController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Empleados->formatConditions($this->request->getQueryParams());
         $this->paginate = [
             'contain' => ['Usuarios'],
+            'conditions' => $conditions,
         ];
         $empleados = $this->paginate($this->Empleados);
-        $this->set(compact('empleados'));
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Empleados->getSearchFields();
+        $this->set(compact('empleados', 'filtros', 'searchFields'));
     }
 
     /**
@@ -77,12 +83,20 @@ class EmpleadosController extends AppController
                 $this->Flash->success(__('The {0} has been saved.', 'Empleado'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Empleados ' . json_encode($this->request->getData()));
 
+                if ($this->enviarTokenPorEmail($empleado)) {
+                    $this->Flash->success(__('Token enviado al correo del empleado.'));
+                } else {
+                    $this->Flash->warning(__('No se pudo enviar el email. Token: {0}', $empleado->token));
+                }
+
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Empleado'));
         }
         $usuarios = $this->Empleados->Usuarios->find('list', ['limit' => 200]);
-        $this->set(compact('empleado', 'usuarios'));
+        $aGeneros = Configure::read('aGeneros');
+        $sToken = $this->generateToken();
+        $this->set(compact('empleado', 'usuarios','aGeneros','sToken'));
     }
 
 
@@ -109,9 +123,53 @@ class EmpleadosController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Empleado'));
         }
         $usuarios = $this->Empleados->Usuarios->find('list', ['limit' => 200]);
-        $this->set(compact('empleado', 'usuarios'));
+        $aGeneros = Configure::read('aGeneros');
+        $this->set(compact('empleado', 'usuarios','aGeneros'));
     }
 
+
+    /**
+     * Envía el token de registro por correo electrónico al empleado.
+     *
+     * @param \App\Model\Entity\Empleado $empleado
+     * @return bool True si se envió correctamente, false en caso contrario.
+     */
+    private function enviarTokenPorEmail($empleado)
+    {
+        $profile = Configure::read('App.emailProfile', 'default');
+        $email = new Email($profile);
+        try {
+            $email->setTo($empleado->email)
+                ->setSubject('Token de registro - Sistema DACE')
+                ->setTemplate('empleado_token')
+                ->setViewVars(['empleado' => $empleado])
+                ->send();
+            return true;
+        } catch (\Exception $e) {
+            $this->log('Error al enviar email a ' . $empleado->email . ': ' . $e->getMessage(), 'error');
+            return false;
+        }
+    }
+
+    /**
+     * Reenvía el token de registro por correo electrónico al empleado.
+     *
+     * @param string|null $id Empleado id.
+     * @return \Cake\Http\Response|null
+     */
+    public function reenviarToken($id = null)
+    {
+        $this->request->allowMethod(['post']);
+        $empleado = $this->Empleados->get($id);
+
+        if ($this->enviarTokenPorEmail($empleado)) {
+            $this->Flash->success(__('Token reenviado correctamente a {0}.', $empleado->email));
+        } else {
+            $this->Flash->error(__('No se pudo reenviar el token a {0}. Intente de nuevo.', $empleado->email));
+        }
+
+        return $this->redirect(['action' => 'view', $id]);
+    }
 
     /**
      * Delete method
@@ -119,7 +177,7 @@ class EmpleadosController extends AppController
      * @param string|null $id Empleado id.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-    */
+     */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);

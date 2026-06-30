@@ -71,6 +71,7 @@ use Cake\Utility\Security;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
+    Configure::load('sistema', 'default');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
@@ -207,6 +208,5 @@ Type::build('timestamp')
 
 define('OUTSERVICE',false);
 Configure::load('adminlte', 'default');
-Configure::load('sistema', 'default');
 Configure::load('cakepdf', 'default');
 

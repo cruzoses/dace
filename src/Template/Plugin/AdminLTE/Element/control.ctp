@@ -16,6 +16,15 @@
                 </a>
             </li>
             <li>
+                <a href="<?= $this->Url->build(['controller' => 'empleados', 'action' => 'index']) ?>">
+                    <i class="menu-icon fa fa-user bg-fuchsia"></i>
+                    <div class="menu-info">
+                        <h4 class="control-sidebar-subheading">Control de Estudio</h4>
+                        <p>Analista de P.N.F</p>
+                    </div>
+                </a>
+            </li>
+            <li>
                 <a href="<?= $this->Url->build(['controller' => 'usuarios', 'action' => 'index']) ?>">
                     <i class="menu-icon fa fa-user bg-purple"></i>
                     <div class="menu-info">

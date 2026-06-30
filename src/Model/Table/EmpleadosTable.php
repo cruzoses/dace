@@ -3,8 +3,12 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
+
+use Cake\Event\Event;
+use ArrayObject;
+use Cake\I18n\Time;
+
 
 /**
  * Empleados Model
@@ -22,8 +26,16 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class EmpleadosTable extends Table
+class EmpleadosTable extends AppTable
 {
+    protected $searchFields = [
+        'cedula' => ['type' => 'exact', 'label' => 'Cédula', 'class' => 'form-control isNumeric'],
+        'nombres' => ['type' => 'text', 'label' => 'Nombres', 'class' => 'form-control isUpper'],
+        'apellidos' => ['type' => 'text', 'label' => 'Apellidos', 'class' => 'form-control isUpper'],
+        'email' => ['type' => 'text', 'label' => 'Email', 'class' => 'form-control isLower'],
+        'sexo' => ['type' => 'select', 'label' => 'Sexo', 'class' => 'form-control select2', 'data-width' => '100%', 'options' => ['M' => 'Masculino', 'F' => 'Femenino'], 'empty' => true],
+    ];
+
     /**
      * Initialize method
      *
@@ -118,9 +130,29 @@ class EmpleadosTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['email']));
+        $rules->add($rules->isUnique(['cedula'], 'Ya existe un usuario con este número de cédula.'));
+        $rules->add($rules->isUnique(['email'], 'Ya existe un usuario con este correo electrónico.'));
         $rules->add($rules->existsIn(['usuario_id'], 'Usuarios'));
 
         return $rules;
+    }
+
+    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
+    {
+        // Verifica si el campo de fecha existe en el request
+        if ( isset( $data['fecha_nacimiento'] ) ) 
+        {
+            $fechaOriginal = str_replace('/', '-',$data['fecha_nacimiento']);
+
+            // Si la fecha no está vacía, la convertimos
+            if (!empty($fechaOriginal)) 
+            {
+                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
+                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
+                
+                // Asigna el valor corregido para que CakePHP lo guarde correctamente
+                $data['fecha_nacimiento'] = $fechaFormateada->format('Y-m-d');
+            } 
+        }
     }
 }

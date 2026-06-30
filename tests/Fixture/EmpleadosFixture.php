@@ -54,15 +54,15 @@ class EmpleadosFixture extends TestFixture
                 'cedula' => 1,
                 'nombres' => 'Lorem ipsum dolor sit amet',
                 'apellidos' => 'Lorem ipsum dolor sit amet',
-                'fecha_nacimiento' => '2026-06-26',
+                'fecha_nacimiento' => '2026-06-30',
                 'sexo' => 'L',
                 'email' => 'Lorem ipsum dolor sit amet',
                 'telefonos' => 'Lorem ipsum dolor sit amet',
                 'token' => 'Lorem ip',
                 'usuario_id' => 1,
                 'activo' => 1,
-                'created' => '2026-06-26 05:29:25',
-                'modified' => '2026-06-26 05:29:25',
+                'created' => '2026-06-30 02:26:02',
+                'modified' => '2026-06-30 02:26:02',
             ],
         ];
         parent::init();
