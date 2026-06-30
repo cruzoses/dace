@@ -2,7 +2,7 @@
     <div class="col-xs-12">
         <div class="box box-info box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Estados</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Parroquias</h3>
                 <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
@@ -17,13 +17,13 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('search_form', ['title' => 'Buscar Estado', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
+			        <?= $this->element('buscador');?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('pais_id') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('municipio_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
@@ -31,18 +31,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $this->Paginator->options(['url' => $filtros]); ?>
-                        <?php foreach ($estados as $estado): ?>
+                        <?php foreach ($parroquias as $parroquia): ?>
                             <tr>
-                                <td><?= $this->Number->format($estado->id) ?></td>
-                                <td><?= $estado->has('paise') ? $this->Html->link($estado->paise->nombre, ['controller' => 'Paises', 'action' => 'view', $estado->paise->id]) : '' ?></td>
-                                <td><?= h($estado->nombre) ?></td>
-                                <td class="text-center"><?= h($estado->created->format('d-m-Y g:i a')) ?></td>
-                                <td class="text-center"><?= h($estado->modified->format('d-m-Y g:i a')) ?></td>
+                                <td><?= $this->Number->format($parroquia->id) ?></td>
+                                <td><?= $parroquia->has('municipio') ? $this->Html->link($parroquia->municipio->nombre, ['controller' => 'Municipios', 'action' => 'view', $parroquia->municipio->id]) : '' ?></td>
+                                <td><?= h($parroquia->nombre) ?></td>
+                                <td class="text-center"><?= h($parroquia->created->format('d-m-Y g:i a')) ?></td>
+                                <td class="text-center"><?= h($parroquia->modified->format('d-m-Y g:i a')) ?></td>
                                 <td class="actions text-center">
-                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $estado->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $estado->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $estado->id], ['confirm' => __('Are you sure you want to delete # {0}?', $estado->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $parroquia->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $parroquia->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $parroquia->id], ['confirm' => __('Are you sure you want to delete # {0}?', $parroquia->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

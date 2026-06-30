@@ -29,7 +29,7 @@
 		<ul class="control-sidebar-menu">
           	<li>
             	<a href="<?= $this->Url->build(['controller' => 'paises', 'action' => 'index']) ?>">
-              		<i class="menu-icon fa fa-envelope-o bg-orange"></i>
+              		<i class="menu-icon fa fa-globe bg-orange"></i>
               		<div class="menu-info">
                 		<h4 class="control-sidebar-subheading">Paises</h4>
                 		<p>Datos de Paises</p>
@@ -38,7 +38,7 @@
           	</li>
           	<li>
             	<a href="<?= $this->Url->build(['controller' => 'estados', 'action' => 'index']) ?>">
-              		<i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
+              		<i class="menu-icon fa fa-globe bg-light-blue"></i>
               		<div class="menu-info">
                 		<h4 class="control-sidebar-subheading">Estados</h4>
                 		<p>Datos de Estados</p>
@@ -47,10 +47,19 @@
           	</li>
           	<li>
             	<a href="<?= $this->Url->build(['controller' => 'municipios', 'action' => 'index']) ?>">
-              		<i class="menu-icon fa fa-envelope-o bg-red"></i>
+              		<i class="menu-icon fa fa-globe bg-red"></i>
               		<div class="menu-info">
                 		<h4 class="control-sidebar-subheading">Municipios</h4>
                 		<p>Datos de Municipios</p>
+              		</div>
+            	</a>
+          	</li>
+          	<li>
+            	<a href="<?= $this->Url->build(['controller' => 'parroquias', 'action' => 'index']) ?>">
+              		<i class="menu-icon fa fa-globe bg-teal"></i>
+              		<div class="menu-info">
+                		<h4 class="control-sidebar-subheading">Parroquias</h4>
+                		<p>Datos de Parroquias</p>
               		</div>
             	</a>
           	</li>
