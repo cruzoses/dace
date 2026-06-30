@@ -143,6 +143,15 @@ class EmpleadosController extends AppController
                 ->setSubject('Token de registro - Sistema DACE')
                 ->setTemplate('empleado_token')
                 ->setViewVars(['empleado' => $empleado])
+                /*
+                ->attachments([
+                    'logo.png' => [
+                        'file' => ROOT .DS. 'webroot' .DS. 'img' .DS. 'logos' .DS. 'logouptbal.png', 
+                        'mimetype' => 'image/png',
+                        'contentId' => 'unique-image-id'
+                    ]
+                ])
+                */
                 ->send();
             return true;
         } catch (\Exception $e) {

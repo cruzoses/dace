@@ -1,3 +1,6 @@
+<?php
+use Cake\Core\Configure;
+?>
 <?= Configure::read('Universidad.Siglas') ?>
 <?= Configure::read('Universidad.RIF') ?>
 

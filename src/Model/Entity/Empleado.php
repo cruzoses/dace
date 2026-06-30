@@ -53,8 +53,18 @@ class Empleado extends Entity
      * Fields that are excluded from JSON versions of the entity.
      *
      * @var array
-     */
+    */
     protected $_hidden = [
         'token',
     ];
+
+    protected $_virtual = [
+        'full_name',
+    ];
+
+    protected function _getFullName()
+    {
+        return $this->nombres .' '. $this->apellidos;
+    }
+
 }

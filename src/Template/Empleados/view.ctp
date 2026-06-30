@@ -14,6 +14,8 @@
         	</div>        
         	<div class="box-body">
           		<dl class="dl-horizontal">
+                    <dt scope="row"><?= __('Id') ?></dt>
+                    <dd><?= $this->Number->format($empleado->id) ?></dd>
                     <dt scope="row"><?= __('Nombres') ?></dt>
                     <dd><?= h($empleado->nombres) ?></dd>
                     <dt scope="row"><?= __('Apellidos') ?></dt>
@@ -41,8 +43,6 @@
                     </dd>
                     <dt scope="row"><?= __('Usuario') ?></dt>
                     <dd><?= $empleado->has('usuario') ? $this->Html->link($empleado->usuario->alias, ['controller' => 'Usuarios', 'action' => 'view', $empleado->usuario->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Id') ?></dt>
-                    <dd><?= $this->Number->format($empleado->id) ?></dd>
                     <dt scope="row"><?= __('Cedula') ?></dt>
                     <dd><?= $this->Number->format($empleado->cedula) ?></dd>
                     <dt scope="row"><?= __('Fecha Nacimiento') ?></dt>

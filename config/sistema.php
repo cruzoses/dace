@@ -93,7 +93,7 @@
             2 => 'MISION SUCRE',
         ],
         'sEmailUser' => 'uptbal@gmail.com',
-        'sEmailPass' => 'dbea oojd frag nfdt',
+        'sEmailPass' => 'dbeaoojdfragnfdt',
         'Entorno' => 1
     ];
 ?>
