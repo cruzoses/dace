@@ -39,3 +39,8 @@ nbproject/*
 .vscode
 # Sass preprocessor
 .sass-cache/
+
+# Generated files #
+####################
+/webroot/files/excel/*
+/webroot/files/reportes/*
