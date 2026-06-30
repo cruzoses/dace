@@ -140,18 +140,17 @@ class EmpleadosController extends AppController
         $email = new Email($profile);
         try {
             $email->setTo($empleado->email)
-                ->setSubject('Token de registro - Sistema DACE')
+                ->emailFormat('both')
+                ->setSubject('Token de registro - SACE UPTBAL')
                 ->setTemplate('empleado_token')
                 ->setViewVars(['empleado' => $empleado])
-                /*
                 ->attachments([
                     'logo.png' => [
-                        'file' => ROOT .DS. 'webroot' .DS. 'img' .DS. 'logos' .DS. 'logouptbal.png', 
+                        'file' => WWW_ROOT . 'img' .DS. 'logos' .DS. 'logouptbal.png', 
                         'mimetype' => 'image/png',
-                        'contentId' => 'unique-image-id'
+                        'contentId' => '734h3r38', //'unique-image-id'
                     ]
                 ])
-                */
                 ->send();
             return true;
         } catch (\Exception $e) {
