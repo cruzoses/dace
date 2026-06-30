@@ -1,12 +1,17 @@
+<?= Configure::read('Universidad.Siglas') ?>
+<?= Configure::read('Universidad.RIF') ?>
+
+
 Estimado(a) <?= $empleado->nombres ?> <?= $empleado->apellidos ?>,
 
-Usted ha sido registrado en el sistema DACE.
+A continuación, te entregamos las credenciales para que puedas completar el registro de usuario:
 
-Para crear su cuenta de usuario, utilice el siguiente token de verificación:
+    Token de Registro: <?= $empleado->token ?>
 
-    <?= $empleado->token ?>
+Accede a través del siguiente enlace:
+https://www.uptbal.info.ve/registro?usuario=COESTU
 
 Puede presentarse en la oficina correspondiente para completar su registro o utilizar el token proporcionado.
 
 Atentamente,
-Administración DACE
+Administración SACE
