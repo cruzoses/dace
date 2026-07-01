@@ -10,7 +10,7 @@ class ReportesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarEstados', 'listarMunicipios']);
+        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarEstados', 'listarMunicipios', 'download']);
     }
 
     public function downloadPdf()
@@ -72,27 +72,14 @@ class ReportesController extends AppController
         }
 
         $pdfBuilder = new PdfBuilder();
-        /*
-        $pdfBuilder->setColumns([
-            'Codigo' => ['justification' => 'center', 'width' => 50],
-            'Nombre' => ['justification' => 'left', 'width' => 200],
-            'Responsable' => ['justification' => 'left', 'width' => 200],
-            'Creado' => ['justification' => 'center', 'width' => 70],
-        ]);
-        */
 
         $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE SEDES ACADÉMICAS');
 
-        $dir = WWW_ROOT . 'files' . DS . 'reportes';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-
+        $reportConfig = $this->_getReportConfig();
         $filename = 'sedes_' . date('Ymd_His') . '.pdf';
-        $filePath = $dir . DS . $filename;
-        file_put_contents($filePath, $pdfOutput);
+        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
 
-        $this->set('sFileName', $this->request->getAttribute('webroot') . 'files/reportes/' . $filename);
+        $this->set('sFileName', $reportConfig['webroot'] . $filename);
         $this->render('showreport');
     }
 
@@ -127,16 +114,11 @@ class ReportesController extends AppController
 
         $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE CARRERAS');
 
-        $dir = WWW_ROOT . 'files' . DS . 'reportes';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-
+        $reportConfig = $this->_getReportConfig();
         $filename = 'carreras_' . date('Ymd_His') . '.pdf';
-        $filePath = $dir . DS . $filename;
-        file_put_contents($filePath, $pdfOutput);
+        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
 
-        $this->set('sFileName', $this->request->getAttribute('webroot') . 'files/reportes/' . $filename);
+        $this->set('sFileName', $reportConfig['webroot'] . $filename);
         $this->render('showreport');
     }
 
@@ -169,16 +151,11 @@ class ReportesController extends AppController
 
         $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE ESTADOS');
 
-        $dir = WWW_ROOT . 'files' . DS . 'reportes';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-
+        $reportConfig = $this->_getReportConfig();
         $filename = 'estados_' . date('Ymd_His') . '.pdf';
-        $filePath = $dir . DS . $filename;
-        file_put_contents($filePath, $pdfOutput);
+        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
 
-        $this->set('sFileName', $this->request->getAttribute('webroot') . 'files/reportes/' . $filename);
+        $this->set('sFileName', $reportConfig['webroot'] . $filename);
         $this->render('showreport');
     }
 
@@ -211,16 +188,11 @@ class ReportesController extends AppController
 
         $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE MUNICIPIOS');
 
-        $dir = WWW_ROOT . 'files' . DS . 'reportes';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-
+        $reportConfig = $this->_getReportConfig();
         $filename = 'municipios_' . date('Ymd_His') . '.pdf';
-        $filePath = $dir . DS . $filename;
-        file_put_contents($filePath, $pdfOutput);
+        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
 
-        $this->set('sFileName', $this->request->getAttribute('webroot') . 'files/reportes/' . $filename);
+        $this->set('sFileName', $reportConfig['webroot'] . $filename);
         $this->render('showreport');
     }
 
@@ -253,17 +225,50 @@ class ReportesController extends AppController
 
         $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE PARROQUIAS');
 
-        $dir = WWW_ROOT . 'files' . DS . 'reportes';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-
+        $reportConfig = $this->_getReportConfig();
         $filename = 'parroquias_' . date('Ymd_His') . '.pdf';
-        $filePath = $dir . DS . $filename;
-        file_put_contents($filePath, $pdfOutput);
+        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
 
-        $this->set('sFileName', $this->request->getAttribute('webroot') . 'files/reportes/' . $filename);
+        $this->set('sFileName', $reportConfig['webroot'] . $filename);
         $this->render('showreport');
     }
 
+    public function download()
+    {
+        $file = $this->request->getQuery('file');
+        if (!$file) {
+            throw new \Cake\Http\Exception\NotFoundException();
+        }
+        $path = TMP . 'reportes' . DS . basename($file);
+        if (!file_exists($path)) {
+            throw new \Cake\Http\Exception\NotFoundException();
+        }
+        $this->autoRender = false;
+        $this->viewBuilder()->setClassName(null);
+        $this->viewBuilder()->setLayout(null);
+        $this->response = $this->response->withType('application/pdf');
+        $this->response = $this->response->withHeader('Content-Disposition', 'inline;filename="' . $file . '"');
+        $this->response->getBody()->write(file_get_contents($path));
+        return $this->response;
+    }
+
+    private function _getReportConfig()
+    {
+        $dir = WWW_ROOT . 'files' . DS . 'reportes';
+        $webroot = $this->request->getAttribute('webroot') . 'files/reportes/';
+
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
+
+        if (!is_dir($dir) || !is_writable($dir)) {
+            $dir = TMP . 'reportes';
+            $webroot = $this->request->getAttribute('webroot') . 'reportes/download?file=';
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0777, true);
+            }
+        }
+
+        return ['path' => $dir, 'webroot' => $webroot];
+    }
 }
