@@ -294,6 +294,51 @@ class ReportesController extends AppController
         $this->render('showreport');
     }
 
+    public function listarUsuarios()
+    {
+        $this->loadModel('Usuarios');
+
+        $usuarios = $this->Usuarios->find('all', [
+            'order' => ['Usuarios.apellidos' => 'ASC', 'Usuarios.nombres' => 'ASC']
+        ]);
+
+        $data = [];
+        $i = 1;
+        foreach ($usuarios as $u) {
+            $data[] = [
+                'No.' => $i++,
+                'Cedula' => $u->cedula,
+                'Nombres' => $u->nombres,
+                'Apellidos' => $u->apellidos,
+                'F.Nacimiento' => $u->fecha_nacimiento->format('d/m/Y'),
+                'Activo' => $u->activo ? 'Si' : 'No',
+            ];
+        }
+
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'No.' => ['justification' => 'center', 'width' => 40],
+                'Cedula' => ['justification' => 'center', 'width' => 60],
+                'Nombres' => ['justification' => 'left', 'width' => 140],
+                'Apellidos' => ['justification' => 'left', 'width' => 140],
+                'F.Nacimiento' => ['justification' => 'center', 'width' => 80],
+                'Activo' => ['justification' => 'center', 'width' => 60],
+            ]);
+
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE USUARIOS');
+
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'usuarios_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
+        $this->render('showreport');
+    }
+
     public function download()
     {
         $file = $this->request->getQuery('file');
