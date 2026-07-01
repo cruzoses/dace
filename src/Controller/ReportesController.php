@@ -10,7 +10,7 @@ class ReportesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarEstados', 'listarMunicipios', 'download']);
+        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarEstados', 'listarMunicipios', 'listarDocentes', 'listarUsuarios', 'download']);
     }
 
     public function downloadPdf()
@@ -299,7 +299,8 @@ class ReportesController extends AppController
         $this->loadModel('Usuarios');
 
         $usuarios = $this->Usuarios->find('all', [
-            'order' => ['Usuarios.apellidos' => 'ASC', 'Usuarios.nombres' => 'ASC']
+            'order' => ['Usuarios.id' => 'ASC']
+            //'order' => ['Usuarios.apellidos' => 'ASC', 'Usuarios.nombres' => 'ASC']
         ]);
 
         $data = [];
@@ -332,6 +333,51 @@ class ReportesController extends AppController
 
             $reportConfig = $this->_getReportConfig();
             $filename = 'usuarios_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
+        $this->render('showreport');
+    }
+
+    public function listarDocentes()
+    {
+        $this->loadModel('Docentes');
+
+        $docentes = $this->Docentes->find('all', [
+            'order' => ['Docentes.apellidos' => 'ASC', 'Docentes.nombres' => 'ASC']
+        ]);
+
+        $data = [];
+        $i = 1;
+        foreach ($docentes as $d) {
+            $data[] = [
+                'No.' => $i++,
+                'Cedula' => $d->cedula,
+                'Nombres' => $d->nombres,
+                'Apellidos' => $d->apellidos,
+                'F.Nacimiento' => $d->fecha_nacimiento->format('d/m/Y'),
+                'Sexo' => $d->sexo === 'M' ? 'Masculino' : ($d->sexo === 'F' ? 'Femenino' : $d->sexo),
+            ];
+        }
+
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'No.' => ['justification' => 'center', 'width' => 40],
+                'Cedula' => ['justification' => 'center', 'width' => 60],
+                'Nombres' => ['justification' => 'left', 'width' => 130],
+                'Apellidos' => ['justification' => 'left', 'width' => 130],
+                'F.Nacimiento' => ['justification' => 'center', 'width' => 80],
+                'Sexo' => ['justification' => 'center', 'width' => 60],
+            ]);
+
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE DOCENTES');
+
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'docentes_' . date('Ymd_His') . '.pdf';
             file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
             $sFileName = $reportConfig['webroot'] . $filename;
         }
