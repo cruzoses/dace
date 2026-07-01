@@ -1,13 +1,13 @@
 <?php if (!empty($noData)): ?>
-<script>
+<?php $this->Html->scriptBlock("
 Swal.fire({
     title: 'Sin datos',
     text: 'No hay informaci\u00F3n para mostrar.',
     icon: 'info'
 }).then(function() {
-    window.location.href = '<?= $this->request->referer('/') ?>';
+    window.location.href = '{$this->request->referer('/')}';
 });
-</script>
+", ['block' => 'scriptBottom']); ?>
 <?php else: ?>
 <div class="box box-warning">
     <div class="box-header with-border">
