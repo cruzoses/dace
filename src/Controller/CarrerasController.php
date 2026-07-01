@@ -37,12 +37,17 @@ class CarrerasController extends AppController
     */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['MensionCarreras'],
-        ];
-        $carreras = $this->paginate($this->Carreras);
+        $conditions = $this->Carreras->formatConditions($this->request->getQueryParams());
+        $this->paginate['conditions'] = $conditions;
+        $this->paginate['contain'] = ['MensionCarreras'];
 
-        $this->set(compact('carreras'));
+        $carreras = $this->paginate($this->Carreras);
+        $filtros = $this->request->getQuery();
+
+        $searchFields = $this->Carreras->getSearchFields();
+        $searchFields['mension_carrera_id']['options'] = $this->Carreras->MensionCarreras->find('list', ['limit' => 200])->toArray();
+
+        $this->set(compact('carreras', 'filtros', 'searchFields'));
     }
 
     /**
