@@ -4,6 +4,8 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\I18n\Time;
+use Cake\Mailer\Email;
+use Cake\Core\Configure;
 
 /**
  * Usuarios Controller
@@ -17,7 +19,7 @@ class UsuariosController extends AppController
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
-        $this->Auth->allow(['login', 'logout']);
+        $this->Auth->allow(['login', 'logout', 'nuevaclave']);
 	}
 
     public function initialize()
@@ -57,6 +59,65 @@ class UsuariosController extends AppController
     {
         $this->Auditorias->registrar('SALE', 'Sale del sistema');
         return $this->redirect($this->Auth->logout());
+    }
+
+    public function nuevaclave()
+    {
+        if ($this->Auth->user()) {
+            return $this->redirect($this->Auth->redirectUrl());
+        }
+
+        if ($this->request->is('post')) {
+            $email = $this->request->getData('email');
+
+            if (empty($email)) {
+                $this->Flash->error(__('Debe ingresar su correo electrónico.'));
+                return;
+            }
+
+            $usuario = $this->Usuarios->findByEmail($email)->first();
+
+            if (!$usuario) {
+                $this->Flash->error(__('No existe un usuario con ese correo electrónico.'));
+                return;
+            }
+
+            if (!$usuario->activo) {
+                $this->Flash->error(__('El usuario está inactivo. Contacte al administrador.'));
+                return;
+            }
+
+            $nuevaClave = substr(bin2hex(random_bytes(8)), 0, 10);
+
+            $usuario = $this->Usuarios->patchEntity($usuario, ['password' => $nuevaClave]);
+
+            if ($this->Usuarios->save($usuario)) {
+                $this->Auditorias->registrar('RECUPERA', 'Recupera contraseña para usuario ' . $usuario->username);
+
+                $profile = Configure::read('App.emailProfile', 'default');
+                $emailObj = new Email($profile);
+                try {
+                    $emailObj->setTo($usuario->email)
+                        ->emailFormat('both')
+                        ->setSubject('Recuperación de contraseña - SACE UPTBAL')
+                        ->setTemplate('usuario_nueva_clave')
+                        ->setViewVars([
+                            'usuario' => $usuario,
+                            'nuevaClave' => $nuevaClave,
+                        ])
+                        ->send();
+
+                    $this->Flash->success(__('Se ha enviado un correo con sus datos y una nueva contraseña.'));
+                } catch (\Exception $e) {
+                    $this->log('Error al enviar email de recuperación a ' . $usuario->email . ': ' . $e->getMessage(), 'error');
+                    $this->Flash->success(__('Se ha actualizado su contraseña. Por favor, revise su correo electrónico.'));
+                }
+            } else {
+                $this->Flash->error(__('No se pudo actualizar la contraseña. Intente de nuevo.'));
+            }
+
+            return $this->redirect(['action' => 'nuevaclave']);
+        }
     }
 
     public function cambiaclave()
