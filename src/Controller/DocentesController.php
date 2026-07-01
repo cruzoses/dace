@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\Mailer\Email;
+use Cake\Core\Configure;
 
 /**
  * Docentes Controller
@@ -78,11 +80,19 @@ class DocentesController extends AppController
     public function add()
     {
         $docente = $this->Docentes->newEntity();
-        if ($this->request->is('post')) {
+        if ($this->request->is('post')) 
+        {
             $docente = $this->Docentes->patchEntity($docente, $this->request->getData());
-            if ($this->Docentes->save($docente)) {
+            if ($this->Docentes->save($docente)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Docente'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Docentes ' . json_encode($this->request->getData()));
+
+                if (!$this->enviarTokenPorEmail($docente)) {
+                    $this->Flash->warning(__('El docente fue registrado pero no se pudo enviar el token por correo a {0}.', $docente->email));
+                } else {
+                    $this->Flash->success(__('Token de registro enviado a {0}.', $docente->email));
+                }
 
                 return $this->redirect(['action' => 'index']);
             }
@@ -90,7 +100,9 @@ class DocentesController extends AppController
         }
         $departamentos = $this->Docentes->Departamentos->find('list', ['limit' => 200]);
         $usuarios = $this->Docentes->Usuarios->find('list', ['limit' => 200]);
-        $this->set(compact('docente', 'departamentos', 'usuarios'));
+        $aGeneros = Configure::read('aGeneros');
+        $sToken = $this->generateToken();
+        $this->set(compact('docente', 'departamentos', 'usuarios', 'aGeneros', 'sToken'));
     }
 
 
@@ -112,15 +124,75 @@ class DocentesController extends AppController
                 $this->Flash->success(__('The {0} has been saved.', 'Docente'));
                 $this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS Docentes ' . json_encode($this->request->getData()));
 
+                if (!empty($docente->email) && $this->request->getData('enviar_token')) {
+                    if (!$this->enviarTokenPorEmail($docente)) {
+                        $this->Flash->warning(__('No se pudo enviar el token por correo a {0}.', $docente->email));
+                    } else {
+                        $this->Flash->success(__('Token de registro reenviado a {0}.', $docente->email));
+                    }
+                }
+
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Docente'));
         }
         $departamentos = $this->Docentes->Departamentos->find('list', ['limit' => 200]);
         $usuarios = $this->Docentes->Usuarios->find('list', ['limit' => 200]);
-        $this->set(compact('docente', 'departamentos', 'usuarios'));
+        $aGeneros = Configure::read('aGeneros');
+        $this->set(compact('docente', 'departamentos', 'usuarios', 'aGeneros'));
     }
 
+
+    /**
+     * Envía el token de registro por correo electrónico al docente.
+     *
+     * @param \App\Model\Entity\Docente $docente
+     * @return bool True si se envió correctamente, false en caso contrario.
+     */
+    private function enviarTokenPorEmail($docente)
+    {
+        $profile = Configure::read('App.emailProfile', 'default');
+        $email = new Email($profile);
+        try {
+            $email->setTo($docente->email)
+                ->emailFormat('both')
+                ->setSubject('Token de registro - SACE UPTBAL')
+                ->setTemplate('docente_token')
+                ->setViewVars(['docente' => $docente])
+                ->attachments([
+                    'logo.png' => [
+                        'file' => WWW_ROOT . 'img' .DS. 'logos' .DS. 'logouptbal.png', 
+                        'mimetype' => 'image/png',
+                        'contentId' => '734h3r38',
+                    ]
+                ])
+                ->send();
+            return true;
+        } catch (\Exception $e) {
+            $this->log('Error al enviar email a ' . $docente->email . ': ' . $e->getMessage(), 'error');
+            return false;
+        }
+    }
+
+    /**
+     * Reenvía el token de registro por correo electrónico al docente.
+     *
+     * @param string|null $id Docente id.
+     * @return \Cake\Http\Response|null
+     */
+    public function reenviarToken($id = null)
+    {
+        $this->request->allowMethod(['post']);
+        $docente = $this->Docentes->get($id);
+
+        if ($this->enviarTokenPorEmail($docente)) {
+            $this->Flash->success(__('Token reenviado correctamente a {0}.', $docente->email));
+        } else {
+            $this->Flash->error(__('No se pudo reenviar el token a {0}. Intente de nuevo.', $docente->email));
+        }
+
+        return $this->redirect(['action' => 'view', $id]);
+    }
 
     /**
      * Delete method
@@ -128,7 +200,7 @@ class DocentesController extends AppController
      * @param string|null $id Docente id.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-    */
+     */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);

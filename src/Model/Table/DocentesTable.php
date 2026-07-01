@@ -70,7 +70,7 @@ class DocentesTable extends AppTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
-     */
+    */
     public function validationDefault(Validator $validator)
     {
         $validator
@@ -138,7 +138,8 @@ class DocentesTable extends AppTable
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['email']));
+        $rules->add($rules->isUnique(['cedula'], 'Ya existe un docente con este número de cédula.'));
+        $rules->add($rules->isUnique(['email'], 'Ya existe un docente con este correo electrónico.'));
         $rules->add($rules->existsIn(['departamento_id'], 'Departamentos'));
         $rules->add($rules->existsIn(['usuario_id'], 'Usuarios'));
 

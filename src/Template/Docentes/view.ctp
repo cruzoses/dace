@@ -48,6 +48,10 @@
 		        <?= $this->Html->link('<i class="fa fa-pencil"></i>&nbsp;'.__('Edit'),
 			        ['action' => 'edit',$docente->id],['class' => 'btn bg-olive btn-flat pull-left','escape' => false]); 
 		        ?>
+		        <?= $this->Form->postLink('<i class="fa fa-send"></i>&nbsp;Reenviar Token',
+			        ['action' => 'reenviarToken', $docente->id],
+			        ['class' => 'btn btn-warning btn-flat pull-left','escape' => false, 'style' => 'margin-left:5px']); 
+		        ?>
 		        <?= $this->Html->link('<i class="fa fa-power-off"></i>&nbsp;Cerrar',
 			        ['action' => 'index'],['class' => 'btn bg-maroon btn-flat pull-right','escape' => false]); 
 		        ?>

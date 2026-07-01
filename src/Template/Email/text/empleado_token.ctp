@@ -5,16 +5,23 @@ use Cake\Core\Configure;
 <?= Configure::read('Universidad.RIF') ?>
 
 
-Estimado(a) <?= $empleado->nombres ?> <?= $empleado->apellidos ?>,
+Estimado(a) <?= $empleado->full_name ?>,
 
-A continuación, te entregamos las credenciales para que puedas completar el registro de usuario:
+Ha sido registrado en el sistema SACE UPTBAL como personal administrativo/obrero de la institución.
 
-    Token de Registro: <?= $empleado->token ?>
+A continuación se muestra su código de verificación para completar el registro de usuario:
 
-Accede a través del siguiente enlace:
+    Cédula: <?= $empleado->cedula ?>
+
+    Correo: <?= $empleado->email ?>
+
+    Token de registro: <?= $empleado->token ?>
+
+
+Acceda al siguiente enlace para completar su registro:
 https://www.uptbal.info.ve/registro?usuario=COESTU
 
-Puede presentarse en la oficina correspondiente para completar su registro o utilizar el token proporcionado.
+Si tiene alguna duda, puede presentarse en la oficina de recursos humanos para recibir asistencia.
 
 Atentamente,
 Administración SACE

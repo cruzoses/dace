@@ -31,7 +31,7 @@
                             <th scope="col"><?= $this->Paginator->sort('nombres') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('apellidos') ?></th>
                             <!--th scope="col"><?= $this->Paginator->sort('fecha_nacimiento') ?></th-->
-                            <th scope="col"><?= $this->Paginator->sort('sexo') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('sexo') ?></th>
                             <!--
                             <th scope="col"><?= $this->Paginator->sort('email') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('telefonos') ?></th>
@@ -54,7 +54,7 @@
                                 <td><?= h($docente->nombres) ?></td>
                                 <td><?= h($docente->apellidos) ?></td>
                                 <!--td><?= h($docente->fecha_nacimiento) ?></td-->
-                                <td><?= h($docente->sexo) ?></td>
+                                <td class="text-center"><?= h($docente->sexo) ?></td>
                                 <!--
                                 <td><?= h($docente->email) ?></td>
                                 <td><?= h($docente->telefonos) ?></td>
