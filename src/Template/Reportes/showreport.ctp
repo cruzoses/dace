@@ -1,3 +1,14 @@
+<?php if (!empty($noData)): ?>
+<script>
+Swal.fire({
+    title: 'Sin datos',
+    text: 'No hay informaci\u00F3n para mostrar.',
+    icon: 'info'
+}).then(function() {
+    window.location.href = '<?= $this->request->referer('/') ?>';
+});
+</script>
+<?php else: ?>
 <div class="box box-warning">
     <div class="box-header with-border">
 		<h3 class="box-title"><i class="fa fa-file-pdf-o"></i>&nbsp;Visor de Reporte</h3>
@@ -22,3 +33,4 @@
 		?>
     </div>
 </div>
+<?php endif; ?>

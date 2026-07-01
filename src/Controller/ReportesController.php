@@ -71,15 +71,19 @@ class ReportesController extends AppController
             ];
         }
 
-        $pdfBuilder = new PdfBuilder();
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
 
-        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE SEDES ACADÉMICAS');
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE SEDES ACADÉMICAS');
 
-        $reportConfig = $this->_getReportConfig();
-        $filename = 'sedes_' . date('Ymd_His') . '.pdf';
-        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
-
-        $this->set('sFileName', $reportConfig['webroot'] . $filename);
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'sedes_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
         $this->render('showreport');
     }
 
@@ -103,22 +107,26 @@ class ReportesController extends AppController
             ];
         }
 
-        $pdfBuilder = new PdfBuilder('landscape');
-        $pdfBuilder->setColumns([
-            'Codigo' => ['justification' => 'center', 'width' => 70],
-            'Nombre' => ['justification' => 'left', 'width' => 240],
-            'Mension' => ['justification' => 'left', 'width' => 150],
-            'Titulo' => ['justification' => 'left', 'width' => 160],
-            'Creado' => ['justification' => 'center', 'width' => 80],
-        ]);
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder('landscape');
+            $pdfBuilder->setColumns([
+                'Codigo' => ['justification' => 'center', 'width' => 70],
+                'Nombre' => ['justification' => 'left', 'width' => 240],
+                'Mension' => ['justification' => 'left', 'width' => 150],
+                'Titulo' => ['justification' => 'left', 'width' => 160],
+                'Creado' => ['justification' => 'center', 'width' => 80],
+            ]);
 
-        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE CARRERAS');
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE CARRERAS');
 
-        $reportConfig = $this->_getReportConfig();
-        $filename = 'carreras_' . date('Ymd_His') . '.pdf';
-        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
-
-        $this->set('sFileName', $reportConfig['webroot'] . $filename);
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'carreras_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
         $this->render('showreport');
     }
 
@@ -141,21 +149,25 @@ class ReportesController extends AppController
             ];
         }
 
-        $pdfBuilder = new PdfBuilder();
-        $pdfBuilder->setColumns([
-            'Codigo' => ['justification' => 'center', 'width' => 50],
-            'Pais' => ['justification' => 'left', 'width' => 180],
-            'Nombre' => ['justification' => 'left', 'width' => 200],
-            'Creado' => ['justification' => 'center', 'width' => 70],
-        ]);
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'Codigo' => ['justification' => 'center', 'width' => 50],
+                'Pais' => ['justification' => 'left', 'width' => 180],
+                'Nombre' => ['justification' => 'left', 'width' => 200],
+                'Creado' => ['justification' => 'center', 'width' => 70],
+            ]);
 
-        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE ESTADOS');
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE ESTADOS');
 
-        $reportConfig = $this->_getReportConfig();
-        $filename = 'estados_' . date('Ymd_His') . '.pdf';
-        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
-
-        $this->set('sFileName', $reportConfig['webroot'] . $filename);
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'estados_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
         $this->render('showreport');
     }
 
@@ -178,21 +190,25 @@ class ReportesController extends AppController
             ];
         }
 
-        $pdfBuilder = new PdfBuilder();
-        $pdfBuilder->setColumns([
-            'Codigo' => ['justification' => 'center', 'width' => 50],
-            'Estado' => ['justification' => 'left', 'width' => 180],
-            'Nombre' => ['justification' => 'left', 'width' => 200],
-            'Creado' => ['justification' => 'center', 'width' => 70],
-        ]);
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'Codigo' => ['justification' => 'center', 'width' => 50],
+                'Estado' => ['justification' => 'left', 'width' => 180],
+                'Nombre' => ['justification' => 'left', 'width' => 200],
+                'Creado' => ['justification' => 'center', 'width' => 70],
+            ]);
 
-        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE MUNICIPIOS');
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE MUNICIPIOS');
 
-        $reportConfig = $this->_getReportConfig();
-        $filename = 'municipios_' . date('Ymd_His') . '.pdf';
-        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
-
-        $this->set('sFileName', $reportConfig['webroot'] . $filename);
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'municipios_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
         $this->render('showreport');
     }
 
@@ -215,21 +231,25 @@ class ReportesController extends AppController
             ];
         }
 
-        $pdfBuilder = new PdfBuilder();
-        $pdfBuilder->setColumns([
-            'Codigo' => ['justification' => 'center', 'width' => 50],
-            'Municipio' => ['justification' => 'left', 'width' => 180],
-            'Nombre' => ['justification' => 'left', 'width' => 200],
-            'Creado' => ['justification' => 'center', 'width' => 70],
-        ]);
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'Codigo' => ['justification' => 'center', 'width' => 50],
+                'Municipio' => ['justification' => 'left', 'width' => 180],
+                'Nombre' => ['justification' => 'left', 'width' => 200],
+                'Creado' => ['justification' => 'center', 'width' => 70],
+            ]);
 
-        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE PARROQUIAS');
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE PARROQUIAS');
 
-        $reportConfig = $this->_getReportConfig();
-        $filename = 'parroquias_' . date('Ymd_His') . '.pdf';
-        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
-
-        $this->set('sFileName', $reportConfig['webroot'] . $filename);
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'parroquias_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
         $this->render('showreport');
     }
 
@@ -252,21 +272,25 @@ class ReportesController extends AppController
             ];
         }
 
-        $pdfBuilder = new PdfBuilder();
-        $pdfBuilder->setColumns([
-            'Codigo' => ['justification' => 'center', 'width' => 60],
-            'Grupo' => ['justification' => 'left', 'width' => 140],
-            'Nombre' => ['justification' => 'left', 'width' => 220],
-            'Creditos' => ['justification' => 'center', 'width' => 80],
-        ]);
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'Codigo' => ['justification' => 'center', 'width' => 60],
+                'Grupo' => ['justification' => 'left', 'width' => 140],
+                'Nombre' => ['justification' => 'left', 'width' => 220],
+                'Creditos' => ['justification' => 'center', 'width' => 80],
+            ]);
 
-        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE ASIGNATURAS');
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE ASIGNATURAS');
 
-        $reportConfig = $this->_getReportConfig();
-        $filename = 'asignaturas_' . date('Ymd_His') . '.pdf';
-        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
-
-        $this->set('sFileName', $reportConfig['webroot'] . $filename);
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'asignaturas_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
         $this->render('showreport');
     }
 
