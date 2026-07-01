@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `departamentos`
   PRIMARY KEY (`id`)
 )
 ;
-INSERT INTO departamentos(nombre,responsable,created,modified) VALUES('GENERAL','SIN DEFINIR',now(),now());
+INSERT INTO departamentos(nombre,responsable,created,modified) VALUES('SIN DEFINIR','SIN DEFINIR',now(),now());
 
 -- Table noticias
 
@@ -121,6 +121,10 @@ CREATE TABLE IF NOT EXISTS `rols`
 ) ENGINE = InnoDB
 ;
 INSERT INTO rols(nombre,activo,created,modified) VALUES('ADMINISTRADOR',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('DIRECTOR C.A.S.R.C.E',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('ANALISTA',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('COORDINADOR DE SEDE',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('DOCENTE',1,now(),now());
 
 -- Table usuarios
 
@@ -342,6 +346,7 @@ CREATE TABLE IF NOT EXISTS `paises`
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
 ;
+INSERT INTO paises(nombre,created,modified) values('VENEZUELA',now(),now());
 
 -- Table estados
 

@@ -2,8 +2,12 @@
     <div class="col-xs-12">
         <div class="box box-info box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Usuarios</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Usuarios</h3>
                 <div class="box-tools pull-right">
+                    <?= $this->Html->link('<i class="fa fa-print"></i>',
+                        ['controller' => 'Reportes', 'action' => 'listarUsuarios'], 
+                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
@@ -78,11 +82,11 @@
                             <td colspan="10" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
-                                        <?= $this->Paginator->first('<< ' . __('first')) ?>
-                                        <?= $this->Paginator->prev('< ' . __('previous')) ?>
+                                        <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->prev('<i class="fa fa-angle-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                         <?= $this->Paginator->numbers(['before' => '','after' => '']) ?>
-                                        <?= $this->Paginator->next(__('next') . ' >') ?>
-                                        <?= $this->Paginator->last(__('last') . ' >>') ?>
+                                        <?= $this->Paginator->next('<i class="fa fa-angle-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->last('<i class="fa fa-angle-double-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                     </ul>
                                     <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
                                 </div>

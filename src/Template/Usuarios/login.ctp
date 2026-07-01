@@ -10,7 +10,7 @@
     </div>
 
     <div class="col-xs-12 col-sm-8 col-md-6">
-            
+            <?= $this->Flash->render('auth'); ?>
             <div class="text-center">
                 <span class="visible-xs">
                     <h3><strong><?= Configure::read('Sistema.Siglas')?></strong></h3>

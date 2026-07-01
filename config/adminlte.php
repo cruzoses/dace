@@ -12,6 +12,6 @@ return [
             'show_social' => true
         ],
         'folder' => ROOT,
-        'skin' => 'blue'
+        'skin' => 'red'
     ]
 ];

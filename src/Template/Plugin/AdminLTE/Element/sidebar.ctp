@@ -55,7 +55,7 @@
 					</a>
 					<ul class="treeview-menu">
 						<li>
-							<a href="<?= $this->Url->build('/facilitadores');?>">
+							<a href="<?= $this->Url->build(['controller' => 'docentes','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Docentes
 							</a>
 						</li>
@@ -75,72 +75,72 @@
 					</a>
 					<ul class="treeview-menu">
 						<li>
-							<a href="<?php echo $this->Url->build('/aulas')?>">
+							<a href="<?= $this->Url->build(['controller' => 'aulas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Aulas
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/asignaturas')?>">
+							<a href="<?= $this->Url->build(['controller' => 'asignaturas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Asignaturas
 							</a>
 						</li>
 						<li>
-							<a href="<?= $this->Url->build(['controller' => 'carreras','action' => 'index','fullBase' => true])?>">
+							<a href="<?= $this->Url->build(['controller' => 'carreras','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Carreras
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/cursos')?>">
+							<a href="<?= $this->Url->build(['controller' => 'cursos','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Cursos
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/firmas')?>">
+							<a href="<?= $this->Url->build(['controller' => 'firmas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Firmas
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/horarios')?>">
+							<a href="<?= $this->Url->build(['controller' => 'horarios','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Horarios
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/grupo_asignaturas')?>">
+							<a href="<?= $this->Url->build(['controller' => 'grupo_asignaturas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Grupo de Asignaturas
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/asignatura_programas')?>">
+							<a href="<?= $this->Url->build(['controller' => 'asignatura_programas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Malla Curricular
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/ofertas')?>">
+							<a href="<?= $this->Url->build(['controller' => 'ofertas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Oferta Acad&eacute;mica
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/periodos')?>">
+							<a href="<?= $this->Url->build(['controller' => 'periodos','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Periodos
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/programas')?>">
+							<a href="<?= $this->Url->build(['controller' => 'programas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Programas (P.N.F)
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/sedes')?>">
+							<a href="<?= $this->Url->build(['controller' => 'sedes','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Sedes
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/subsistemas')?>">
+							<a href="<?= $this->Url->build(['controller' => 'subsistemas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Sistemas de Estudio
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/trayectos')?>">
+							<a href="<?= $this->Url->build(['controller' => 'trayectos','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Trayectos
 							</a>
 						</li>
@@ -152,17 +152,17 @@
           					</a>
           					<ul class="treeview-menu">
             					<li>
-									<a href="<?php echo $this->Url->build('/estados')?>">
+									<a href="<?= $this->Url->build(['controller' => 'estados','action' => 'index'])?>">
 										<i class="fa fa-circle-o"></i>&nbsp;Estados
 									</a>
 								</li>
             					<li>
-									<a href="<?php echo $this->Url->build('/municipios')?>">
+									<a href="<?= $this->Url->build(['controller' => 'municipios','action' => 'index'])?>">
 										<i class="fa fa-circle-o"></i>&nbsp;Municipios
 									</a>
 								</li>
 								<li>
-									<a href="<?php echo $this->Url->build('/parroquias')?>">
+									<a href="<?= $this->Url->build(['controller' => 'parroquias','action' => 'index'])?>">
 										<i class="fa fa-circle-o"></i>&nbsp;Parroquias
 									</a>
 								</li>

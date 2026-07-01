@@ -1,7 +1,10 @@
 <?php
 namespace App\Model\Table;
 
+use ArrayObject;
+use Cake\I18n\Time;
 use Cake\ORM\Table;
+use Cake\Event\Event;
 
 class AppTable extends Table
 {
@@ -49,4 +52,23 @@ class AppTable extends Table
         }
         return array_merge(...$conditions);
     }
+    
+    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
+    {
+        // Verifica si el campo de fecha existe en el request
+        if ( isset( $data['fecha_nacimiento'] ) ) 
+        {            
+            $fechaOriginal = str_replace('/', '-',$data['fecha_nacimiento']);
+
+            // Si la fecha no está vacía, la convertimos
+            if (!empty($fechaOriginal)) 
+            {
+                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
+                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
+                
+                // Asigna el valor corregido para que CakePHP lo guarde correctamente
+                $data['fecha_nacimiento'] = $fechaFormateada->format('Y-m-d');
+            }
+        }
+    }    
 }

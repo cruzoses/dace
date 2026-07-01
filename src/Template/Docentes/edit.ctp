@@ -26,17 +26,26 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('cedula', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('cedula', ['type' => 'text', 'label' => 'Cédula',
+                        'class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('nombres', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('apellidos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('fecha_nacimiento', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('sexo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('email', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('telefonos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('departamento_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $departamentos, 'empty' => true]);
-                    echo $this->Form->control('token', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('usuario_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $usuarios, 'empty' => true]);
-                    echo $this->Form->control('activo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('fecha_nacimiento', ['type' => 'text','class' => 'datepicker',
+                        'prepend' => '<i class="fa fa-asterisk"></i>','append' => '<i class="fa fa-calendar"></i>']);
+                    echo $this->Form->control('sexo', ['type' => 'select', 'options' => $aGeneros, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'required' => true,
+                        'prepend' => '<i class="fa fa-asterisk"></i>',  ]
+                    );
+                    echo $this->Form->control('email', ['class' => 'isLower','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('telefonos', ['label' => 'Teléfonos','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('departamento_id', ['type' => 'select', 'options' => $departamentos, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'required' => true,
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->hidden('token');
+                    echo $this->Form->hidden('usuario_id');
+                    echo $this->Form->control('activo', ['type' => 'checkbox']);
                 ?>
             </div>            
             <div class="box-footer">

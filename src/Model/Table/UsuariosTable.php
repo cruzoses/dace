@@ -5,10 +5,6 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\Validation\Validator;
 
-use Cake\Event\Event;
-use ArrayObject;
-use Cake\I18n\Time;
-
 /**
  * Usuarios Model
  *
@@ -162,29 +158,6 @@ class UsuariosTable extends AppTable
         $rules->add($rules->isUnique(['username'], 'Ya existe un usuario con este identificador.'));
 
         return $rules;
-    }
-
-    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
-    {
-        // Verifica si el campo de fecha existe en el request
-        if ( isset( $data['fechadenacimiento'] ) ) 
-        {            
-            $fechaOriginal = str_replace('/', '-',$data['fechadenacimiento']);
-
-            // Si la fecha no está vacía, la convertimos
-            if (!empty($fechaOriginal)) 
-            {
-                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
-                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
-                
-                // Asigna el valor corregido para que CakePHP lo guarde correctamente
-                $data['fechadenacimiento'] = $fechaFormateada->format('Y-m-d');
-            }
-        }
-        if ( isset( $data['username'] ) ) 
-        {
-            $data['username'] = mb_strtolower( $data['username'] );
-        }
     }
 
     public function recoverPassword($id)
