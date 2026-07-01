@@ -51,8 +51,8 @@ class CarrerasFixture extends TestFixture
                 'mension_carrera_id' => 1,
                 'titulo_otorgado' => 'Lorem ipsum dolor sit amet',
                 'activa' => 1,
-                'created' => '2026-06-29 15:29:45',
-                'modified' => '2026-06-29 15:29:45',
+                'created' => '2026-06-30 22:07:36',
+                'modified' => '2026-06-30 22:07:36',
             ],
         ];
         parent::init();

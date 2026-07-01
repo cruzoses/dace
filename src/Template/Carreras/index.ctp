@@ -4,6 +4,10 @@
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Carreras</h3>
                 <div class="box-tools pull-right">
+                    <?= $this->Html->link('<i class="fa fa-print"></i>',
+                        ['controller' => 'Reportes', 'action' => 'listarCarreras'], 
+                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
@@ -17,7 +21,7 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('search_form', ['title' => 'Buscar Carrera', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
+			        <?= $this->element('buscador');?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
@@ -36,19 +40,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $this->Paginator->options(['url' => $filtros]); ?>
                         <?php foreach ($carreras as $carrera): ?>
                             <tr>
                                 <td><?= $this->Number->format($carrera->id) ?></td>
                                 <td><?= h($carrera->codigo) ?></td>
                                 <td><?= h($carrera->nombre) ?></td>
                                 <!--
-                                <td><?= $carrera->has('mension_carrera') ? $this->Html->link($carrera->mension_carrera->id, ['controller' => 'MensionCarreras', 'action' => 'view', $carrera->mension_carrera->id]) : '' ?></td>
+                                <td><?= $carrera->has('mension_carrera') ? $this->Html->link($carrera->mension_carrera->nombre, ['controller' => 'MensionCarreras', 'action' => 'view', $carrera->mension_carrera->id]) : '' ?></td>
                                 <td><?= h($carrera->titulo_otorgado) ?></td>
                                 -->
-                                <td class="text-center"><?= h($carrera->activa) ? 'SI' : 'NO' ?></td>
-                                <td class="text-center"><?= h($carrera->created->format('d-m-Y g:i a')) ?></td>
-                                <td class="text-center"><?= h($carrera->modified->format('d-m-Y g:i a')) ?></td>
+                                <td class="text-center"><?= $carrera->activa ? __('Yes') : __('No'); ?></td>
+                                <td class="text-center"><?= h($carrera->created) ?></td>
+                                <td class="text-center"><?= h($carrera->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $carrera->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $carrera->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -61,12 +64,12 @@
                         <tr>
                             <td colspan="7" class="text-center">
                                 <div class="paginator">
-                                    <ul class="pagination">
-                                        <?= $this->Paginator->first('<< ' . __('first')) ?>
-                                        <?= $this->Paginator->prev('< ' . __('previous')) ?>
+                                    <ul class="pagination pagination-sm">
+                                        <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->prev('<i class="fa fa-angle-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                         <?= $this->Paginator->numbers(['before' => '','after' => '']) ?>
-                                        <?= $this->Paginator->next(__('next') . ' >') ?>
-                                        <?= $this->Paginator->last(__('last') . ' >>') ?>
+                                        <?= $this->Paginator->next('<i class="fa fa-angle-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->last('<i class="fa fa-angle-double-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                     </ul>
                                     <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
                                 </div>

@@ -28,7 +28,7 @@
                 <?php
                     echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('activa', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-              ?>
+                ?>
             </div>            
             <div class="box-footer">
 		        <?= $this->Form->button('<i class="fa fa-save"></i>&nbsp;Guardar',
@@ -38,7 +38,7 @@
 			        ['action' => 'index'],['class' => 'btn bg-maroon btn-flat pull-right','escape' => false]); 
 		        ?>
             </div>
-          <?php echo $this->Form->end(); ?>
+            <?php echo $this->Form->end(); ?>
         </div>
-      </div>
-  </div>
+    </div>
+</div>

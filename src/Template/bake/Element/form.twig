@@ -60,7 +60,7 @@
 
 {%- if associations.BelongsToMany %}
     {%- for assocName, assocData in associations.BelongsToMany %}
-                echo $this->Form->control('{{ assocData.property }}._ids', ['prepend' => '<i class="fa fa-asterisk"></i>','options' => ${{ assocData.variable }}]);
+                    echo $this->Form->control('{{ assocData.property }}._ids', ['prepend' => '<i class="fa fa-asterisk"></i>','options' => ${{ assocData.variable }}]);
     {{- "\n" }}
     {%- endfor %}
 {% endif %}

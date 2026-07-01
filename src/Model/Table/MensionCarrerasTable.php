@@ -3,6 +3,7 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -21,13 +22,8 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class MensionCarrerasTable extends AppTable
+class MensionCarrerasTable extends Table
 {
-    protected $searchFields = [
-        'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper'],
-        'activa' => ['type' => 'select', 'label' => 'Activa', 'class' => 'form-control select2', 'options' => [1 => 'Sí', 0 => 'No'], 'empty' => '-- Seleccione --'],
-    ];
-
     /**
      * Initialize method
      *

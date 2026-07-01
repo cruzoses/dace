@@ -37,12 +37,9 @@ class MensionCarrerasController extends AppController
     */
     public function index()
     {
-        $conditions = $this->MensionCarreras->formatConditions($this->request->getQueryParams());
-        $this->paginate['conditions'] = $conditions;
         $mensionCarreras = $this->paginate($this->MensionCarreras);
-        $filtros = $this->request->getQuery();
-        $searchFields = $this->MensionCarreras->getSearchFields();
-        $this->set(compact('mensionCarreras', 'filtros', 'searchFields'));
+
+        $this->set(compact('mensionCarreras'));
     }
 
     /**

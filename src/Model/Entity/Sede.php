@@ -20,7 +20,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Curso[] $cursos
  * @property \App\Model\Entity\EstudiantePrograma[] $estudiante_programas
  * @property \App\Model\Entity\Carrera[] $carreras
-*/
+ */
 class Sede extends Entity
 {
     /**
@@ -31,7 +31,7 @@ class Sede extends Entity
      * (or remove it), and explicitly make individual fields accessible as needed.
      *
      * @var array
-    */
+     */
     protected $_accessible = [
         'codigo' => true,
         'nombre' => true,

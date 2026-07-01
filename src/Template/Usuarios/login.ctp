@@ -18,7 +18,7 @@
                 <span><h3><strong>INGRESO AL SISTEMA</strong></h3></span>                
             </div>
             
-            <div class="row"><?= $this->Flash->render(); ?></div>
+            <div class="row"><?= $this->Flash->render('auth'); ?></div>
 
             <?= $this->Form->create('Usuario',['url' => ['controller' => 'usuarios', 'action' => 'login']]);?>
 
@@ -27,13 +27,13 @@
 				<hr class="colorgraph">
 				<div class="form-group">
                     <?= $this->Form->input('username',['label' => false, 'type' => 'text', 'div' => false, 
-                        'class' => 'form-control input-lg','placeholder' => 'Usuario' ]); 
+                        'class' => 'form-control input-lg','placeholder' => 'Usuario','prepend' => '<i class="fa fa-user"></i>',]); 
                     ?>
 				</div>
 
 				<div class="form-group">
                     <?= $this->Form->input('password',['label' => false, 'type' => 'password', 'div' => false, 
-                        'class' => 'form-control input-lg','placeholder' => 'Contraseña']);
+                        'class' => 'form-control input-lg','placeholder' => 'Contraseña','prepend' => '<i class="fa fa-key"></i>',]);
                     ?>
 				</div>
 

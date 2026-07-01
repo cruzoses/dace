@@ -1,11 +1,11 @@
 <?php
 namespace App\Model\Table;
 
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Datasource\EntityInterface;
 
 /**
  * Sedes Model
@@ -25,14 +25,20 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class SedesTable extends Table
+class SedesTable extends AppTable
 {
+    protected $searchFields = [
+        'id' => ['type' => 'int', 'label' => 'No. de ID', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'codigo' => ['type' => 'exact', 'label' => 'Código', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+    ];
+
     /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
      * @return void
-     */
+    */
     public function initialize(array $config)
     {
         parent::initialize($config);
@@ -61,7 +67,7 @@ class SedesTable extends Table
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
-     */
+    */
     public function validationDefault(Validator $validator)
     {
         $validator
@@ -139,5 +145,5 @@ class SedesTable extends Table
         }, 'uniquePrincipal', ['errorField' => 'principal']);
 
         return $rules;
-    }    
+    }
 }

@@ -1,3 +1,6 @@
+msgid "Yes"
+msgstr "Si"
+
 msgid "New"
 msgstr "Nuevo"
 

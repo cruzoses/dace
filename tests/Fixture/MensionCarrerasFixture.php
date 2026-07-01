@@ -41,8 +41,8 @@ class MensionCarrerasFixture extends TestFixture
                 'id' => 1,
                 'nombre' => 'Lorem ipsum dolor sit amet',
                 'activa' => 1,
-                'created' => '2026-06-29 15:34:53',
-                'modified' => '2026-06-29 15:34:53',
+                'created' => '2026-07-01 00:36:21',
+                'modified' => '2026-07-01 00:36:21',
             ],
         ];
         parent::init();

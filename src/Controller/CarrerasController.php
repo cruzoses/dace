@@ -37,15 +37,12 @@ class CarrerasController extends AppController
     */
     public function index()
     {
-        $conditions = $this->Carreras->formatConditions($this->request->getQueryParams());
         $this->paginate = [
             'contain' => ['MensionCarreras'],
-            'conditions' => $conditions,
         ];
         $carreras = $this->paginate($this->Carreras);
-        $filtros = $this->request->getQuery();
-        $searchFields = $this->Carreras->getSearchFields();
-        $this->set(compact('carreras', 'filtros', 'searchFields'));
+
+        $this->set(compact('carreras'));
     }
 
     /**

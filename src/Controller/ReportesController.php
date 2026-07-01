@@ -53,6 +53,93 @@ class ReportesController extends AppController
         return $this->response;
     }
 
+    public function listarSedes()
+    {
+        $this->loadModel('Sedes');
+
+        $sedes = $this->Sedes->find('all', [
+            'order' => ['Sedes.codigo' => 'ASC']
+        ]);
+
+        $data = [];
+        foreach ($sedes as $sede) {
+            $data[] = [
+                'Codigo' => $sede->id,
+                'Nombre' => $sede->nombre,
+                'Responsable' => $sede->responsable,
+                'Creado' => $sede->created->format('d/m/Y'),
+            ];
+        }
+
+        $pdfBuilder = new PdfBuilder();
+        /*
+        $pdfBuilder->setColumns([
+            'Codigo' => ['justification' => 'center', 'width' => 50],
+            'Nombre' => ['justification' => 'left', 'width' => 200],
+            'Responsable' => ['justification' => 'left', 'width' => 200],
+            'Creado' => ['justification' => 'center', 'width' => 70],
+        ]);
+        */
+
+        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE SEDES ACADÉMICAS');
+
+        $dir = WWW_ROOT . 'files' . DS . 'reportes';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $filename = 'sedes_' . date('Ymd_His') . '.pdf';
+        $filePath = $dir . DS . $filename;
+        file_put_contents($filePath, $pdfOutput);
+
+        $this->set('sFileName', $this->request->getAttribute('webroot') . 'files/reportes/' . $filename);
+        $this->render('showreport');
+    }
+
+    public function listarCarreras()
+    {
+        $this->loadModel('Carreras');
+
+        $carreras = $this->Carreras->find('all', [
+            'contain' => ['MensionCarreras'],
+            'order' => ['Carreras.id' => 'ASC']
+        ]);
+
+        $data = [];
+        foreach ($carreras as $carrera) {
+            $data[] = [
+                'Codigo' => $carrera->codigo,
+                'Nombre' => $carrera->nombre,
+                'Mension' => $carrera->has('mension_carrera') ? $carrera->mension_carrera->nombre : '',
+                'Titulo' => $carrera->titulo_otorgado,
+                'Creado' => $carrera->created->format('d/m/Y'),
+            ];
+        }
+
+        $pdfBuilder = new PdfBuilder('landscape');
+        $pdfBuilder->setColumns([
+            'Codigo' => ['justification' => 'center', 'width' => 70],
+            'Nombre' => ['justification' => 'left', 'width' => 240],
+            'Mension' => ['justification' => 'left', 'width' => 150],
+            'Titulo' => ['justification' => 'left', 'width' => 160],
+            'Creado' => ['justification' => 'center', 'width' => 80],
+        ]);
+
+        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE CARRERAS');
+
+        $dir = WWW_ROOT . 'files' . DS . 'reportes';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $filename = 'carreras_' . date('Ymd_His') . '.pdf';
+        $filePath = $dir . DS . $filename;
+        file_put_contents($filePath, $pdfOutput);
+
+        $this->set('sFileName', $this->request->getAttribute('webroot') . 'files/reportes/' . $filename);
+        $this->render('showreport');
+    }
+
     public function listarEstados()
     {
         $this->loadModel('Estados');

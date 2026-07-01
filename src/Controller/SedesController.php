@@ -37,9 +37,14 @@ class SedesController extends AppController
     */
     public function index()
     {
-        $sedes = $this->paginate($this->Sedes);
+        $conditions = $this->Sedes->formatConditions($this->request->getQueryParams());
+        $this->paginate['conditions'] = $conditions;
 
-        $this->set(compact('sedes'));
+        $sedes = $this->paginate($this->Sedes);
+        $filtros = $this->request->getQuery();
+
+        $searchFields = $this->Sedes->getSearchFields();
+        $this->set(compact('sedes', 'filtros', 'searchFields'));
     }
 
     /**
