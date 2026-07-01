@@ -233,6 +233,43 @@ class ReportesController extends AppController
         $this->render('showreport');
     }
 
+    public function listarAsignaturas()
+    {
+        $this->loadModel('Asignaturas');
+
+        $asignaturas = $this->Asignaturas->find('all', [
+            'contain' => ['GrupoAsignaturas'],
+            'order' => ['Asignaturas.codigo' => 'ASC']
+        ]);
+
+        $data = [];
+        foreach ($asignaturas as $a) {
+            $data[] = [
+                'Codigo' => $a->codigo,
+                'Grupo' => $a->has('grupo_asignatura') ? $a->grupo_asignatura->nombre : '',
+                'Nombre' => $a->nombre,
+                'Creditos' => $a->creditos,
+            ];
+        }
+
+        $pdfBuilder = new PdfBuilder();
+        $pdfBuilder->setColumns([
+            'Codigo' => ['justification' => 'center', 'width' => 60],
+            'Grupo' => ['justification' => 'left', 'width' => 140],
+            'Nombre' => ['justification' => 'left', 'width' => 220],
+            'Creditos' => ['justification' => 'center', 'width' => 80],
+        ]);
+
+        $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE ASIGNATURAS');
+
+        $reportConfig = $this->_getReportConfig();
+        $filename = 'asignaturas_' . date('Ymd_His') . '.pdf';
+        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+
+        $this->set('sFileName', $reportConfig['webroot'] . $filename);
+        $this->render('showreport');
+    }
+
     public function download()
     {
         $file = $this->request->getQuery('file');
