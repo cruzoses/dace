@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 26/6/2026
+Modified: 30/6/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -382,7 +382,6 @@ CREATE TABLE IF NOT EXISTS `parroquias`
   `id` Int NOT NULL AUTO_INCREMENT,
   `municipio_id` Int NOT NULL,
   `nombre` Varchar(50) NOT NULL,
-  `activo` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
   PRIMARY KEY (`id`)
@@ -443,6 +442,7 @@ CREATE TABLE `grupo_asignaturas`
   PRIMARY KEY (`id`)
 )
 ;
+INSERT INTO grupo_asignaturas(codigo,nombre,activo,created,modified) VALUES('N/A','SIN GRUPO',1,now(),now());
 
 -- Table asignaturas
 
@@ -458,7 +458,7 @@ CREATE TABLE `asignaturas`
   `costo` Double NOT NULL,
   `requisitos` Text,
   `convalidacion` Text,
-  `grupo_asignatura_id` Int,
+  `grupo_asignatura_id` Int NOT NULL,
   `activa` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -502,6 +502,10 @@ CREATE TABLE IF NOT EXISTS `cursos`
   `docente_id` Int NOT NULL,
   `seccion` Varchar(20) NOT NULL,
   `cupos` Smallint(6) NOT NULL,
+  `aula_id` Int(11),
+  `activo` Tinyint(1) NOT NULL,
+  `created` Datetime,
+  `modified` Datetime,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
 ;
@@ -522,6 +526,9 @@ CREATE INDEX `IX_Curso_Trayecto` ON `cursos` (`trayecto_id`)
 ;
 
 CREATE INDEX `IX_Curso_Programa` ON `cursos` (`programa_id`)
+;
+
+CREATE INDEX `IX_Curso_Aula` ON `cursos` (`aula_id`)
 ;
 
 -- Table periodos
@@ -891,5 +898,8 @@ ALTER TABLE `estudiante_programas` ADD CONSTRAINT `pfk_sede_estudiante` FOREIGN 
 ;
 
 ALTER TABLE `docentes` ADD CONSTRAINT `pfk_departamento_docente` FOREIGN KEY (`departamento_id`) REFERENCES `departamentos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `cursos` ADD CONSTRAINT `pfk_aula_curso` FOREIGN KEY (`aula_id`) REFERENCES `aulas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
