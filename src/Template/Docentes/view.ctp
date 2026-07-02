@@ -45,21 +45,15 @@
 <div class="box box-primary">
 
 	<div class="box-header with-border">
-
 		<h3 class="box-title"><i class="fa fa-info"></i>&nbsp;Datos del Personales</h3>
-
 		<div class="box-tools pull-right">
-
 			<button type="button" class="btn btn-box-tool" data-widget="collapse">
 				<i class="fa fa-minus"></i>
 			</button>
-
 		</div>
-
 	</div>
 
 	<div class="box-body table-responsive no-padding">
-
 		<table class="table table-bordered table-condensed">
 			<tr>
 				<th class="bg-gray text-center col-lg-3" style colspan="1">Dato</th>
@@ -96,23 +90,89 @@
 				<td class="text-left" style colspan="1"><?= h($docente->token) ?></td>
 			</tr>
 		</table>
-
 	</div>
 
 	<div class="box-footer">
-
 		<?php if( empty( $docente->usuario_id) ) : ?>
-		
 			<?= $this->Html->link('<i class="fa fa-envelope"></i>&nbsp;Token de Registro',
 				['action' => 'nuevotoken',$docente->id],
 				['class' => 'btn bg-olive btn-flat pull-left','escape' => false]); 
 			?>
-
 		<?php endif; ?>
 	</div>
 
 </div>
 
+<?php if( !empty($docente->usuario) ) : ?>
+
+	<div class="box box-primary">
+		<div class="box-header with-border">
+			<h3 class="box-title"><i class="fa fa-info"></i>&nbsp;Cuenta de Usuario</h3>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" data-widget="collapse">
+					<i class="fa fa-minus"></i>
+				</button>
+			</div>
+		</div>
+		<div class="box-body table-responsive no-padding">
+			<table class="table  table-bordered table-condensed table-striped">
+				<tr>
+					<th class="bg-gray text-center col-lg-3" style colspan="1">Dato</th>
+					<th class="bg-gray text-center" style colspan="1">Detalle</th>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">ID de Usuario</td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->id;?></td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">Tipo Registro</td>
+					<td class="text-left" style colspan="1">Docente</td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">N&uacute;mero de C&eacute;dula </td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->cedula;?></td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">Apellidos</td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->apellidos;?></td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">Nombres</td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->nombres;?></td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">Usuario</td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->username;?></td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">Fecha de Nacimiento</td>
+					<td class="text-left" style colspan="1"><?= h($docente->usuario->fecha_nacimiento);?></td>
+				</tr>
+				<tr>
+				<td class="text-left" style colspan="1">Correo Electr&oacute;nico</td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->email;?></td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">Tel&eacute;fonos</td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->telefonos;?></td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">Twitter</td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->twitter;?></td>
+				</tr>
+				<tr>
+					<td class="text-left" style colspan="1">Instagram</td>
+					<td class="text-left" style colspan="1"><?= $docente->usuario->instagram;?></td>
+				</tr>
+				<tr>
+					<td class=" text-left" style colspan="1">Direcci&oacute;n</td>
+					<td class=" text-left" style colspan="1"><?= $docente->usuario->direccion;?></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+<?php endif; ?>
 
 <?php if( ! empty($docente->cursos)) : ?>
 
@@ -162,9 +222,6 @@
 			
 	</div>
 <?php endif; ?>
-
-
-
 
 <!--
 <div class="row">
