@@ -49,6 +49,11 @@ class AulasTable extends AppTable
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Sedes', [
+            'foreignKey' => 'sede_id',
+            'joinType' => 'INNER',
+        ]);
+
         $this->hasMany('Cursos', [
             'foreignKey' => 'aula_id',
         ]);
@@ -65,10 +70,6 @@ class AulasTable extends AppTable
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
-
-        $validator
-            ->integer('sede')
-            ->notEmptyString('sede');
 
         $validator
             ->scalar('codigo')
@@ -97,5 +98,20 @@ class AulasTable extends AppTable
             ->notEmptyString('condicion');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+    */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['sede_id'], 'Sedes'));
+        $rules->add($rules->isUnique(['sede', 'codigo'], 'Ya existe un aula con esta sede y código.'));
+
+        return $rules;
     }
 }
