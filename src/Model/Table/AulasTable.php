@@ -22,8 +22,16 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class AulasTable extends Table
+class AulasTable extends AppTable
 {
+    protected $searchFields = [
+        'codigo' => ['type' => 'exact', 'label' => 'Código', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'ubicacion' => ['type' => 'text', 'label' => 'Ubicación', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'capacidad' => ['type' => 'int', 'label' => 'Capacidad', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'condicion' => ['type' => 'select', 'label' => 'Condición', 'options' => [1 => 'Activo', 0 => 'Inactivo'], 'empty' => '- Seleccione -', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+    ];
+
     /**
      * Initialize method
      *

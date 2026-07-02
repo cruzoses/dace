@@ -37,9 +37,14 @@ class AulasController extends AppController
     */
     public function index()
     {
-        $aulas = $this->paginate($this->Aulas);
+        $conditions = $this->Aulas->formatConditions($this->request->getQueryParams());
+        $this->paginate['conditions'] = $conditions;
 
-        $this->set(compact('aulas'));
+        $aulas = $this->paginate($this->Aulas);
+        $filtros = $this->request->getQuery();
+
+        $searchFields = $this->Aulas->getSearchFields();
+        $this->set(compact('aulas', 'filtros', 'searchFields'));
     }
 
     /**
