@@ -307,26 +307,49 @@ class UsuariosController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) 
         {
-            /*
             $aDatos = $this->request->getData();
-            if (!empty($aDatos['fecha_nacimiento'])) 
-            {
-                $fecha = str_replace('/', '-', $aDatos['fecha_nacimiento']);
-                $aDatos['fecha_nacimiento'] = Time::createFromFormat('d-m-Y', $fecha)->format('Y-m-d');
+            $foto = $this->request->getData('foto');
+
+            if (!empty($foto['name']) && $foto['error'] === UPLOAD_ERR_OK) {
+                if ($foto['size'] > 256) {
+                    $this->Flash->error(__('La foto no debe superar los 256 bytes.'));
+                    $this->set(compact('usuario'));
+                    return;
+                }
+                $ext = strtolower(pathinfo($foto['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                if (!in_array($ext, $allowed)) {
+                    $this->Flash->error(__('Formato de foto no válido. Use jpg, jpeg, png o gif.'));
+                    $this->set(compact('usuario'));
+                    return;
+                }
+                $fotoDir = WWW_ROOT . 'img' . DS . 'fotos';
+                if (!is_dir($fotoDir)) {
+                    @mkdir($fotoDir, 0777, true);
+                }
+                $filename = 'foto' . $userId . '.' . $ext;
+                if (move_uploaded_file($foto['tmp_name'], $fotoDir . DS . $filename)) {
+                    $aDatos['foto'] = $filename;
+                } else {
+                    $this->Flash->error(__('No se pudo guardar la foto. Intente de nuevo.'));
+                    $this->set(compact('usuario'));
+                    return;
+                }
+            } else {
+                unset($aDatos['foto']);
             }
+
             $usuario = $this->Usuarios->patchEntity($usuario, $aDatos);
             if ($this->Usuarios->save($usuario)) 
             {
-                $this->Flash->success(__('The {0} has been saved.', 'Usuario'));
-                $this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS Usuarios ' . json_encode($aDatos));
-
-                return $this->redirect(['action' => 'index']);
+                $this->Auditorias->registrar('MODIFICA', 'MODIFICA PERFIL Usuarios ' . json_encode($aDatos));
+                $this->Flash->success(__('Perfil actualizado correctamente.'));
+                return $this->redirect(['action' => 'perfil']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Usuario'));
-            */
+            $this->Flash->error(__('No se pudo guardar el perfil. Intente de nuevo.'));
         }
         $rols = $this->Usuarios->Rols->find('list', ['limit' => 200]);
-        $aGeneros = \Cake\Core\Configure::read('aGeneros');
+        $aGeneros = Configure::read('aGeneros');
         $this->set(compact('usuario', 'rols','aGeneros'));
     }
 
