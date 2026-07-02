@@ -297,10 +297,37 @@ class ReportesController extends AppController
     public function listarAulas()
     {
         $this->loadModel('Aulas');
+        $this->loadModel('Sedes');
+
+        $sede_id = $this->request->getQuery('sede_id');
+
+        if ($sede_id === null) {
+            $sedes = $this->Sedes->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'nombre',
+                'order' => ['Sedes.nombre' => 'ASC']
+            ])->toArray();
+
+            $this->set(compact('sedes'));
+            $this->render('aulas');
+            return;
+        }
+
+        $conditions = [];
+        if ($sede_id !== '') {
+            $conditions['Aulas.sede'] = (int)$sede_id;
+        }
 
         $aulas = $this->Aulas->find('all', [
+            'conditions' => $conditions,
             'order' => ['Aulas.codigo' => 'ASC']
         ]);
+
+        $sedeNombre = '';
+        if ($sede_id !== '') {
+            $sede = $this->Sedes->get((int)$sede_id);
+            $sedeNombre = $sede->nombre;
+        }
 
         $data = [];
         foreach ($aulas as $aula) {
@@ -327,7 +354,12 @@ class ReportesController extends AppController
                 'Creado' => ['justification' => 'center', 'width' => 80],
             ]);
 
-            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE AULAS');
+            $titulo = 'LISTADO DE AULAS';
+            if ($sedeNombre) {
+                $titulo .= ' - ' . strtoupper($sedeNombre);
+            }
+
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, $titulo);
 
             $reportConfig = $this->_getReportConfig();
             $filename = 'aulas_' . date('Ymd_His') . '.pdf';
