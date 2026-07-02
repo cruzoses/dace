@@ -9,8 +9,7 @@
         <h3><strong><?= Configure::read('Sistema.Siglas');?></strong></h3>
     </div>
 
-    <div class="col-xs-12 col-sm-8 col-md-6">
-            <?= $this->Flash->render('auth'); ?>
+    <div class="col-xs-12 col-sm-8 col-md-6">            
             <div class="text-center">
                 <span class="visible-xs">
                     <h3><strong><?= Configure::read('Sistema.Siglas')?></strong></h3>
@@ -18,7 +17,7 @@
                 <span><h3><strong>INGRESO AL SISTEMA</strong></h3></span>                
             </div>
             
-            <div class="row"><?= $this->Flash->render('auth'); ?></div>
+            <?= $this->Flash->render(); ?>
 
             <?= $this->Form->create('Usuario',['url' => ['controller' => 'usuarios', 'action' => 'login']]);?>
 

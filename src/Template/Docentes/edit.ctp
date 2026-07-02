@@ -43,7 +43,7 @@
                         'class' => 'form-control select2', 'data-width' => '100%', 'required' => true,
                         'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->hidden('token');
+                    echo $this->Form->hidden('token',['value' => '$sToken']);
                     echo $this->Form->hidden('usuario_id');
                     echo $this->Form->control('activo', ['type' => 'checkbox']);
                 ?>

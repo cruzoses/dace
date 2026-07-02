@@ -345,7 +345,8 @@ class ReportesController extends AppController
         $this->loadModel('Docentes');
 
         $docentes = $this->Docentes->find('all', [
-            'order' => ['Docentes.apellidos' => 'ASC', 'Docentes.nombres' => 'ASC']
+            'order' => ['Docentes.id' => 'ASC']
+            //'order' => ['Docentes.apellidos' => 'ASC', 'Docentes.nombres' => 'ASC']
         ]);
 
         $data = [];

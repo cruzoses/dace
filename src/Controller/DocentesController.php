@@ -139,7 +139,8 @@ class DocentesController extends AppController
         $departamentos = $this->Docentes->Departamentos->find('list', ['limit' => 200]);
         $usuarios = $this->Docentes->Usuarios->find('list', ['limit' => 200]);
         $aGeneros = Configure::read('aGeneros');
-        $this->set(compact('docente', 'departamentos', 'usuarios', 'aGeneros'));
+        $sToken = $this->generateToken();
+        $this->set(compact('docente', 'departamentos', 'usuarios', 'aGeneros', 'sToken'));
     }
 
 

@@ -79,7 +79,7 @@ class UsuariosTable extends AppTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
-     */
+    */
     public function validationDefault(Validator $validator)
     {
         $validator
@@ -135,6 +135,26 @@ class UsuariosTable extends AppTable
             ->maxLength('password', 128)
             ->requirePresence('password', 'create')
             ->notEmptyString('password');
+
+        $validator
+            ->scalar('twitter')
+            ->maxLength('twitter', 40)
+            ->allowEmptyString('twitter');
+
+        $validator
+            ->scalar('facebook')
+            ->maxLength('facebook', 40)
+            ->allowEmptyString('facebook');
+
+        $validator
+            ->scalar('instagram')
+            ->maxLength('instagram', 40)
+            ->allowEmptyString('instagram');
+
+        $validator
+            ->scalar('foto')
+            ->maxLength('foto', 50)
+            ->allowEmptyString('foto');
 
         $validator
             ->boolean('activo')
