@@ -68,6 +68,9 @@ class DocentesController extends AppController
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Docentes ' . json_encode($docente->toArray()));
 
+        //pr($docente->toArray()); // Agrega esta línea para depuración
+        //exit;
+
         $this->set('docente', $docente);
     }
 
@@ -214,5 +217,38 @@ class DocentesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Genera un nuevo token para un docente y lo envía por correo electrónico.
+     *
+     * @param string|null $id Docente id.
+     * @return \Cake\Http\Response|null
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function nuevotoken($id = null)
+    {
+        
+        $docente = $this->Docentes->get($id);
+
+        if ($docente) 
+        {
+            $docente->token = $this->generateToken();
+            if ($this->Docentes->save($docente)) 
+            {
+                if ($this->enviarTokenPorEmail($docente)) 
+                {
+                    $this->Flash->success(__('Nuevo token generado y enviado por correo a {0}.', $docente->email));
+                    $this->Auditorias->registrar('ACTUALIZA', 'ACTUALIZA TOKEN Y ENVIA CORREO Docentes ' . json_encode($docente->toArray()));
+                } else {
+                    $this->Flash->error(__('Se generó un nuevo token, pero no se pudo enviar el correo a {0}. Intente de nuevo.', $docente->email));
+                }
+            } else {
+                $this->Flash->error(__('No se pudo actualizar el token del docente. Intente de nuevo.'));
+            }
+        } else {
+            $this->Flash->error(__('Docente no encontrado.'));
+        }
+        return $this->redirect(['action' => 'view', $id]);
     }
 }

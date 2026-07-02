@@ -95,3 +95,16 @@ body.home-page .logo-container img {
 .session-countdown-bar .btn:hover {
     background: rgba(255,255,255,0.2) !important;
 }
+
+.avatar {
+	/*opacity: 0.4;
+	filter: alpha(opacity=40);*/
+	height: 125px !important;
+	width: 95px !important;
+	vertical-align: middle !important;
+}
+
+.avatar-compa {
+	width: 140px !important;
+	vertical-align: middle !important;
+}

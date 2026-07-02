@@ -41,7 +41,7 @@ $title = $title ?? 'Buscar';
                                 'type' => 'select',
                                 'options' => $options,
                                 'empty' => $empty,
-                                'prepend' => $prepend,
+                                'prepend' => $prepend ?? '<i class="fa fa-asterisk"></i>',
                                 'class' => 'form-control select2',
                                 'data-width' => '100%',
                                 'value' => $value,
@@ -63,7 +63,7 @@ $title = $title ?? 'Buscar';
                                 'type' => 'text',
                                 'class' => $class,
                                 'value' => $value,
-                                'prepend' => $prepend,
+                                'prepend' => $prepend ?? '<i class="fa fa-asterisk"></i>',
                                 'append' => $append,
                             ]) ?>
                     <?php endswitch; ?>
@@ -75,8 +75,7 @@ $title = $title ?? 'Buscar';
                 'class' => 'btn btn-success btn-sm','escape' => false]);
             ?>
             <?= $this->Html->link('<i class="fa fa-eraser"></i>&nbsp;Limpiar',
-                ['action' => 'index'],
-                ['class' => 'btn btn-danger btn-sm','escape' => false]);
+                ['action' => 'index'],['class' => 'btn btn-danger btn-sm','escape' => false]);
             ?>
         </div>
         <?= $this->Form->end(); ?>

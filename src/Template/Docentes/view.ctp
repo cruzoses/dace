@@ -1,3 +1,172 @@
+<div class="box box-primary">
+
+	<div class="box-header with-border">
+		<h3 class="box-title"><i class="fa fa-child"></i>&nbsp;Datos del Docente</h3>
+		<div class="box-tools pull-right">
+			<button type="button" class="btn btn-box-tool" data-widget="collapse">
+				<i class="fa fa-minus"></i>
+			</button>
+			<?= $this->Html->link('<i class="fa fa-close"></i>',
+				['action' => 'index'],['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
+			?>
+		</div>
+	</div>
+
+	<div class="box-body table-responsive no-padding">
+		<table class="table table-bordered table-condensed text-center">
+			<tr>
+				<th class="bg-gray">C&eacute;dula</th>
+				<th class="bg-gray" colspan="2">Nombres Y Apellidos</th>
+				<th rowspan="4" class="avatar no-padding">
+					<?= $this->Html->image('site/usuario.jpg',['class'=>'avatar img-responsive img-lazy', 'alt'=> 'Foto']) ?>
+				</th>
+			</tr>
+			<tr>
+				<td><?= $this->Number->format($docente->cedula) ?></td>
+				<td colspan="2">
+					<?= h($docente->full_name) ?>
+				</td>
+			</tr>
+			<tr>
+				<th class="bg-gray">Usuario</th>
+				<th class="bg-gray">Correo Electr&oacute;nico</th>
+				<th class="bg-gray">Tel&eacute;fono</th>
+			</tr>
+			<tr>
+				<td><?= h($docente->usuario->username) ?></td>
+				<td><?= h($docente->email) ?></td>
+				<td><?= h($docente->telefonos) ?></td>
+			</tr>
+		</table>
+	</div>
+
+</div>
+
+<div class="box box-primary">
+
+	<div class="box-header with-border">
+
+		<h3 class="box-title"><i class="fa fa-info"></i>&nbsp;Datos del Personales</h3>
+
+		<div class="box-tools pull-right">
+
+			<button type="button" class="btn btn-box-tool" data-widget="collapse">
+				<i class="fa fa-minus"></i>
+			</button>
+
+		</div>
+
+	</div>
+
+	<div class="box-body table-responsive no-padding">
+
+		<table class="table table-bordered table-condensed">
+			<tr>
+				<th class="bg-gray text-center col-lg-3" style colspan="1">Dato</th>
+				<th class="bg-gray text-center" style colspan="1">Detalle</th>
+			</tr>
+			<tr>
+				<td class="text-left" style colspan="1">ID N&uacute;mero</td>
+				<td class="text-left" style colspan="1"><?= $this->Number->format($docente->id) ?></td>
+			</tr>
+			<tr>
+				<td class="text-left" style colspan="1">N&uacute;mero de C&eacute;dula </td>
+				<td class="text-left" style colspan="1"><?= $this->Number->format($docente->cedula) ?></td>
+			</tr>
+			<tr>
+				<td class="text-left" style colspan="1">Apellidos</td>
+				<td class="text-left" style colspan="1"><?= h($docente->apellidos) ?></td>
+			</tr>
+			<tr>
+				<td class="text-left" style colspan="1">Nombres</td>
+				<td class="text-left" style colspan="1"><?= h($docente->nombres) ?></td>
+			</tr>
+			<tr>
+				<td class=" text-left" style colspan="1">Fecha Nacimiento</td>
+				<td class=" text-left" style colspan="1">
+					<?= h($docente->fecha_nacimiento) ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-left" style colspan="1">Correo Electr&oacute;nico</td>
+				<td class="text-left" style colspan="1"><?= h($docente->email) ?></td>
+			</tr>
+			<tr>
+				<td class="text-left" style colspan="1">Clave de Registro</td>
+				<td class="text-left" style colspan="1"><?= h($docente->token) ?></td>
+			</tr>
+		</table>
+
+	</div>
+
+	<div class="box-footer">
+
+		<?php if( empty( $docente->usuario_id) ) : ?>
+		
+			<?= $this->Html->link('<i class="fa fa-envelope"></i>&nbsp;Token de Registro',
+				['action' => 'nuevotoken',$docente->id],
+				['class' => 'btn bg-olive btn-flat pull-left','escape' => false]); 
+			?>
+
+		<?php endif; ?>
+	</div>
+
+</div>
+
+
+<?php if( ! empty($docente->cursos)) : ?>
+
+	<div class="box box-default box-solid">
+
+		<div class="box-header with-border">
+			<h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Cursos Asignados</h3>
+		</div>
+
+		<div class="box-body table-responsive">
+
+			<table class="table table-hover table-condensed">
+
+				<thead>
+					<tr>
+						<th><b>Per&iacute;odo</b></th>
+						<th><b>Asignaci&oacute;n</b></th>
+						<th><b>Programa</b></th>
+						<th><b>Asignatura</b></th>
+						<th><b>Nombre de la Asignatura</b></th>
+						<th class="text-center"><b>Cr&eacute;ditos</b></th>
+						<th class="text-center"><b>Secci&oacute;n</b></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach($docente->cursos as $curso) : ?>
+						<tr>
+							<td><?= $curso->periodo->codigo;?></td>
+							<td><?= $curso->id;?></td>
+							<td><?= $curso->programa->codigo;?></td>
+							<td><?= $curso->asignatura->codigo;?></td>
+							<td><?= $curso->asignatura->nombre;?></td>
+							<td class="text-center"><?= $curso->asignatura->creditos;?></td>
+							<td class="text-center">
+								<?= $this->Html->link( $curso->seccion,
+									['controller' => 'Docentes', 'action' => 'cursosasignados',$curso->docente_id],
+									['class' => 'btn btn-default btn-xs']);
+								?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="box-footer"></div>
+			
+	</div>
+<?php endif; ?>
+
+
+
+
+<!--
 <div class="row">
 	<div class="col-md-12">
 		<div class="box box-info box-solid">
@@ -119,3 +288,4 @@
     </div>
 </div>
 
+-->

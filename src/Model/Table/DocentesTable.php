@@ -26,10 +26,10 @@ use Cake\Validation\Validator;
 class DocentesTable extends AppTable
 {
     protected $searchFields = [
-        'id' => ['type' => 'int', 'label' => 'ID'],
-        'cedula' => ['type' => 'int', 'label' => 'Cédula'],
-        'nombres' => ['type' => 'text', 'label' => 'Nombres'],
-        'apellidos' => ['type' => 'text', 'label' => 'Apellidos'],
+        'id' => ['type' => 'int', 'label' => 'No. de Id', 'class' => 'isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'cedula' => ['type' => 'int', 'label' => 'Cédula', 'class' => 'isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'nombres' => ['type' => 'text', 'label' => 'Nombres', 'class' => 'isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'apellidos' => ['type' => 'text', 'label' => 'Apellidos', 'class' => 'isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'departamento_id' => [
             'type' => 'select',
             'label' => 'Departamento',
