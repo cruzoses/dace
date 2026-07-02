@@ -95,11 +95,6 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?= $this->Url->build(['controller' => 'firmas','action' => 'index'])?>">
-								<i class="fa fa-circle-o"></i>&nbsp;Firmas
-							</a>
-						</li>
-						<li>
 							<a href="<?= $this->Url->build(['controller' => 'horarios','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Horarios
 							</a>
@@ -127,11 +122,6 @@
 						<li>
 							<a href="<?= $this->Url->build(['controller' => 'programas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Programas (P.N.F)
-							</a>
-						</li>
-						<li>
-							<a href="<?= $this->Url->build(['controller' => 'sedes','action' => 'index'])?>">
-								<i class="fa fa-circle-o"></i>&nbsp;Sedes
 							</a>
 						</li>
 						<li>
@@ -170,6 +160,7 @@
         				</li>
 					</ul>
 				</li>
+				<!-- Gestión Docente -->
 				<li class="treeview">
 					<a href="#"><i class="fa fa-sitemap"></i><span>Gestión Docente</span>
 						<span class="pull-right-container">
@@ -179,6 +170,28 @@
 					<ul class="treeview-menu">
 						<li>
 							<a href="/gestionacademica"><i class="fa fa-circle-o"></i>&nbsp;Avance de Gestión</a>
+						</li>
+					</ul>
+				</li>
+			<?php endif; ?>
+			<?php if( $this->Permiso->tiene([1,2]) ) : ?>
+				<!-- Institucion -->
+				<li class="treeview">
+					<a href="#"><i class="fa fa-home"></i><span>Instituci&oacute;n</span>
+						<span class="pull-right-container">
+							<i class="fa fa-angle-left pull-right"></i>
+						</span>
+					</a>
+					<ul class="treeview-menu">
+						<li>
+							<a href="<?= $this->Url->build(['controller' => 'firmas','action' => 'index'])?>">
+								<i class="fa fa-circle-o"></i>&nbsp;Firmas
+							</a>
+						</li>
+						<li>
+							<a href="<?= $this->Url->build(['controller' => 'sedes','action' => 'index'])?>">
+								<i class="fa fa-circle-o"></i>&nbsp;Sedes
+							</a>
 						</li>
 					</ul>
 				</li>
@@ -241,10 +254,12 @@
 						</li>
 					</ul>
 				</li>
-				<!-- P.N.F. Avanzado -->
-				<?php if( $this->Permiso->tiene([1,2,3]) ) : ?>
-					<?php echo $this->Element('menupnfa');?>
-				<?php endif; ?>
+			<?php endif; ?>
+			<?php if( $this->Permiso->tiene([1,2,3]) ) : ?>
+				<!-- P.N.F. Avanzado -->				
+				<?php echo $this->Element('menupnfa');?>
+			<?php endif; ?>
+			<?php if( $this->Permiso->tiene([1,2,3]) ) : ?>
 				<!-- Reportes -->
 				<li class="treeview">
 					<a href="#"><i class="fa fa-print"></i><span>Reportes</span>

@@ -10,7 +10,7 @@ class ArchivosController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias']);
+        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarDocentes']);
     }
 
     public function exportarEstados()
@@ -159,4 +159,64 @@ class ArchivosController extends AppController
 
         return $this->response;
     }
+
+    public function exportarDocentes()
+    {
+        $this->loadModel('Docentes');
+
+        $docentes = $this->Docentes->find('all', [
+            'contain' => ['Departamentos', 'Usuarios'],
+            'order' => ['Docentes.apellidos' => 'ASC', 'Docentes.nombres' => 'ASC']
+        ]);
+
+        $data = [];
+        foreach ($docentes as $d) {
+            $data[] = [
+                'Cédula' => $d->cedula,
+                'Nombres' => $d->nombres,
+                'Apellidos' => $d->apellidos,
+                'fecha_nacimiento' => $d->fecha_nacimiento ? $d->fecha_nacimiento->format('d/m/Y') : '',
+                'Sexo' => $d->sexo,
+                'Correo' => $d->email,
+                // 'Departamento' => $d->departamento->nombre,
+                // 'Usuario' => $d->has('usuario') ? $d->usuario->username : 'N/A',
+                //  'Creado' => $d->created->format('d/m/Y'),
+            ];
+        }
+
+        $excel = new ExcelBuilder();
+        $excel->setColumns([
+            'Cédula' => ['justification' => 'center'],
+            'Nombres' => ['justification' => 'left'],
+            'Apellidos' => ['justification' => 'left'],
+            'Fecha_Nacimiento' => ['justification' => 'center'],
+            'Sexo' => ['justification' => 'center'],
+            'Correo' => ['justification' => 'left'],
+            //'Departamento' => ['justification' => 'left'],
+            //'Usuario' => ['justification' => 'center'],
+            //'Creado' => ['justification' => 'center'],
+        ]);
+        $excel->setFileName('docentes');
+
+        $content = $excel->generateExcel($data, 'LISTADO DE DOCENTES');
+
+        $dir = WWW_ROOT . 'files' . DS . 'excel';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $filename = $excel->getFileName() . '_' . date('Ymd_His') . '.xlsx';
+        $filePath = $dir . DS . $filename;
+        file_put_contents($filePath, $content);
+
+        $this->autoRender = false;
+        $this->viewBuilder()->setClassName(null);
+        $this->viewBuilder()->setLayout(null);
+        $this->response = $this->response->withType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->response = $this->response->withHeader('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $this->response->getBody()->write($content);
+
+        return $this->response;
+    }
 }
+

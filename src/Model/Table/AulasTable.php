@@ -9,6 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Aulas Model
  *
+ * @property &\Cake\ORM\Association\HasMany $Cursos
+ *
  * @method \App\Model\Entity\Aula get($primaryKey, $options = [])
  * @method \App\Model\Entity\Aula newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Aula[] newEntities(array $data, array $options = [])
@@ -37,6 +39,10 @@ class AulasTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->hasMany('Cursos', [
+            'foreignKey' => 'aula_id',
+        ]);
     }
 
     /**

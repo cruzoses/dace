@@ -49,8 +49,8 @@ class AulasFixture extends TestFixture
                 'capacidad' => 1,
                 'ubicacion' => 'Lorem ipsum dolor sit amet',
                 'condicion' => 1,
-                'created' => '2026-07-01 13:16:30',
-                'modified' => '2026-07-01 13:16:30',
+                'created' => '2026-07-02 17:36:37',
+                'modified' => '2026-07-02 17:36:37',
             ],
         ];
         parent::init();
