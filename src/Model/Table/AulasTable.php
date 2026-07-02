@@ -25,6 +25,7 @@ use Cake\Validation\Validator;
 class AulasTable extends AppTable
 {
     protected $searchFields = [
+        'sede' => ['type' => 'select', 'label' => 'Sede', 'options' => [], 'empty' => '- Seleccione -', 'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'codigo' => ['type' => 'exact', 'label' => 'Código', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'ubicacion' => ['type' => 'text', 'label' => 'Ubicación', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],

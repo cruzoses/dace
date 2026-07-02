@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
 
 /**
@@ -43,7 +44,9 @@ class AulasController extends AppController
         $aulas = $this->paginate($this->Aulas);
         $filtros = $this->request->getQuery();
 
+        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
         $searchFields = $this->Aulas->getSearchFields();
+        $searchFields['sede']['options'] = $sedes;
         $this->set(compact('aulas', 'filtros', 'searchFields'));
     }
 
