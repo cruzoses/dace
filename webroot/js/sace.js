@@ -136,6 +136,16 @@ $(document).ready( function () {
 		}
 	});
 
+    $('#goPrint').click(function (e) {
+        e.preventDefault();
+        if ( $('#printform').is(':visible') ) 
+        {            
+			$('#printform').hide();
+		} else {
+			$('#printform').show();
+		}
+	});
+
 	$('#buscadorForm').submit(function (e) { 
 		$('#load').show();
 	});

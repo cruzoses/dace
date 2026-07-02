@@ -47,7 +47,8 @@ class AulasController extends AppController
         $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
         $searchFields = $this->Aulas->getSearchFields();
         $searchFields['sede']['options'] = $sedes;
-        $this->set(compact('aulas', 'filtros', 'searchFields'));
+        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
+        $this->set(compact('aulas', 'filtros', 'searchFields', 'sedes'));
     }
 
     /**
@@ -64,8 +65,9 @@ class AulasController extends AppController
         ]);
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Aulas ' . json_encode($aula->toArray()));
-
+        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
         $this->set('aula', $aula);
+        $this->set('sedes', $sedes);
     }
 
 
@@ -77,9 +79,11 @@ class AulasController extends AppController
     public function add()
     {
         $aula = $this->Aulas->newEntity();
-        if ($this->request->is('post')) {
+        if ($this->request->is('post'))
+        {
             $aula = $this->Aulas->patchEntity($aula, $this->request->getData());
-            if ($this->Aulas->save($aula)) {
+            if ($this->Aulas->save($aula)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Aula'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Aulas ' . json_encode($this->request->getData()));
 
@@ -87,7 +91,8 @@ class AulasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Aula'));
         }
-        $this->set(compact('aula'));
+        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
+        $this->set(compact('aula', 'sedes'));
     }
 
 
@@ -113,7 +118,8 @@ class AulasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Aula'));
         }
-        $this->set(compact('aula'));
+        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
+        $this->set(compact('aula', 'sedes'));
     }
 
 

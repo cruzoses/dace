@@ -8,7 +8,7 @@
     <div class="col-md-12">    
         <div class="box box-warning box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Aulas</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Editar Aula</h3>
 		        <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-close"></i>',
 				        ['action' => 'index'],
@@ -26,12 +26,15 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('sede', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('sede', ['type' => 'select', 'options' => $sedes, 'empty' => 'Seleccione una Sede',
+                        'class' => 'form-control select2',  'data-width' => '100%', 'required' => true, 
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('codigo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('capacidad', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('capacidad', ['class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('ubicacion', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('condicion', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('condicion', ['type' => 'checkbox','label' => 'Condición','hiddenField' => false]);
                 ?>
             </div>            
             <div class="box-footer">

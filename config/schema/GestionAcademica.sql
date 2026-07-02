@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 30/6/2026
+Modified: 2/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `horarios`
 CREATE TABLE IF NOT EXISTS `aulas`
 (
   `id` Int(11) NOT NULL AUTO_INCREMENT,
-  `sede` Int(11) NOT NULL DEFAULT 1,
+  `sede_id` Int NOT NULL,
   `codigo` Varchar(20) NOT NULL,
   `nombre` Varchar(80) NOT NULL,
   `capacidad` Smallint(6) NOT NULL,
@@ -125,6 +125,11 @@ INSERT INTO rols(nombre,activo,created,modified) VALUES('DIRECTOR C.A.S.R.C.E',1
 INSERT INTO rols(nombre,activo,created,modified) VALUES('ANALISTA',1,now(),now());
 INSERT INTO rols(nombre,activo,created,modified) VALUES('COORDINADOR DE SEDE',1,now(),now());
 INSERT INTO rols(nombre,activo,created,modified) VALUES('DOCENTE',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('COORDINADOR P.N.F.A',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('ANALISTA P.N.F.A',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('AUXILIAR',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('ESTUDIANTE',1,now(),now());
+INSERT INTO rols(nombre,activo,created,modified) VALUES('REVISION',1,now(),now());
 
 -- Table usuarios
 
@@ -141,8 +146,9 @@ CREATE TABLE IF NOT EXISTS `usuarios`
   `username` Varchar(50) NOT NULL,
   `password` Varchar(128) NOT NULL,
   `twitter` Varchar(40),
-  `facebook` Varchar(40),
   `instagram` Varchar(40),
+  `facebook` Varchar(40),
+  `foto` Varchar(50),
   `activo` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -196,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `mension_carreras`
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
 ;
-insert into mension_carreras(nombre,activa,created,modified) values('SIN MENSION',1,now(),now());
+INSERT INTO mension_carreras(nombre,activa,created,modified) values('SIN MENSION',1,now(),now());
 
 -- Table sedes
 
@@ -909,5 +915,8 @@ ALTER TABLE `docentes` ADD CONSTRAINT `pfk_departamento_docente` FOREIGN KEY (`d
 ;
 
 ALTER TABLE `cursos` ADD CONSTRAINT `pfk_aula_curso` FOREIGN KEY (`aula_id`) REFERENCES `aulas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `aulas` ADD CONSTRAINT `pfk_sede_aula` FOREIGN KEY (`sede_id`) REFERENCES `sedes` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 

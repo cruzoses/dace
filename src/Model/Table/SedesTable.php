@@ -44,7 +44,7 @@ class SedesTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('sedes');
-        $this->setDisplayField('nombre');
+        $this->setDisplayField('codename');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

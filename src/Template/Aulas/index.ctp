@@ -4,10 +4,9 @@
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Aulas</h3>
                 <div class="box-tools pull-right">
-                    <?= $this->Html->link('<i class="fa fa-print"></i>',
-                        ['controller' => 'Reportes', 'action' => 'listarAulas'], 
-                        ['class'=>'btn btn-box-tool','escape' => false]) 
-                    ?>
+			        <button type="button" class="btn btn-box-tool" id="goPrint" title="Buscar">
+				        <i class="fa fa-print"></i>
+			        </button>                    
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
@@ -23,33 +22,40 @@
 		        <div class="oculto" id="buscar">
 			        <?= $this->element('search_form', ['title' => 'Buscar Aula', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
 		        </div>
+		        <div class="oculto" id="printform">
+			        <?= $this->element('Aulas/listar', ['sedes' =>  $sedes]);?>
+		        </div>                
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('sede') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('codigo') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('codigo', 'Código') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
+                            <!--                         
                             <th scope="col"><?= $this->Paginator->sort('capacidad') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('ubicacion') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('ubicacion') ?></th>                            
                             <th scope="col"><?= $this->Paginator->sort('condicion') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                            -->
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($aulas as $aula): ?>
                             <tr>
-                        <td><?= $this->Number->format($aula->id) ?></td>
+                                <td><?= $this->Number->format($aula->id) ?></td>
                                 <td><?= $this->Number->format($aula->sede) ?></td>
                                 <td><?= h($aula->codigo) ?></td>
                                 <td><?= h($aula->nombre) ?></td>
+                                <!--
                                 <td><?= $this->Number->format($aula->capacidad) ?></td>
                                 <td><?= h($aula->ubicacion) ?></td>
                                 <td><?= h($aula->condicion) ?></td>
-                                <td><?= h($aula->created) ?></td>
-                                <td><?= h($aula->modified) ?></td>
+                                -->
+                                <td class="text-center"><?= h($aula->created) ?></td>
+                                <td class="text-center"><?= h($aula->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $aula->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $aula->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -60,7 +66,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="7" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>

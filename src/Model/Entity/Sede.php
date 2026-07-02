@@ -45,5 +45,16 @@ class Sede extends Entity
         'cursos' => true,
         'estudiante_programas' => true,
         'carreras' => true,
+        'codename' => true,
     ];
+
+    protected $_virtual = [
+        'codename',
+    ];
+
+    protected function _getCodename()
+    {
+        return $this->codigo .' : '. $this->nombre;
+    }
+
 }
