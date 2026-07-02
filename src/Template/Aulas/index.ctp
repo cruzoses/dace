@@ -4,6 +4,10 @@
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Aulas</h3>
                 <div class="box-tools pull-right">
+                    <?= $this->Html->link('<i class="fa fa-print"></i>',
+                        ['controller' => 'Reportes', 'action' => 'listarAulas'], 
+                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>

@@ -10,7 +10,7 @@ class ReportesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarEstados', 'listarMunicipios', 'listarDocentes', 'listarUsuarios', 'download']);
+        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarEstados', 'listarMunicipios', 'listarDocentes', 'listarUsuarios', 'listarAulas', 'download']);
     }
 
     public function downloadPdf()
@@ -287,6 +287,50 @@ class ReportesController extends AppController
 
             $reportConfig = $this->_getReportConfig();
             $filename = 'asignaturas_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
+        $this->render('showreport');
+    }
+
+    public function listarAulas()
+    {
+        $this->loadModel('Aulas');
+
+        $aulas = $this->Aulas->find('all', [
+            'order' => ['Aulas.codigo' => 'ASC']
+        ]);
+
+        $data = [];
+        foreach ($aulas as $aula) {
+            $data[] = [
+                'Codigo' => $aula->codigo,
+                'Nombre' => $aula->nombre,
+                'Capacidad' => $aula->capacidad,
+                'Ubicacion' => $aula->ubicacion,
+                'Condicion' => $aula->condicion ? 'Activo' : 'Inactivo',
+                'Creado' => $aula->created->format('d/m/Y'),
+            ];
+        }
+
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'Codigo' => ['justification' => 'center', 'width' => 60],
+                'Nombre' => ['justification' => 'left', 'width' => 160],
+                'Capacidad' => ['justification' => 'center', 'width' => 60],
+                'Ubicacion' => ['justification' => 'left', 'width' => 160],
+                'Condicion' => ['justification' => 'center', 'width' => 60],
+                'Creado' => ['justification' => 'center', 'width' => 80],
+            ]);
+
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE AULAS');
+
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'aulas_' . date('Ymd_His') . '.pdf';
             file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
             $sFileName = $reportConfig['webroot'] . $filename;
         }
