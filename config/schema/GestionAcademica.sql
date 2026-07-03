@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 3/7/2026
+Modified: 4/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -498,6 +498,7 @@ CREATE TABLE IF NOT EXISTS `mallas`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
   `programa_id` Int NOT NULL,
+  `trayecto_id` Int NOT NULL,
   `asignatura_id` Int NOT NULL,
   `nota_minima` Varchar(10),
   `created` Datetime,
@@ -510,6 +511,9 @@ CREATE INDEX `IX_Malla_Programa` ON `mallas` (`programa_id`)
 ;
 
 CREATE INDEX `IX_Malla_Asignatura` ON `mallas` (`asignatura_id`)
+;
+
+CREATE INDEX `IX_Malla_Trayecto` ON `mallas` (`trayecto_id`)
 ;
 
 -- Table cursos
@@ -940,5 +944,8 @@ ALTER TABLE `horarios` ADD CONSTRAINT `pfk_sede_horario` FOREIGN KEY (`sede_id`)
 ;
 
 ALTER TABLE `horarios` ADD CONSTRAINT `pfk_periodo_horario` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `mallas` ADD CONSTRAINT `pfk_trayecto_malla` FOREIGN KEY (`trayecto_id`) REFERENCES `trayectos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
