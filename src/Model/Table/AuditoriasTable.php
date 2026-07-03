@@ -97,7 +97,7 @@ class AuditoriasTable extends Table
      * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules)
-    {
+    {        
         $rules->add($rules->existsIn(['usuario_id'], 'Usuarios'));
 
         return $rules;

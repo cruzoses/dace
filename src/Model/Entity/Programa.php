@@ -22,7 +22,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Curso[] $cursos
  * @property \App\Model\Entity\EstudiantePrograma[] $estudiante_programas
  * @property \App\Model\Entity\Malla[] $mallas
- */
+*/
 class Programa extends Entity
 {
     /**
@@ -33,7 +33,7 @@ class Programa extends Entity
      * (or remove it), and explicitly make individual fields accessible as needed.
      *
      * @var array
-     */
+    */
     protected $_accessible = [
         'codigo' => true,
         'nombre' => true,
@@ -41,6 +41,8 @@ class Programa extends Entity
         'subsistema_id' => true,
         'nota_minima' => true,
         'creditos' => true,
+        'pasantia' => true,
+        'califica' => true,
         'activo' => true,
         'created' => true,
         'modified' => true,
@@ -50,4 +52,14 @@ class Programa extends Entity
         'estudiante_programas' => true,
         'mallas' => true,
     ];
+
+    protected $_virtual = [
+        'codename',
+    ];
+
+    protected function _getCodename()
+    {
+        return $this->codigo .' : '. $this->nombre;
+    }
+
 }

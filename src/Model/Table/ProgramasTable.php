@@ -26,8 +26,14 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class ProgramasTable extends Table
+class ProgramasTable extends AppTable
 {
+    protected $searchFields = [
+        'id' => ['type' => 'int', 'label' => 'No. de ID', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'codigo' => ['type' => 'exact', 'label' => 'Código', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'carrera_id' => ['type' => 'select', 'label' => 'Carrera', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => '-- Todas --'],
+    ];
     /**
      * Initialize method
      *
@@ -39,7 +45,7 @@ class ProgramasTable extends Table
         parent::initialize($config);
 
         $this->setTable('programas');
-        $this->setDisplayField('id');
+        $this->setDisplayField('codename');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -98,6 +104,16 @@ class ProgramasTable extends Table
             ->notEmptyString('creditos');
 
         $validator
+            ->boolean('pasantia')
+            ->requirePresence('pasantia', 'create')
+            ->notEmptyString('pasantia');
+
+        $validator
+            ->boolean('califica')
+            ->requirePresence('califica', 'create')
+            ->notEmptyString('califica');
+
+        $validator
             ->boolean('activo')
             ->requirePresence('activo', 'create')
             ->notEmptyString('activo');
@@ -114,6 +130,7 @@ class ProgramasTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->isUnique(['codigo'], 'Ya existe una programa con este código.'));
         $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
         $rules->add($rules->existsIn(['subsistema_id'], 'Subsistemas'));
 

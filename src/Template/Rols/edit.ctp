@@ -8,7 +8,7 @@
     <div class="col-md-12">    
         <div class="box box-primary box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Rols</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Editar Tipo de Usuario</h3>
 		        <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
@@ -28,11 +28,13 @@
                 'class' => 'horizontal']); 
             ?>
             <div class="box-body">
-                <?php
-                    echo $this->Form->control('nombre');
-                    echo $this->Form->control('activo');
-                echo $this->Form->control('usuarios._ids', ['options' => $usuarios]);
-              ?>
+                <fieldset>
+                    <?php
+                        echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);                    
+                        echo $this->Form->control('usuarios._ids', ['options' => $usuarios, 'prepend' => '<i class="fa fa-asterisk"></i>']);
+                        echo $this->Form->control('activo', ['type' => 'checkbox']);
+                    ?>
+                </fieldset>
             </div>            
             <div class="box-footer">
 		        <?= $this->Form->button('<i class="fa fa-save"></i>&nbsp;Guardar',

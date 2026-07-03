@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `firmas`
 CREATE TABLE IF NOT EXISTS `horarios`
 (
   `id` Int(11) NOT NULL AUTO_INCREMENT,
-  `sede` Int(11) NOT NULL,
-  `periodo` Int(11) NOT NULL,
+  `sede_id` Int NOT NULL,
+  `periodo_id` Int NOT NULL,
   `codigo` Varchar(20) NOT NULL,
   `dia` Smallint(6) NOT NULL,
   `turno` Smallint(6) NOT NULL,
@@ -56,6 +56,9 @@ CREATE TABLE IF NOT EXISTS `horarios`
   `modified` Datetime,
   PRIMARY KEY (`id`)
 )
+;
+
+CREATE INDEX `IX_Relationship3` ON `horarios` (`periodo_id`)
 ;
 
 -- Table aulas
@@ -237,6 +240,7 @@ CREATE TABLE IF NOT EXISTS `carreras`
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
 ;
+INSERT INTO carreras(codigo,nombre,mension_carrera_id,titulo_otorgado,activa,created,modified) VALUES('S/C','SIN DEFINIR',1,'SIN DEFINIR',1,now(),now());
 
 CREATE INDEX `IX_Carrera_Mension` ON `carreras` (`mension_carrera_id`)
 ;
@@ -266,6 +270,8 @@ CREATE TABLE `subsistemas`
   PRIMARY KEY (`id`)
 )
 ;
+INSERT INTO subsistemas(codigo,nombre,activo,created,modified) VALUES('PREG','PRE-GRADO',1,now(),now());
+INSERT INTO subsistemas(codigo,nombre,activo,created,modified) VALUES('POST','POST-GRADO',1,now(),now());
 
 -- Table programas
 
@@ -273,11 +279,13 @@ CREATE TABLE IF NOT EXISTS `programas`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
   `codigo` Varchar(20) NOT NULL,
-  `nombre` Varchar(50) NOT NULL,
+  `nombre` Varchar(80) NOT NULL,
   `carrera_id` Int NOT NULL,
   `subsistema_id` Int NOT NULL,
-  `nota_minima` Char(10) NOT NULL,
+  `nota_minima` Smallint(6) NOT NULL,
   `creditos` Smallint(6) NOT NULL,
+  `pasantia` Tinyint(1) NOT NULL,
+  `califica` Tinyint(1) NOT NULL,
   `activo` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -926,5 +934,11 @@ ALTER TABLE `cursos` ADD CONSTRAINT `pfk_aula_curso` FOREIGN KEY (`aula_id`) REF
 ;
 
 ALTER TABLE `aulas` ADD CONSTRAINT `pfk_sede_aula` FOREIGN KEY (`sede_id`) REFERENCES `sedes` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `horarios` ADD CONSTRAINT `pfk_sede_horario` FOREIGN KEY (`sede_id`) REFERENCES `sedes` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `horarios` ADD CONSTRAINT `pfk_periodo_horario` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 

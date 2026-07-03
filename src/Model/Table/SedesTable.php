@@ -60,6 +60,9 @@ class SedesTable extends AppTable
         $this->hasMany('EstudianteProgramas', [
             'foreignKey' => 'sede_id',
         ]);
+        $this->hasMany('Horarios', [
+            'foreignKey' => 'sede_id',
+        ]);
         
         $this->belongsToMany('Carreras', [
             'foreignKey' => 'sede_id',

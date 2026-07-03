@@ -17,6 +17,8 @@
         <?= $this->Html->meta('favicon','img/site/favicon.ico',array('type'=>'icon')) ?>
         <!-- Bootstrap 3.3.7 -->
         <?= $this->Html->css('AdminLTE./bower_components/bootstrap/dist/css/bootstrap.min'); ?>
+        <!-- Bootstrap Datepicker -->
+        <?= $this->Html->css('AdminLTE./plugins/datepicker/dist/css/bootstrap-datepicker.min'); ?>
         <!-- Bootstrap TimePicker -->
         <?= $this->Html->css('AdminLTE./plugins/timepicker/bootstrap-timepicker.min'); ?>
         <!-- Sweetalert2 -->
@@ -77,6 +79,9 @@
         </div>
         <!-- Bootstrap 3.3.7 -->
         <?= $this->Html->script('AdminLTE./bower_components/bootstrap/dist/js/bootstrap.min'); ?>
+        <!-- Bootstrap Datepicker -->
+        <?= $this->Html->script('AdminLTE./plugins/datepicker/dist/js/bootstrap-datepicker.min'); ?>
+        <?= $this->Html->script('AdminLTE./plugins/datepicker/dist/locales/bootstrap-datepicker.es.min'); ?>
         <!-- Bootstrap TimePicker -->
         <?= $this->Html->script('AdminLTE./plugins/timepicker/bootstrap-timepicker.min'); ?>
         <!-- sweetalert2 -->

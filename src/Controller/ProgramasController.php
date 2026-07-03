@@ -10,23 +10,21 @@ use Cake\Event\Event;
  * @property \App\Model\Table\ProgramasTable $Programas
  *
  * @method \App\Model\Entity\Programa[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class ProgramasController extends AppController
 {
 
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
 	}
 
-    /**
-     * 
-    */
 	public function isAuthorized($user)
 	{
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        {
+            return true;
+        }
 		return parent::isAuthorized($user);
 	}
 	
@@ -37,12 +35,18 @@ class ProgramasController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Programas->formatConditions($this->request->getQueryParams());
         $this->paginate = [
+            'conditions' => $conditions,
             'contain' => ['Carreras', 'Subsistemas'],
         ];
         $programas = $this->paginate($this->Programas);
+        $filtros = $this->request->getQuery();
 
-        $this->set(compact('programas'));
+        $searchFields = $this->Programas->getSearchFields();
+        $searchFields['carrera_id']['options'] = $this->Programas->Carreras->find('list', ['limit' => 200])->toArray();
+
+        $this->set(compact('programas', 'filtros', 'searchFields'));
     }
 
     /**
@@ -72,9 +76,11 @@ class ProgramasController extends AppController
     public function add()
     {
         $programa = $this->Programas->newEntity();
-        if ($this->request->is('post')) {
+        if ($this->request->is('post')) 
+        {
             $programa = $this->Programas->patchEntity($programa, $this->request->getData());
-            if ($this->Programas->save($programa)) {
+            if ($this->Programas->save($programa)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Programa'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Programas ' . json_encode($this->request->getData()));
 
@@ -82,8 +88,8 @@ class ProgramasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Programa'));
         }
-        $carreras = $this->Programas->Carreras->find('list', ['limit' => 200]);
-        $subsistemas = $this->Programas->Subsistemas->find('list', ['limit' => 200]);
+        $carreras = $this->Programas->Carreras->find('list', ['limit' => 200])->where(['activa' => true]);
+        $subsistemas = $this->Programas->Subsistemas->find('list', ['limit' => 200])->where(['activo' => true]);
         $this->set(compact('programa', 'carreras', 'subsistemas'));
     }
 
