@@ -10,7 +10,7 @@ class ArchivosController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarDocentes']);
+        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarPeriodos', 'exportarDocentes']);
     }
 
     public function exportarEstados()
@@ -140,6 +140,62 @@ class ArchivosController extends AppController
         $excel->setFileName('parroquias');
 
         $content = $excel->generateExcel($data, 'LISTADO DE PARROQUIAS');
+
+        $dir = WWW_ROOT . 'files' . DS . 'excel';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $filename = $excel->getFileName() . '_' . date('Ymd_His') . '.xlsx';
+        $filePath = $dir . DS . $filename;
+        file_put_contents($filePath, $content);
+
+        $this->autoRender = false;
+        $this->viewBuilder()->setClassName(null);
+        $this->viewBuilder()->setLayout(null);
+        $this->response = $this->response->withType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->response = $this->response->withHeader('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $this->response->getBody()->write($content);
+
+        return $this->response;
+    }
+
+    public function exportarPeriodos()
+    {
+        $this->loadModel('Periodos');
+
+        $periodos = $this->Periodos->find('all', [
+            'order' => ['Periodos.lapso' => 'DESC', 'Periodos.codigo' => 'ASC']
+        ]);
+
+        $data = [];
+        foreach ($periodos as $p) {
+            $data[] = [
+                'Codigo' => $p->codigo,
+                'Nombre' => $p->nombre,
+                'Año' => $p->lapso,
+                'Nota_Minima' => $p->nota_minima,
+                'Inicio' => $p->inicio->format('d/m/Y'),
+                'Cierre' => $p->cierre->format('d/m/Y'),
+                'Califica' => $p->califica ? 'Si' : 'No',
+                'Activo' => $p->activo ? 'Si' : 'No',
+            ];
+        }
+
+        $excel = new ExcelBuilder();
+        $excel->setColumns([
+            'Codigo' => ['justification' => 'center'],
+            'Nombre' => ['justification' => 'left'],
+            'Año' => ['justification' => 'center'],
+            'Nota_Minima' => ['justification' => 'center'],
+            'Inicio' => ['justification' => 'center'],
+            'Cierre' => ['justification' => 'center'],
+            'Califica' => ['justification' => 'center'],
+            'Activo' => ['justification' => 'center'],
+        ]);
+        $excel->setFileName('periodos');
+
+        $content = $excel->generateExcel($data, 'LISTADO DE PERIODOS ACADÉMICOS');
 
         $dir = WWW_ROOT . 'files' . DS . 'excel';
         if (!is_dir($dir)) {
