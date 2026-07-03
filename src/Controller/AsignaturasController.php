@@ -89,8 +89,9 @@ class AsignaturasController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Asignatura'));
         }
         $aFrecuencia = Configure::read('aFrecuencia');
+        $aTipoNota = Configure::read('aTipoNota');
         $grupoAsignaturas = $this->Asignaturas->GrupoAsignaturas->find('list', ['limit' => 200]);
-        $this->set(compact('asignatura', 'aFrecuencia', 'grupoAsignaturas'));
+        $this->set(compact('asignatura', 'aFrecuencia', 'aTipoNota', 'grupoAsignaturas'));
     }
 
 
@@ -106,9 +107,11 @@ class AsignaturasController extends AppController
         $asignatura = $this->Asignaturas->get($id, [
             'contain' => []
         ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        if ($this->request->is(['patch', 'post', 'put'])) 
+        {
             $asignatura = $this->Asignaturas->patchEntity($asignatura, $this->request->getData());
-            if ($this->Asignaturas->save($asignatura)) {
+            if ($this->Asignaturas->save($asignatura)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Asignatura'));
                 $this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS Asignaturas ' . json_encode($this->request->getData()));
 
@@ -116,8 +119,10 @@ class AsignaturasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Asignatura'));
         }
+        $aFrecuencia = Configure::read('aFrecuencia');
+        $aTipoNota = Configure::read('aTipoNota');
         $grupoAsignaturas = $this->Asignaturas->GrupoAsignaturas->find('list', ['limit' => 200]);
-        $this->set(compact('asignatura', 'grupoAsignaturas'));
+        $this->set(compact('asignatura', 'aFrecuencia', 'aTipoNota', 'grupoAsignaturas'));
     }
 
 

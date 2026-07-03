@@ -39,6 +39,10 @@
                     echo $this->Form->control('frecuencia', ['type' => 'select', 'options' => $aFrecuencia, 'empty' => true,
                         'class' => 'form-control select2','data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
+                    echo $this->Form->control('calificacion', ['type' => 'select', 'options' => $aTipoNota, 'empty' => true,
+                        'label' => 'Tipo de Calificación','class' => 'form-control select2','data-width' => '100%',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('creditos', ['label' => 'Créditos', 'type' => 'text',
                         'class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']
                     );

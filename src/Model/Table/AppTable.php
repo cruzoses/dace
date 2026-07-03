@@ -70,5 +70,33 @@ class AppTable extends Table
                 $data['fecha_nacimiento'] = $fechaFormateada->format('Y-m-d');
             }
         }
+        if ( isset( $data['inicio'] ) ) 
+        {            
+            $fechaOriginal = str_replace('/', '-',$data['inicio']);
+
+            // Si la fecha no está vacía, la convertimos
+            if (!empty($fechaOriginal)) 
+            {
+                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
+                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
+                
+                // Asigna el valor corregido para que CakePHP lo guarde correctamente
+                $data['inicio'] = $fechaFormateada->format('Y-m-d');
+            }
+        }
+        if ( isset( $data['cierre'] ) ) 
+        {            
+            $fechaOriginal = str_replace('/', '-',$data['cierre']);
+
+            // Si la fecha no está vacía, la convertimos
+            if (!empty($fechaOriginal)) 
+            {
+                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
+                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
+                
+                // Asigna el valor corregido para que CakePHP lo guarde correctamente
+                $data['cierre'] = $fechaFormateada->format('Y-m-d');
+            }
+        }
     }    
 }

@@ -4,28 +4,24 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Asignatura Entity
+ * Periodo Entity
  *
  * @property int $id
  * @property string $codigo
  * @property string $nombre
- * @property int $horas_teoricas
- * @property int $horas_practicas
- * @property int $frecuencia
- * @property int $creditos
- * @property float $costo
- * @property string|null $requisitos
- * @property string|null $convalidacion
- * @property int|null $grupo_asignatura_id
- * @property bool $activa
+ * @property int $lapso
+ * @property int $nota_minima
+ * @property \Cake\I18n\FrozenDate $inicio
+ * @property \Cake\I18n\FrozenDate $cierre
+ * @property bool $califica
+ * @property bool $activo
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
- * @property \App\Model\Entity\GrupoAsignatura $grupo_asignatura
+ * @property \App\Model\Entity\Curso[] $cursos
  * @property \App\Model\Entity\Historico[] $historicos
- * @property \App\Model\Entity\Malla[] $mallas
  */
-class Asignatura extends Entity
+class Periodo extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -39,23 +35,18 @@ class Asignatura extends Entity
     protected $_accessible = [
         'codigo' => true,
         'nombre' => true,
-        'horas_teoricas' => true,
-        'horas_practicas' => true,
-        'frecuencia' => true,
-        'calificacion' => true,
-        'creditos' => true,
-        'costo' => true,
-        'requisitos' => true,
-        'convalidacion' => true,
-        'grupo_asignatura_id' => true,
-        'activa' => true,
+        'lapso' => true,
+        'nota_minima' => true,
+        'inicio' => true,
+        'cierre' => true,
+        'califica' => true,
+        'activo' => true,
         'created' => true,
         'modified' => true,
-        'grupo_asignatura' => true,
+        'cursos' => true,
         'historicos' => true,
-        'mallas' => true,
     ];
-    
+
     protected $_virtual = [
         'codename',
     ];

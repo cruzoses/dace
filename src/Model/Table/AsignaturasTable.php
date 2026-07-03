@@ -97,6 +97,10 @@ class AsignaturasTable extends AppTable
             ->notEmptyString('frecuencia');
 
         $validator
+            ->requirePresence('calificacion', 'create')
+            ->notEmptyString('calificacion');
+
+        $validator
             ->requirePresence('creditos', 'create')
             ->notEmptyString('creditos');
 
