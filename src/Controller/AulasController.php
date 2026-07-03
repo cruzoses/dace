@@ -15,19 +15,17 @@ use Cake\Event\Event;
 class AulasController extends AppController
 {
 
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
 	}
 
-    /**
-     * 
-    */
 	public function isAuthorized($user)
 	{
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        {
+            return true;
+        }
 		return parent::isAuthorized($user);
 	}
 	
@@ -40,15 +38,18 @@ class AulasController extends AppController
     {
         $conditions = $this->Aulas->formatConditions($this->request->getQueryParams());
         $this->paginate['conditions'] = $conditions;
+        $this->paginate['contain'] = ['Sedes' => function ($q) {
+            return $q->select(['id', 'nombre'])
+                ->where(['Sedes.activa' => 1]);
+        }];
 
         $aulas = $this->paginate($this->Aulas);
         $filtros = $this->request->getQuery();
 
-        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
         $searchFields = $this->Aulas->getSearchFields();
-        $searchFields['sede']['options'] = $sedes;
-        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
-        $this->set(compact('aulas', 'filtros', 'searchFields', 'sedes'));
+        $searchFields['sede_id']['options'] = $this->Aulas->Sedes->find('list', ['limit' => 200])->where(['Sedes.activa' => 1])->toArray();
+
+        $this->set(compact('aulas', 'filtros', 'searchFields'));
     }
 
     /**
@@ -61,13 +62,12 @@ class AulasController extends AppController
     public function view($id = null)
     {
         $aula = $this->Aulas->get($id, [
-            'contain' => [],
+            'contain' => ['Sedes', 'Cursos'],
         ]);
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Aulas ' . json_encode($aula->toArray()));
-        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
         $this->set('aula', $aula);
-        $this->set('sedes', $sedes);
+
     }
 
 
@@ -91,7 +91,7 @@ class AulasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Aula'));
         }
-        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
+        $sedes = $this->Aulas->Sedes->find('list', ['limit' => 200])->where(['Sedes.activa' => 1])->toArray();
         $this->set(compact('aula', 'sedes'));
     }
 
@@ -108,9 +108,11 @@ class AulasController extends AppController
         $aula = $this->Aulas->get($id, [
             'contain' => []
         ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        if ($this->request->is(['patch', 'post', 'put'])) 
+        {
             $aula = $this->Aulas->patchEntity($aula, $this->request->getData());
-            if ($this->Aulas->save($aula)) {
+            if ($this->Aulas->save($aula)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Aula'));
                 $this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS Aulas ' . json_encode($this->request->getData()));
 
@@ -118,7 +120,7 @@ class AulasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Aula'));
         }
-        $sedes = TableRegistry::getTableLocator()->get('Sedes')->find('list', ['limit' => 200])->toArray();
+        $sedes = $this->Aulas->Sedes->find('list', ['limit' => 200])->where(['Sedes.activa' => 1])->toArray();
         $this->set(compact('aula', 'sedes'));
     }
 

@@ -49,12 +49,18 @@ class SedesTable extends AppTable
 
         $this->addBehavior('Timestamp');
 
+        $this->hasMany('Aulas', [
+            'foreignKey' => 'sede_id',
+        ]);
+
         $this->hasMany('Cursos', [
             'foreignKey' => 'sede_id',
         ]);
+
         $this->hasMany('EstudianteProgramas', [
             'foreignKey' => 'sede_id',
         ]);
+        
         $this->belongsToMany('Carreras', [
             'foreignKey' => 'sede_id',
             'targetForeignKey' => 'carrera_id',

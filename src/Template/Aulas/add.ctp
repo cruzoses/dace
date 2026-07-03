@@ -26,7 +26,7 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('sede', ['type' => 'select', 'options' => $sedes, 'empty' => 'Seleccione una Sede',
+                    echo $this->Form->control('sede_id', ['type' => 'select', 'options' => $sedes, 'empty' => 'Seleccione una Sede',
                         'class' => 'form-control select2',  'data-width' => '100%', 'required' => true, 
                         'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
@@ -34,7 +34,7 @@
                     echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('capacidad', ['class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('ubicacion', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('condicion', ['type' => 'checkbox','label' => 'Condición','hiddenField' => false]);
+                    echo $this->Form->control('condicion', ['type' => 'checkbox', 'label' => 'Condición']);
                 ?>
             </div>            
             <div class="box-footer">

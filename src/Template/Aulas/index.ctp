@@ -29,7 +29,7 @@
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('sede') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('sede_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('codigo', 'Código') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
                             <!--                         
@@ -46,7 +46,7 @@
                         <?php foreach ($aulas as $aula): ?>
                             <tr>
                                 <td><?= $this->Number->format($aula->id) ?></td>
-                                <td><?= $this->Number->format($aula->sede) ?></td>
+                                <td><?= $aula->has('sede') ? $this->Html->link($aula->sede->nombre, ['controller' => 'Sedes', 'action' => 'view', $aula->sede->id]) : '' ?></td>
                                 <td><?= h($aula->codigo) ?></td>
                                 <td><?= h($aula->nombre) ?></td>
                                 <!--

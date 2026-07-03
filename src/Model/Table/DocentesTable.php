@@ -35,6 +35,7 @@ class DocentesTable extends AppTable
             'label' => 'Departamento',
             'options' => [],
             'empty' => '-- Departamento --',
+            'prepend' => '<i class="fa fa-asterisk"></i>'            
         ],
     ];
 

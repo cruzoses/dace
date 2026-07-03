@@ -315,7 +315,7 @@ class ReportesController extends AppController
 
         $conditions = [];
         if ($sede_id !== '') {
-            $conditions['Aulas.sede'] = (int)$sede_id;
+            $conditions['Aulas.sede_id'] = (int)$sede_id;
         }
 
         $aulas = $this->Aulas->find('all', [

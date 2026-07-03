@@ -23,7 +23,7 @@
                     <dt scope="row"><?= __('Id') ?></dt>
                     <dd><?= $this->Number->format($aula->id) ?></dd>
                     <dt scope="row"><?= __('Sede') ?></dt>
-                    <dd><?= $this->Number->format($aula->sede) ?></dd>
+                    <dd><?= $aula->has('sede') ? h($aula->sede->nombre) : '' ?></dd>
                     <dt scope="row"><?= __('Capacidad') ?></dt>
                     <dd><?= $this->Number->format($aula->capacidad) ?></dd>
                     <dt scope="row"><?= __('Created') ?></dt>

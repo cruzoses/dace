@@ -25,7 +25,7 @@ use Cake\Validation\Validator;
 class AulasTable extends AppTable
 {
     protected $searchFields = [
-        'sede' => ['type' => 'select', 'label' => 'Sede', 'options' => [], 'empty' => '- Seleccione -', 'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'sede_id' => ['type' => 'select', 'label' => 'Sede', 'options' => [], 'empty' => '- Seleccione -', 'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'codigo' => ['type' => 'exact', 'label' => 'Código', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'ubicacion' => ['type' => 'text', 'label' => 'Ubicación', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
@@ -72,6 +72,10 @@ class AulasTable extends AppTable
             ->allowEmptyString('id', null, 'create');
 
         $validator
+            ->integer('sede_id')
+            ->notEmptyString('sede_id');
+
+        $validator
             ->scalar('codigo')
             ->maxLength('codigo', 20)
             ->requirePresence('codigo', 'create')
@@ -110,7 +114,7 @@ class AulasTable extends AppTable
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['sede_id'], 'Sedes'));
-        $rules->add($rules->isUnique(['sede', 'codigo'], 'Ya existe un aula con esta sede y código.'));
+        $rules->add($rules->isUnique(['sede_id', 'codigo'], 'Ya existe un aula con esta sede y código.'));
 
         return $rules;
     }
