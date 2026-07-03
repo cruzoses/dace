@@ -185,6 +185,14 @@ function DateAndTime()
 	}, 500	);    
 }
 
+function showMessage(sText,sImage){
+    Swal.fire({
+        title: sText,
+        text: "S.A.C.E",
+        icon: sImage === null ? "success" : sImage
+    });
+}
+
 // Intercept postLink confirm() con SweetAlert2 (fase de captura para evitar el confirm nativo)
 document.addEventListener('click', function(e) {
     var target = e.target.closest('a[onclick*="confirm("]');

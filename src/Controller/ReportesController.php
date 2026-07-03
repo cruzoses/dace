@@ -10,7 +10,7 @@ class ReportesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarEstados', 'listarMunicipios', 'listarDocentes', 'listarUsuarios', 'listarAulas', 'download']);
+        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarPeriodos', 'listarEstados', 'listarMunicipios', 'listarDocentes', 'listarUsuarios', 'listarAulas', 'download']);
     }
 
     public function downloadPdf()
@@ -246,6 +246,50 @@ class ReportesController extends AppController
 
             $reportConfig = $this->_getReportConfig();
             $filename = 'parroquias_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
+        $this->render('showreport');
+    }
+
+    public function listarPeriodos()
+    {
+        $this->loadModel('Periodos');
+
+        $periodos = $this->Periodos->find('all', [
+            'order' => ['Periodos.lapso' => 'DESC', 'Periodos.codigo' => 'ASC']
+        ]);
+
+        $data = [];
+        foreach ($periodos as $p) {
+            $data[] = [
+                'Codigo' => $p->codigo,
+                'Nombre' => $p->nombre,
+                'Año' => $p->lapso,
+                'Inicio' => $p->inicio->format('d/m/Y'),
+                'Cierre' => $p->cierre->format('d/m/Y'),
+                'Activo' => $p->activo ? 'Si' : 'No',
+            ];
+        }
+
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'Codigo' => ['justification' => 'center', 'width' => 60],
+                'Nombre' => ['justification' => 'left', 'width' => 180],
+                'Año' => ['justification' => 'center', 'width' => 60],
+                'Inicio' => ['justification' => 'center', 'width' => 80],
+                'Cierre' => ['justification' => 'center', 'width' => 80],
+                'Activo' => ['justification' => 'center', 'width' => 50],
+            ]);
+
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE PERIODOS ACADÉMICOS');
+
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'periodos_' . date('Ymd_His') . '.pdf';
             file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
             $sFileName = $reportConfig['webroot'] . $filename;
         }
