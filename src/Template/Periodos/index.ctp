@@ -8,6 +8,10 @@
                         ['controller' => 'Reportes', 'action' => 'listarPeriodos'], 
                         ['class'=>'btn btn-box-tool','escape' => false]) 
                     ?>
+                    <?= $this->Html->link('<i class="fa fa-file-excel-o"></i>',
+                        ['controller' => 'Archivos', 'action' => 'exportarPeriodos'], 
+                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
