@@ -30,10 +30,7 @@
                         'class' => 'form-control select2', 'data-widh' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('periodo_id', ['type' => 'select', 'options' => $periodos, 'empty' => true,
-                        'class' => 'form-control select2', 'data-widh' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
-                    );
-                    echo $this->Form->control('codigo', ['label' => 'Código',
-                        'class' => 'isUpper','prepend' => '<i class="fa fa-calendar"></i>', 'readonly' => true]
+                        'class' => 'form-control select2', 'data-widh' => '100%','prepend' => '<i class="fa fa-calendar"></i>']
                     );
                     echo $this->Form->control('dia', ['type' => 'select', 'options' => $aDias, 'empty' => true,
                         'class' => 'form-control select2', 'data-widh' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
@@ -46,6 +43,9 @@
                     );
                     echo $this->Form->control('hasta', ['type' => 'text', 'empty' => true,
                         'class' => 'form-control timepicker','prepend' => '<i class="fa fa-clock-o"></i>']
+                    );
+                    echo $this->Form->control('codigo', ['label' => 'Código',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>', 'readonly' => true]
                     );
                     echo $this->Form->control('activo', ['type' => 'checkbox']);
                 ?>
@@ -65,22 +65,5 @@
 <script>
 var aDias = <?= json_encode($aDias) ?>;
 var aTurnos = <?= json_encode($aTurnos) ?>;
-
-function generarCodigoPreview() {
-    var dia = $('#dia').val();
-    var turno = $('#turno').val();
-    var desde = $('#desde').val();
-    var hasta = $('#hasta').val();
-
-    if (dia && turno && desde && hasta) {
-        var diaTexto = aDias[dia] || '';
-        var turnoTexto = aTurnos[turno] || '';
-        var prefijoDia = diaTexto.substring(0, 2).toUpperCase();
-        var prefijoTurno = turnoTexto.substring(0, 2).toUpperCase();
-        var codigo = prefijoDia + prefijoTurno + desde.replace(/ /g, '') + 'A' + hasta.replace(/ /g, '');
-        $('#codigo').val(codigo);
-    }
-}
-
-$(document).on('change', '#dia, #turno, #desde, #hasta', generarCodigoPreview);
 </script>
+<?= $this->Html->script('horarios') ?>
