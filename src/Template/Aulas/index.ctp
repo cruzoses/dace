@@ -23,7 +23,7 @@
 			        <?= $this->element('search_form', ['title' => 'Buscar Aula', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
 		        </div>
 		        <div class="oculto" id="printform">
-			        <?= $this->element('Aulas/listar', ['sedes' =>  $sedes]);?>
+			        <?= $this->element('Aulas/listar', ['sedes' => $sedes]);?>
 		        </div>                
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
