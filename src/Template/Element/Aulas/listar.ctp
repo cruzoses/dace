@@ -12,7 +12,8 @@
                 ?>
             </div>
         </div>
-        <?= $this->Form->create(null, ['type' => 'get', 'role' => 'form', 
+        <?= $this->Form->create(null, ['type' => 'get', 'role' => 'form', 'id' => 'reportBuilder',
+            'url' => ['controller' => 'Reportes','action' => 'listarAulas'],
             'align' => [
                 'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],
                 'md' => ['left' => 3, 'middle' => 7, 'right' => 2]

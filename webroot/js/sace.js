@@ -33,6 +33,12 @@ $(document).ready( function () {
         //$(this).val($(this).val().replace(/[^0-9]/g, ''));
     });
 
+    $('.isDecimal').on('input', function() {
+        this.value = this.value.replace(/[^0-9.]/g, '')
+            .replace(/(\..*?)\./g, '$1')
+            .replace(/(\.\d{2})\d+/g, '$1');
+    });
+
     // Select2
     $('.select2').select2({
         language: 'es',
@@ -147,6 +153,10 @@ $(document).ready( function () {
 	});
 
 	$('#buscadorForm').submit(function (e) { 
+		$('#load').show();
+	});
+
+	$('#reportBuilder').submit(function (e) { 
 		$('#load').show();
 	});
 

@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 
 /**
@@ -14,19 +15,17 @@ use Cake\Event\Event;
 class AsignaturasController extends AppController
 {
 
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
 	}
 
-    /**
-     * 
-    */
 	public function isAuthorized($user)
 	{
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        {
+            return true;
+        }
 		return parent::isAuthorized($user);
 	}
 	
@@ -77,9 +76,11 @@ class AsignaturasController extends AppController
     public function add()
     {
         $asignatura = $this->Asignaturas->newEntity();
-        if ($this->request->is('post')) {
+        if ($this->request->is('post')) 
+        {
             $asignatura = $this->Asignaturas->patchEntity($asignatura, $this->request->getData());
-            if ($this->Asignaturas->save($asignatura)) {
+            if ($this->Asignaturas->save($asignatura)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Asignatura'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Asignaturas ' . json_encode($this->request->getData()));
 
@@ -87,8 +88,9 @@ class AsignaturasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Asignatura'));
         }
+        $aFrecuencia = Configure::read('aFrecuencia');
         $grupoAsignaturas = $this->Asignaturas->GrupoAsignaturas->find('list', ['limit' => 200]);
-        $this->set(compact('asignatura', 'grupoAsignaturas'));
+        $this->set(compact('asignatura', 'aFrecuencia', 'grupoAsignaturas'));
     }
 
 

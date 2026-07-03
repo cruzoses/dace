@@ -27,17 +27,21 @@
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('codigo') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('codigo', 'Código') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
+                            <!--
                             <th scope="col"><?= $this->Paginator->sort('horas_teoricas') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('horas_practicas') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('frecuencia') ?></th>
+                            -->
                             <th scope="col"><?= $this->Paginator->sort('creditos') ?></th>
+                            <!--
                             <th scope="col"><?= $this->Paginator->sort('costo') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('grupo_asignatura_id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('activa') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                            -->
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('activa') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
@@ -45,17 +49,21 @@
                         <?php foreach ($asignaturas as $asignatura): ?>
                             <tr>
                                 <td><?= $this->Number->format($asignatura->id) ?></td>
-                                        <td><?= h($asignatura->codigo) ?></td>
-                                        <td><?= h($asignatura->nombre) ?></td>
-                                        <td><?= $this->Number->format($asignatura->horas_teoricas) ?></td>
-                                        <td><?= $this->Number->format($asignatura->horas_practicas) ?></td>
-                                        <td><?= $this->Number->format($asignatura->frecuencia) ?></td>
-                                        <td><?= $this->Number->format($asignatura->creditos) ?></td>
-                                        <td><?= $this->Number->format($asignatura->costo) ?></td>
-                            <td><?= $asignatura->has('grupo_asignatura') ? $this->Html->link($asignatura->grupo_asignatura->id, ['controller' => 'GrupoAsignaturas', 'action' => 'view', $asignatura->grupo_asignatura->id]) : '' ?></td>
-                                            <td><?= h($asignatura->activa) ?></td>
-                                        <td><?= h($asignatura->created) ?></td>
-                                        <td><?= h($asignatura->modified) ?></td>
+                                <td><?= h($asignatura->codigo) ?></td>
+                                <td><?= h($asignatura->nombre) ?></td>
+                                <!--
+                                <td><?= $this->Number->format($asignatura->horas_teoricas) ?></td>
+                                <td><?= $this->Number->format($asignatura->horas_practicas) ?></td>
+                                <td><?= $this->Number->format($asignatura->frecuencia) ?></td>
+                                -->
+                                <td class="text-center"><?= $this->Number->format($asignatura->creditos) ?></td>
+                                <!--
+                                <td><?= $this->Number->format($asignatura->costo) ?></td>
+                                <td><?= $asignatura->has('grupo_asignatura') ? $this->Html->link($asignatura->grupo_asignatura->id, ['controller' => 'GrupoAsignaturas', 'action' => 'view', $asignatura->grupo_asignatura->id]) : '' ?></td>
+                                -->
+                                <td class="text-center"><?= h($asignatura->activa) ?></td>
+                                <td class="text-center"><?= h($asignatura->created) ?></td>
+                                <td class="text-center"><?= h($asignatura->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $asignatura->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $asignatura->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -66,7 +74,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="8" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>

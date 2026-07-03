@@ -46,7 +46,8 @@ class AulasController extends AppController
         $aulas = $this->paginate($this->Aulas);
         $filtros = $this->request->getQuery();
 
-        $sedes = $this->Aulas->Sedes->find('list', ['keyField' => 'id', 'valueField' => 'nombre'])->where(['Sedes.activa' => 1])->order(['Sedes.nombre' => 'ASC'])->toArray();
+        //$sedes = $this->Aulas->Sedes->find('list', ['keyField' => 'id', 'valueField' => 'nombre'])->where(['Sedes.activa' => 1])->order(['Sedes.id' => 'ASC'])->toArray();
+        $sedes = $this->Aulas->Sedes->find('list')->where(['Sedes.activa' => 1])->order(['Sedes.id' => 'ASC'])->toArray();
         $searchFields = $this->Aulas->getSearchFields();
         $searchFields['sede_id']['options'] = $sedes;
 

@@ -54,4 +54,13 @@ class Asignatura extends Entity
         'historicos' => true,
         'mallas' => true,
     ];
+    
+    protected $_virtual = [
+        'codename',
+    ];
+
+    protected function _getCodename()
+    {
+        return $this->codigo .' : '. $this->nombre;
+    }
 }

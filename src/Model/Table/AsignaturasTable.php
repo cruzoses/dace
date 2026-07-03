@@ -44,7 +44,7 @@ class AsignaturasTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('asignaturas');
-        $this->setDisplayField('id');
+        $this->setDisplayField('codename');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -130,6 +130,7 @@ class AsignaturasTable extends AppTable
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->isUnique(['codigo'], 'Ya existe una asignatura con este código.'));
         $rules->add($rules->existsIn(['grupo_asignatura_id'], 'GrupoAsignaturas'));
 
         return $rules;
