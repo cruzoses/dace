@@ -14,12 +14,12 @@
         	</div>        
         	<div class="box-body">
           		<dl class="dl-horizontal">
-                    <dt scope="row"><?= __('Codigo') ?></dt>
+                    <dt scope="row"><?= __('Id') ?></dt>
+                    <dd><?= $this->Number->format($grupoAsignatura->id) ?></dd>
+                    <dt scope="row"><?= __('Código') ?></dt>
                     <dd><?= h($grupoAsignatura->codigo) ?></dd>
                     <dt scope="row"><?= __('Nombre') ?></dt>
                     <dd><?= h($grupoAsignatura->nombre) ?></dd>
-                    <dt scope="row"><?= __('Id') ?></dt>
-                    <dd><?= $this->Number->format($grupoAsignatura->id) ?></dd>
                     <dt scope="row"><?= __('Created') ?></dt>
                     <dd><?= h($grupoAsignatura->created) ?></dd>
                     <dt scope="row"><?= __('Modified') ?></dt>
@@ -46,30 +46,30 @@
             <div class="box-header with-border">                
                 <h3 class="box-title"><i class="fa fa-share-alt"></i>&nbsp;Asignaturas</h3>
             </div>
-            <div class="box-body">
-                <?php if (!empty($grupoAsignatura->asignaturas)): ?>
+            <div class="box-body table-responsive no-padding">
+                <?php if (!empty($asignaturas)): ?>
                     <table class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
-                                <th scope="col"><?= __('Id') ?></th>
-                                <th scope="col"><?= __('Codigo') ?></th>
-                                <th scope="col"><?= __('Nombre') ?></th>
-                                <th scope="col"><?= __('Horas Teoricas') ?></th>
-                                <th scope="col"><?= __('Horas Practicas') ?></th>
-                                <th scope="col"><?= __('Frecuencia') ?></th>
-                                <th scope="col"><?= __('Creditos') ?></th>
-                                <th scope="col"><?= __('Costo') ?></th>
-                                <th scope="col"><?= __('Requisitos') ?></th>
-                                <th scope="col"><?= __('Convalidacion') ?></th>
-                                <th scope="col"><?= __('Grupo Asignatura Id') ?></th>
-                                <th scope="col"><?= __('Activa') ?></th>
-                                <th scope="col"><?= __('Created') ?></th>
-                                <th scope="col"><?= __('Modified') ?></th>
+                                <th scope="col"><?= $this->Paginator->sort('id', __('Id')) ?></th>
+                                <th scope="col"><?= $this->Paginator->sort('codigo', __('Codigo')) ?></th>
+                                <th scope="col"><?= $this->Paginator->sort('nombre', __('Nombre')) ?></th>
+                                <th scope="col"><?= $this->Paginator->sort('horas_teoricas', __('Horas Teoricas')) ?></th>
+                                <th scope="col"><?= $this->Paginator->sort('horas_practicas', __('Horas Practicas')) ?></th>
+                                <th scope="col"><?= $this->Paginator->sort('frecuencia', __('Frecuencia')) ?></th>
+                                <th scope="col"><?= $this->Paginator->sort('creditos', __('Creditos')) ?></th>
+                                <th scope="col"><?= $this->Paginator->sort('costo', __('Costo')) ?></th>
+                                <!--th scope="col"><?= __('Requisitos') ?></th-->
+                                <!--th scope="col"><?= __('Convalidacion') ?></th-->
+                                <!--th scope="col"><?= $this->Paginator->sort('grupo_asignatura_id', __('Grupo Asignatura Id')) ?></th-->
+                                <th scope="col" class="text-center"><?= $this->Paginator->sort('activa', __('Activa')) ?></th>
+                                <th scope="col" class="text-center"><?= $this->Paginator->sort('created', __('Created')) ?></th>
+                                <th scope="col" class="text-center"><?= $this->Paginator->sort('modified', __('Modified')) ?></th>
                                 <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($grupoAsignatura->asignaturas as $asignaturas): ?>
+                            <?php foreach ($asignaturas as $asignaturas): ?>
                                 <tr>
                                     <td><?= h($asignaturas->id) ?></td>
                                     <td><?= h($asignaturas->codigo) ?></td>
@@ -79,12 +79,12 @@
                                     <td><?= h($asignaturas->frecuencia) ?></td>
                                     <td><?= h($asignaturas->creditos) ?></td>
                                     <td><?= h($asignaturas->costo) ?></td>
-                                    <td><?= h($asignaturas->requisitos) ?></td>
-                                    <td><?= h($asignaturas->convalidacion) ?></td>
-                                    <td><?= h($asignaturas->grupo_asignatura_id) ?></td>
-                                    <td><?= h($asignaturas->activa) ?></td>
-                                    <td><?= h($asignaturas->created) ?></td>
-                                    <td><?= h($asignaturas->modified) ?></td>
+                                    <!--td><?= h($asignaturas->requisitos) ?></td-->
+                                    <!--td><?= h($asignaturas->convalidacion) ?></td-->
+                                    <!--td><?= h($asignaturas->grupo_asignatura_id) ?></td-->
+                                    <td class="text-center"><?= h($asignaturas->activa) ? 'Sí' : 'No' ?></td>
+                                    <td class="text-center"><?= h($asignaturas->created) ?></td>
+                                    <td class="text-center" ><?= h($asignaturas->modified) ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'Asignaturas', 'action' => 'view', $asignaturas->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                         <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'Asignaturas', 'action' => 'edit', $asignaturas->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -93,6 +93,22 @@
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
+                        <tfoot class="no-padding">
+                            <tr>
+                                <td colspan="12" class="text-center">
+                                    <div class="paginator">
+                                        <ul class="pagination pagination-sm">
+                                            <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                            <?= $this->Paginator->prev('<i class="fa fa-angle-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                            <?= $this->Paginator->numbers(['before' => '','after' => '']) ?>
+                                            <?= $this->Paginator->next('<i class="fa fa-angle-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                            <?= $this->Paginator->last('<i class="fa fa-angle-double-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        </ul>
+                                        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 <?php endif; ?>
             </div>

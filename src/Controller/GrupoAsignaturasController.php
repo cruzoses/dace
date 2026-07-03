@@ -51,13 +51,25 @@ class GrupoAsignaturasController extends AppController
     */
     public function view($id = null)
     {
-        $grupoAsignatura = $this->GrupoAsignaturas->get($id, [
-            'contain' => ['Asignaturas'],
-        ]);
+        $grupoAsignatura = $this->GrupoAsignaturas->get($id);
 
-        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS GrupoAsignaturas ' . json_encode($grupoAsignatura->toArray()));
+        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS GrupoAsignaturas - ID: ' . $grupoAsignatura->id . ', Nombre: ' . $grupoAsignatura->nombre);
 
-        $this->set('grupoAsignatura', $grupoAsignatura);
+        $this->loadModel('Asignaturas');
+
+        $this->paginate = [
+            'limit' => 20,
+            'order' => [
+                'Asignaturas.id' => 'asc'
+            ],
+            'conditions' => [
+                'Asignaturas.grupo_asignatura_id' => $grupoAsignatura->id
+            ]
+        ];
+
+        $asignaturas = $this->paginate($this->Asignaturas);
+
+        $this->set(compact('grupoAsignatura', 'asignaturas'));
     }
 
 

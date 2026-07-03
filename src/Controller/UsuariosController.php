@@ -196,11 +196,24 @@ class UsuariosController extends AppController
     public function view($id = null)
     {
         $usuario = $this->Usuarios->get($id, [
-            'contain' => ['Rols', 'Auditorias', 'Docentes', 'Empleados', 'Estudiantes', 'Noticias'],
+            'contain' => ['Rols', 'Docentes', 'Empleados', 'Estudiantes', 'Noticias'],
         ]);
 
-        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Usuarios ' . json_encode($usuario->toArray()));
-        $this->set('usuario', $usuario);
+        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Usuarios - ID: ' . $usuario->id . ', Username: ' . $usuario->username);
+
+        $this->paginate = [
+            'limit' => 20,
+            'order' => [
+                'Auditorias.id' => 'desc'
+            ],
+            'conditions' => [
+                'Auditorias.usuario_id' => $usuario->id
+            ]
+        ];
+
+        $auditorias = $this->paginate(\Cake\ORM\TableRegistry::getTableLocator()->get('Auditorias'));
+
+        $this->set(compact('usuario', 'auditorias'));
     }
 
     /**

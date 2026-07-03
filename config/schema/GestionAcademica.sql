@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 2/7/2026
+Modified: 3/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -464,10 +464,11 @@ CREATE TABLE `asignaturas`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
   `codigo` Varchar(20) NOT NULL,
-  `nombre` Varchar(100) NOT NULL,
+  `nombre` Varchar(150) NOT NULL,
   `horas_teoricas` Smallint(6) NOT NULL,
   `horas_practicas` Smallint(6) NOT NULL,
   `frecuencia` Smallint(6) NOT NULL,
+  `calificacion` Smallint(6) NOT NULL,
   `creditos` Smallint(6) NOT NULL,
   `costo` Double NOT NULL,
   `requisitos` Text,
@@ -552,7 +553,14 @@ CREATE TABLE `periodos`
   `id` Int NOT NULL AUTO_INCREMENT,
   `codigo` Varchar(20) NOT NULL,
   `nombre` Varchar(50) NOT NULL,
+  `lapso` Smallint(6) NOT NULL,
+  `nota_minima` Smallint(6) NOT NULL,
+  `inicio` Date NOT NULL,
+  `cierre` Date NOT NULL,
+  `califica` Tinyint(1) NOT NULL,
   `activo` Tinyint(1) NOT NULL,
+  `created` Datetime,
+  `modified` Datetime,
   PRIMARY KEY (`id`)
 )
 ;

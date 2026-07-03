@@ -41,7 +41,7 @@
                     );
                     echo $this->Form->control('cierre', ['type' => 'text', 'label' => 'Fecha de Cierre',
                         'class' => 'calendario','prepend' => '<i class="fa fa-calendar"></i>']
-                    );                      
+                    );
                     echo $this->Form->hidden('califica', ['type' => 'checkbox','value' => 1]);
                     echo $this->Form->hidden('activo', ['type' => 'checkbox','value' => 1]);
                 ?>
