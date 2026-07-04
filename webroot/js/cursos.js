@@ -88,11 +88,7 @@ function initCursos() {
     var initialPeriodo = $('#periodo-id').val();
     var initialHorario = $('#horario').val() || (typeof CURSOS_HORARIO_ACTUAL !== 'undefined' ? CURSOS_HORARIO_ACTUAL : '');
 
-    var bInit = true;
-
-    if (initialCarrera) {
-        cargarProgramas(initialCarrera, initialPrograma);
-    } else {
+    if (!initialCarrera) {
         $('#programa-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
     }
 
@@ -106,15 +102,12 @@ function initCursos() {
         $('#horario').empty().append('<option value="" selected>Seleccione una Opción</option>');
     }
 
-    bInit = false;
-
     $('#carrera-id').on('change', function () {
         cargarProgramas($(this).val(), null);
         $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
     });
 
     $('#programa-id').on('change', function () {
-        if (bInit) { return; }
         var trayectoId = $('#trayecto-id').val();
         cargarAsignaturas($(this).val(), trayectoId, null);
     });
