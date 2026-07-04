@@ -3,7 +3,6 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -31,8 +30,54 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class CursosTable extends Table
+class CursosTable extends AppTable
 {
+    protected $searchFields = [
+        'id' => ['type' => 'int', 'label' => 'No. de Id', 'class' => 'isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'sede_id' => [
+            'type' => 'select',
+            'label' => 'Sede',
+            'options' => [],
+            'empty' => '-- Sede --',
+            'prepend' => '<i class="fa fa-asterisk"></i>',
+        ],
+        'periodo_id' => [
+            'type' => 'select',
+            'label' => 'Periodo',
+            'options' => [],
+            'empty' => '-- Periodo --',
+            'prepend' => '<i class="fa fa-asterisk"></i>',
+        ],
+        'carrera_id' => [
+            'type' => 'select',
+            'label' => 'Carrera',
+            'options' => [],
+            'empty' => '-- Carrera --',
+            'prepend' => '<i class="fa fa-asterisk"></i>',
+        ],
+        'trayecto_id' => [
+            'type' => 'select',
+            'label' => 'Trayecto',
+            'options' => [],
+            'empty' => '-- Trayecto --',
+            'prepend' => '<i class="fa fa-asterisk"></i>',
+        ],
+        'asignatura_id' => [
+            'type' => 'select',
+            'label' => 'Asignatura',
+            'options' => [],
+            'empty' => '-- Asignatura --',
+            'prepend' => '<i class="fa fa-asterisk"></i>',
+        ],
+        'docente_id' => [
+            'type' => 'select',
+            'label' => 'Docente',
+            'options' => [],
+            'empty' => '-- Docente --',
+            'prepend' => '<i class="fa fa-asterisk"></i>',
+        ],
+        'profesores' => ['type' => 'text', 'label' => 'Profesores', 'class' => 'isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+    ];
     /**
      * Initialize method
      *

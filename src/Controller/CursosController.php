@@ -37,12 +37,23 @@ class CursosController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Cursos->formatConditions($this->request->getQueryParams());
         $this->paginate = [
             'contain' => ['Sedes', 'Periodos', 'Carreras', 'Programas', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas'],
+            'conditions' => $conditions,
         ];
         $cursos = $this->paginate($this->Cursos);
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Cursos->getSearchFields();
 
-        $this->set(compact('cursos'));
+        $searchFields['sede_id']['options'] = $this->Cursos->Sedes->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC'])->toArray();
+        $searchFields['periodo_id']['options'] = $this->Cursos->Periodos->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC'])->toArray();
+        $searchFields['carrera_id']['options'] = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC'])->toArray();
+        $searchFields['trayecto_id']['options'] = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1])->toArray();
+        $searchFields['asignatura_id']['options'] = $this->Cursos->Asignaturas->find('list', ['limit' => 200])->where(['activa' => 1])->toArray();
+        $searchFields['docente_id']['options'] = $this->Cursos->Docentes->find('list')->where(['activo' => 1])->toArray();
+
+        $this->set(compact('cursos', 'filtros', 'searchFields'));
     }
 
     /**
