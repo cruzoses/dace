@@ -80,10 +80,10 @@ function cargarHorarios(sedeId, periodoId, selectedValue) {
 }
 
 function initCursos() {
+    var esEdicion = typeof CURSOS_ASIGNATURA_ACTUAL !== 'undefined';
     var initialCarrera = $('#carrera-id').val();
     var initialPrograma = $('#programa-id').val();
     var initialTrayecto = $('#trayecto-id').val();
-    var initialAsignatura = $('#asignatura-id').val() || (typeof CURSOS_ASIGNATURA_ACTUAL !== 'undefined' ? CURSOS_ASIGNATURA_ACTUAL : '');
     var initialSede = $('#sede-id').val();
     var initialPeriodo = $('#periodo-id').val();
     var initialHorario = $('#horario').val() || (typeof CURSOS_HORARIO_ACTUAL !== 'undefined' ? CURSOS_HORARIO_ACTUAL : '');
@@ -104,17 +104,19 @@ function initCursos() {
 
     $('#carrera-id').on('change', function () {
         cargarProgramas($(this).val(), null);
-        $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
+        if (!esEdicion) {
+            $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
+        }
     });
 
     $('#programa-id').on('change', function () {
         var trayectoId = $('#trayecto-id').val();
-        cargarAsignaturas($(this).val(), trayectoId, null);
+        cargarAsignaturas($(this).val(), trayectoId, esEdicion ? CURSOS_ASIGNATURA_ACTUAL : null);
     });
 
     $('#trayecto-id').on('change', function () {
         var programaId = $('#programa-id').val();
-        cargarAsignaturas(programaId, $(this).val(), null);
+        cargarAsignaturas(programaId, $(this).val(), esEdicion ? CURSOS_ASIGNATURA_ACTUAL : null);
     });
 
     $('#sede-id').on('change', function () {
@@ -132,4 +134,8 @@ function initCursos() {
         var periodoId = $('#periodo-id').val();
         cargarHorarios(sedeId, periodoId, null);
     });
+
+    if (esEdicion && CURSOS_ASIGNATURA_ACTUAL) {
+        $('#asignatura-id').val(CURSOS_ASIGNATURA_ACTUAL).trigger('change');
+    }
 }
