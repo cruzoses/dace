@@ -105,7 +105,7 @@ class CursosController extends AppController
         $carreras = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
         $programas = $this->Cursos->Programas->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
         $trayectos = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1]);
-        $asignaturas = $this->Cursos->Asignaturas->find('list', ['limit' => 200])->where(['activa' => 1]);
+        $asignaturas = $this->Cursos->Asignaturas->find('list')->where(['activa' => 1]);
         $docentes = $this->Cursos->Docentes->find('list')->where(['activo' => 1]);
         $profesores = $this->Cursos->Docentes->find('list', [
             'keyField' => 'cedula',
@@ -158,7 +158,7 @@ class CursosController extends AppController
         $carreras = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
         $programas = $this->Cursos->Programas->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
         $trayectos = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1]);
-        $asignaturas = $this->Cursos->Asignaturas->find('list', ['limit' => 200])->where(['activa' => 1]);
+        $asignaturas = $this->Cursos->Asignaturas->find('list')->where(['activa' => 1]);
         $docentes = $this->Cursos->Docentes->find('list')->where(['activo' => 1]);
         $profesores = $this->Cursos->Docentes->find('list', [
             'keyField' => 'cedula',
