@@ -80,10 +80,10 @@
         <!-- Bootstrap 3.3.7 -->
         <?= $this->Html->script('AdminLTE./bower_components/bootstrap/dist/js/bootstrap.min'); ?>
         <!-- Bootstrap Datepicker -->
-        <?= $this->Html->script('AdminLTE./plugins/datepicker/dist/js/bootstrap-datepicker.min'); ?>
-        <?= $this->Html->script('AdminLTE./plugins/datepicker/dist/locales/bootstrap-datepicker.es.min'); ?>
+        <?= $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min'); ?>
+        <?= $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min'); ?>
         <!-- Bootstrap TimePicker -->
-        <?= $this->Html->script('AdminLTE./plugins/timepicker/bootstrap-timepicker.min'); ?>
+        <?= $this->Html->script('AdminLTE./bower_components/bootstrap-timepicker/js/bootstrap-timepicker'); ?>
         <!-- sweetalert2 -->
         <?= $this->Html->script('sweetalert2.min'); ?>
         <!-- jQueryUI -->

@@ -42,7 +42,8 @@
                         'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
 					echo $this->Form->control('asignatura_id', ['type' => 'select', 'options' => $asignaturas, 'empty' => true,
-                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>',
+                        'value' => $curso->asignatura_id]
                     );
                     echo $this->Form->control('profesores', ['type' => 'select', 'options' => $profesores, 'empty' => true,
                         'label' => 'Docentes Asignados', 'class' => 'form-control select2 multiValue', 'data-width' => '100%',
