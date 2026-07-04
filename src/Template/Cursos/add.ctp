@@ -60,7 +60,8 @@
                     'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('horario', ['type' => 'select', 'options' => $horarios, 'empty' => true,
-                        'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
+                        'class' => 'form-control select2 multiValue', 'data-width' => '100%',
+                        'multiple' => 'multiple', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->hidden('activo', ['type' => 'checkbox', 'value' => 1, 'checked' => true]);
                 ?>

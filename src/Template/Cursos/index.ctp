@@ -32,8 +32,8 @@
 							<th scope="col"><?= $this->Paginator->sort('asignatura_id') ?></th>
                             <!--th scope="col"><?= $this->Paginator->sort('profesores') ?></th-->
                             <th scope="col"><?= $this->Paginator->sort('docente_id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('seccion') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('cupos') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('seccion') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('cupos') ?></th>
                             <!--th scope="col"><?= $this->Paginator->sort('aula_id') ?></th-->
                             <!--th scope="col"><?= $this->Paginator->sort('horario') ?></th-->
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('activo') ?></th>
@@ -55,10 +55,10 @@
 								<td><?= $curso->has('asignatura') ? h($curso->asignatura->codigo) : '' ?></td>
                                 <!--td><?= h($curso->profesores) ?></td-->
                                 <td><?= $curso->has('docente') ? h($curso->docente->name) : '' ?></td>
-                                <td><?= h($curso->seccion) ?></td>
-                                <td><?= $this->Number->format($curso->cupos) ?></td>
-                                <!--td><?= $curso->has('aula') ? h($curso->aula->id) : '' ?></td-->
-                                <!--td><?= h($curso->horario) ?></td-->
+                                <td class="text-center"><?= h($curso->seccion) ?></td>
+                                <td class="text-center"><?= $this->Number->format($curso->cupos) ?></td>
+                                <!--td class="text-center"><?= $curso->has('aula') ? h($curso->aula->id) : '' ?></td-->
+                                <!--td class="text-center"><?= h($curso->horario) ?></td-->
                                 <td class="text-center"><?= h($curso->activo) ? 'Sí' : 'No' ?></td>
                                 <td class="text-center"><?= h($curso->created) ?></td>
                                 <td class="text-center"><?= h($curso->modified) ?></td>

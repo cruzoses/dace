@@ -77,4 +77,9 @@ class Curso extends Entity
     {
         return is_array($value) ? implode(' ', $value) : $value;
     }
+
+    protected function _setHorario($value)
+    {
+        return is_array($value) ? implode(' ', $value) : $value;
+    }
 }

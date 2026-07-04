@@ -83,10 +83,12 @@ function initCursos() {
     var initialCarrera = $('#carrera-id').val();
     var initialPrograma = $('#programa-id').val();
     var initialTrayecto = $('#trayecto-id').val();
-    var initialAsignatura = $('#asignatura-id').val();
+    var initialAsignatura = $('#asignatura-id').val() || (typeof CURSOS_ASIGNATURA_ACTUAL !== 'undefined' ? CURSOS_ASIGNATURA_ACTUAL : '');
     var initialSede = $('#sede-id').val();
     var initialPeriodo = $('#periodo-id').val();
-    var initialHorario = $('#horario').val();
+    var initialHorario = $('#horario').val() || (typeof CURSOS_HORARIO_ACTUAL !== 'undefined' ? CURSOS_HORARIO_ACTUAL : '');
+
+    var bInit = true;
 
     if (initialCarrera) {
         cargarProgramas(initialCarrera, initialPrograma);
@@ -94,9 +96,7 @@ function initCursos() {
         $('#programa-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
     }
 
-    if (initialPrograma && initialTrayecto) {
-        cargarAsignaturas(initialPrograma, initialTrayecto, initialAsignatura);
-    } else {
+    if (!initialPrograma || !initialTrayecto) {
         $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
     }
 
@@ -106,12 +106,15 @@ function initCursos() {
         $('#horario').empty().append('<option value="" selected>Seleccione una Opción</option>');
     }
 
+    bInit = false;
+
     $('#carrera-id').on('change', function () {
         cargarProgramas($(this).val(), null);
         $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
     });
 
     $('#programa-id').on('change', function () {
+        if (bInit) { return; }
         var trayectoId = $('#trayecto-id').val();
         cargarAsignaturas($(this).val(), trayectoId, null);
     });
