@@ -31,10 +31,15 @@
                     echo $this->Form->control('carrera_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $carreras]);
                     echo $this->Form->control('programa_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $programas]);
                     echo $this->Form->control('trayecto_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $trayectos]);
+                    echo $this->Form->control('asignatura_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $asignaturas]);
+                    echo $this->Form->control('profesores', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('docente_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $docentes]);
                     echo $this->Form->control('seccion', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('cupos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('aula_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $aulas, 'empty' => true]);
+                    echo $this->Form->control('horario', ['type' => 'select', 'options' => $horarios, 'empty' => true,
+                    'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                );
                     echo $this->Form->control('activo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                 ?>
             </div>            
@@ -50,3 +55,13 @@
         </div>
     </div>
 </div>
+
+<?php $this->start('script'); ?>
+<?= $this->Html->script('cursos') ?>
+<script>
+var CURSOS_PROGRAMAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getProgramas']) ?>';
+var CURSOS_ASIGNATURAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAsignaturas']) ?>';
+var CURSOS_HORARIOS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getHorarios']) ?>';
+$(document).ready(initCursos);
+</script>
+<?php $this->end(); ?>

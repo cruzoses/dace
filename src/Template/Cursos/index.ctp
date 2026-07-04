@@ -1,4 +1,5 @@
 <div class="row">
+
     <div class="col-xs-12">
         <div class="box box-info box-solid">
             <div class="box-header with-border">
@@ -26,15 +27,18 @@
                             <th scope="col"><?= $this->Paginator->sort('sede_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('periodo_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('carrera_id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('programa_id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('trayecto_id') ?></th>
+                            <!--th scope="col"><?= $this->Paginator->sort('programa_id') ?></th-->
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('trayecto_id') ?></th>
+							<th scope="col"><?= $this->Paginator->sort('asignatura_id') ?></th>
+                            <!--th scope="col"><?= $this->Paginator->sort('profesores') ?></th-->
                             <th scope="col"><?= $this->Paginator->sort('docente_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('seccion') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('cupos') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('aula_id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('activo') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                            <!--th scope="col"><?= $this->Paginator->sort('aula_id') ?></th-->
+                            <!--th scope="col"><?= $this->Paginator->sort('horario') ?></th-->
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('activo') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
@@ -42,18 +46,21 @@
                         <?php foreach ($cursos as $curso): ?>
                             <tr>
                                 <td><?= $this->Number->format($curso->id) ?></td>
-                            <td><?= $curso->has('sede') ? $this->Html->link($curso->sede->nombre, ['controller' => 'Sedes', 'action' => 'view', $curso->sede->id]) : '' ?></td>
-                                <td><?= $curso->has('periodo') ? $this->Html->link($curso->periodo->id, ['controller' => 'Periodos', 'action' => 'view', $curso->periodo->id]) : '' ?></td>
-                                <td><?= $curso->has('carrera') ? $this->Html->link($curso->carrera->nombre, ['controller' => 'Carreras', 'action' => 'view', $curso->carrera->id]) : '' ?></td>
-                                <td><?= $curso->has('programa') ? $this->Html->link($curso->programa->id, ['controller' => 'Programas', 'action' => 'view', $curso->programa->id]) : '' ?></td>
-                                <td><?= $curso->has('trayecto') ? $this->Html->link($curso->trayecto->id, ['controller' => 'Trayectos', 'action' => 'view', $curso->trayecto->id]) : '' ?></td>
-                                <td><?= $curso->has('docente') ? $this->Html->link($curso->docente->id, ['controller' => 'Docentes', 'action' => 'view', $curso->docente->id]) : '' ?></td>
-                                            <td><?= h($curso->seccion) ?></td>
-                                        <td><?= $this->Number->format($curso->cupos) ?></td>
-                            <td><?= $curso->has('aula') ? $this->Html->link($curso->aula->id, ['controller' => 'Aulas', 'action' => 'view', $curso->aula->id]) : '' ?></td>
-                                            <td><?= h($curso->activo) ?></td>
-                                        <td><?= h($curso->created) ?></td>
-                                        <td><?= h($curso->modified) ?></td>
+                                <td><?= $curso->has('sede') ? h($curso->sede->nombre) : '' ?></td>
+                                <td><?= $curso->has('periodo') ? h($curso->periodo->codigo) : '' ?></td>
+                                <td><?= $curso->has('carrera') ? h($curso->carrera->codigo) : '' ?></td>
+                                <!--td><?= $curso->has('programa') ? h($curso->programa->codigo) : '' ?></td-->
+                                <td class="text-center"><?= $curso->has('trayecto') ? h($curso->trayecto->codigo) : '' ?></td>
+								<td><?= $curso->has('asignatura') ? h($curso->asignatura->codigo) : '' ?></td>
+                                <!--td><?= h($curso->profesores) ?></td-->
+                                <td><?= $curso->has('docente') ? h($curso->docente->name) : '' ?></td>
+                                <td><?= h($curso->seccion) ?></td>
+                                <td><?= $this->Number->format($curso->cupos) ?></td>
+                                <!--td><?= $curso->has('aula') ? h($curso->aula->id) : '' ?></td-->
+                                <!--td><?= h($curso->horario) ?></td-->
+                                <td class="text-center"><?= h($curso->activo) ? 'Sí' : 'No' ?></td>
+                                <td class="text-center"><?= h($curso->created) ?></td>
+                                <td class="text-center"><?= h($curso->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $curso->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $curso->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -64,7 +71,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="13" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
@@ -90,4 +97,5 @@
             </div>
         </div>
     </div>
+	
 </div>

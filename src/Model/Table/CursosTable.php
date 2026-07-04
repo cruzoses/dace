@@ -14,6 +14,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\CarrerasTable&\Cake\ORM\Association\BelongsTo $Carreras
  * @property \App\Model\Table\ProgramasTable&\Cake\ORM\Association\BelongsTo $Programas
  * @property \App\Model\Table\TrayectosTable&\Cake\ORM\Association\BelongsTo $Trayectos
+ * @property \App\Model\Table\AsignaturasTable&\Cake\ORM\Association\BelongsTo $Asignaturas
  * @property \App\Model\Table\DocentesTable&\Cake\ORM\Association\BelongsTo $Docentes
  * @property \App\Model\Table\AulasTable&\Cake\ORM\Association\BelongsTo $Aulas
  * @property \App\Model\Table\EstudianteCursosTable&\Cake\ORM\Association\HasMany $EstudianteCursos
@@ -68,6 +69,10 @@ class CursosTable extends Table
             'foreignKey' => 'trayecto_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Asignaturas', [
+            'foreignKey' => 'asignatura_id',
+            'joinType' => 'INNER',
+        ]);
         $this->belongsTo('Docentes', [
             'foreignKey' => 'docente_id',
             'joinType' => 'INNER',
@@ -96,6 +101,12 @@ class CursosTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
+            ->scalar('profesores')
+            ->maxLength('profesores', 40)
+            ->requirePresence('profesores', 'create')
+            ->notEmptyString('profesores');
+
+        $validator
             ->scalar('seccion')
             ->maxLength('seccion', 20)
             ->requirePresence('seccion', 'create')
@@ -104,6 +115,12 @@ class CursosTable extends Table
         $validator
             ->requirePresence('cupos', 'create')
             ->notEmptyString('cupos');
+
+        $validator
+            ->scalar('horario')
+            ->maxLength('horario', 60)
+            ->requirePresence('horario', 'create')
+            ->notEmptyString('horario');
 
         $validator
             ->boolean('activo')
@@ -127,6 +144,7 @@ class CursosTable extends Table
         $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
         $rules->add($rules->existsIn(['programa_id'], 'Programas'));
         $rules->add($rules->existsIn(['trayecto_id'], 'Trayectos'));
+        $rules->add($rules->existsIn(['asignatura_id'], 'Asignaturas'));
         $rules->add($rules->existsIn(['docente_id'], 'Docentes'));
         $rules->add($rules->existsIn(['aula_id'], 'Aulas'));
 

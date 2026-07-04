@@ -44,7 +44,7 @@ class AulasTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('aulas');
-        $this->setDisplayField('id');
+        $this->setDisplayField('nombre');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

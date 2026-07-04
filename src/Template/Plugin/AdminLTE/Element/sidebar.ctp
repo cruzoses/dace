@@ -105,7 +105,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?= $this->Url->build(['controller' => 'asignatura_programas','action' => 'index'])?>">
+							<a href="<?= $this->Url->build(['controller' => 'mallas','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Malla Curricular
 							</a>
 						</li>

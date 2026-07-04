@@ -2,7 +2,7 @@
     <div class="col-xs-12">
         <div class="box box-info box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Mallas</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Trayectos</h3>
                 <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
@@ -23,36 +23,34 @@
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('programa_id') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('trayecto_id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('asignatura_id') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('nota_minima') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('codigo') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('activo') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($mallas as $malla): ?>
+                        <?php foreach ($trayectos as $trayecto): ?>
                             <tr>
-                                <td><?= $this->Number->format($malla->id) ?></td>
-                                <td><?= $malla->has('programa') ? h($malla->programa->codename) : '' ?></td>
-                                <td><?= $malla->has('trayecto') ? h($malla->trayecto->codigo) : ''  ?></td>
-                                <td><?= $malla->has('asignatura') ? h($malla->asignatura->codename) : '' ?></td>
-                                <td class="text-center"><?= h($malla->nota_minima) ?></td>
-                                <td class="text-center"><?= h($malla->created) ?></td>
-                                <td class="text-center"><?= h($malla->modified) ?></td>
+                        <td><?= $this->Number->format($trayecto->id) ?></td>
+                                <td><?= h($trayecto->codigo) ?></td>
+                                <td><?= h($trayecto->nombre) ?></td>
+                                <td><?= h($trayecto->activo) ?></td>
+                                <td><?= h($trayecto->created) ?></td>
+                                <td><?= h($trayecto->modified) ?></td>
                                 <td class="actions text-center">
-                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $malla->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $malla->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $malla->id], ['confirm' => __('Are you sure you want to delete # {0}?', $malla->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $trayecto->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $trayecto->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $trayecto->id], ['confirm' => __('Are you sure you want to delete # {0}?', $trayecto->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="8" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>

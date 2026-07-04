@@ -12,10 +12,13 @@ use Cake\ORM\Entity;
  * @property int $carrera_id
  * @property int $programa_id
  * @property int $trayecto_id
+ * @property int $asignatura_id
+ * @property string $profesores
  * @property int $docente_id
  * @property string $seccion
  * @property int $cupos
  * @property int|null $aula_id
+ * @property string $horario
  * @property bool $activo
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -25,11 +28,12 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Carrera $carrera
  * @property \App\Model\Entity\Programa $programa
  * @property \App\Model\Entity\Trayecto $trayecto
+ * @property \App\Model\Entity\Asignatura $asignatura
  * @property \App\Model\Entity\Docente $docente
  * @property \App\Model\Entity\Aula $aula
  * @property \App\Model\Entity\EstudianteCurso[] $estudiante_cursos
  * @property \App\Model\Entity\IndicadorCurso[] $indicador_cursos
- */
+*/
 class Curso extends Entity
 {
     /**
@@ -40,17 +44,20 @@ class Curso extends Entity
      * (or remove it), and explicitly make individual fields accessible as needed.
      *
      * @var array
-     */
+    */
     protected $_accessible = [
         'sede_id' => true,
         'periodo_id' => true,
         'carrera_id' => true,
         'programa_id' => true,
         'trayecto_id' => true,
+        'asignatura_id' => true,
+        'profesores' => true,
         'docente_id' => true,
         'seccion' => true,
         'cupos' => true,
         'aula_id' => true,
+        'horario' => true,
         'activo' => true,
         'created' => true,
         'modified' => true,
@@ -59,9 +66,15 @@ class Curso extends Entity
         'carrera' => true,
         'programa' => true,
         'trayecto' => true,
+        'asignatura' => true,
         'docente' => true,
         'aula' => true,
         'estudiante_cursos' => true,
         'indicador_cursos' => true,
     ];
+
+    protected function _setProfesores($value)
+    {
+        return is_array($value) ? implode(' ', $value) : $value;
+    }
 }

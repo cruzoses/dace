@@ -50,7 +50,7 @@ class DocentesTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('docentes');
-        $this->setDisplayField('id');
+        $this->setDisplayField('codename');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

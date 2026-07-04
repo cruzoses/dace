@@ -83,6 +83,10 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/captcha-image/:id', ['controller' => 'Captcha', 'action' => 'image'], ['id' => '.+', 'pass' => ['id']]);
     $routes->connect('/captcha-reload', ['controller' => 'Captcha', 'action' => 'reload']);
 
+    $routes->connect('/cursos/get-programas', ['controller' => 'Cursos', 'action' => 'getProgramas']);
+    $routes->connect('/cursos/get-asignaturas', ['controller' => 'Cursos', 'action' => 'getAsignaturas']);
+    $routes->connect('/cursos/get-horarios', ['controller' => 'Cursos', 'action' => 'getHorarios']);
+
     /*
      * Connect catchall routes for all controllers.
      *

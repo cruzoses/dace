@@ -500,7 +500,7 @@ CREATE TABLE IF NOT EXISTS `mallas`
   `programa_id` Int NOT NULL,
   `trayecto_id` Int NOT NULL,
   `asignatura_id` Int NOT NULL,
-  `nota_minima` Varchar(10),
+  `nota_minima` Smallint(6),
   `created` Datetime,
   `modified` Datetime,
   PRIMARY KEY (`id`)
@@ -526,10 +526,13 @@ CREATE TABLE IF NOT EXISTS `cursos`
   `carrera_id` Int NOT NULL,
   `programa_id` Int NOT NULL,
   `trayecto_id` Int NOT NULL,
+  `asignatura_id` Int NOT NULL,
+  `profesores` Varchar(40) NOT NULL,
   `docente_id` Int NOT NULL,
   `seccion` Varchar(20) NOT NULL,
   `cupos` Smallint(6) NOT NULL,
   `aula_id` Int(11),
+  `horario` Varchar(60) NOT NULL,
   `activo` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -556,6 +559,9 @@ CREATE INDEX `IX_Curso_Programa` ON `cursos` (`programa_id`)
 ;
 
 CREATE INDEX `IX_Curso_Aula` ON `cursos` (`aula_id`)
+;
+
+CREATE INDEX `IX_Curso_Asignatura` ON `cursos` (`asignatura_id`)
 ;
 
 -- Table periodos
@@ -947,5 +953,8 @@ ALTER TABLE `horarios` ADD CONSTRAINT `pfk_periodo_horario` FOREIGN KEY (`period
 ;
 
 ALTER TABLE `mallas` ADD CONSTRAINT `pfk_trayecto_malla` FOREIGN KEY (`trayecto_id`) REFERENCES `trayectos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `cursos` ADD CONSTRAINT `pfk_asignatura_curso` FOREIGN KEY (`asignatura_id`) REFERENCES `asignaturas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 

@@ -15,21 +15,27 @@
         	<div class="box-body">
           		<dl class="dl-horizontal">
                     <dt scope="row"><?= __('Sede') ?></dt>
-                    <dd><?= $curso->has('sede') ? $this->Html->link($curso->sede->nombre, ['controller' => 'Sedes', 'action' => 'view', $curso->sede->id]) : '' ?></dd>
+                    <dd><?= $curso->has('sede') ? $this->Html->link($curso->sede->codename, ['controller' => 'Sedes', 'action' => 'view', $curso->sede->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Periodo') ?></dt>
-                    <dd><?= $curso->has('periodo') ? $this->Html->link($curso->periodo->id, ['controller' => 'Periodos', 'action' => 'view', $curso->periodo->id]) : '' ?></dd>
+                    <dd><?= $curso->has('periodo') ? $this->Html->link($curso->periodo->codename, ['controller' => 'Periodos', 'action' => 'view', $curso->periodo->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Carrera') ?></dt>
                     <dd><?= $curso->has('carrera') ? $this->Html->link($curso->carrera->nombre, ['controller' => 'Carreras', 'action' => 'view', $curso->carrera->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Programa') ?></dt>
-                    <dd><?= $curso->has('programa') ? $this->Html->link($curso->programa->id, ['controller' => 'Programas', 'action' => 'view', $curso->programa->id]) : '' ?></dd>
+                    <dd><?= $curso->has('programa') ? $this->Html->link($curso->programa->codename, ['controller' => 'Programas', 'action' => 'view', $curso->programa->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Trayecto') ?></dt>
-                    <dd><?= $curso->has('trayecto') ? $this->Html->link($curso->trayecto->id, ['controller' => 'Trayectos', 'action' => 'view', $curso->trayecto->id]) : '' ?></dd>
+                    <dd><?= $curso->has('trayecto') ? $this->Html->link($curso->trayecto->codename, ['controller' => 'Trayectos', 'action' => 'view', $curso->trayecto->id]) : '' ?></dd>
+                    <dt scope="row"><?= __('Asignatura') ?></dt>
+                    <dd><?= $curso->has('asignatura') ? $this->Html->link($curso->asignatura->codename, ['controller' => 'Asignaturas', 'action' => 'view', $curso->asignatura->id]) : '' ?></dd>
+                    <dt scope="row"><?= __('Profesores') ?></dt>
+                    <dd><?= h($curso->profesores) ?></dd>
                     <dt scope="row"><?= __('Docente') ?></dt>
-                    <dd><?= $curso->has('docente') ? $this->Html->link($curso->docente->id, ['controller' => 'Docentes', 'action' => 'view', $curso->docente->id]) : '' ?></dd>
+                    <dd><?= $curso->has('docente') ? $this->Html->link($curso->docente->codename, ['controller' => 'Docentes', 'action' => 'view', $curso->docente->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Seccion') ?></dt>
                     <dd><?= h($curso->seccion) ?></dd>
                     <dt scope="row"><?= __('Aula') ?></dt>
-                    <dd><?= $curso->has('aula') ? $this->Html->link($curso->aula->id, ['controller' => 'Aulas', 'action' => 'view', $curso->aula->id]) : '' ?></dd>
+                    <dd><?= $curso->has('aula') ? $this->Html->link($curso->aula->nombre, ['controller' => 'Aulas', 'action' => 'view', $curso->aula->id]) : '' ?></dd>
+                    <dt scope="row"><?= __('Horario') ?></dt>
+                    <dd><?= h($curso->horario) ?></dd>
                     <dt scope="row"><?= __('Id') ?></dt>
                     <dd><?= $this->Number->format($curso->id) ?></dd>
                     <dt scope="row"><?= __('Cupos') ?></dt>

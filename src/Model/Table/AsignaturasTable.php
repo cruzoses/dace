@@ -131,7 +131,7 @@ class AsignaturasTable extends AppTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
-     */
+    */
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->isUnique(['codigo'], 'Ya existe una asignatura con este código.'));

@@ -65,12 +65,24 @@ class Docente extends Entity
     ];
 
     protected $_virtual = [
-        'full_name',
+        'full_name', 'codename', 'name'
     ];
 
     protected function _getFullName()
     {
         return $this->nombres .' '. $this->apellidos;
     }
+
+    protected function _getcodename()
+    {
+        return $this->cedula . ' : ' . $this->nombres .' '. $this->apellidos;
+    }
     
+    protected function _getname()
+    {
+        $aUno = explode(' ',$this->nombres);
+        $aDos = explode(' ',$this->apellidos);
+        return $aUno[0] .' '. $aDos[0];
+    }
+
 }
