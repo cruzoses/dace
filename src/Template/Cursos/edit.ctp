@@ -86,6 +86,13 @@ var CURSOS_ASIGNATURAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', '
 var CURSOS_HORARIOS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getHorarios']) ?>';
 var CURSOS_HORARIO_ACTUAL = '<?= h($curso->horario) ?>';
 var CURSOS_ASIGNATURA_ACTUAL = '<?= h($curso->asignatura_id) ?>';
-$(document).ready(initCursos);
+$(document).ready(function() {
+    initCursos();
+    if (typeof CURSOS_ASIGNATURA_ACTUAL !== 'undefined' && CURSOS_ASIGNATURA_ACTUAL) {
+        setTimeout(function() {
+            $('#asignatura-id').val(CURSOS_ASIGNATURA_ACTUAL).trigger('change');
+        }, 100);
+    }
+});
 </script>
 <?php $this->end(); ?>

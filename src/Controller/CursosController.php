@@ -135,6 +135,7 @@ class CursosController extends AppController
             if ( !empty( $data['profesores']) && is_array($data['profesores'])) 
             {
                 $data['profesores'] = implode(' ', $data['profesores']);
+                $data['horario'] = implode(' ', $data['horario']);
             }
             $curso = $this->Cursos->patchEntity($curso, $data);
             //$curso = $this->Cursos->patchEntity($curso, $this->request->getData());
