@@ -158,18 +158,7 @@ class CursosController extends AppController
         $carreras = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
         $programas = $this->Cursos->Programas->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
         $trayectos = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1]);
-        $asignaturas = [];
-        if (!empty($curso->programa_id) && !empty($curso->trayecto_id)) {
-            $asignaturas = $this->Cursos->Asignaturas->find('list', ['limit' => 200])
-                ->matching('Mallas', function ($q) use ($curso) {
-                    return $q->where([
-                        'Mallas.programa_id' => $curso->programa_id,
-                        'Mallas.trayecto_id' => $curso->trayecto_id,
-                    ]);
-                })
-                ->where(['Asignaturas.activa' => 1])
-                ->toArray();
-        }
+        $asignaturas = $this->Cursos->Asignaturas->find('list', ['limit' => 200])->where(['activa' => 1]);
         $docentes = $this->Cursos->Docentes->find('list')->where(['activo' => 1]);
         $profesores = $this->Cursos->Docentes->find('list', [
             'keyField' => 'cedula',
