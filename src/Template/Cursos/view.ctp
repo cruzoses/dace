@@ -20,8 +20,8 @@
                     <dd><?= $curso->has('periodo') ? $this->Html->link($curso->periodo->codename, ['controller' => 'Periodos', 'action' => 'view', $curso->periodo->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Carrera') ?></dt>
                     <dd><?= $curso->has('carrera') ? $this->Html->link($curso->carrera->nombre, ['controller' => 'Carreras', 'action' => 'view', $curso->carrera->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Programa') ?></dt>
-                    <dd><?= $curso->has('programa') ? $this->Html->link($curso->programa->codename, ['controller' => 'Programas', 'action' => 'view', $curso->programa->id]) : '' ?></dd>
+                    <dt scope="row"><?= __('Programas') ?></dt>
+                    <dd><?= h($curso->programas) ?></dd>
                     <dt scope="row"><?= __('Trayecto') ?></dt>
                     <dd><?= $curso->has('trayecto') ? $this->Html->link($curso->trayecto->codename, ['controller' => 'Trayectos', 'action' => 'view', $curso->trayecto->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Asignatura') ?></dt>

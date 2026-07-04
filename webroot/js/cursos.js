@@ -1,6 +1,6 @@
-function cargarAsignaturas(programaId, trayectoId, selectedValue) {
+function cargarAsignaturas(programaIds, trayectoId, selectedValue) {
     var $asignatura = $('#asignatura-id');
-    if (!programaId || !trayectoId) {
+    if (!programaIds || !programaIds.length || !trayectoId) {
         $asignatura.empty().append('<option value="" selected>Seleccione una Opción</option>');
         $asignatura.val('').trigger('change');
         return;
@@ -8,7 +8,7 @@ function cargarAsignaturas(programaId, trayectoId, selectedValue) {
     $.ajax({
         url: CURSOS_ASIGNATURAS_URL,
         type: 'GET',
-        data: { programa_id: programaId, trayecto_id: trayectoId },
+        data: { programa_ids: programaIds, trayecto_id: trayectoId },
         dataType: 'json',
         beforeSend: function () {
             $asignatura.empty().append('<option value="">Cargando...</option>');
@@ -25,30 +25,30 @@ function cargarAsignaturas(programaId, trayectoId, selectedValue) {
     });
 }
 
-function cargarProgramas(carreraId, selectedValue) {
-    var $programa = $('#programa-id');
-    if (!carreraId) {
-        $programa.empty().append('<option value="" selected>Seleccione una Opción</option>');
-        $programa.val('').trigger('change');
+function cargarAulas(sedeId, selectedValue) {
+    var $aula = $('#aula-id');
+    if (!sedeId) {
+        $aula.empty().append('<option value="" selected>Seleccione una Opción</option>');
+        $aula.val('').trigger('change');
         return;
     }
     $.ajax({
-        url: CURSOS_PROGRAMAS_URL,
+        url: CURSOS_AULAS_URL,
         type: 'GET',
-        data: { carrera_id: carreraId },
+        data: { sede_id: sedeId },
         dataType: 'json',
         beforeSend: function () {
-            $programa.empty().append('<option value="">Cargando...</option>');
+            $aula.empty().append('<option value="">Cargando...</option>');
         }
     }).done(function (response) {
-        $programa.empty().append('<option value="" selected>Seleccione una Opción</option>');
-        $.each(response.programas, function (value, text) {
+        $aula.empty().append('<option value="" selected>Seleccione una Opción</option>');
+        $.each(response.aulas, function (value, text) {
             var selected = (value == selectedValue) ? ' selected' : '';
-            $programa.append('<option value="' + value + '"' + selected + '>' + text + '</option>');
+            $aula.append('<option value="' + value + '"' + selected + '>' + text + '</option>');
         });
-        $programa.val(selectedValue || '').trigger('change');
+        $aula.val(selectedValue || '').trigger('change');
     }).fail(function () {
-        $programa.empty().append('<option value="" selected>Error al cargar programas</option>');
+        $aula.empty().append('<option value="" selected>Error al cargar aulas</option>');
     });
 }
 
@@ -82,17 +82,12 @@ function cargarHorarios(sedeId, periodoId, selectedValue) {
 function initCursos() {
     var esEdicion = typeof CURSOS_ASIGNATURA_ACTUAL !== 'undefined';
     var initialCarrera = $('#carrera-id').val();
-    var initialPrograma = $('#programa-id').val();
     var initialTrayecto = $('#trayecto-id').val();
     var initialSede = $('#sede-id').val();
     var initialPeriodo = $('#periodo-id').val();
     var initialHorario = $('#horario').val() || (typeof CURSOS_HORARIO_ACTUAL !== 'undefined' ? CURSOS_HORARIO_ACTUAL : '');
 
-    if (!initialCarrera) {
-        $('#programa-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
-    }
-
-    if (!initialPrograma || !initialTrayecto) {
+    if (!initialTrayecto) {
         $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
     }
 
@@ -103,36 +98,43 @@ function initCursos() {
     }
 
     $('#carrera-id').on('change', function () {
-        cargarProgramas($(this).val(), null);
         if (!esEdicion) {
             $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
         }
     });
 
-    $('#programa-id').on('change', function () {
-        var trayectoId = $('#trayecto-id').val();
-        cargarAsignaturas($(this).val(), trayectoId, esEdicion ? CURSOS_ASIGNATURA_ACTUAL : null);
+    $('#trayecto-id').on('change', function () {
+        var checkedProgramas = $('#programas-checkbox input:checked').map(function () {
+            return $(this).val();
+        }).get();
+        cargarAsignaturas(checkedProgramas, $(this).val(), esEdicion ? CURSOS_ASIGNATURA_ACTUAL : null);
     });
 
-    $('#trayecto-id').on('change', function () {
-        var programaId = $('#programa-id').val();
-        cargarAsignaturas(programaId, $(this).val(), esEdicion ? CURSOS_ASIGNATURA_ACTUAL : null);
+    $(document).on('change', '#programas-checkbox input[type=checkbox]', function () {
+        var trayectoId = $('#trayecto-id').val();
+        var checkedProgramas = $('#programas-checkbox input:checked').map(function () {
+            return $(this).val();
+        }).get();
+        cargarAsignaturas(checkedProgramas, trayectoId, esEdicion ? CURSOS_ASIGNATURA_ACTUAL : null);
     });
+
+    if (initialSede) {
+        var aulaActual = esEdicion && typeof CURSOS_AULA_ACTUAL !== 'undefined' ? CURSOS_AULA_ACTUAL : $('#aula-id').val();
+        cargarAulas(initialSede, aulaActual);
+    } else {
+        $('#aula-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
+    }
 
     $('#sede-id').on('change', function () {
+        var sedeId = $(this).val();
         var periodoId = $('#periodo-id').val();
-        cargarHorarios($(this).val(), periodoId, null);
+        cargarAulas(sedeId, null);
+        cargarHorarios(sedeId, periodoId, null);
     });
 
     $('#periodo-id').on('change', function () {
         var sedeId = $('#sede-id').val();
         cargarHorarios(sedeId, $(this).val(), null);
-    });
-
-    $('#aula-id').on('change', function () {
-        var sedeId = $('#sede-id').val();
-        var periodoId = $('#periodo-id').val();
-        cargarHorarios(sedeId, periodoId, null);
     });
 
     if (esEdicion && CURSOS_ASIGNATURA_ACTUAL) {

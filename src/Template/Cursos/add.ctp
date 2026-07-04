@@ -36,9 +36,8 @@
                     echo $this->Form->control('carrera_id', ['type' => 'select', 'options' => $carreras, 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->control('programa_id', ['type' => 'select', 'options' => $programas, 'empty' => true,
-                        'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
-                    );
+                    echo $this->Form->hidden('programas', ['id' => 'programas-input']);
+                    echo '<div class="form-group"><label class="control-label col-sm-6 col-md-2">Programas</label><div class="col-sm-6 col-md-9"><div id="programas-checkbox"></div></div></div>';
                     echo $this->Form->control('trayecto_id', ['type' => 'select', 'options' => $trayectos, 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
@@ -86,6 +85,56 @@
 var CURSOS_PROGRAMAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getProgramas']) ?>';
 var CURSOS_ASIGNATURAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAsignaturas']) ?>';
 var CURSOS_HORARIOS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getHorarios']) ?>';
-$(document).ready(initCursos);
+var CURSOS_AULAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAulas']) ?>';
+
+initCursos();
+
+window.cargarProgramas = function (carreraId) {
+    if (!carreraId) {
+        $('#programas-checkbox').empty();
+        return;
+    }
+    $.ajax({
+        url: CURSOS_PROGRAMAS_URL,
+        type: 'GET',
+        data: { carrera_id: carreraId },
+        dataType: 'json',
+        beforeSend: function () {
+            $('#programas-checkbox').empty().html('<span>Cargando...</span>');
+        }
+    }).done(function (response) {
+        var $container = $('#programas-checkbox');
+        $container.empty();
+        $.each(response.programas, function (value, text) {
+            $container.append(
+                $('<div>').addClass('checkbox').append(
+                    $('<label>').append(
+                        $('<input>').attr({
+                            type: 'checkbox',
+                            value: value
+                        }),
+                        ' ' + text
+                    )
+                )
+            );
+        });
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        $('#programas-checkbox').empty().html('<span>Error al cargar programas: ' + textStatus + '</span>');
+    });
+};
+
+window._onCarreraChange = function () {
+    window.cargarProgramas($(this).val());
+};
+$('#carrera-id').on('change', window._onCarreraChange);
+$('#carrera-id').on('select2:select', window._onCarreraChange);
+
+$('form').on('submit', function () {
+    var checked = [];
+    $('#programas-checkbox input:checked').each(function () {
+        checked.push($(this).val());
+    });
+    $('#programas-input').val(checked.join(' '));
+});
 </script>
 <?php $this->end(); ?>

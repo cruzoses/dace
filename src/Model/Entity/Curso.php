@@ -10,7 +10,7 @@ use Cake\ORM\Entity;
  * @property int $sede_id
  * @property int $periodo_id
  * @property int $carrera_id
- * @property int $programa_id
+ * @property string $programas
  * @property int $trayecto_id
  * @property int $asignatura_id
  * @property string $profesores
@@ -26,7 +26,6 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Sede $sede
  * @property \App\Model\Entity\Periodo $periodo
  * @property \App\Model\Entity\Carrera $carrera
- * @property \App\Model\Entity\Programa $programa
  * @property \App\Model\Entity\Trayecto $trayecto
  * @property \App\Model\Entity\Asignatura $asignatura
  * @property \App\Model\Entity\Docente $docente
@@ -49,7 +48,7 @@ class Curso extends Entity
         'sede_id' => true,
         'periodo_id' => true,
         'carrera_id' => true,
-        'programa_id' => true,
+        'programas' => true,
         'trayecto_id' => true,
         'asignatura_id' => true,
         'profesores' => true,
@@ -64,7 +63,6 @@ class Curso extends Entity
         'sede' => true,
         'periodo' => true,
         'carrera' => true,
-        'programa' => true,
         'trayecto' => true,
         'asignatura' => true,
         'docente' => true,
@@ -79,6 +77,11 @@ class Curso extends Entity
     }
 
     protected function _setHorario($value)
+    {
+        return is_array($value) ? implode(' ', $value) : $value;
+    }
+
+    protected function _setProgramas($value)
     {
         return is_array($value) ? implode(' ', $value) : $value;
     }

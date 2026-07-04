@@ -86,6 +86,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/cursos/get-programas', ['controller' => 'Cursos', 'action' => 'getProgramas']);
     $routes->connect('/cursos/get-asignaturas', ['controller' => 'Cursos', 'action' => 'getAsignaturas']);
     $routes->connect('/cursos/get-horarios', ['controller' => 'Cursos', 'action' => 'getHorarios']);
+    $routes->connect('/cursos/get-aulas', ['controller' => 'Cursos', 'action' => 'getAulas']);
 
     /*
      * Connect catchall routes for all controllers.

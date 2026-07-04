@@ -27,7 +27,6 @@
                             <th scope="col"><?= $this->Paginator->sort('sede_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('periodo_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('carrera_id') ?></th>
-                            <!--th scope="col"><?= $this->Paginator->sort('programa_id') ?></th-->
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('trayecto_id') ?></th>
 							<th scope="col"><?= $this->Paginator->sort('asignatura_id') ?></th>
                             <!--th scope="col"><?= $this->Paginator->sort('profesores') ?></th-->
@@ -50,7 +49,6 @@
                                 <td><?= $curso->has('sede') ? h($curso->sede->nombre) : '' ?></td>
                                 <td><?= $curso->has('periodo') ? h($curso->periodo->codigo) : '' ?></td>
                                 <td><?= $curso->has('carrera') ? h($curso->carrera->codigo) : '' ?></td>
-                                <!--td><?= $curso->has('programa') ? h($curso->programa->codigo) : '' ?></td-->
                                 <td class="text-center"><?= $curso->has('trayecto') ? h($curso->trayecto->codigo) : '' ?></td>
 								<td><?= $curso->has('asignatura') ? h($curso->asignatura->codigo) : '' ?></td>
                                 <!--td><?= h($curso->profesores) ?></td-->

@@ -11,7 +11,6 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\SedesTable&\Cake\ORM\Association\BelongsTo $Sedes
  * @property \App\Model\Table\PeriodosTable&\Cake\ORM\Association\BelongsTo $Periodos
  * @property \App\Model\Table\CarrerasTable&\Cake\ORM\Association\BelongsTo $Carreras
- * @property \App\Model\Table\ProgramasTable&\Cake\ORM\Association\BelongsTo $Programas
  * @property \App\Model\Table\TrayectosTable&\Cake\ORM\Association\BelongsTo $Trayectos
  * @property \App\Model\Table\AsignaturasTable&\Cake\ORM\Association\BelongsTo $Asignaturas
  * @property \App\Model\Table\DocentesTable&\Cake\ORM\Association\BelongsTo $Docentes
@@ -106,10 +105,6 @@ class CursosTable extends AppTable
             'foreignKey' => 'carrera_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Programas', [
-            'foreignKey' => 'programa_id',
-            'joinType' => 'INNER',
-        ]);
         $this->belongsTo('Trayectos', [
             'foreignKey' => 'trayecto_id',
             'joinType' => 'INNER',
@@ -168,6 +163,11 @@ class CursosTable extends AppTable
             ->notEmptyString('horario');
 
         $validator
+            ->scalar('programas')
+            ->maxLength('programas', 100)
+            ->allowEmptyString('programas');
+
+        $validator
             ->boolean('activo')
             ->requirePresence('activo', 'create')
             ->notEmptyString('activo');
@@ -187,7 +187,6 @@ class CursosTable extends AppTable
         $rules->add($rules->existsIn(['sede_id'], 'Sedes'));
         $rules->add($rules->existsIn(['periodo_id'], 'Periodos'));
         $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
-        $rules->add($rules->existsIn(['programa_id'], 'Programas'));
         $rules->add($rules->existsIn(['trayecto_id'], 'Trayectos'));
         $rules->add($rules->existsIn(['asignatura_id'], 'Asignaturas'));
         $rules->add($rules->existsIn(['docente_id'], 'Docentes'));

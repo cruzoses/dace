@@ -37,7 +37,7 @@ class CursosController extends AppController
     {
         $conditions = $this->Cursos->formatConditions($this->request->getQueryParams());
         $this->paginate = [
-            'contain' => ['Sedes', 'Periodos', 'Carreras', 'Programas', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas'],
+            'contain' => ['Sedes', 'Periodos', 'Carreras', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas'],
             'conditions' => $conditions,
         ];
         $cursos = $this->paginate($this->Cursos);
@@ -64,8 +64,23 @@ class CursosController extends AppController
     public function view($id = null)
     {
         $curso = $this->Cursos->get($id, [
-            'contain' => ['Sedes', 'Periodos', 'Carreras', 'Programas', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas', 'EstudianteCursos', 'IndicadorCursos'],
+            'contain' => ['Sedes', 'Periodos', 'Carreras', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas', 'EstudianteCursos', 'IndicadorCursos'],
         ]);
+
+        $nombresProgramas = [];
+        if (!empty($curso->programas)) {
+            $this->loadModel('Programas');
+            $ids = explode(' ', $curso->programas);
+            $programasList = $this->Programas->find('list')
+                ->where(['id IN' => $ids])
+                ->toArray();
+            foreach ($ids as $idP) {
+                if (isset($programasList[$idP])) {
+                    $nombresProgramas[] = $programasList[$idP];
+                }
+            }
+        }
+        $curso->programas = implode(', ', $nombresProgramas);
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Cursos ' . json_encode($curso->toArray()));
 
@@ -84,17 +99,19 @@ class CursosController extends AppController
         if ($this->request->is('post')) 
         {
             $data = $this->request->getData();
-            if ( !empty( $data['profesores']) && is_array($data['profesores'])) 
+            if (!empty($data['profesores']) && is_array($data['profesores'])) 
             {
                 $data['profesores'] = implode(' ', $data['profesores']);
             }
+            if (!empty($data['horario']) && is_array($data['horario'])) 
+            {
+                $data['horario'] = implode(' ', $data['horario']);
+            }
             $curso = $this->Cursos->patchEntity($curso, $data);
-            //$curso = $this->Cursos->patchEntity($curso, $this->request->getData());
             if ($this->Cursos->save($curso)) 
             {
                 $this->Flash->success(__('The {0} has been saved.', 'Curso'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Cursos ' . json_encode($data));
-                //$this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Cursos ' . json_encode($this->request->getData()));
 
                 return $this->redirect(['action' => 'index']);
             }
@@ -103,7 +120,6 @@ class CursosController extends AppController
         $sedes = $this->Cursos->Sedes->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
         $periodos = $this->Cursos->Periodos->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
         $carreras = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
-        $programas = $this->Cursos->Programas->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
         $trayectos = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1]);
         $asignaturas = $this->Cursos->Asignaturas->find('list')->where(['activa' => 1]);
         $docentes = $this->Cursos->Docentes->find('list')->where(['activo' => 1]);
@@ -112,9 +128,9 @@ class CursosController extends AppController
             'valueField' => 'codename'
         ])->where(['activo' => 1])->toArray();
 
-        $aulas = $this->Cursos->Aulas->find('list')->where(['condicion' => 1]);
+        $aulas = [];
         $horarios = [];
-        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'programas', 'trayectos', 'asignaturas', 'docentes', 'aulas', 'horarios', 'profesores'));
+        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'trayectos', 'asignaturas', 'docentes', 'aulas', 'horarios', 'profesores'));
     }
 
     /**
@@ -132,18 +148,19 @@ class CursosController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) 
         {
             $data = $this->request->getData();
-            if ( !empty( $data['profesores']) && is_array($data['profesores'])) 
+            if (!empty($data['profesores']) && is_array($data['profesores'])) 
             {
                 $data['profesores'] = implode(' ', $data['profesores']);
+            }
+            if (!empty($data['horario']) && is_array($data['horario'])) 
+            {
                 $data['horario'] = implode(' ', $data['horario']);
             }
             $curso = $this->Cursos->patchEntity($curso, $data);
-            //$curso = $this->Cursos->patchEntity($curso, $this->request->getData());
             if ($this->Cursos->save($curso)) 
             {
                 $this->Flash->success(__('The {0} has been saved.', 'Curso'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Cursos ' . json_encode($data));
-                //º$this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS Cursos ' . json_encode($this->request->getData()));
 
                 return $this->redirect(['action' => 'index']);
             }
@@ -157,7 +174,6 @@ class CursosController extends AppController
         $sedes = $this->Cursos->Sedes->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
         $periodos = $this->Cursos->Periodos->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
         $carreras = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
-        $programas = $this->Cursos->Programas->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
         $trayectos = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1]);
         $asignaturas = $this->Cursos->Asignaturas->find('list')->where(['activa' => 1]);
         $docentes = $this->Cursos->Docentes->find('list')->where(['activo' => 1]);
@@ -166,7 +182,7 @@ class CursosController extends AppController
             'valueField' => 'codename'
         ])->where(['activo' => 1])->toArray();
 
-        $aulas = $this->Cursos->Aulas->find('list')->where(['condicion' => 1]);
+        $aulas = [];
         $horarios = [];
         if (!empty($curso->sede_id) && !empty($curso->periodo_id)) {
             $this->loadModel('Horarios');
@@ -179,7 +195,7 @@ class CursosController extends AppController
                 'activo' => 1
             ])->order(['Horarios.dia', 'Horarios.desde'])->toArray();
         }
-        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'programas', 'trayectos', 'asignaturas', 'docentes', 'aulas', 'horarios', 'profesores'));
+        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'trayectos', 'asignaturas', 'docentes', 'aulas', 'horarios', 'profesores'));
     }
 
 
@@ -212,17 +228,20 @@ class CursosController extends AppController
     public function getProgramas()
     {
         $this->request->allowMethod(['ajax', 'get']);
+        $this->autoRender = false;
         $carrera_id = $this->request->getQuery('carrera_id');
 
         $programas = [];
         if ($carrera_id) {
-            $programas = $this->Cursos->Programas->find('list', ['limit' => 200])
+            $this->loadModel('Programas');
+            $programas = $this->Programas->find('list', ['limit' => 200])
                 ->where(['carrera_id' => $carrera_id, 'activo' => 1])
                 ->toArray();
         }
 
-        $this->set(compact('programas'));
-        $this->set('_serialize', ['programas']);
+        $this->response = $this->response->withType('application/json');
+        $this->response = $this->response->withStringBody(json_encode(['programas' => $programas]));
+        return $this->response;
     }
 
     /**
@@ -233,15 +252,17 @@ class CursosController extends AppController
     public function getAsignaturas()
     {
         $this->request->allowMethod(['ajax', 'get']);
-        $programa_id = $this->request->getQuery('programa_id');
+        $this->autoRender = false;
+        $programa_ids = $this->request->getQuery('programa_ids');
         $trayecto_id = $this->request->getQuery('trayecto_id');
 
         $asignaturas = [];
-        if ($programa_id && $trayecto_id) {
+        if (!empty($programa_ids) && $trayecto_id) {
+            $programa_ids = is_array($programa_ids) ? $programa_ids : explode(',', $programa_ids);
             $asignaturas = $this->Cursos->Asignaturas->find('list', ['limit' => 200])
-                ->matching('Mallas', function ($q) use ($programa_id, $trayecto_id) {
+                ->matching('Mallas', function ($q) use ($programa_ids, $trayecto_id) {
                     return $q->where([
-                        'Mallas.programa_id' => $programa_id,
+                        'Mallas.programa_id IN' => $programa_ids,
                         'Mallas.trayecto_id' => $trayecto_id,
                     ]);
                 })
@@ -249,8 +270,9 @@ class CursosController extends AppController
                 ->toArray();
         }
 
-        $this->set(compact('asignaturas'));
-        $this->set('_serialize', ['asignaturas']);
+        $this->response = $this->response->withType('application/json');
+        $this->response = $this->response->withStringBody(json_encode(['asignaturas' => $asignaturas]));
+        return $this->response;
     }
 
     /**
@@ -261,6 +283,7 @@ class CursosController extends AppController
     public function getHorarios()
     {
         $this->request->allowMethod(['ajax', 'get']);
+        $this->autoRender = false;
         $sede_id = $this->request->getQuery('sede_id');
         $periodo_id = $this->request->getQuery('periodo_id');
 
@@ -277,8 +300,27 @@ class CursosController extends AppController
             ])->order(['Horarios.dia', 'Horarios.desde'])->toArray();
         }
 
-        $this->set(compact('horarios'));
-        $this->set('_serialize', ['horarios']);
+        $this->response = $this->response->withType('application/json');
+        $this->response = $this->response->withStringBody(json_encode(['horarios' => $horarios]));
+        return $this->response;
+    }
+
+    public function getAulas()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $this->autoRender = false;
+        $sede_id = $this->request->getQuery('sede_id');
+
+        $aulas = [];
+        if ($sede_id) {
+            $aulas = $this->Cursos->Aulas->find('list', ['limit' => 200])
+                ->where(['sede_id' => $sede_id, 'condicion' => 1])
+                ->toArray();
+        }
+
+        $this->response = $this->response->withType('application/json');
+        $this->response = $this->response->withStringBody(json_encode(['aulas' => $aulas]));
+        return $this->response;
     }
 
 }
