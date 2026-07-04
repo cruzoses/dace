@@ -45,7 +45,7 @@ class CarrerasTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('carreras');
-        $this->setDisplayField('nombre');
+        $this->setDisplayField('codename');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -55,6 +55,9 @@ class CarrerasTable extends AppTable
             'joinType' => 'INNER',
         ]);
         $this->hasMany('Cursos', [
+            'foreignKey' => 'carrera_id',
+        ]);
+        $this->hasMany('Mallas', [
             'foreignKey' => 'carrera_id',
         ]);
         $this->hasMany('Programas', [
@@ -72,7 +75,7 @@ class CarrerasTable extends AppTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
-     */
+    */
     public function validationDefault(Validator $validator)
     {
         $validator
@@ -111,7 +114,7 @@ class CarrerasTable extends AppTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
-     */
+    */
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['mension_carrera_id'], 'MensionCarreras'));

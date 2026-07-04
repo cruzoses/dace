@@ -26,10 +26,21 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('programa_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $programas]);
-                    echo $this->Form->control('trayecto_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $trayectos]);
-                    echo $this->Form->control('asignatura_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $asignaturas]);
-                    echo $this->Form->control('nota_minima', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('carrera_id', ['type' => 'select', 'options' => $carreras, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('programa_id', ['type' => 'select','options' => $programas, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('trayecto_id', ['type' => 'select', 'options' => $trayectos, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('asignatura_id', ['type' => 'select', 'options' => $asignaturas, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('nota_minima', ['type' => 'text', 'label' => 'Nota Miníma',
+                        'class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                 ?>
             </div>            
             <div class="box-footer">

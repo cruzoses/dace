@@ -30,6 +30,7 @@ class Malla extends Entity
      * @var array
      */
     protected $_accessible = [
+        'carrera_id' => true,
         'programa_id' => true,
         'trayecto_id' => true,
         'asignatura_id' => true,

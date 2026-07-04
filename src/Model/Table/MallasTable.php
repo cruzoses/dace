@@ -3,7 +3,6 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -23,9 +22,37 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Malla findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
-class MallasTable extends Table
+*/
+class MallasTable extends AppTable
 {
+    protected $searchFields = [
+        'carrera_id' => [
+            'type' => 'select',
+            'label' => 'Carrera',
+            'options' => [],
+            'empty' => '-- Carrera --',
+        ],
+        'programa_id' => [
+            'type' => 'select',
+            'label' => 'Programa',
+            'options' => [],
+            'empty' => '-- Programa --',
+        ],
+        'trayecto_id' => [
+            'type' => 'select',
+            'label' => 'Trayecto',
+            'options' => [],
+            'empty' => '-- Trayecto --',
+        ],
+        'asignatura_id' => [
+            'type' => 'select',
+            'label' => 'Asignatura',
+            'options' => [],
+            'empty' => '-- Asignatura --',
+        ],
+        'nota_minima' => ['type' => 'text', 'label' => 'Nota Mínima', 'class' => 'form-control isNumeric'],
+    ];
+
     /**
      * Initialize method
      *
@@ -42,6 +69,10 @@ class MallasTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Carreras', [
+            'foreignKey' => 'carrera_id',
+            'joinType' => 'INNER',
+        ]);
         $this->belongsTo('Programas', [
             'foreignKey' => 'programa_id',
             'joinType' => 'INNER',
@@ -88,6 +119,12 @@ class MallasTable extends Table
         $rules->add($rules->existsIn(['programa_id'], 'Programas'));
         $rules->add($rules->existsIn(['trayecto_id'], 'Trayectos'));
         $rules->add($rules->existsIn(['asignatura_id'], 'Asignaturas'));
+        $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
+
+        $rules->add($rules->isUnique(
+            ['carrera_id', 'programa_id','trayecto_id', 'asignatura_id',],
+            __('This combination has already been used.')
+        ));
 
         return $rules;
     }

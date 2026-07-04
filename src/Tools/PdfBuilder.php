@@ -41,7 +41,7 @@ class PdfBuilder
 
         $isLandscape = $this->pdf->ez['pageWidth'] > 700;
 
-        $this->pdf->ezSetY($isLandscape ? 490 : 680);
+        $this->pdf->ezSetY($isLandscape ? 475 : 665);
 
         $config = $this->aConfig;
         if ($isLandscape && empty($config['cols'])) {
@@ -50,6 +50,46 @@ class PdfBuilder
         }
 
         $this->pdf->ezTable($data, null, '', $config);
+        $this->pdf->ezStopPageNumbers(1,1);
+
+        return $this->pdf->ezOutput();
+    }
+
+    public function generateReportWithSummary($data, $summary, $title = 'REPORTE')
+    {
+        $this->pageHeader($title);
+
+        $isLandscape = $this->pdf->ez['pageWidth'] > 700;
+
+        $this->pdf->ezSetY($isLandscape ? 475 : 665);
+
+        $config = $this->aConfig;
+        if ($isLandscape && empty($config['cols'])) {
+            $config['width'] = 700;
+            $config['maxWidth'] = 700;
+        }
+
+        $this->pdf->ezTable($data, null, '', $config);
+
+        $y = $this->pdf->y;
+        $y -= 20;
+        $this->pdf->ezSetY($y);
+
+        $summaryConfig = [
+            'showHeadings' => 0,
+            'fontSize' => 9,
+            'showLines' => 1,
+            'shaded' => 1,
+            'shadeCol' => [0.9, 0.9, 0.9],
+            'width' => $config['width'],
+            'maxWidth' => $config['maxWidth'],
+            'xOrientation' => 'centre',
+            'outerLineThickness' => 0.8,
+            'innerLineThickness' => 0.4,
+            'cols' => $config['cols'],
+        ];
+
+        $this->pdf->ezTable($summary, null, '', $summaryConfig);
         $this->pdf->ezStopPageNumbers(1,1);
 
         return $this->pdf->ezOutput();
@@ -82,12 +122,13 @@ class PdfBuilder
             $this->pdf->ezText("<b>".$sFullname."</b>", 12, ['justification' => 'center']);
 
             $this->pdf->ezSetY(535);
-            $this->pdf->ezText("<b>".$sTitle."</b>", 12, ['justification' => 'center']);
+            $yTitle = $this->pdf->ezText("<b>".$sTitle."</b>", 12, ['justification' => 'center']);
+            $yBottom = min($yTitle, 535) - 5;
 
-            $this->pdf->addText(050, 515, 10, "<b>".Configure::read('Universidad.Siglas')."</b>");
-            $this->pdf->addText(690, 515, 8, "<b>R.I.F</b> " . Configure::read('Universidad.RIF'));
+            $this->pdf->addText(050, $yBottom, 10, "<b>".Configure::read('Universidad.Siglas')."</b>");
+            $this->pdf->addText(690, $yBottom, 8, "<b>R.I.F</b> " . Configure::read('Universidad.RIF'));
 
-            $this->pdf->line(30, 510, 760, 510);
+            $this->pdf->line(30, $yBottom - 5, 760, $yBottom - 5);
 
             $this->pdf->line(40, 42, 750, 42);
         } else {
@@ -97,13 +138,13 @@ class PdfBuilder
             $this->pdf->ezText("<b>".$sFullname."</b>", 12, ['justification' => 'center']);
 
             $this->pdf->ezSetY(715);
-            $this->pdf->ezText("<b>".$sTitle."</b>", 12, ['justification' => 'center']);
+            $yTitle = $this->pdf->ezText("<b>".$sTitle."</b>", 12, ['justification' => 'center']);
+            $yBottom = min($yTitle, 715) - 5;
 
-            $this->pdf->ezSetY(695);
-            $this->pdf->addText(050, 695, 10, "<b>".Configure::read('Universidad.Siglas')."</b>");
-            $this->pdf->addText(490, 695, 8, "<b>R.I.F</b> " . Configure::read('Universidad.RIF'));
+            $this->pdf->addText(050, $yBottom, 10, "<b>".Configure::read('Universidad.Siglas')."</b>");
+            $this->pdf->addText(490, $yBottom, 8, "<b>R.I.F</b> " . Configure::read('Universidad.RIF'));
 
-            $this->pdf->line(30, 690, 580, 690);
+            $this->pdf->line(30, $yBottom - 5, 580, $yBottom - 5);
 
             $this->pdf->line(40, 42, 570, 42);
         }

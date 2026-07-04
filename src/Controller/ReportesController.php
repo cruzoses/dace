@@ -10,8 +10,20 @@ class ReportesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['downloadPdf', 'listarParroquias', 'listarPeriodos', 'listarEstados', 'listarMunicipios', 'listarDocentes', 'listarUsuarios', 'listarAulas', 'download']);
+        $this->Auth->allow([
+            'downloadPdf', 'listarParroquias', 'listarPeriodos', 'listarEstados', 'listarMunicipios', 'listarDocentes',
+            'listarUsuarios', 'listarAulas', 'listarMallas', 'getProgramas', 'download']
+        );
     }
+
+	public function isAuthorized($user)
+	{
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        {
+            return true;
+        }
+		return parent::isAuthorized($user);
+	}    
 
     public function downloadPdf()
     {
@@ -504,6 +516,129 @@ class ReportesController extends AppController
         }
         $this->set(compact('sFileName', 'noData'));
         $this->render('showreport');
+    }
+
+    public function listarMallas()
+    {
+        $this->loadModel('Mallas');
+        $this->loadModel('Carreras');
+
+        $carrera_id = $this->request->getQuery('carrera_id');
+
+        if ($carrera_id === null) {
+            $carreras = $this->Carreras->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'codename',
+                'order' => ['Carreras.id' => 'ASC']
+            ])->where(['Carreras.activa' => 1])->toArray();
+
+            $this->set(compact('carreras'));
+            $this->render('mallas');
+            return;
+        }
+
+        $conditions = ['Mallas.carrera_id' => (int)$carrera_id];
+        $programa_id = $this->request->getQuery('programa_id');
+        if ($programa_id !== '' && $programa_id !== null) {
+            $conditions['Mallas.programa_id'] = (int)$programa_id;
+        }
+
+        $mallas = $this->Mallas->find('all', [
+            'conditions' => $conditions,
+            'contain' => ['Carreras', 'Programas', 'Trayectos', 'Asignaturas'],
+            'order' => ['Programas.nombre' => 'ASC', 'Trayectos.id' => 'ASC', 'Asignaturas.nombre' => 'ASC']
+        ]);
+
+        $carreraNombre = '';
+        if ($carrera_id !== '') {
+            $carrera = $this->Carreras->get((int)$carrera_id);
+            $carreraNombre = $carrera->nombre;
+        }
+
+        $programaNombre = '';
+        if ($programa_id !== '' && $programa_id !== null) {
+            $this->loadModel('Programas');
+            $programa = $this->Programas->get((int)$programa_id);
+            $programaNombre = $programa->nombre;
+        }
+
+        $data = [];
+        $totalCreditos = 0;
+        $i = 1;
+        foreach ($mallas as $m) {
+            $creditos = $m->has('asignatura') ? (int)$m->asignatura->creditos : 0;
+            $totalCreditos += $creditos;
+            $data[] = [
+                'No.' => $i++,
+                'Trayecto' => $m->has('trayecto') ? $m->trayecto->codigo : '',
+                'Codigo' => $m->has('asignatura') ? $m->asignatura->codigo : '',
+                'Asignatura' => $m->has('asignatura') ? $m->asignatura->nombre : '',
+                'Creditos' => $creditos,
+            ];
+        }
+
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $totalAsignaturas = count($data);
+
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'No.' => ['justification' => 'center', 'width' => 30],
+                'Trayecto' => ['justification' => 'center', 'width' => 65],
+                'Codigo' => ['justification' => 'center', 'width' => 65],
+                'Asignatura' => ['justification' => 'left', 'width' => 270],
+                'Creditos' => ['justification' => 'center', 'width' => 60],
+            ]);
+
+            $summary = [[
+                'No.' => '',
+                'Trayecto' => '',
+                'Codigo' => '',
+                'Asignatura' => 'Total de Asignaturas: ' . $totalAsignaturas,
+                'Creditos' => '',
+            ], [
+                'No.' => '',
+                'Trayecto' => '',
+                'Codigo' => '',
+                'Asignatura' => 'Total de Créditos',
+                'Creditos' => $totalCreditos,
+            ]];
+
+            $titulo = 'LISTADO DE MALLAS CURRICULARES';
+            if ($carreraNombre) {
+                $titulo .= ' - ' . strtoupper($carreraNombre);
+            }
+            if ($programaNombre) {
+                $titulo .= ' / ' . strtoupper($programaNombre);
+            }
+
+            $pdfOutput = $pdfBuilder->generateReportWithSummary($data, $summary, $titulo);
+
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'mallas_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
+        $this->render('showreport');
+    }
+
+    public function getProgramas()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $this->loadModel('Programas');
+        $carrera_id = $this->request->getQuery('carrera_id');
+
+        $programas = [];
+        if ($carrera_id) {
+            $programas = $this->Programas->find('list', ['limit' => 200])
+                ->where(['carrera_id' => $carrera_id, 'activo' => 1])
+                ->toArray();
+        }
+
+        $this->set(compact('programas'));
+        $this->set('_serialize', ['programas']);
     }
 
     public function download()

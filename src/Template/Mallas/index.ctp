@@ -17,12 +17,13 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('buscador');?>
+			        <?= $this->element('search_form', ['title' => 'Buscar Malla', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('carrera_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('programa_id') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('trayecto_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('asignatura_id') ?></th>
@@ -36,9 +37,10 @@
                         <?php foreach ($mallas as $malla): ?>
                             <tr>
                                 <td><?= $this->Number->format($malla->id) ?></td>
-                                <td><?= $malla->has('programa') ? h($malla->programa->codename) : '' ?></td>
-                                <td><?= $malla->has('trayecto') ? h($malla->trayecto->codigo) : ''  ?></td>
-                                <td><?= $malla->has('asignatura') ? h($malla->asignatura->codename) : '' ?></td>
+                                <td><?= $malla->has('carrera') ? h($malla->carrera->codigo) : '' ?></td>
+                                <td><?= $malla->has('programa') ? h($malla->programa->codigo) : '' ?></td>
+                                <td class="text-center"><?= $malla->has('trayecto') ? h($malla->trayecto->codigo) : ''  ?></td>
+                                <td><?= $malla->has('asignatura') ? h($malla->asignatura->nombre) : '' ?></td>
                                 <td class="text-center"><?= h($malla->nota_minima) ?></td>
                                 <td class="text-center"><?= h($malla->created) ?></td>
                                 <td class="text-center"><?= h($malla->modified) ?></td>
@@ -52,7 +54,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="8" class="text-center">
+                            <td colspan="9" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
@@ -79,3 +81,11 @@
         </div>
     </div>
 </div>
+
+<?php $this->start('script'); ?>
+<?= $this->Html->script('mallas') ?>
+<script>
+var MALLAS_PROGRAMAS_URL = '<?= $this->Url->build(['controller' => 'Mallas', 'action' => 'getProgramas']) ?>';
+$(document).ready(initMallasBuscar);
+</script>
+<?php $this->end(); ?>

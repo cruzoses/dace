@@ -35,12 +35,21 @@ class MallasController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Mallas->formatConditions($this->request->getQueryParams());
         $this->paginate = [
-            'contain' => ['Programas', 'Trayectos', 'Asignaturas'],
+            'contain' => ['Carreras', 'Programas', 'Trayectos', 'Asignaturas'],
+            'conditions' => $conditions,
         ];
-        $mallas = $this->paginate($this->Mallas);
+        $mallas = $this->paginate($this->Mallas,['order' => ['Mallas.id' => 'ASC']]);
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Mallas->getSearchFields();
 
-        $this->set(compact('mallas'));
+        $searchFields['carrera_id']['options'] = $this->Mallas->Carreras->find('list')->where(['Carreras.activa' => 1])->order(['Carreras.nombre' => 'ASC'])->toArray();
+        $searchFields['programa_id']['options'] = $this->Mallas->Programas->find('list')->where(['Programas.activo' => 1])->order(['Programas.nombre' => 'ASC'])->toArray();
+        $searchFields['trayecto_id']['options'] = $this->Mallas->Trayectos->find('list')->where(['Trayectos.activo' => 1])->order(['Trayectos.id' => 'ASC'])->toArray();
+        $searchFields['asignatura_id']['options'] = $this->Mallas->Asignaturas->find('list')->where(['Asignaturas.activa' => 1])->order(['Asignaturas.nombre' => 'ASC'])->toArray();
+
+        $this->set(compact('mallas', 'filtros', 'searchFields'));
     }
 
     /**
@@ -53,7 +62,7 @@ class MallasController extends AppController
     public function view($id = null)
     {
         $malla = $this->Mallas->get($id, [
-            'contain' => ['Programas', 'Trayectos', 'Asignaturas'],
+            'contain' => ['Carreras', 'Programas', 'Trayectos', 'Asignaturas'],
         ]);
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Mallas ' . json_encode($malla->toArray()));
@@ -70,9 +79,11 @@ class MallasController extends AppController
     public function add()
     {
         $malla = $this->Mallas->newEntity();
-        if ($this->request->is('post')) {
+        if ($this->request->is('post')) 
+        {
             $malla = $this->Mallas->patchEntity($malla, $this->request->getData());
-            if ($this->Mallas->save($malla)) {
+            if ($this->Mallas->save($malla)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Malla'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Mallas ' . json_encode($this->request->getData()));
 
@@ -80,10 +91,11 @@ class MallasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Malla'));
         }
-        $programas = $this->Mallas->Programas->find('list', ['limit' => 200]);
-        $trayectos = $this->Mallas->Trayectos->find('list', ['limit' => 200]);
-        $asignaturas = $this->Mallas->Asignaturas->find('list', ['limit' => 200]);
-        $this->set(compact('malla', 'programas', 'trayectos', 'asignaturas'));
+        $carreras = $this->Mallas->Carreras->find('list')->where(['Carreras.activa' => 1])->order(['Carreras.nombre' => 'ASC']);
+        $programas = $this->Mallas->Programas->find('list')->where(['Programas.activo' => 1])->order(['Programas.nombre' => 'ASC']);
+        $trayectos = $this->Mallas->Trayectos->find('list')->where(['Trayectos.activo' => 1])->order(['Trayectos.id' => 'ASC']);
+        $asignaturas = $this->Mallas->Asignaturas->find('list')->where(['Asignaturas.activa' => 1])->order(['Asignaturas.nombre' => 'ASC']);
+        $this->set(compact('malla', 'carreras', 'programas', 'trayectos', 'asignaturas'));
     }
 
 
@@ -99,9 +111,11 @@ class MallasController extends AppController
         $malla = $this->Mallas->get($id, [
             'contain' => []
         ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        if ($this->request->is(['patch', 'post', 'put'])) 
+        {
             $malla = $this->Mallas->patchEntity($malla, $this->request->getData());
-            if ($this->Mallas->save($malla)) {
+            if ($this->Mallas->save($malla)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Malla'));
                 $this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS Mallas ' . json_encode($this->request->getData()));
 
@@ -109,10 +123,11 @@ class MallasController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Malla'));
         }
-        $programas = $this->Mallas->Programas->find('list', ['limit' => 200]);
-        $trayectos = $this->Mallas->Trayectos->find('list', ['limit' => 200]);
-        $asignaturas = $this->Mallas->Asignaturas->find('list', ['limit' => 200]);
-        $this->set(compact('malla', 'programas', 'trayectos', 'asignaturas'));
+        $carreras = $this->Mallas->Carreras->find('list')->where(['Carreras.activa' => 1])->order(['Carreras.nombre' => 'ASC']);
+        $programas = $this->Mallas->Programas->find('list')->where(['Programas.activo' => 1])->order(['Programas.nombre' => 'ASC']);
+        $trayectos = $this->Mallas->Trayectos->find('list')->where(['Trayectos.activo' => 1])->order(['Trayectos.nombre' => 'ASC']);
+        $asignaturas = $this->Mallas->Asignaturas->find('list')->where(['Asignaturas.activa' => 1])->order(['Asignaturas.nombre' => 'ASC']);
+        $this->set(compact('malla', 'carreras', 'programas', 'trayectos', 'asignaturas'));
     }
 
 
@@ -127,7 +142,8 @@ class MallasController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $malla = $this->Mallas->get($id);
-        if ($this->Mallas->delete($malla)) {
+        if ($this->Mallas->delete($malla)) 
+        {
             $this->Flash->success(__('The {0} has been deleted.', 'Malla'));
             $this->Auditorias->registrar('ELIMINA', 'ELIMINA LOS DATOS Mallas ' . json_encode($malla->toArray()));
         } else {
@@ -135,5 +151,26 @@ class MallasController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Get programas by carrera_id (AJAX)
+     *
+     * @return \Cake\Http\Response
+     */
+    public function getProgramas()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $carrera_id = $this->request->getQuery('carrera_id');
+
+        $programas = [];
+        if ($carrera_id) {
+            $programas = $this->Mallas->Programas->find('list', ['limit' => 200])
+                ->where(['carrera_id' => $carrera_id, 'activo' => 1])
+                ->toArray();
+        }
+
+        $this->set(compact('programas'));
+        $this->set('_serialize', ['programas']);
     }
 }
