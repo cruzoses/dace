@@ -97,7 +97,8 @@ class PdfBuilder
             $config['maxWidth'] = 700;
         }
 
-        $cols = array_keys($this->aConfig['cols']);
+        $colNames = array_keys($this->aConfig['cols']);
+        $cols = array_combine($colNames, $colNames);
         $this->pdf->ezTable($tableData, $cols, '', $config);
         $this->pdf->ezStopPageNumbers(1,1);
 
