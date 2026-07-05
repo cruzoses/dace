@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\EstudiantePrograma $estudiantePrograma
+ * @var array $sedes
+ * @var array $carreras
+ * @var Object $estudiante
+*/
+?>
 <div class="row">
     <div class="col-md-12">
         <div class="box box-warning box-solid">
@@ -5,7 +14,7 @@
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Registrar Programa - <?= h($estudiante->cedula) ?> <?= h($estudiante->apellidos) ?> <?= h($estudiante->nombres) ?></h3>
 		        <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-close"></i>',
-				        ['action' => 'index'],
+				        ['controller' => 'estudiantes','action' => 'index'],
 				        ['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
 			        ?>
 		        </div>
@@ -21,7 +30,6 @@
             <div class="box-body">
                 <?php
                     echo $this->Form->hidden('estudiante_id');
-                    echo $this->Form->hidden('activo', ['value' => 1]);
                     echo $this->Form->control('sede_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $sedes]);
                     echo $this->Form->control('carrera_id', [
                         'label' => 'Carrera',
@@ -30,14 +38,19 @@
                         'empty' => '-- Seleccione --',
                         'class' => 'form-control select2',
                         'data-width' => '100%',
+                        'prepend' => '<i class="fa fa-asterisk"></i>',
                     ]);
                     echo $this->Form->control('programa_id', [
-                        'prepend' => '<i class="fa fa-asterisk"></i>',
-                        'class' => 'isUpper',
+                        'type' => 'select',
                         'options' => [],
-                        'empty' => '-- Seleccione una carrera primero --',
+                        'empty' => '-- Seleccione una carrera primero --',                        
+                        'class' => 'form-control select2',
+                        'data-width' => '100%',                        
+                        'prepend' => '<i class="fa fa-asterisk"></i>',
                         'disabled' => true,
                     ]);
+                    echo $this->Form->hidden('culminado', ['value' => 0]);
+                    echo $this->Form->hidden('activo', ['value' => 1]);
                 ?>
             </div>
             <div class="box-footer">

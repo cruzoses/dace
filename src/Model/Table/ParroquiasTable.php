@@ -40,7 +40,7 @@ class ParroquiasTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('parroquias');
-        $this->setDisplayField('id');
+        $this->setDisplayField('nombre');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

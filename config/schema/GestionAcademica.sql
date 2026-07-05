@@ -497,6 +497,7 @@ CREATE INDEX `IX_Asignatura_grupo` ON `asignaturas` (`grupo_asignatura_id`)
 CREATE TABLE IF NOT EXISTS `mallas`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
+  `carrera_id` Int NOT NULL,
   `programa_id` Int NOT NULL,
   `trayecto_id` Int NOT NULL,
   `asignatura_id` Int NOT NULL,
@@ -516,6 +517,9 @@ CREATE INDEX `IX_Malla_Asignatura` ON `mallas` (`asignatura_id`)
 CREATE INDEX `IX_Malla_Trayecto` ON `mallas` (`trayecto_id`)
 ;
 
+CREATE INDEX `IX_Malla_Carrera` ON `mallas` (`carrera_id`)
+;
+
 -- Table cursos
 
 CREATE TABLE IF NOT EXISTS `cursos`
@@ -524,8 +528,8 @@ CREATE TABLE IF NOT EXISTS `cursos`
   `sede_id` Int NOT NULL,
   `periodo_id` Int NOT NULL,
   `carrera_id` Int NOT NULL,
-  `programa_id` Int NOT NULL,
   `trayecto_id` Int NOT NULL,
+  `programas` Varchar(40) NOT NULL,
   `asignatura_id` Int NOT NULL,
   `profesores` Varchar(40) NOT NULL,
   `docente_id` Int NOT NULL,
@@ -553,9 +557,6 @@ CREATE INDEX `IX_Curso_Docente` ON `cursos` (`docente_id`)
 ;
 
 CREATE INDEX `IX_Curso_Trayecto` ON `cursos` (`trayecto_id`)
-;
-
-CREATE INDEX `IX_Curso_Programa` ON `cursos` (`programa_id`)
 ;
 
 CREATE INDEX `IX_Curso_Aula` ON `cursos` (`aula_id`)
@@ -883,9 +884,6 @@ ALTER TABLE `cursos` ADD CONSTRAINT `pfk_docente_curso` FOREIGN KEY (`docente_id
 ALTER TABLE `cursos` ADD CONSTRAINT `pfk_trayecto_curso` FOREIGN KEY (`trayecto_id`) REFERENCES `trayectos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `cursos` ADD CONSTRAINT `pfk_programa_curso` FOREIGN KEY (`programa_id`) REFERENCES `programas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
-;
-
 ALTER TABLE `estudiante_programas` ADD CONSTRAINT `pfk_estudiante_programa` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
@@ -956,5 +954,8 @@ ALTER TABLE `mallas` ADD CONSTRAINT `pfk_trayecto_malla` FOREIGN KEY (`trayecto_
 ;
 
 ALTER TABLE `cursos` ADD CONSTRAINT `pfk_asignatura_curso` FOREIGN KEY (`asignatura_id`) REFERENCES `asignaturas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `mallas` ADD CONSTRAINT `pfk_carrera_malla` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 

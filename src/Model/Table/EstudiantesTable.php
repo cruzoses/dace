@@ -35,11 +35,11 @@ use Cake\Validation\Validator;
 class EstudiantesTable extends AppTable
 {
     protected $searchFields = [
-        'expediente' => ['type' => 'text', 'label' => 'Expediente', 'class' => 'form-control'],
-        'cedula'     => ['type' => 'exact', 'label' => 'Cédula', 'class' => 'form-control isNumeric'],
-        'apellidos'  => ['type' => 'text', 'label' => 'Apellidos', 'class' => 'form-control isUpper'],
-        'nombres'    => ['type' => 'text', 'label' => 'Nombres', 'class' => 'form-control isUpper'],
-        'id'         => ['type' => 'int', 'label' => 'ID', 'class' => 'form-control isNumeric'],
+        'expediente' => ['type' => 'text', 'label' => 'No.Expediente', 'class' => 'form-control','prepend' => '<i class="fa fa-asterisk"></i>'],
+        'cedula'     => ['type' => 'exact', 'label' => 'No. Cédula', 'class' => 'form-control isNumeric','prepend' => '<i class="fa fa-asterisk"></i>'],
+        'apellidos'  => ['type' => 'text', 'label' => 'Apellidos', 'class' => 'form-control isUpper','prepend' => '<i class="fa fa-asterisk"></i>'],
+        'nombres'    => ['type' => 'text', 'label' => 'Nombres', 'class' => 'form-control isUpper','prepend' => '<i class="fa fa-asterisk"></i>'],
+        'id'         => ['type' => 'int', 'label' => 'No. de Id', 'class' => 'form-control isNumeric','prepend' => '<i class="fa fa-asterisk"></i>'],
     ];
     /**
      * Initialize method
@@ -65,7 +65,6 @@ class EstudiantesTable extends AppTable
         ]);
         $this->belongsTo('Municipios', [
             'foreignKey' => 'municipio_id',
-            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Parroquias', [
             'foreignKey' => 'parroquia_id',
@@ -192,7 +191,14 @@ class EstudiantesTable extends AppTable
 
         $validator
             ->date('fecha_notas')
-            ->allowEmptyDate('fecha_notas');
+            ->allowEmptyDate('fecha_notas')
+            ->add('fecha_notas', 'notToday', [
+                'rule' => function ($value, $context) {
+                    $fecha = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
+                    return $fecha !== date('Y-m-d');
+                },
+                'message' => 'La fecha de notas no puede ser igual a la fecha actual.',
+            ]);
 
         $validator
             ->scalar('codigo_notas')
@@ -201,7 +207,14 @@ class EstudiantesTable extends AppTable
 
         $validator
             ->date('fecha_titulo')
-            ->allowEmptyDate('fecha_titulo');
+            ->allowEmptyDate('fecha_titulo')
+            ->add('fecha_titulo', 'notToday', [
+                'rule' => function ($value, $context) {
+                    $fecha = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
+                    return $fecha !== date('Y-m-d');
+                },
+                'message' => 'La fecha del título no puede ser igual a la fecha actual.',
+            ]);
 
         $validator
             ->scalar('codigo_titulo')
@@ -261,6 +274,7 @@ class EstudiantesTable extends AppTable
         $rules->add($rules->existsIn(['estado_id'], 'Estados'));
         $rules->add($rules->existsIn(['municipio_id'], 'Municipios'));
         $rules->add($rules->existsIn(['parroquia_id'], 'Parroquias'));
+
         $rules->add($rules->existsIn(['usuario_id'], 'Usuarios'));
 
         return $rules;

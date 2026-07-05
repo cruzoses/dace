@@ -57,6 +57,7 @@ class Curso extends Entity
         'cupos' => true,
         'aula_id' => true,
         'horario' => true,
+        'cerrado' => true,
         'activo' => true,
         'created' => true,
         'modified' => true,

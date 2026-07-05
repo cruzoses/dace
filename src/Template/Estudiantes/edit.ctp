@@ -29,19 +29,33 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('origen', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('cedula', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('origen', ['type' => 'select', 'options' => $aOrigen, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('cedula', ['type' => 'text', 'label' => 'No. de Cédula', 
+                        'class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('nombres', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('apellidos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('fecha_nacimiento', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('sexo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('estado_civil', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('discapacitado', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('etnia', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('direccion', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('telefonos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('email', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('lugar_nacimiento', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('fecha_nacimiento', ['type' => 'text', 'class' => 'datepicker',
+                        'prepend' => '<i class="fa fa-asterisk"></i>', 'append' => '<i class="fa fa-calendar"></i>']
+                    );
+                    echo $this->Form->control('sexo', ['type' => 'select', 'options' => $aGenero, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('estado_civil', ['type' => 'select', 'options' => $aEdoCivil, 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('discapacitado', ['type' => 'select', 'options' => array(0 => 'NO', 1 => 'SI'), 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('etnia', ['type' => 'select', 'options' => array(0 => 'NO', 1 => 'SI'), 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                ?>
+                <h4 class="box-sub-title-info">Datos de Ubicaci&oacute;n</h4>
+                <?php
+                    echo $this->Form->control('lugar_nacimiento', ['rows' => 1,'prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('pais_id', ['type' => 'select', 'options' => $paises, 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
@@ -54,12 +68,29 @@
                     echo $this->Form->control('parroquia_id', ['type' => 'select', 'options' => $parroquias, 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->control('asignado', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('direccion', ['rows' => 2,'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('telefonos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('email', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                ?>
+                <h4 class="box-sub-title-info">Informaci&oacute;n Acad&eacute;mica</h4>
+                <?php
+                    echo $this->Form->control('asignado', ['label' => 'Asignación OPSU', 'type' => 'select',
+                        'options' => array(0 => 'NO', 1 => 'SI'), 'empty' => true,
+                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('codigo_opsu', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('fecha_notas', ['type' => 'text','class' => 'calendario','prepend' => '<i class="fa fa-asterisk"></i>','empty' => true]);
-                    echo $this->Form->control('codigo_notas', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('fecha_titulo', ['type' => 'text','class' => 'calendario','prepend' => '<i class="fa fa-asterisk"></i>','empty' => true]);
-                    echo $this->Form->control('codigo_titulo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('fecha_notas', ['type' => 'text', 'class' => 'datepicker',
+                        'prepend' => '<i class="fa fa-asterisk"></i>', 'append' => '<i class="fa fa-calendar"></i>']
+                    );
+                    echo $this->Form->control('codigo_notas', ['label' => 'Código de Notas','class' => 'isUpper',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('fecha_titulo', ['type' => 'text', 'class' => 'datepicker',
+                        'prepend' => '<i class="fa fa-asterisk"></i>', 'append' => '<i class="fa fa-calendar"></i>']
+                    );
+                    echo $this->Form->control('codigo_titulo', ['label' => 'Código de Título', 'class' => 'isUpper',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                 ?>
                 <h4 class="box-sub-title-info">Oferta Acad&eacute;mica</h4>
                 <?php
@@ -74,9 +105,9 @@
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->hidden('expediente');
-                    echo $this->Form->control('token', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('usuario_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $usuarios, 'empty' => true]);
-                    echo $this->Form->control('activo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->hidden('token');
+                    echo $this->Form->hidden('usuario_id');
+                    echo $this->Form->control('activo', ['type' => 'checkbox', 'label' => 'Estudiante Activo' ]);
                 ?>
             </div>            
             <div class="box-footer">

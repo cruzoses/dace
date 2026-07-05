@@ -38,7 +38,7 @@ class PeriodosController extends AppController
         $conditions = $this->Periodos->formatConditions($this->request->getQueryParams());
         $this->paginate['conditions'] = $conditions;
 
-        $periodos = $this->paginate($this->Periodos);
+        $periodos = $this->paginate($this->Periodos,['order' => ['Periodos.id' => 'DESC']]);
         $filtros = $this->request->getQuery();
 
         $searchFields = $this->Periodos->getSearchFields();

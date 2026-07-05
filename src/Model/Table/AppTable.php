@@ -31,7 +31,7 @@ class AppTable extends Table
             $filterField = $config['filterField'] ?? "$alias.$field";
             switch ($config['type'] ?? 'text') {
                 case 'text':
-                    $conditions[] = ["$filterField LIKE" => "%{$value}%"];
+                    $conditions[] = ["UPPER($filterField) LIKE" => "%" . mb_strtoupper($value, 'UTF-8') . "%"];
                     break;
                 case 'exact':
                 case 'select':
@@ -50,7 +50,7 @@ class AppTable extends Table
         if (empty($conditions)) {
             return [];
         }
-        return array_merge(...$conditions);
+        return $conditions;
     }
     
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
@@ -98,5 +98,35 @@ class AppTable extends Table
                 $data['cierre'] = $fechaFormateada->format('Y-m-d');
             }
         }
+        if ( isset( $data['fecha_notas'] ) ) 
+        {            
+            $fechaOriginal = str_replace('/', '-',$data['fecha_notas']);
+
+            // Si la fecha no está vacía, la convertimos
+            if (!empty($fechaOriginal)) 
+            {
+                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
+                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
+                
+                // Asigna el valor corregido para que CakePHP lo guarde correctamente
+                $data['fecha_notas'] = $fechaFormateada->format('Y-m-d');
+            }
+        }
+        if ( isset( $data['fecha_titulo'] ) ) 
+        {            
+            $fechaOriginal = str_replace('/', '-',$data['fecha_titulo']);
+
+            // Si la fecha no está vacía, la convertimos
+            if (!empty($fechaOriginal)) 
+            {
+                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
+                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
+                
+                // Asigna el valor corregido para que CakePHP lo guarde correctamente
+                $data['fecha_titulo'] = $fechaFormateada->format('Y-m-d');
+            }
+        }
+
+
     }    
 }

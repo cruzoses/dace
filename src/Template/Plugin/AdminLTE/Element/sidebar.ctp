@@ -39,10 +39,14 @@
 					</a>
 					<ul class="treeview-menu">
 						<li>
-							<a href="/docentes"><i class="fa fa-circle-o"></i>&nbsp;Docentes</a>
+							<a href="<?= $this->Url->build(['controller' => 'docentes','action' => 'index'])?>">
+								<i class="fa fa-circle-o"></i>&nbsp;Docentes
+							</a>
 						</li>
 						<li>
-							<a href="/estudiantes"><i class="fa fa-circle-o"></i>&nbsp;Estudiantes</a>
+							<a href="<?= $this->Url->build(['controller' => 'estudiantes','action' => 'index'])?>">
+								<i class="fa fa-circle-o"></i>&nbsp;Estudiantes
+							</a>
 						</li>
 					</ul>
 				</li>
@@ -60,7 +64,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo $this->Url->build('/buscarestudiante');?>">
+							<a href="<?= $this->Url->build(['controller' => 'estudiantes','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Estudiantes
 							</a>
 						</li>

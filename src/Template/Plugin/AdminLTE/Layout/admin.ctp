@@ -24,7 +24,7 @@
         <!-- Sweetalert2 -->
         <?= $this->Html->css('sweetalert2.min'); ?>
         <!-- jQueryUI -->
-        <?= $this->Html->css('AdminLTE./bower_components/jquery-ui/themes/base/jquery-ui.min'); ?>
+        <!--?= $this->Html->css('AdminLTE./bower_components/jquery-ui/themes/base/jquery-ui.min'); ?-->
         <!-- Font Awesome -->
         <?= $this->Html->css('AdminLTE./bower_components/font-awesome/css/font-awesome.min'); ?>
         <!-- Ionicons -->
@@ -87,8 +87,8 @@
         <!-- sweetalert2 -->
         <?= $this->Html->script('sweetalert2.min'); ?>
         <!-- jQueryUI -->
-        <?= $this->Html->script('AdminLTE./bower_components/jquery-ui/ui/datepicker.js'); ?>
-        <?= $this->Html->script('AdminLTE./bower_components/jquery-ui/ui/i18n/datepicker-es.js'); ?>
+        <!--?= $this->Html->script('AdminLTE./bower_components/jquery-ui/ui/datepicker.js'); ?-->
+        <!--?= $this->Html->script('AdminLTE./bower_components/jquery-ui/ui/i18n/datepicker-es.js'); ?-->
         <!-- Select2 -->
         <?= $this->Html->script('AdminLTE./bower_components/select2/dist/js/select2.full.min'); ?>
         <?= $this->Html->script('AdminLTE./bower_components/select2/dist/js/i18n/es.js'); ?>

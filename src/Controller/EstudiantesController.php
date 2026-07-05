@@ -59,11 +59,13 @@ class EstudiantesController extends AppController
     public function view($id = null)
     {
         $estudiante = $this->Estudiantes->get($id, [
-            'contain' => ['Paises', 'Estados', 'Municipios', 'Parroquias', 'Usuarios', 'EstudianteCursos', 'EstudianteProgramas', 'Graduandos', 'Historicos', 'NotasCursos', 'SituacionEstudiantes'],
+            'contain' => ['Paises', 'Estados', 'Municipios', 'Parroquias', 'Usuarios', 'EstudianteCursos', 'EstudianteProgramas', 
+            'Graduandos', 'Historicos', 'NotasCursos', 'SituacionEstudiantes'],
         ]);
-
+        $aGeneros = Configure::read('aGeneros');
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Estudiantes ' . json_encode($estudiante->toArray()));
 
+        $this->set(compact('aGeneros'));
         $this->set('estudiante', $estudiante);
     }
 
@@ -139,16 +141,22 @@ class EstudiantesController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Estudiante'));
         }
-        $paises = $this->Estudiantes->Paises->find('list', ['limit' => 200]);
         $estados = [];
         $municipios = [];
         $parroquias = [];
-        $usuarios = $this->Estudiantes->Usuarios->find('list', ['limit' => 200]);
+        $sToken = $this->generateToken();
+        $aOrigen = Configure::read('aTipoDoc');
+        $aGenero = Configure::read('aGeneros');
+        $aEdoCivil = Configure::read('aEstadoCivil');
         $aSedes = TableRegistry::getTableLocator()->get('Sedes')->find('list')->where(['Sedes.activa' => 1])->toArray();
         $aPeriodos = TableRegistry::getTableLocator()->get('Periodos')->find('list')->where(['Periodos.activo' => 1])
             ->order(['Periodos.id' => 'DESC'])->toArray();
         $aCarreras = TableRegistry::getTableLocator()->get('Carreras')->find('list')->where(['Carreras.activa' => 1])->toArray();
-        $this->set(compact('estudiante', 'paises', 'estados', 'municipios', 'parroquias', 'usuarios', 'aSedes', 'aPeriodos', 'aCarreras'));
+        $paises = $this->Estudiantes->Paises->find('list', ['limit' => 200]);
+        $usuarios = $this->Estudiantes->Usuarios->find('list', ['limit' => 200]);
+        $this->set(compact('sToken','aOrigen', 'aGenero', 'aEdoCivil','aSedes','aPeriodos','aCarreras'));
+        $this->set(compact('estudiante', 'paises', 'estados', 'municipios', 'parroquias', 'usuarios'));
+
     }
 
 

@@ -72,7 +72,7 @@
         <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>
-        <span class="navbar-brand titulo hidden-xs">
+        <span class="navbar-brand namenav hidden-xs">
             <strong><?= Configure::read('Universidad.Nombre');?></strong>
         </span>
         <span class="navbar-brand logo-lg visible-xs">

@@ -58,7 +58,7 @@
                     'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('horario', ['type' => 'select', 'options' => $horarios, 'empty' => true,
-                        'label' => 'Docentes Asignados', 'class' => 'form-control select2 multiValue', 'data-width' => '100%',
+                        'label' => 'Horario Asignado', 'class' => 'form-control select2 multiValue', 'data-width' => '100%',
                         'multiple' => 'multiple', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('cerrado', ['type' => 'checkbox', 'label' => 'Cierre Ejecutado']);

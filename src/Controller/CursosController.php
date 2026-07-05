@@ -40,7 +40,7 @@ class CursosController extends AppController
             'contain' => ['Sedes', 'Periodos', 'Carreras', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas'],
             'conditions' => $conditions,
         ];
-        $cursos = $this->paginate($this->Cursos);
+        $cursos = $this->paginate($this->Cursos,['order' => ['Cursos.id' => 'DESC']]);
         $filtros = $this->request->getQuery();
         $searchFields = $this->Cursos->getSearchFields();
 

@@ -36,12 +36,12 @@
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('origen') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('origen') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('cedula','Cédula') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombres') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('apellidos') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('fecha_nacimiento') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('sexo') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('fecha_nacimiento') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('sexo') ?></th>
                             <!--
                             <th scope="col"><?= $this->Paginator->sort('estado_civil') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('discapacitado') ?></th>
@@ -58,9 +58,7 @@
                             <th scope="col"><?= $this->Paginator->sort('codigo_notas') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('fecha_titulo') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('codigo_titulo') ?></th>
-                            -->
                             <th scope="col"><?= $this->Paginator->sort('expediente') ?></th>
-                            <!--
                             <th scope="col"><?= $this->Paginator->sort('token') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('usuario_id') ?></th>
                             -->
@@ -75,12 +73,12 @@
                         <?php foreach ($estudiantes as $estudiante): ?>
                             <tr>
                                 <td><?= $this->Number->format($estudiante->id) ?></td>
-                                <td><?= h($estudiante->origen) ?></td>
+                                <td class="text-center"><?= h($estudiante->origen) ?></td>
                                 <td><?= $this->Number->format($estudiante->cedula) ?></td>
                                 <td><?= h($estudiante->nombres) ?></td>
-                                <td><?= h($estudiante->apellidos) ?></td>
-                                <td><?= h($estudiante->fecha_nacimiento) ?></td>
-                                <td><?= h($estudiante->sexo) ?></td>
+                                <td ><?= h($estudiante->apellidos) ?></td>
+                                <td class="text-center"><?= h($estudiante->fecha_nacimiento) ?></td>
+                                <td class="text-center"><?= h($estudiante->sexo) ?></td>
                                 <!--
                                 <td><?= h($estudiante->estado_civil) ?></td>
                                 <td><?= h($estudiante->discapacitado) ?></td>
@@ -108,6 +106,10 @@
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $estudiante->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $estudiante->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                     <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $estudiante->id], ['confirm' => __('Are you sure you want to delete # {0}?', $estudiante->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-gear"></i>', 
+                                        ['controller' => 'EstudianteProgramas','action' => 'nuevo', $estudiante->id], 
+                                        ['class'=>'btn bg-olive btn-xs','title' => 'Registrar Programa','escape' => false]) 
+                                    ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
