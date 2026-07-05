@@ -97,7 +97,8 @@ class EstudianteProgramasController extends AppController
         if ($this->request->is('post')) 
         {
             $estudiantePrograma = $this->EstudianteProgramas->patchEntity($estudiantePrograma, $this->request->getData());
-            if ($this->EstudianteProgramas->save($estudiantePrograma)) {
+            if ($this->EstudianteProgramas->save($estudiantePrograma)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Estudiante Programa'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS EstudianteProgramas ' . json_encode($this->request->getData()));
 
