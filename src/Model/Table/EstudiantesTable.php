@@ -3,6 +3,7 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -40,7 +41,6 @@ class EstudiantesTable extends AppTable
         'nombres'    => ['type' => 'text', 'label' => 'Nombres', 'class' => 'form-control isUpper'],
         'id'         => ['type' => 'int', 'label' => 'ID', 'class' => 'form-control isNumeric'],
     ];
-
     /**
      * Initialize method
      *
@@ -209,10 +209,29 @@ class EstudiantesTable extends AppTable
             ->allowEmptyString('codigo_titulo');
 
         $validator
+            ->scalar('acta_nacimiento')
+            ->maxLength('acta_nacimiento', 20)
+            ->allowEmptyString('acta_nacimiento');
+
+        $validator
+            ->integer('periodo')
+            ->requirePresence('periodo', 'create')
+            ->notEmptyString('periodo');
+
+        $validator
+            ->integer('carrera')
+            ->requirePresence('carrera', 'create')
+            ->notEmptyString('carrera');
+
+        $validator
+            ->integer('sede')
+            ->requirePresence('sede', 'create')
+            ->notEmptyString('sede');
+
+        $validator
             ->scalar('expediente')
             ->maxLength('expediente', 20)
-            ->requirePresence('expediente', 'create')
-            ->notEmptyString('expediente');
+            ->allowEmptyString('expediente');
 
         $validator
             ->scalar('token')
@@ -236,7 +255,8 @@ class EstudiantesTable extends AppTable
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['email']));
+        $rules->add($rules->isUnique(['cedula'],'Ya existe un estudiante con este número de cédula.'));
+        $rules->add($rules->isUnique(['email'],'Ya existe un estudiante con este correo electrónico.'));
         $rules->add($rules->existsIn(['pais_id'], 'Paises'));
         $rules->add($rules->existsIn(['estado_id'], 'Estados'));
         $rules->add($rules->existsIn(['municipio_id'], 'Municipios'));
@@ -244,5 +264,21 @@ class EstudiantesTable extends AppTable
         $rules->add($rules->existsIn(['usuario_id'], 'Usuarios'));
 
         return $rules;
+    }
+
+    public function generarExpediente($fechaNacimiento, $periodoId)
+    {
+        $anioActual = date('Y');
+        $prefijo = $anioActual[0] . $anioActual[2] . $anioActual[3];
+        $anioNac = date('Y', strtotime(str_replace('/', '-', $fechaNacimiento)));
+        $base = $prefijo . $anioNac;
+
+        $last = $this->find()
+            ->select(['seq' => 'COALESCE(MAX(CAST(RIGHT(expediente, 5) AS UNSIGNED)), 0) + 1'])
+            ->where(['expediente LIKE' => $base . '%', 'periodo' => $periodoId])
+            ->epilog('FOR UPDATE')
+            ->first();
+
+        return $base . str_pad($last->seq, 5, '0', STR_PAD_LEFT);
     }
 }

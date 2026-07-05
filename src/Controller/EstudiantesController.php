@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 
@@ -77,25 +78,41 @@ class EstudiantesController extends AppController
         $estudiante = $this->Estudiantes->newEntity();
         if ($this->request->is('post')) 
         {
-            $estudiante = $this->Estudiantes->patchEntity($estudiante, $this->request->getData());
+            $data = $this->request->getData();
+            $estudiante = $this->Estudiantes->patchEntity($estudiante, $data);
+            $this->Estudiantes->getConnection()->begin();
             if ($this->Estudiantes->save($estudiante)) 
             {
-                $this->Flash->success(__('The {0} has been saved.', 'Estudiante'));
-                $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Estudiantes ' . json_encode($this->request->getData()));
+                $expediente = $this->Estudiantes->generarExpediente(
+                    $estudiante->fecha_nacimiento,
+                    $estudiante->periodo
+                );
+                $estudiante->expediente = $expediente;
+                if ($this->Estudiantes->save($estudiante)) {
+                    $this->Estudiantes->getConnection()->commit();
+                    $this->Flash->success(__('The {0} has been saved.', 'Estudiante'));
+                    $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Estudiantes ' . json_encode($data));
 
-                return $this->redirect(['action' => 'index']);
+                    return $this->redirect(['action' => 'index']);
+                }
             }
+            $this->Estudiantes->getConnection()->rollback();
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Estudiante'));
         }
+        $estados = [];
+        $municipios = [];
+        $parroquias = [];
+        $sToken = $this->generateToken();
         $aOrigen = Configure::read('aTipoDoc');
         $aGenero = Configure::read('aGeneros');
         $aEdoCivil = Configure::read('aEstadoCivil');
+        $aSedes = TableRegistry::getTableLocator()->get('Sedes')->find('list')->where(['Sedes.activa' => 1])->toArray();
+        $aPeriodos = TableRegistry::getTableLocator()->get('Periodos')->find('list')->where(['Periodos.activo' => 1])
+            ->order(['Periodos.id' => 'DESC'])->toArray();
+        $aCarreras = TableRegistry::getTableLocator()->get('Carreras')->find('list')->where(['Carreras.activa' => 1])->toArray();
         $paises = $this->Estudiantes->Paises->find('list', ['limit' => 200]);
-        $estados = $this->Estudiantes->Estados->find('list', ['limit' => 200]);
-        $municipios = $this->Estudiantes->Municipios->find('list', ['limit' => 200]);
-        $parroquias = $this->Estudiantes->Parroquias->find('list', ['limit' => 200]);
         $usuarios = $this->Estudiantes->Usuarios->find('list', ['limit' => 200]);
-        $this->set(compact('aOrigen', 'aGenero', 'aEdoCivil'));
+        $this->set(compact('sToken','aOrigen', 'aGenero', 'aEdoCivil','aSedes','aPeriodos','aCarreras'));
         $this->set(compact('estudiante', 'paises', 'estados', 'municipios', 'parroquias', 'usuarios'));
     }
 
@@ -123,11 +140,82 @@ class EstudiantesController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Estudiante'));
         }
         $paises = $this->Estudiantes->Paises->find('list', ['limit' => 200]);
-        $estados = $this->Estudiantes->Estados->find('list', ['limit' => 200]);
-        $municipios = $this->Estudiantes->Municipios->find('list', ['limit' => 200]);
-        $parroquias = $this->Estudiantes->Parroquias->find('list', ['limit' => 200]);
+        $estados = [];
+        $municipios = [];
+        $parroquias = [];
         $usuarios = $this->Estudiantes->Usuarios->find('list', ['limit' => 200]);
-        $this->set(compact('estudiante', 'paises', 'estados', 'municipios', 'parroquias', 'usuarios'));
+        $aSedes = TableRegistry::getTableLocator()->get('Sedes')->find('list')->where(['Sedes.activa' => 1])->toArray();
+        $aPeriodos = TableRegistry::getTableLocator()->get('Periodos')->find('list')->where(['Periodos.activo' => 1])
+            ->order(['Periodos.id' => 'DESC'])->toArray();
+        $aCarreras = TableRegistry::getTableLocator()->get('Carreras')->find('list')->where(['Carreras.activa' => 1])->toArray();
+        $this->set(compact('estudiante', 'paises', 'estados', 'municipios', 'parroquias', 'usuarios', 'aSedes', 'aPeriodos', 'aCarreras'));
+    }
+
+
+    /**
+     * Get estados by pais_id (AJAX)
+     */
+    public function getEstados()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $this->autoRender = false;
+        $pais_id = $this->request->getQuery('pais_id');
+
+        $estados = [];
+        if ($pais_id) {
+            $estados = $this->Estudiantes->Estados->find('list', ['limit' => 200])
+                ->where(['pais_id' => $pais_id])
+                ->order(['nombre' => 'ASC'])
+                ->toArray();
+        }
+
+        $this->response = $this->response->withType('application/json');
+        $this->response = $this->response->withStringBody(json_encode(['estados' => $estados]));
+        return $this->response;
+    }
+
+    /**
+     * Get municipios by estado_id (AJAX)
+     */
+    public function getMunicipios()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $this->autoRender = false;
+        $estado_id = $this->request->getQuery('estado_id');
+
+        $municipios = [];
+        if ($estado_id) {
+            $municipios = $this->Estudiantes->Municipios->find('list', ['limit' => 200])
+                ->where(['estado_id' => $estado_id])
+                ->order(['nombre' => 'ASC'])
+                ->toArray();
+        }
+
+        $this->response = $this->response->withType('application/json');
+        $this->response = $this->response->withStringBody(json_encode(['municipios' => $municipios]));
+        return $this->response;
+    }
+
+    /**
+     * Get parroquias by municipio_id (AJAX)
+     */
+    public function getParroquias()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $this->autoRender = false;
+        $municipio_id = $this->request->getQuery('municipio_id');
+
+        $parroquias = [];
+        if ($municipio_id) {
+            $parroquias = $this->Estudiantes->Parroquias->find('list', ['limit' => 200])
+                ->where(['municipio_id' => $municipio_id])
+                ->order(['nombre' => 'ASC'])
+                ->toArray();
+        }
+
+        $this->response = $this->response->withType('application/json');
+        $this->response = $this->response->withStringBody(json_encode(['parroquias' => $parroquias]));
+        return $this->response;
     }
 
 

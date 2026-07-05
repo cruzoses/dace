@@ -1,3 +1,13 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Estudiante $estudiante
+ * @var array $aOrigen
+ * @var array $searchFields
+ * @var array $filtros
+ * @var array $estudiantes
+*/
+?>
 <div class="row">
     <div class="col-xs-12">
         <div class="box box-info box-solid">
@@ -87,7 +97,7 @@
                                 <td><?= h($estudiante->codigo_notas) ?></td>
                                 <td><?= h($estudiante->fecha_titulo) ?></td>
                                 <td><?= h($estudiante->codigo_titulo) ?></td>
-                                <td><?= h($estudiante->expediente) ?></td>
+                                <td><?= h($estudiante->expediente_formateado) ?></td>
                                 <td><?= h($estudiante->token) ?></td>
                                 <td><?= $estudiante->has('usuario') ? $this->Html->link($estudiante->usuario->alias, ['controller' => 'Usuarios', 'action' => 'view', $estudiante->usuario->id]) : '' ?></td>
                                 -->
