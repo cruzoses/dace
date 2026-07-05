@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Tools\PdfBuilder;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 
 class ReportesController extends AppController
@@ -24,6 +25,72 @@ class ReportesController extends AppController
         }
 		return parent::isAuthorized($user);
 	}    
+
+    public function fichaEstudiante($id = null)
+    {
+        $this->loadModel('Estudiantes');
+
+        $estudiante = $this->Estudiantes->get($id, [
+            'contain' => ['Usuarios', 'EstudianteProgramas' => ['Programas']]
+        ]);
+
+        $aGeneros = Configure::read('aGeneros');
+        $aEdoCivil = Configure::read('aEstadoCivil');
+        $aOrigen = Configure::read('aTipoDoc');
+
+        $fotoPath = WWW_ROOT . 'img' . DS . 'site' . DS . 'usuario.jpg';
+        if ($estudiante->has('usuario') && !empty($estudiante->usuario->foto)) {
+            $ext = strtolower(pathinfo($estudiante->usuario->foto, PATHINFO_EXTENSION));
+            $candidate = WWW_ROOT . 'files' . DS . 'fotos' . DS . $estudiante->cedula . '.' . $ext;
+            if (file_exists($candidate)) {
+                $fotoPath = $candidate;
+            }
+        }
+
+        $preamble = [];
+
+        $preamble[] = ['CÉDULA', $aOrigen[$estudiante->origen] . ' ' . $estudiante->cedula];
+        $preamble[] = ['APELLIDOS', $estudiante->apellidos];
+        $preamble[] = ['NOMBRES', $estudiante->nombres];
+        $preamble[] = ['FECHA NAC.', $estudiante->fecha_nacimiento->format('d/m/Y')];
+        $preamble[] = ['SEXO', $aGeneros[$estudiante->sexo]];
+        $preamble[] = ['ESTADO CIVIL', $aEdoCivil[$estudiante->estado_civil]];
+        $preamble[] = ['DISCAPACITADO', $estudiante->discapacitado ? 'SI' : 'NO'];
+        $preamble[] = ['LUGAR NAC.', $estudiante->lugar_nacimiento ?? ''];
+        $preamble[] = ['DIRECCIÓN', $estudiante->direccion];
+        $preamble[] = ['TELÉFONOS', $estudiante->telefonos ?? ''];
+        $preamble[] = ['EMAIL', $estudiante->email];
+
+        $programs = [];
+
+        foreach ($estudiante->estudiante_programas as $ep) {
+            $programs[] = [
+                'Código' => $ep->has('programa') ? $ep->programa->codigo : '',
+                'Nombre del Programa' => $ep->has('programa') ? $ep->programa->nombre : '',
+                'Activo' => $ep->activo ? 'Si' : 'No',
+                'Registrado' => $ep->created ? $ep->created->format('d/m/Y') : '',
+            ];
+        }
+
+        $pdfBuilder = new PdfBuilder();
+        $pdfBuilder->setColumns([
+            'Código' => ['justification' => 'center', 'width' => 60],
+            'Nombre del Programa' => ['justification' => 'left', 'width' => 280],
+            'Activo' => ['justification' => 'center', 'width' => 60],
+            'Registrado' => ['justification' => 'center', 'width' => 80],
+        ]);
+
+        $pdfOutput = $pdfBuilder->generateFichaReport($preamble, $programs, 'FICHA DEL ESTUDIANTE - ' . strtoupper($estudiante->apellidos . ' ' . $estudiante->nombres), $fotoPath);
+
+        $reportConfig = $this->_getReportConfig();
+        $filename = 'ficha_estudiante_' . $estudiante->id . '_' . date('Ymd_His') . '.pdf';
+        file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+        $sFileName = $reportConfig['webroot'] . $filename;
+
+        $this->set(compact('sFileName'));
+        $this->set('noData', false);
+        $this->render('showreport');
+    }
 
     public function downloadPdf()
     {

@@ -55,6 +55,55 @@ class PdfBuilder
         return $this->pdf->ezOutput();
     }
 
+    public function generateFichaReport($preamble, $tableData, $title = 'REPORTE', $photoPath = null)
+    {
+        $this->pageHeader($title);
+
+        $isLandscape = $this->pdf->ez['pageWidth'] > 700;
+
+        $startY = $isLandscape ? 520 : 660;
+        $this->pdf->ezSetY($startY);
+
+        if ($photoPath && file_exists($photoPath)) {
+            $photoX = $isLandscape ? 620 : 420;
+            $photoW = 57;
+            $photoH = 57;
+            $photoY = $startY - 20;
+
+            $ext = strtolower(pathinfo($photoPath, PATHINFO_EXTENSION));
+            if ($ext === 'png') {
+                $this->pdf->addPngFromFile($photoPath, $photoX, $photoY - $photoH, $photoW, $photoH);
+            } else {
+                $this->pdf->addJpegFromFile($photoPath, $photoX, $photoY - $photoH, $photoW, $photoH);
+            }
+
+            $this->pdf->setStrokeColor(0, 0, 0);
+            $this->pdf->setLineStyle(0.5);
+            $this->pdf->rectangle($photoX, $photoY - $photoH, $photoW, $photoH);
+        }
+
+        foreach ($preamble as $line) {
+            $label = $line[0] ?? '';
+            $value = $line[1] ?? '';
+            $this->pdf->ezText('<b>' . $label . ':</b>  ' . $value, 9, ['left' => 60]);
+            $this->pdf->ezSetY($this->pdf->y - 3);
+        }
+
+        $this->pdf->ezSetY($this->pdf->y - 10);
+
+        $config = $this->aConfig;
+        if ($isLandscape && empty($config['cols'])) {
+            $config['width'] = 700;
+            $config['maxWidth'] = 700;
+        }
+
+        $cols = array_keys($this->aConfig['cols']);
+        $this->pdf->ezTable($tableData, $cols, '', $config);
+        $this->pdf->ezStopPageNumbers(1,1);
+
+        return $this->pdf->ezOutput();
+    }
+
     public function generateReportWithSummary($data, $summary, $title = 'REPORTE')
     {
         $this->pageHeader($title);
