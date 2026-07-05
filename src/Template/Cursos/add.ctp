@@ -59,9 +59,10 @@
                     'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('horario', ['type' => 'select', 'options' => $horarios, 'empty' => true,
-                        'class' => 'form-control select2 multiValue', 'data-width' => '100%',
+                        'label' => 'Horario Asignado', 'class' => 'form-control select2 multiValue', 'data-width' => '100%',
                         'multiple' => 'multiple', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
+                    echo $this->Form->hidden('cerrado', ['type' => 'checkbox', 'value' => 1, 'checked' => true]);
                     echo $this->Form->hidden('activo', ['type' => 'checkbox', 'value' => 1, 'checked' => true]);
                 ?>
             </div>            
@@ -86,10 +87,11 @@ var CURSOS_PROGRAMAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'ac
 var CURSOS_ASIGNATURAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAsignaturas']) ?>';
 var CURSOS_HORARIOS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getHorarios']) ?>';
 var CURSOS_AULAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAulas']) ?>';
+var CURSOS_PROGRAMAS_ACTUAL = '<?= h($curso->programas) ?>';
 
 initCursos();
 
-window.cargarProgramas = function (carreraId) {
+window.cargarProgramas = function (carreraId, selectedValues) {
     if (!carreraId) {
         $('#programas-checkbox').empty();
         return;
@@ -105,14 +107,16 @@ window.cargarProgramas = function (carreraId) {
     }).done(function (response) {
         var $container = $('#programas-checkbox');
         $container.empty();
+        var selected = selectedValues || [];
         $.each(response.programas, function (value, text) {
+            var checked = selected.indexOf(String(value)) !== -1;
             $container.append(
                 $('<div>').addClass('checkbox').append(
                     $('<label>').append(
                         $('<input>').attr({
                             type: 'checkbox',
                             value: value
-                        }),
+                        }).prop('checked', checked),
                         ' ' + text
                     )
                 )
@@ -122,6 +126,12 @@ window.cargarProgramas = function (carreraId) {
         $('#programas-checkbox').empty().html('<span>Error al cargar programas: ' + textStatus + '</span>');
     });
 };
+
+var initialCarrera = $('#carrera-id').val();
+var initialProgramas = CURSOS_PROGRAMAS_ACTUAL ? CURSOS_PROGRAMAS_ACTUAL.split(' ') : [];
+if (initialCarrera && initialProgramas.length) {
+    window.cargarProgramas(initialCarrera, initialProgramas);
+}
 
 window._onCarreraChange = function () {
     window.cargarProgramas($(this).val());
