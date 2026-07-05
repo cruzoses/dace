@@ -87,8 +87,28 @@ class EstudianteProgramasController extends AppController
             $this->Flash->error(__('No se pudo guardar el programa. Intente de nuevo.'));
         }
         $sedes = $this->EstudianteProgramas->Sedes->find('list', ['limit' => 200]);
-        $programas = $this->EstudianteProgramas->Programas->find('list', ['limit' => 200]);
-        $this->set(compact('estudiantePrograma', 'estudiante', 'sedes', 'programas'));
+        $carreras = $this->EstudianteProgramas->Programas->Carreras->find('list', [
+            'conditions' => ['Carreras.activa' => 1],
+            'order' => ['Carreras.nombre' => 'ASC']
+        ]);
+        $this->set(compact('estudiantePrograma', 'estudiante', 'sedes', 'carreras'));
+    }
+
+    public function getProgramasByCarrera()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $carrera_id = $this->request->getQuery('carrera_id');
+
+        $programas = [];
+        if ($carrera_id) {
+            $programas = $this->EstudianteProgramas->Programas->find('list', ['limit' => 200])
+                ->where(['carrera_id' => $carrera_id, 'Programas.activo' => 1])
+                ->order(['Programas.nombre' => 'ASC'])
+                ->toArray();
+        }
+
+        $this->set(compact('programas'));
+        $this->set('_serialize', ['programas']);
     }
 
     public function add()
