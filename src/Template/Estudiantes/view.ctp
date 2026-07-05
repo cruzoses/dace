@@ -1,88 +1,149 @@
-<div class="row">
-	<div class="col-md-12">
-		<div class="box box-info box-solid">
-			<div class="box-header with-border">
-				<h3 class="box-title"><i class="fa fa-info"></i>&nbsp;Estudiante</h3>
-				<div class="box-tools pull-right">
-			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
-				        <i class="fa fa-minus"></i>
-			        </button>
-			        <?= $this->Html->link('<i class="fa fa-close"></i>',
-				        ['action' => 'index'],['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
-			        ?>
-		        </div>
-        	</div>        
-        	<div class="box-body">
-          		<dl class="dl-horizontal">
-                    <dt scope="row"><?= __('Origen') ?></dt>
-                    <dd><?= h($estudiante->origen) ?></dd>
-                    <dt scope="row"><?= __('Nombres') ?></dt>
-                    <dd><?= h($estudiante->nombres) ?></dd>
-                    <dt scope="row"><?= __('Apellidos') ?></dt>
-                    <dd><?= h($estudiante->apellidos) ?></dd>
-                    <dt scope="row"><?= __('Sexo') ?></dt>
-                    <dd><?= h($estudiante->sexo) ?></dd>
-                    <dt scope="row"><?= __('Estado Civil') ?></dt>
-                    <dd><?= h($estudiante->estado_civil) ?></dd>
-                    <dt scope="row"><?= __('Telefonos') ?></dt>
-                    <dd><?= h($estudiante->telefonos) ?></dd>
-                    <dt scope="row"><?= __('Email') ?></dt>
-                    <dd><?= h($estudiante->email) ?></dd>
-                    <dt scope="row"><?= __('Paise') ?></dt>
-                    <dd><?= $estudiante->has('paise') ? $this->Html->link($estudiante->paise->nombre, ['controller' => 'Paises', 'action' => 'view', $estudiante->paise->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Estado') ?></dt>
-                    <dd><?= $estudiante->has('estado') ? $this->Html->link($estudiante->estado->nombre, ['controller' => 'Estados', 'action' => 'view', $estudiante->estado->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Municipio') ?></dt>
-                    <dd><?= $estudiante->has('municipio') ? $this->Html->link($estudiante->municipio->nombre, ['controller' => 'Municipios', 'action' => 'view', $estudiante->municipio->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Parroquia') ?></dt>
-                    <dd><?= $estudiante->has('parroquia') ? $this->Html->link($estudiante->parroquia->id, ['controller' => 'Parroquias', 'action' => 'view', $estudiante->parroquia->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Codigo Opsu') ?></dt>
-                    <dd><?= h($estudiante->codigo_opsu) ?></dd>
-                    <dt scope="row"><?= __('Codigo Notas') ?></dt>
-                    <dd><?= h($estudiante->codigo_notas) ?></dd>
-                    <dt scope="row"><?= __('Codigo Titulo') ?></dt>
-                    <dd><?= h($estudiante->codigo_titulo) ?></dd>
-                    <dt scope="row"><?= __('Expediente') ?></dt>
-                    <dd><?= h($estudiante->expediente_formateado) ?></dd>
-                    <dt scope="row"><?= __('Token') ?></dt>
-                    <dd><?= h($estudiante->token) ?></dd>
-                    <dt scope="row"><?= __('Usuario') ?></dt>
-                    <dd><?= $estudiante->has('usuario') ? $this->Html->link($estudiante->usuario->alias, ['controller' => 'Usuarios', 'action' => 'view', $estudiante->usuario->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Id') ?></dt>
-                    <dd><?= $this->Number->format($estudiante->id) ?></dd>
-                    <dt scope="row"><?= __('Cedula') ?></dt>
-                    <dd><?= $this->Number->format($estudiante->cedula) ?></dd>
-                    <dt scope="row"><?= __('Fecha Nacimiento') ?></dt>
-                    <dd><?= h($estudiante->fecha_nacimiento) ?></dd>
-                    <dt scope="row"><?= __('Fecha Notas') ?></dt>
-                    <dd><?= h($estudiante->fecha_notas) ?></dd>
-                    <dt scope="row"><?= __('Fecha Titulo') ?></dt>
-                    <dd><?= h($estudiante->fecha_titulo) ?></dd>
-                    <dt scope="row"><?= __('Created') ?></dt>
-                    <dd><?= h($estudiante->created) ?></dd>
-                    <dt scope="row"><?= __('Modified') ?></dt>
-                    <dd><?= h($estudiante->modified) ?></dd>
-                    <dt scope="row"><?= __('Discapacitado') ?></dt>
-                    <dd><?= $estudiante->discapacitado ? __('Yes') : __('No'); ?></dd>
-                    <dt scope="row"><?= __('Etnia') ?></dt>
-                    <dd><?= $estudiante->etnia ? __('Yes') : __('No'); ?></dd>
-                    <dt scope="row"><?= __('Asignado') ?></dt>
-                    <dd><?= $estudiante->asignado ? __('Yes') : __('No'); ?></dd>
-                    <dt scope="row"><?= __('Activo') ?></dt>
-                    <dd><?= $estudiante->activo ? __('Yes') : __('No'); ?></dd>
-                </dl>
-            </div>
-            <div class="box-footer">
-		        <?= $this->Html->link('<i class="fa fa-pencil"></i>&nbsp;'.__('Edit'),
-			        ['action' => 'edit',$estudiante->id],['class' => 'btn bg-olive btn-flat pull-left','escape' => false]); 
-		        ?>
-		        <?= $this->Html->link('<i class="fa fa-power-off"></i>&nbsp;Cerrar',
-			        ['action' => 'index'],['class' => 'btn bg-maroon btn-flat pull-right','escape' => false]); 
-		        ?>
-            </div>
-        </div>
-    </div>
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Estudiante $estudiante
+ * @var object $estudiante
+ * @var array $aGeneros
+*/
+?>
+<div class="box box-info box-solid">
+
+	<div class="box-header with-border">
+		<h3 class="box-title with-border"><i class="fa fa-info"></i>&nbsp;Datos del Estudiante</h3>
+		<div class="box-tools pull-right">
+			<?= $this->Html->link('<i class="fa fa-print"></i>',
+				['controller' => 'reportes','action' => 'fichaEstudiante',$estudiante->id],
+                ['class' => 'btn btn-box-tool', 'title'=>'Cerrar', 'escape' => false]);
+			?>
+			<button type="button" class="btn btn-box-tool" data-widget="collapse" title="Contraer">
+				<i class="fa fa-minus"></i>
+            </button>
+			<?= $this->Html->link('<i class="fa fa-close"></i>',
+				['action' => 'index'],['class' => 'btn btn-box-tool', 'title'=>'Cerrar', 'escape' => false]);
+			?>
+		</div>
+	</div>			
+
+	<div class="box-body table-responsive no-padding">
+		<table id="Estudiantes" class="table table-bordered table-striped">
+			<tbody>
+				<tr>
+					<td><strong>No. de Id</strong></td>
+					<td>
+						<?= $this->Html->link( $this->Number->format(h($estudiante->id)),['action' => 'edit', $estudiante->id]); ?>
+					</td>
+				</tr>
+				<tr>
+					<td><strong>Cédula</strong></td>
+					<td>
+						<?= $this->Html->link($this->Number->format(h($estudiante->cedula)),
+							['controller' => 'datos', 'action' => 'view', $estudiante->id]); 
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td><strong>Nombres</strong></td>
+					<td><?= h($estudiante->nombres); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Apellidos</strong></td>
+					<td><?= h($estudiante->apellidos); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Fecha Nacimiento</strong></td>
+					<td><?= h($estudiante->fecha_nacimiento); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Sexo</strong></td>
+					<td><?= $aGeneros[h($estudiante->sexo)] ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Discapacitado</strong></td>
+					<td><?= h($estudiante->discapacitado) ? 'SI' : 'NO';?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Etnia Indígena</strong></td>
+					<td><?= h($estudiante->etnia) ? 'SI' : 'NO';?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Lugar Nacimiento</strong></td>
+					<td><?= h($estudiante->lugar_nacimiento); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Dirección</strong></td>
+					<td><?= h($estudiante->direccion); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Teléfonos</strong></td>
+					<td><?= h($estudiante->telefonos); ?>&nbsp;</td>
+				</tr>				
+				<tr>
+					<td><strong>Email</strong></td>
+					<td><?= h($estudiante->email); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Token de Registro</strong></td>
+					<td><?= h($estudiante->token); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Código Opsu</strong></td>
+					<td><?= h($estudiante->codigo_opsu); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Codigo Título Bachiller</strong></td>
+					<td><?= h($estudiante->codigo_titulo); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Código Notas Bachiller</strong></td>
+					<td><?= h($estudiante->codigo_notas); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Código Acta Nacimiento</strong></td>
+					<td><?= h($estudiante->acta_nacimiento); ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong>Expediente</strong></td>
+					<td>
+						<?= $this->Html->link($this->Number->format(h($estudiante->expediente)),
+							['controller' => 'datos', 'action' => 'view', $estudiante->id] ); 
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td><strong>Per&iacute;odo Inicial</strong></td>
+                    <td><?= $estudiante->has('periodo') ? h($estudiante->periodo->codename) : '' ?></td>
+				</tr>				
+				<tr>
+					<td><strong>Usuario</strong></td>
+					<td><?= $estudiante->has('usuario') ? h($estudiante->usuario->username) : '' ?></td>
+				</tr>
+				<tr>
+					<td><strong>Activo</strong></td>
+					<td><?= h($estudiante->activo) ? 'SI' : 'NO'; ?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong><?= __('Created'); ?></strong></td>
+					<td><?= h($estudiante->created);?>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><strong><?= __('Modified'); ?></strong></td>
+					<td><?= h($estudiante->modified); ?>&nbsp;</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="box-footer">
+		<?= $this->Html->link('<i class="fa fa-envelope"></i>&nbsp;Token de Registro',
+			['action' => 'nuevotoken',$estudiante->id],
+			['class' => 'btn bg-olive btn-flat pull-left','escape' => false]); 
+		?>
+		<?= $this->Html->link('<i class="fa fa-power-off"></i>&nbsp;Cerrar',
+			['action' => 'index'],['class' => 'btn bg-maroon btn-flat pull-right','escape' => false]); 
+		?>
+	</div>
 </div>
+
 <div class="row">
     <div class="col-md-12">
         <div class="box box-default box-solid">
@@ -97,6 +158,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-md-12">
         <div class="box box-default box-solid">
@@ -172,6 +234,12 @@
         <div class="box box-default box-solid">
             <div class="box-header with-border">                
                 <h3 class="box-title"><i class="fa fa-share-alt"></i>&nbsp;Estudiante Programas</h3>
+                <div class="box-tools pull-right">
+                    <?= $this->Html->link('<i class="fa fa-plus"></i>',
+                        ['controller' => 'EstudianteProgramas', 'action' => 'nuevo', $estudiante->id],
+                        ['class' => 'btn btn-box-tool', 'title' => 'Agregar Programa', 'escape' => false]);
+                    ?>
+                </div>
             </div>
             <div class="box-body">
                 <?php if (!empty($estudiante->estudiante_programas)): ?>
