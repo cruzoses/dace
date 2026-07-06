@@ -178,3 +178,8 @@ body.home-page .logo-container img {
 
 .fa-user-graduate:before {
   content: "\f501"; }
+
+.main-header .sidebar-toggle {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}

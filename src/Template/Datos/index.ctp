@@ -63,10 +63,10 @@
             </div>
             <div class="box-footer text-center">
                 <?= $this->Form->button('<i class="fa fa-search"></i>&nbsp;Buscar',
-                    ['type' => 'submit', 'class' => 'btn btn-success btn-flat pull-left', 'escape' => false])
+                    ['type' => 'submit', 'class' => 'btn btn-success btn-flat', 'escape' => false])
                 ?>
                 <?= $this->Html->link('<i class="fa fa-eraser"></i>&nbsp;Limpiar',
-                    ['action' => 'index'], ['class' => 'btn bg-maroon btn-flat pull-right', 'escape' => false])
+                    ['action' => 'index'], ['class' => 'btn bg-maroon btn-flat', 'escape' => false])
                 ?>
             </div>
             <?= $this->Form->end() ?>
