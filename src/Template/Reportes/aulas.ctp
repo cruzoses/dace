@@ -35,7 +35,7 @@
                     'class' => 'btn btn-success',
                     'escape' => false
                 ]) ?>
-                <?= $this->Html->link('<i class="fa fa-close"></i>&nbsp;Cerrar',
+                <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Cerrar',
                     '/', ['class' => 'btn bg-maroon', 'escape' => false])
                 ?>
             </div>

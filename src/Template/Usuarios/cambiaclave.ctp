@@ -13,7 +13,7 @@
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
 			        </button>
-			        <?= $this->Html->link('<i class="fa fa-close"></i>',
+			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['action' => 'homepage'],
 				        ['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
 			        ?>

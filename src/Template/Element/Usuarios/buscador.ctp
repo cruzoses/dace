@@ -9,7 +9,7 @@
         <div class="box-header with-border">
             <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Buscar Usuario</h3>
 		    <div class="box-tools pull-right">
-			    <?= $this->Html->link('<i class="fa fa-close"></i>',
+			    <?= $this->Html->link('<i class="fa fa-times"></i>',
 				    ['action' => 'index'],
 				    ['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
 			    ?>

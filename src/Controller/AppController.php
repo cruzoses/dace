@@ -96,7 +96,7 @@ class AppController extends Controller
                 $aPermisosNombre[] = $rol['nombre'];
             }
         }
-        $this->Auth->allow(['display','keepalive']);
+        $this->Auth->allow(['display','keepalive','homepage']);
         $this->set(compact('aPermisosId', 'aPermisosNombre'));
     }
 

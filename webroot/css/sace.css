@@ -116,6 +116,15 @@ body.home-page .logo-container img {
 	font-weight: 400;
 }
 
+.box-sub-title-default {
+	margin-left: 20px;
+	margin-right: 20px;
+	background: #ffffff;
+	border-top: 2px solid #D1D1D1 !important;
+	font-size: 20px;
+	font-weight: 400;
+}
+
 .box-sub-title-warning {
 	margin-left: 20px;
 	margin-right: 20px;
@@ -130,6 +139,15 @@ body.home-page .logo-container img {
 	margin-right: 20px;
 	background: #ffffff;
 	border-top: 2px solid #00c0ef !important;
+	font-size: 20px;
+	font-weight: 400;
+}
+
+.box-sub-title-danger {
+	margin-left: 20px;
+	margin-right: 20px;
+	background: #ffffff;
+	border-top: 2px solid #EB1C24 !important;
 	font-size: 20px;
 	font-weight: 400;
 }
@@ -157,3 +175,6 @@ body.home-page .logo-container img {
 	font-weight: 300;
 	overflow: hidden;
 }
+
+.fa-user-graduate:before {
+  content: "\f501"; }

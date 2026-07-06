@@ -18,7 +18,7 @@
 			<button type="button" class="btn btn-box-tool" data-widget="collapse" title="Contraer">
 				<i class="fa fa-minus"></i>
             </button>
-			<?= $this->Html->link('<i class="fa fa-close"></i>',
+			<?= $this->Html->link('<i class="fa fa-times"></i>',
 				['action' => 'index'],['class' => 'btn btn-box-tool', 'title'=>'Cerrar', 'escape' => false]);
 			?>
 		</div>

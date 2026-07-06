@@ -2,18 +2,24 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Usuario $usuario
- */
+ * @var string $rolNombre
+ * @var string $captchaId
+ * @var array $aGeneros
+*/
 use Cake\Core\Configure;
 ?>
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <div class="box box-primary box-solid">
+        <div class="box box-warning box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-user-graduate"></i>&nbsp;Registro Estudiante</h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
                         <i class="fa fa-minus"></i>
                     </button>
+                    <?= $this->Html->link('<i class="fa fa-times"></i>',
+                        ['action' => 'homepage'], ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
                 </div>
             </div>
             <?= $this->Flash->render() ?>
@@ -21,34 +27,39 @@ use Cake\Core\Configure;
                 'role' => 'form',
                 'align' => [
                     'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],
-                    'md' => ['left' => 3, 'middle' => 8, 'right' => 1]
+                    'md' => ['left' => 2, 'middle' => 9, 'right' => 1]
                 ],
                 'class' => 'horizontal'
             ]) ?>
             <div class="box-body">
                 <fieldset>
+                    <!--
                     <legend class="text-primary" style="font-size:1.1em;border-bottom:1px solid #3c8dbc;">
                         <i class="fa fa-info-circle"></i>&nbsp;Tipo de Usuario
-                    </legend>
+                    </legend>                    
                     <div class="form-group">
                         <label class="col-sm-3 col-md-3 control-label">Tipo de Usua.</label>
                         <div class="col-sm-6 col-md-8">
-                            <?= $this->Form->control('rol_nombre', [
-                                'type' => 'text',
-                                'value' => $rolNombre,
-                                'disabled' => true,
-                                'label' => false,
-                                'class' => 'form-control',
-                                'prepend' => '<i class="fa fa-user"></i>',
-                            ]) ?>
                         </div>
                     </div>
+                    -->
+                    <?= $this->Form->control('rol_nombre', [
+                        'type' => 'text',
+                        'value' => $rolNombre,
+                        'disabled' => true,
+                        'label' => 'Tipo de Usuario',
+                        'class' => 'form-control',
+                        'prepend' => '<i class="fa fa-user"></i>',
+                    ]) ?>
                 </fieldset>
 
                 <fieldset>
+                    <!--
                     <legend class="text-primary" style="font-size:1.1em;border-bottom:1px solid #3c8dbc;margin-top:20px;">
                         <i class="fa fa-address-card"></i>&nbsp;Datos Personales
                     </legend>
+                    -->
+                    <h4 class="box-sub-title-info"><i class="fa fa-address-card"></i>&nbsp;Datos Personales</h4>
                     <?php
                         echo $this->Form->control('cedula', [
                             'type' => 'text',
@@ -88,9 +99,12 @@ use Cake\Core\Configure;
                 </fieldset>
 
                 <fieldset>
+                    <!--
                     <legend class="text-primary" style="font-size:1.1em;border-bottom:1px solid #3c8dbc;margin-top:20px;">
                         <i class="fa fa-lock"></i>&nbsp;Cuenta de Usuario
                     </legend>
+                    -->
+                    <h4 class="box-sub-title-info"><i class="fa fa-lock"></i>&nbsp;Cuenta de Usuario</h4>
                     <?php
                         echo $this->Form->control('username', [
                             'label' => 'Usuario',
@@ -111,9 +125,12 @@ use Cake\Core\Configure;
                 </fieldset>
 
                 <fieldset>
+                    <!--
                     <legend class="text-primary" style="font-size:1.1em;border-bottom:1px solid #3c8dbc;margin-top:20px;">
                         <i class="fa fa-clipboard"></i>&nbsp;Datos del Registro
                     </legend>
+                    -->
+                    <h4 class="box-sub-title-info"><i class="fa fa-clipboard"></i>&nbsp;Datos del Registro</h4>
                     <?php
                         echo $this->Form->control('expediente', [
                             'type' => 'text',
@@ -142,7 +159,7 @@ use Cake\Core\Configure;
                 <?= $this->Form->button('<i class="fa fa-save"></i>&nbsp;Registrarse',
                     ['type' => 'submit', 'class' => 'btn btn-success btn-flat pull-left', 'escape' => false])
                 ?>
-                <?= $this->Html->link('<i class="fa fa-sign-in"></i>&nbsp;Ya tengo cuenta',
+                <?= $this->Html->link('<i class="fa fa-sign-in-alt"></i>&nbsp;Ya tengo cuenta',
                     ['action' => 'login'],
                     ['class' => 'btn btn-primary btn-flat pull-right', 'escape' => false])
                 ?>

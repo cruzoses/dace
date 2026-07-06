@@ -7,7 +7,7 @@
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
 			        </button>
-			        <?= $this->Html->link('<i class="fa fa-close"></i>',
+			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['action' => 'index'],['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
 			        ?>
 		        </div>
@@ -28,7 +28,7 @@
                 <?= $this->Html->link('<i class="fa fa-pencil"></i>&nbsp;'.__('Edit'), 
                     ['action' => 'edit',$pais->id], ['class'=>'btn btn-success pull-left','escape' => false]) 
                 ?>
-                <?= $this->Html->link('<i class="fa fa-close"></i>&nbsp;'.__('Go Back'),
+                <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
                     ['action' => 'index'], ['class'=>'btn bg-maroon pull-right','escape' => false]) 
                 ?>
 			</div>

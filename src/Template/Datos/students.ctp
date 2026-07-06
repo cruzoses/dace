@@ -19,7 +19,7 @@
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
                         <i class="fa fa-minus"></i>
                     </button>
-                    <?= $this->Html->link('<i class="fa fa-close"></i>',
+                    <?= $this->Html->link('<i class="fa fa-times"></i>',
                         ['action' => 'index'], ['class'=>'btn btn-box-tool','escape' => false])
                     ?>
                 </div>
@@ -73,7 +73,7 @@
                 <?= $this->Html->link('<i class="fa fa-arrow-left"></i>&nbsp;Nueva B&uacute;squeda',
                     ['action' => 'index'], ['class'=>'btn btn-primary pull-left','escape' => false])
                 ?>
-                <?= $this->Html->link('<i class="fa fa-close"></i>&nbsp;Cerrar',
+                <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Cerrar',
                     ['action' => 'homepage'], ['class'=>'btn bg-maroon pull-right','escape' => false])
                 ?>
             </div>

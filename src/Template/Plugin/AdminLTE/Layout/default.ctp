@@ -19,13 +19,14 @@
         <!-- Bootstrap Datepicker -->
         <?= $this->Html->css('AdminLTE./bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min'); ?>
         <!-- Bootstrap TimePicker -->
-        <?= $this->Html->css('AdminLTE./plugins/timepicker/bootstrap-timepicker.min'); ?>
-            <!-- Sweetalert2 -->
+        <?= $this->Html->css('AdminLTE./plugins/timepicker/bootstrap-timepicker.min'); ?>        
+        <!-- Sweetalert2 -->
         <?= $this->Html->css('sweetalert2.min'); ?>
         <!-- jQueryUI -->
         <?= $this->Html->css('AdminLTE./bower_components/jquery-ui/themes/base/jquery-ui.min'); ?>
         <!-- Font Awesome -->
-        <?= $this->Html->css('AdminLTE./bower_components/font-awesome/css/font-awesome.min'); ?>
+        <?= $this->Html->css('fontawesome/css/all.min') ?>
+        <!--?= $this->Html->css('AdminLTE./bower_components/font-awesome/css/font-awesome.min'); ?-->        
         <!-- Ionicons -->
         <?= $this->Html->css('AdminLTE./bower_components/Ionicons/css/ionicons.min'); ?>
         <!-- Select2 -->
@@ -44,7 +45,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
         <?= $this->fetch('css') ?>
     </head>
-    <body class="hold-transition skin-<?= Configure::read('Theme.skin'); ?> layout-top-nav">
+    <body class="hold-transition skin-<?= Configure::read('Theme.skin'); ?> layout-top-nav fixed">
         <div class="wrapper">
             <header class="main-header">
                 <?= $this->element('header', ['layout' => 'default']); ?>
@@ -80,7 +81,7 @@
         <?= $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min'); ?>
         <!-- Bootstrap TimePicker -->
         <?= $this->Html->script('AdminLTE./bower_components/bootstrap-timepicker/js/bootstrap-timepicker'); ?>
-        <!-- sweetalert2 -->
+        <!-- Sweetalert2 -->
         <?= $this->Html->script('sweetalert2.min'); ?>
         <!-- jQueryUI -->
         <?= $this->Html->script('AdminLTE./bower_components/jquery-ui/ui/datepicker.js'); ?>

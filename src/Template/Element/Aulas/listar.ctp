@@ -6,7 +6,7 @@
                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
                     <i class="fa fa-minus"></i>
                 </button>
-                <?= $this->Html->link('<i class="fa fa-close"></i>',
+                <?= $this->Html->link('<i class="fa fa-times"></i>',
                     ['action' => 'index'],
                     ['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
                 ?>
@@ -31,7 +31,7 @@
             <?= $this->Form->button('<i class="fa fa-file-pdf-o"></i>&nbsp;Generar Reporte', [
                 'type' => 'submit', 'class' => 'btn btn-success','escape' => false]) 
             ?>
-            <?= $this->Html->link('<i class="fa fa-close"></i>&nbsp;Cerrar',
+            <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Cerrar',
                 ['action' => 'index'], ['class' => 'btn bg-maroon', 'escape' => false])
             ?>
         </div>

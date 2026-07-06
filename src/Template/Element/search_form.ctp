@@ -1,6 +1,5 @@
 <?php
 use Cake\Utility\Inflector;
-
 $title = $title ?? 'Buscar';
 ?>
 <div class="content">
@@ -8,7 +7,7 @@ $title = $title ?? 'Buscar';
         <div class="box-header with-border">
             <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;<?= h($title) ?></h3>
             <div class="box-tools pull-right">
-                <?= $this->Html->link('<i class="fa fa-close"></i>',
+                <?= $this->Html->link('<i class="fa fa-times"></i>',
                     ['action' => 'index'],
                     ['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
                 ?>

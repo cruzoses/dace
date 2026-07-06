@@ -49,7 +49,7 @@
             </div>
             <div class="box-footer">                
                 <?= $this->Html->link('<i class="fa fa-file-pdf-o"></i>&nbsp;PDF', ['action' => 'tipousuarios_pdf'], ['class' => 'btn btn-danger pull-left', 'escape' => false, 'target' => '_blank']) ?>
-                <?= $this->Html->link('<i class="fa fa-close"></i>&nbsp;Cerrar', '/', ['class' => 'btn bg-maroon pull-right', 'escape' => false]) ?>
+                <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Cerrar', '/', ['class' => 'btn bg-maroon pull-right', 'escape' => false]) ?>
             </div>
         </div>
     </div>

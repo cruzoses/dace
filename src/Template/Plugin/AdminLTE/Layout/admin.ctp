@@ -21,12 +21,13 @@
         <?= $this->Html->css('AdminLTE./bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min'); ?>
         <!-- Bootstrap TimePicker -->
         <?= $this->Html->css('AdminLTE./plugins/timepicker/bootstrap-timepicker.min'); ?>
+        <!-- Font Awesome -->
+        <?= $this->Html->css('fontawesome/css/all.min') ?>
+        <!--?= $this->Html->css('AdminLTE./bower_components/font-awesome/css/font-awesome.min'); ?-->        
         <!-- Sweetalert2 -->
         <?= $this->Html->css('sweetalert2.min'); ?>
         <!-- jQueryUI -->
         <!--?= $this->Html->css('AdminLTE./bower_components/jquery-ui/themes/base/jquery-ui.min'); ?-->
-        <!-- Font Awesome -->
-        <?= $this->Html->css('AdminLTE./bower_components/font-awesome/css/font-awesome.min'); ?>
         <!-- Ionicons -->
         <?= $this->Html->css('AdminLTE./bower_components/Ionicons/css/ionicons.min'); ?>
         <!-- Select2 -->
