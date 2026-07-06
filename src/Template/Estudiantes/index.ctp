@@ -106,7 +106,7 @@
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $estudiante->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $estudiante->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                     <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $estudiante->id], ['confirm' => __('Are you sure you want to delete # {0}?', $estudiante->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-gear"></i>', 
+                                    <?= $this->Html->link('<i class="fas fa-cog"></i>', 
                                         ['controller' => 'EstudianteProgramas','action' => 'nuevo', $estudiante->id], 
                                         ['class'=>'btn bg-olive btn-xs','title' => 'Registrar Programa','escape' => false]) 
                                     ?>
