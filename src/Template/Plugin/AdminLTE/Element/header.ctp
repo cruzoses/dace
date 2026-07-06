@@ -27,7 +27,7 @@
                             <li>
                                 <?= $this->Html->link('Aspirante',['controller' => 'aspirantes', 'action' => 'registro']) ?>
                             </li>
-                            <li><a href="<?= $this->Url->build('/profesor');?>">Docente</a></li>
+                            <li><a href="<?= $this->Url->build('/registrodocente');?>">Docente</a></li>
                             <li><a href="#">Estudiante</a></li>
                             <li class="divider"></li>                        
                             <li>

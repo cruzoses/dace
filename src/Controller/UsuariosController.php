@@ -19,7 +19,7 @@ class UsuariosController extends AppController
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
-        $this->Auth->allow(['login', 'logout', 'nuevaclave']);
+        $this->Auth->allow(['login', 'logout', 'nuevaclave', 'registrodocente']);
 	}
 
     public function initialize()
@@ -118,6 +118,92 @@ class UsuariosController extends AppController
 
             return $this->redirect(['action' => 'nuevaclave']);
         }
+    }
+
+    public function registrodocente()
+    {
+        if ($this->Auth->user()) {
+            return $this->redirect($this->Auth->redirectUrl());
+        }
+
+        $usuario = $this->Usuarios->newEntity();
+        $captchaId = $this->Captcha->generate();
+        $rolDocente = $this->Usuarios->Rols->findByNombre('DOCENTE')->first();
+        $rolNombre = $rolDocente ? $rolDocente->nombre : 'DOCENTE';
+
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+
+            if (!isset($data['captcha_id']) || !$this->Captcha->validate($data['CaptchaCode'], $data['captcha_id'])) {
+                $this->Flash->error(__('Código captcha incorrecto.'));
+                $captchaId = $this->Captcha->generate();
+                $this->set(compact('usuario', 'captchaId', 'rolDocente', 'rolNombre'));
+                return;
+            }
+
+            if (empty($data['password_confirmar']) || $data['password'] !== $data['password_confirmar']) {
+                $this->Flash->error(__('Las contraseñas no coinciden.'));
+                $captchaId = $this->Captcha->generate();
+                $this->set(compact('usuario', 'captchaId', 'rolDocente', 'rolNombre'));
+                return;
+            }
+
+            $cedula = $data['cedula'] ?? null;
+            $token = $data['token'] ?? null;
+
+            if (empty($cedula) || empty($token)) {
+                $this->Flash->error(__('Debe ingresar su cédula y clave de registro.'));
+                $captchaId = $this->Captcha->generate();
+                $this->set(compact('usuario', 'captchaId', 'rolDocente', 'rolNombre'));
+                return;
+            }
+
+            $docente = $this->Usuarios->Docentes->find()
+                ->where(['cedula' => $cedula, 'usuario_id IS' => null, 'activo' => 1])
+                ->first();
+
+            if (!$docente) {
+                $this->Flash->error(__('La cédula ingresada no está registrada como docente o ya tiene un usuario asociado.'));
+                $captchaId = $this->Captcha->generate();
+                $this->set(compact('usuario', 'captchaId', 'rolDocente', 'rolNombre'));
+                return;
+            }
+
+            if ($docente->token !== $token) {
+                $this->Flash->error(__('La clave de registro no es correcta.'));
+                $captchaId = $this->Captcha->generate();
+                $this->set(compact('usuario', 'captchaId', 'rolDocente', 'rolNombre'));
+                return;
+            }
+
+            if (!empty($data['fecha_nacimiento'])) {
+                $fecha = str_replace('/', '-', $data['fecha_nacimiento']);
+                $data['fecha_nacimiento'] = Time::createFromFormat('d-m-Y', $fecha)->format('Y-m-d');
+            }
+
+            unset($data['token'], $data['password_confirmar'], $data['CaptchaCode'], $data['captcha_id'], $data['rols']);
+
+            $usuario = $this->Usuarios->patchEntity($usuario, $data);
+
+            if ($this->Usuarios->save($usuario)) {
+                if ($rolDocente) {
+                    $this->Usuarios->Rols->link($usuario, [$rolDocente]);
+                }
+
+                $docente->usuario_id = $usuario->id;
+                $this->Usuarios->Docentes->save($docente);
+
+                $this->Auditorias->registrar('REGISTRA', 'Registro docente autónomo para usuario ' . $usuario->username);
+                $this->Flash->success(__('Registro exitoso. Ya puede ingresar al sistema.'));
+                return $this->redirect(['action' => 'login']);
+            }
+
+            $this->Flash->error(__('No se pudo completar el registro. Intente de nuevo.'));
+            $captchaId = $this->Captcha->generate();
+        }
+
+        $aGeneros = \Cake\Core\Configure::read('aGeneros');
+        $this->set(compact('usuario', 'captchaId', 'rolDocente', 'rolNombre', 'aGeneros'));
     }
 
     public function cambiaclave()
