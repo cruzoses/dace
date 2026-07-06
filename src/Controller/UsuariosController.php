@@ -3,7 +3,6 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
-use Cake\I18n\Time;
 use Cake\Mailer\Email;
 use Cake\Core\Configure;
 
@@ -176,11 +175,6 @@ class UsuariosController extends AppController
                 return;
             }
 
-            if (!empty($data['fecha_nacimiento'])) {
-                $fecha = str_replace('/', '-', $data['fecha_nacimiento']);
-                $data['fecha_nacimiento'] = Time::createFromFormat('d-m-Y', $fecha)->format('Y-m-d');
-            }
-
             unset($data['token'], $data['password_confirmar'], $data['CaptchaCode'], $data['captcha_id'], $data['rols']);
 
             $usuario = $this->Usuarios->patchEntity($usuario, $data);
@@ -261,11 +255,6 @@ class UsuariosController extends AppController
                 $captchaId = $this->Captcha->generate();
                 $this->set(compact('usuario', 'captchaId', 'rolEstudiante', 'rolNombre'));
                 return;
-            }
-
-            if (!empty($data['fecha_nacimiento'])) {
-                $fecha = str_replace('/', '-', $data['fecha_nacimiento']);
-                $data['fecha_nacimiento'] = Time::createFromFormat('d-m-Y', $fecha)->format('Y-m-d');
             }
 
             unset($data['token'], $data['expediente'], $data['password_confirmar'], $data['CaptchaCode'], $data['captcha_id'], $data['rols']);
@@ -400,12 +389,6 @@ class UsuariosController extends AppController
         if ($this->request->is('post')) 
         {
             $aDatos = $this->request->getData();
-            // Convertir la fecha antes de hacer patchEntity
-            if ( !empty( $aDatos['fecha_nacimiento'] ) ) 
-            {
-                $fecha = str_replace('/', '-', $aDatos['fecha_nacimiento']);
-                $aDatos['fecha_nacimiento'] = Time::createFromFormat('d-m-Y', $fecha)->format('Y-m-d');
-            }
             $usuario = $this->Usuarios->patchEntity($usuario, $aDatos);
             //$usuario = $this->Usuarios->patchEntity($usuario, $this->request->getData());
             if ($this->Usuarios->save($usuario)) 
@@ -436,11 +419,6 @@ class UsuariosController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) 
         {
             $aDatos = $this->request->getData();
-            if (!empty($aDatos['fecha_nacimiento'])) 
-            {
-                $fecha = str_replace('/', '-', $aDatos['fecha_nacimiento']);
-                $aDatos['fecha_nacimiento'] = Time::createFromFormat('d-m-Y', $fecha)->format('Y-m-d');
-            }
             $usuario = $this->Usuarios->patchEntity($usuario, $aDatos);
             if ($this->Usuarios->save($usuario)) 
             {
