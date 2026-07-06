@@ -34,15 +34,15 @@ class DatosController extends AppController
 
     public function students()
     {
-        $this->loadModel('Estudiantes');
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
 
-        $conditions = $this->Estudiantes->formatConditions($this->request->getQueryParams());
+        $conditions = $estudiantesTable->formatConditions($this->request->getQueryParams());
         $this->paginate = [
             'conditions' => $conditions,
         ];
-        $estudiantes = $this->paginate($this->Estudiantes);
+        $estudiantes = $this->paginate($estudiantesTable);
         $filtros = $this->request->getQuery();
-        $searchFields = $this->Estudiantes->getSearchFields();
+        $searchFields = $estudiantesTable->getSearchFields();
 
         $this->set(compact('estudiantes', 'filtros', 'searchFields'));
     }
