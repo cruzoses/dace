@@ -64,7 +64,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?= $this->Url->build(['controller' => 'estudiantes','action' => 'index'])?>">
+							<a href="<?= $this->Url->build(['controller' => 'datos','action' => 'index'])?>">
 								<i class="fa fa-circle-o"></i>&nbsp;Estudiantes
 							</a>
 						</li>

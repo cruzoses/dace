@@ -3,9 +3,9 @@
  * @var \App\View\AppView $this
  */
 ?>
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="box box-primary box-solid">
+<div class="content row">
+    <div class="col-md-12">
+        <div class="box box-warning box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-search"></i>&nbsp;Buscar Estudiantes</h3>
                 <div class="box-tools pull-right">
@@ -23,7 +23,7 @@
                 'role' => 'form',
                 'align' => [
                     'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],
-                    'md' => ['left' => 3, 'middle' => 8, 'right' => 1]
+                    'md' => ['left' => 2, 'middle' => 9, 'right' => 1]
                 ],
                 'class' => 'horizontal'
             ]) ?>
@@ -35,12 +35,12 @@
                     <?php
                         echo $this->Form->control('expediente', [
                             'type' => 'text',
-                            'label' => 'Expediente',
+                            'label' => 'No. Expediente',
                             'prepend' => '<i class="fa fa-folder-open"></i>',
                         ]);
                         echo $this->Form->control('cedula', [
                             'type' => 'text',
-                            'label' => 'C&eacute;dula',
+                            'label' => 'No. Cédula',
                             'class' => 'isNumeric',
                             'prepend' => '<i class="fa fa-id-card"></i>',
                         ]);
@@ -54,19 +54,19 @@
                         ]);
                         echo $this->Form->control('id', [
                             'type' => 'text',
-                            'label' => 'ID',
+                            'label' => 'No. Id',
                             'class' => 'isNumeric',
                             'prepend' => '<i class="fa fa-hashtag"></i>',
                         ]);
                     ?>
                 </fieldset>
             </div>
-            <div class="box-footer">
+            <div class="box-footer text-center">
                 <?= $this->Form->button('<i class="fa fa-search"></i>&nbsp;Buscar',
                     ['type' => 'submit', 'class' => 'btn btn-success btn-flat pull-left', 'escape' => false])
                 ?>
                 <?= $this->Html->link('<i class="fa fa-eraser"></i>&nbsp;Limpiar',
-                    ['action' => 'index'], ['class' => 'btn btn-default btn-flat pull-right', 'escape' => false])
+                    ['action' => 'index'], ['class' => 'btn bg-maroon btn-flat pull-right', 'escape' => false])
                 ?>
             </div>
             <?= $this->Form->end() ?>

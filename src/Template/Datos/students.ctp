@@ -20,7 +20,7 @@
                         <i class="fa fa-minus"></i>
                     </button>
                     <?= $this->Html->link('<i class="fa fa-close"></i>',
-                        ['action' => 'homepage'], ['class'=>'btn btn-box-tool','escape' => false])
+                        ['action' => 'index'], ['class'=>'btn btn-box-tool','escape' => false])
                     ?>
                 </div>
             </div>

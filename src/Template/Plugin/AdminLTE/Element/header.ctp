@@ -27,8 +27,8 @@
                             <li>
                                 <?= $this->Html->link('Aspirante',['controller' => 'aspirantes', 'action' => 'registro']) ?>
                             </li>
-                            <li><a href="<?= $this->Url->build(['controller' => 'usuarios', 'action' => 'registradocente']);?>">Docente</a></li>
-                            <li><a href="<?= $this->Url->build('/registroestudiante');?>">Estudiante</a></li>
+                            <li><a href="<?= $this->Url->build(['controller' => 'usuarios', 'action' => 'registrodocente']);?>">Docente</a></li>
+                            <li><a href="<?= $this->Url->build(['controller' => 'usuarios', 'action' => 'registroestudiante']);?>">Estudiante</a></li>
                             <li class="divider"></li>                        
                             <li>
                                 <?php echo $this->Html->link('Olvidó la contrase&ntilde;a',
