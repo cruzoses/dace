@@ -55,75 +55,17 @@ class AppTable extends Table
     
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
-        // Verifica si el campo de fecha existe en el request
-        if ( isset( $data['fecha_nacimiento'] ) ) 
-        {            
-            $fechaOriginal = str_replace('/', '-',$data['fecha_nacimiento']);
-
-            // Si la fecha no está vacía, la convertimos
-            if (!empty($fechaOriginal)) 
-            {
-                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
+        $fechaCampos = ['fecha_nacimiento', 'inicio', 'cierre', 'fecha_notas', 'fecha_titulo'];
+        foreach ($fechaCampos as $campo) {
+            if (isset($data[$campo]) && !empty($data[$campo])) {
+                $fechaOriginal = str_replace('/', '-', $data[$campo]);
                 $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
-                
-                // Asigna el valor corregido para que CakePHP lo guarde correctamente
-                $data['fecha_nacimiento'] = $fechaFormateada->format('Y-m-d');
-            }
-        }
-        if ( isset( $data['inicio'] ) ) 
-        {            
-            $fechaOriginal = str_replace('/', '-',$data['inicio']);
-
-            // Si la fecha no está vacía, la convertimos
-            if (!empty($fechaOriginal)) 
-            {
-                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
-                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
-                
-                // Asigna el valor corregido para que CakePHP lo guarde correctamente
-                $data['inicio'] = $fechaFormateada->format('Y-m-d');
-            }
-        }
-        if ( isset( $data['cierre'] ) ) 
-        {            
-            $fechaOriginal = str_replace('/', '-',$data['cierre']);
-
-            // Si la fecha no está vacía, la convertimos
-            if (!empty($fechaOriginal)) 
-            {
-                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
-                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
-                
-                // Asigna el valor corregido para que CakePHP lo guarde correctamente
-                $data['cierre'] = $fechaFormateada->format('Y-m-d');
-            }
-        }
-        if ( isset( $data['fecha_notas'] ) ) 
-        {            
-            $fechaOriginal = str_replace('/', '-',$data['fecha_notas']);
-
-            // Si la fecha no está vacía, la convertimos
-            if (!empty($fechaOriginal)) 
-            {
-                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
-                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
-                
-                // Asigna el valor corregido para que CakePHP lo guarde correctamente
-                $data['fecha_notas'] = $fechaFormateada->format('Y-m-d');
-            }
-        }
-        if ( isset( $data['fecha_titulo'] ) ) 
-        {            
-            $fechaOriginal = str_replace('/', '-',$data['fecha_titulo']);
-
-            // Si la fecha no está vacía, la convertimos
-            if (!empty($fechaOriginal)) 
-            {
-                // Convierte el formato dd-mm-yyyy a yyyy-mm-dd
-                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
-                
-                // Asigna el valor corregido para que CakePHP lo guarde correctamente
-                $data['fecha_titulo'] = $fechaFormateada->format('Y-m-d');
+                if ($fechaFormateada === false) {
+                    $fechaFormateada = Time::createFromFormat('Y-m-d', $fechaOriginal);
+                }
+                if ($fechaFormateada !== false) {
+                    $data[$campo] = $fechaFormateada->format('Y-m-d');
+                }
             }
         }
 
