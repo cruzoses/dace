@@ -70,7 +70,7 @@
                     );
                     echo $this->Form->control('direccion', ['rows' => 2,'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('telefonos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('email', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('email', ['class' => 'isLower','prepend' => '<i class="fa fa-asterisk"></i>']);
                 ?>
                 <h4 class="box-sub-title-info">Informaci&oacute;n Acad&eacute;mica</h4>
                 <?php

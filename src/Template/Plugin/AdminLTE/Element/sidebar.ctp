@@ -345,10 +345,16 @@
 						<ul class="treeview-menu">
 							<?php if( $this->Permiso->tiene(1) ) : ?>								
 								<li>
-									<a href="/rols"><i class="far fa-dot-circle"></i>&nbsp;Tipo de Usuarios</a>
+									<a href="<?= $this->Url->build(['controller' => 'rols','action' => 'index'])?>">
+										<i class="far fa-dot-circle"></i>&nbsp;Tipos de Usuario
+									</a>
 								</li>
 							<?php endif; ?>
-							<li><a href="/usuarios"><i class="far fa-dot-circle"></i>&nbsp;Usuarios del Sistema</a></li>
+							<li>
+								<a href="<?= $this->Url->build(['controller' => 'usuarios','action' => 'index'])?>">
+									<i class="far fa-dot-circle"></i>&nbsp;Usuarios del Sistema
+								</a>
+							</li>
 							<?php if( $this->Permiso->tiene([1,2]) ) : ?>
 								<li>
 									<a href="/reportes/tipousuarios"><i class="far fa-dot-circle"></i>&nbsp;Reporte de Roles</a>
@@ -430,14 +436,15 @@
                 </a>
                 <ul class="treeview-menu">
 					<li>
-                        <?php echo $this->Html->link('<i class="far fa-dot-circle"></i>&nbsp;Cambiar Contraseña',
-							array('controller'=>'Usuarios','action'=>'cambiaclave'),array('escape'=>false));
-						?>
-                    </li>
+						<a href="<?= $this->Url->build(['controller' => 'usuarios','action' => 'cambiaclave'])?>">
+							<i class="far fa-dot-circle"></i>&nbsp;Cambiar Contraseña
+						</a>
+					</li>					
+
                     <li>
-                        <?php echo $this->Html->link('<i class="far fa-dot-circle"></i>&nbsp;Perfil de Usuario',
-							array('controller'=>'usuarios','action'=>'perfil'),array('escape'=>false));
-						?>
+						<a href="<?= $this->Url->build(['controller' => 'usuarios','action' => 'perfil'])?>">
+							<i class="far fa-dot-circle"></i>&nbsp;Perfil de Usuario
+						</a>
                     </li>
                 </ul>
             </li>
@@ -451,9 +458,9 @@
 				</a>
 				<ul class="treeview-menu">							
 					<li>
-						<?= $this->Html->link("<i class=\"fa fa-circle-o\"></i>&nbsp;Tipo de Usuarios",['controller' => 'Rols', 'action' => 'index'],['escape' => false]) ?>
+						<?= $this->Html->link("<i class=\"fa fa-circle-o\"></i>&nbsp;Tipo de Usuarios",['controller' => 'rols', 'action' => 'index'],['escape' => false]) ?>
 					</li>
-					<li><a href="/usuarios"><i class="far fa-dot-circle"></i>&nbsp;Usuarios del Sistema</a></li>
+					<?= $this->Html->link("<i class=\"fa fa-circle-o\"></i>&nbsp;Tipo de Usuarios",['controller' => 'usuarios', 'action' => 'index'],['escape' => false]) ?>
 				</ul>
 			</li>
 		<?php endif; ?>
