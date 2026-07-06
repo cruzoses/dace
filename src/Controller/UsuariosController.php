@@ -29,7 +29,40 @@ class UsuariosController extends AppController
 
 	public function isAuthorized($user)
 	{
-		return parent::isAuthorized($user);
+		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] && $this->tienePermiso([1, 2])) {
+			return true;
+		}
+		$this->Flash->error(__('No tiene permisos para acceder a esta sección.'));
+		return false;
+	}
+
+	private function _getUserMinRoleId()
+	{
+		$user = $this->Auth->user();
+		$roles = $user['rols'] ?? [];
+		$ids = array_map(function ($r) {
+			return (int)$r['id'];
+		}, $roles);
+		return !empty($ids) ? min($ids) : null;
+	}
+
+	private function _canAccessUser($targetUserId)
+	{
+		$userLevel = $this->_getUserMinRoleId();
+		if ($userLevel === null) {
+			return false;
+		}
+		if ($userLevel == 1) {
+			return true;
+		}
+		$targetUser = $this->Usuarios->get($targetUserId, ['contain' => ['Rols']]);
+		$targetRoles = $targetUser->rols;
+		$targetIds = [];
+		foreach ($targetRoles as $r) {
+			$targetIds[] = (int)$r->id;
+		}
+		$targetMinRole = !empty($targetIds) ? min($targetIds) : null;
+		return $targetMinRole !== null && $targetMinRole >= $userLevel;
 	}
 	
     public function login()
@@ -340,7 +373,22 @@ class UsuariosController extends AppController
     */
     public function index()
     {
+        $userLevel = $this->_getUserMinRoleId();
         $conditions = $this->Usuarios->formatConditions($this->request->getQueryParams());
+
+        if ($userLevel !== null && $userLevel > 1) {
+            $subquery = $this->Usuarios->Rols->find()
+                ->select(['usuario_id' => 'RolsUsuarios.usuario_id'])
+                ->innerJoin(
+                    ['RolsUsuarios' => 'rols_usuarios'],
+                    ['RolsUsuarios.rol_id = Rols.id']
+                )
+                ->group('RolsUsuarios.usuario_id')
+                ->having(['MIN(Rols.id) >=' => $userLevel]);
+
+            $conditions[] = ['Usuarios.id IN' => $subquery];
+        }
+
         $this->paginate['conditions'] = $conditions;
         $usuarios = $this->paginate($this->Usuarios);
         $filtros = $this->request->getQuery();
@@ -357,6 +405,11 @@ class UsuariosController extends AppController
     */
     public function view($id = null)
     {
+        if (!$this->_canAccessUser($id)) {
+            $this->Flash->error(__('No tiene permisos para ver este usuario.'));
+            return $this->redirect(['action' => 'index']);
+        }
+
         $usuario = $this->Usuarios->get($id, [
             'contain' => ['Rols', 'Docentes', 'Empleados', 'Estudiantes', 'Noticias'],
         ]);
@@ -386,20 +439,20 @@ class UsuariosController extends AppController
     public function add()
     {
         $usuario = $this->Usuarios->newEntity();
+        $userLevel = $this->_getUserMinRoleId();
         if ($this->request->is('post')) 
         {
             $aDatos = $this->request->getData();
             $usuario = $this->Usuarios->patchEntity($usuario, $aDatos);
-            //$usuario = $this->Usuarios->patchEntity($usuario, $this->request->getData());
             if ($this->Usuarios->save($usuario)) 
             {
                 $this->Flash->success(__('The {0} has been saved.', 'Usuario'));
-                //$this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS Usuarios ' . json_encode($aDatos));
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Usuario'));
         }
-        $rols = $this->Usuarios->Rols->find('list', ['limit' => 200]);
+        $rols = $this->Usuarios->Rols->find('list', ['limit' => 200])
+            ->where(['Rols.id >=' => $userLevel]);
         $aGeneros = \Cake\Core\Configure::read('aGeneros');
         $this->set(compact('usuario', 'rols','aGeneros'));
     }
@@ -413,9 +466,15 @@ class UsuariosController extends AppController
     */
     public function edit($id = null)
     {
+        if (!$this->_canAccessUser($id)) {
+            $this->Flash->error(__('No tiene permisos para editar este usuario.'));
+            return $this->redirect(['action' => 'index']);
+        }
+
         $usuario = $this->Usuarios->get($id, [
             'contain' => ['Rols']
         ]);
+        $userLevel = $this->_getUserMinRoleId();
         if ($this->request->is(['patch', 'post', 'put'])) 
         {
             $aDatos = $this->request->getData();
@@ -429,7 +488,8 @@ class UsuariosController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Usuario'));
         }
-        $rols = $this->Usuarios->Rols->find('list', ['limit' => 200]);
+        $rols = $this->Usuarios->Rols->find('list', ['limit' => 200])
+            ->where(['Rols.id >=' => $userLevel]);
         $aGeneros = \Cake\Core\Configure::read('aGeneros');
         $this->set(compact('usuario', 'rols','aGeneros'));
     }
@@ -444,6 +504,10 @@ class UsuariosController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
+        if (!$this->_canAccessUser($id)) {
+            $this->Flash->error(__('No tiene permisos para eliminar este usuario.'));
+            return $this->redirect(['action' => 'index']);
+        }
         $usuario = $this->Usuarios->get($id);
         if ($this->Usuarios->delete($usuario)) {
             $this->Flash->success(__('The {0} has been deleted.', 'Usuario'));
