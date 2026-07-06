@@ -104,7 +104,7 @@
                                 <td class="text-center"><?= h($estudiante->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $estudiante->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $estudiante->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $estudiante->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                     <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $estudiante->id], ['confirm' => __('Are you sure you want to delete # {0}?', $estudiante->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-gear"></i>', 
                                         ['controller' => 'EstudianteProgramas','action' => 'nuevo', $estudiante->id], 

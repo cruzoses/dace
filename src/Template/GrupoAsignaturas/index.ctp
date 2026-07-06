@@ -42,7 +42,7 @@
                                 <td class="text-center"><?= h($grupoAsignatura->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $grupoAsignatura->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $grupoAsignatura->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $grupoAsignatura->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                     <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $grupoAsignatura->id], ['confirm' => __('Are you sure you want to delete # {0}?', $grupoAsignatura->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                 </td>
                             </tr>

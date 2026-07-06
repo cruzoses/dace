@@ -71,7 +71,7 @@
                             <td class="text-center"><?= h($usuario->modified->format('d-m-Y g:i a')) ?></td>
                             <td class="actions text-center">
                                 <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $usuario->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $usuario->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $usuario->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                 <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $usuario->id], ['confirm' => __('Are you sure you want to delete # {0}?', $usuario->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                             </td>
                         </tr>

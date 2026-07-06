@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Docente $docente
+ * @var array $searchFields
+ * @var array $filtros
+ * @var array $docentes
+*/
+?>
 <div class="row">
     <div class="col-xs-12">
         <div class="box box-info box-solid">
@@ -71,7 +80,7 @@
                                 <td class="text-center"><?= h($docente->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $docente->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $docente->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $docente->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                     <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $docente->id], ['confirm' => __('Are you sure you want to delete # {0}?', $docente->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                 </td>
                             </tr>
