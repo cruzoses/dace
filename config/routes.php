@@ -76,6 +76,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/cambiaclave', ['controller' => 'Usuarios', 'action' => 'cambiaclave']);
     $routes->connect('/nuevaclave', ['controller' => 'Usuarios', 'action' => 'nuevaclave']);
     $routes->connect('/registrodocente', ['controller' => 'Usuarios', 'action' => 'registrodocente']);
+    $routes->connect('/registroestudiante', ['controller' => 'Usuarios', 'action' => 'registroestudiante']);
 
     $routes->connect('/sedes', ['controller' => 'Sedes', 'action' => 'index']);
 
