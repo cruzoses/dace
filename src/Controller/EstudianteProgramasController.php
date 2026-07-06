@@ -90,7 +90,7 @@ class EstudianteProgramasController extends AppController
         $sedes = $this->EstudianteProgramas->Sedes->find('list', ['limit' => 200]);
         $carreras = $this->EstudianteProgramas->Programas->Carreras->find('list', [
             'conditions' => ['Carreras.activa' => 1],
-            'order' => ['Carreras.nombre' => 'ASC']
+            'order' => ['Carreras.id' => 'ASC']
         ]);
         $this->set(compact('estudiantePrograma', 'estudiante', 'sedes', 'carreras'));
     }
@@ -104,7 +104,7 @@ class EstudianteProgramasController extends AppController
         if ($carrera_id) {
             $programas = $this->EstudianteProgramas->Programas->find('list', ['limit' => 200])
                 ->where(['carrera_id' => $carrera_id, 'Programas.activo' => 1])
-                ->order(['Programas.nombre' => 'ASC'])
+                ->order(['Programas.id' => 'DESC'])
                 ->toArray();
         }
 

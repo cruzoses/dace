@@ -89,7 +89,7 @@ class ProgramasTable extends AppTable
 
         $validator
             ->scalar('nombre')
-            ->maxLength('nombre', 50)
+            ->maxLength('nombre', 80)
             ->requirePresence('nombre', 'create')
             ->notEmptyString('nombre');
 
