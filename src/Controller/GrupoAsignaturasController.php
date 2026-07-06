@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
  * GrupoAsignaturas Controller
@@ -55,7 +56,7 @@ class GrupoAsignaturasController extends AppController
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS GrupoAsignaturas - ID: ' . $grupoAsignatura->id . ', Nombre: ' . $grupoAsignatura->nombre);
 
-        $this->loadModel('Asignaturas');
+        $asignaturasTable = TableRegistry::getTableLocator()->get('Asignaturas');
 
         $this->paginate = [
             'limit' => 20,
@@ -67,7 +68,7 @@ class GrupoAsignaturasController extends AppController
             ]
         ];
 
-        $asignaturas = $this->paginate($this->Asignaturas);
+        $asignaturas = $this->paginate($asignaturasTable);
 
         $this->set(compact('grupoAsignatura', 'asignaturas'));
     }

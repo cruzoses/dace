@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use App\Tools\PdfBuilder;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 class ReportesController extends AppController
 {
@@ -28,9 +29,8 @@ class ReportesController extends AppController
 
     public function fichaEstudiante($id = null)
     {
-        $this->loadModel('Estudiantes');
-
-        $estudiante = $this->Estudiantes->get($id, [
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($id, [
             'contain' => ['Usuarios', 'EstudianteProgramas' => ['Programas']]
         ]);
 
@@ -94,9 +94,8 @@ class ReportesController extends AppController
 
     public function downloadPdf()
     {
-        $this->loadModel('Rols');
-
-        $rols = $this->Rols->find('all', [
+        $rolsTable = TableRegistry::getTableLocator()->get('Rols');
+        $rols = $rolsTable->find('all', [
             'order' => ['Rols.nombre' => 'ASC']
         ]);
 
@@ -134,9 +133,8 @@ class ReportesController extends AppController
 
     public function listarSedes()
     {
-        $this->loadModel('Sedes');
-
-        $sedes = $this->Sedes->find('all', [
+        $sedesTable = TableRegistry::getTableLocator()->get('Sedes');
+        $sedes = $sedesTable->find('all', [
             'order' => ['Sedes.codigo' => 'ASC']
         ]);
 
@@ -168,9 +166,8 @@ class ReportesController extends AppController
 
     public function listarCarreras()
     {
-        $this->loadModel('Carreras');
-
-        $carreras = $this->Carreras->find('all', [
+        $carrerasTable = TableRegistry::getTableLocator()->get('Carreras');
+        $carreras = $carrerasTable->find('all', [
             'contain' => ['MensionCarreras'],
             'order' => ['Carreras.id' => 'ASC']
         ]);
@@ -211,9 +208,8 @@ class ReportesController extends AppController
 
     public function listarEstados()
     {
-        $this->loadModel('Estados');
-
-        $estados = $this->Estados->find('all', [
+        $estadosTable = TableRegistry::getTableLocator()->get('Estados');
+        $estados = $estadosTable->find('all', [
             'contain' => ['Paises'],
             'order' => ['Paises.nombre' => 'ASC', 'Estados.nombre' => 'ASC']
         ]);
@@ -252,9 +248,8 @@ class ReportesController extends AppController
 
     public function listarMunicipios()
     {
-        $this->loadModel('Municipios');
-
-        $municipios = $this->Municipios->find('all', [
+        $municipiosTable = TableRegistry::getTableLocator()->get('Municipios');
+        $municipios = $municipiosTable->find('all', [
             'contain' => ['Estados'],
             'order' => ['Estados.nombre' => 'ASC', 'Municipios.nombre' => 'ASC']
         ]);
@@ -293,9 +288,8 @@ class ReportesController extends AppController
 
     public function listarParroquias()
     {
-        $this->loadModel('Parroquias');
-
-        $parroquias = $this->Parroquias->find('all', [
+        $parroquiasTable = TableRegistry::getTableLocator()->get('Parroquias');
+        $parroquias = $parroquiasTable->find('all', [
             'contain' => ['Municipios'],
             'order' => ['Municipios.nombre' => 'ASC', 'Parroquias.nombre' => 'ASC']
         ]);
@@ -334,9 +328,8 @@ class ReportesController extends AppController
 
     public function listarPeriodos()
     {
-        $this->loadModel('Periodos');
-
-        $periodos = $this->Periodos->find('all', [
+        $periodosTable = TableRegistry::getTableLocator()->get('Periodos');
+        $periodos = $periodosTable->find('all', [
             'order' => ['Periodos.lapso' => 'DESC', 'Periodos.codigo' => 'ASC']
         ]);
 
@@ -378,9 +371,8 @@ class ReportesController extends AppController
 
     public function listarAsignaturas()
     {
-        $this->loadModel('Asignaturas');
-
-        $asignaturas = $this->Asignaturas->find('all', [
+        $asignaturasTable = TableRegistry::getTableLocator()->get('Asignaturas');
+        $asignaturas = $asignaturasTable->find('all', [
             'contain' => ['GrupoAsignaturas'],
             'order' => ['Asignaturas.codigo' => 'ASC']
         ]);
@@ -419,13 +411,13 @@ class ReportesController extends AppController
 
     public function listarAulas()
     {
-        $this->loadModel('Aulas');
-        $this->loadModel('Sedes');
+        $aulasTable = TableRegistry::getTableLocator()->get('Aulas');
+        $sedesTable = TableRegistry::getTableLocator()->get('Sedes');
 
         $sede_id = $this->request->getQuery('sede_id');
 
         if ($sede_id === null) {
-            $sedes = $this->Sedes->find('list', [
+            $sedes = $sedesTable->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'nombre',
                 'order' => ['Sedes.nombre' => 'ASC']
@@ -441,14 +433,14 @@ class ReportesController extends AppController
             $conditions['Aulas.sede_id'] = (int)$sede_id;
         }
 
-        $aulas = $this->Aulas->find('all', [
+        $aulas = $aulasTable->find('all', [
             'conditions' => $conditions,
             'order' => ['Aulas.codigo' => 'ASC']
         ]);
 
         $sedeNombre = '';
         if ($sede_id !== '') {
-            $sede = $this->Sedes->get((int)$sede_id);
+            $sede = $sedesTable->get((int)$sede_id);
             $sedeNombre = $sede->nombre;
         }
 
@@ -495,9 +487,8 @@ class ReportesController extends AppController
 
     public function listarUsuarios()
     {
-        $this->loadModel('Usuarios');
-
-        $usuarios = $this->Usuarios->find('all', [
+        $usuariosTable = TableRegistry::getTableLocator()->get('Usuarios');
+        $usuarios = $usuariosTable->find('all', [
             'order' => ['Usuarios.id' => 'ASC']
             //'order' => ['Usuarios.apellidos' => 'ASC', 'Usuarios.nombres' => 'ASC']
         ]);
@@ -541,9 +532,8 @@ class ReportesController extends AppController
 
     public function listarDocentes()
     {
-        $this->loadModel('Docentes');
-
-        $docentes = $this->Docentes->find('all', [
+        $docentesTable = TableRegistry::getTableLocator()->get('Docentes');
+        $docentes = $docentesTable->find('all', [
             'order' => ['Docentes.id' => 'ASC']
             //'order' => ['Docentes.apellidos' => 'ASC', 'Docentes.nombres' => 'ASC']
         ]);
@@ -587,13 +577,13 @@ class ReportesController extends AppController
 
     public function listarMallas()
     {
-        $this->loadModel('Mallas');
-        $this->loadModel('Carreras');
+        $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+        $carrerasTable = TableRegistry::getTableLocator()->get('Carreras');
 
         $carrera_id = $this->request->getQuery('carrera_id');
 
         if ($carrera_id === null) {
-            $carreras = $this->Carreras->find('list', [
+            $carreras = $carrerasTable->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'codename',
                 'order' => ['Carreras.id' => 'ASC']
@@ -610,7 +600,7 @@ class ReportesController extends AppController
             $conditions['Mallas.programa_id'] = (int)$programa_id;
         }
 
-        $mallas = $this->Mallas->find('all', [
+        $mallas = $mallasTable->find('all', [
             'conditions' => $conditions,
             'contain' => ['Carreras', 'Programas', 'Trayectos', 'Asignaturas'],
             'order' => ['Programas.nombre' => 'ASC', 'Trayectos.id' => 'ASC', 'Asignaturas.nombre' => 'ASC']
@@ -618,14 +608,14 @@ class ReportesController extends AppController
 
         $carreraNombre = '';
         if ($carrera_id !== '') {
-            $carrera = $this->Carreras->get((int)$carrera_id);
+            $carrera = $carrerasTable->get((int)$carrera_id);
             $carreraNombre = $carrera->nombre;
         }
 
         $programaNombre = '';
         if ($programa_id !== '' && $programa_id !== null) {
-            $this->loadModel('Programas');
-            $programa = $this->Programas->get((int)$programa_id);
+            $programasTable = TableRegistry::getTableLocator()->get('Programas');
+            $programa = $programasTable->get((int)$programa_id);
             $programaNombre = $programa->nombre;
         }
 
@@ -694,12 +684,12 @@ class ReportesController extends AppController
     public function getProgramas()
     {
         $this->request->allowMethod(['ajax', 'get']);
-        $this->loadModel('Programas');
+        $programasTable = TableRegistry::getTableLocator()->get('Programas');
         $carrera_id = $this->request->getQuery('carrera_id');
 
         $programas = [];
         if ($carrera_id) {
-            $programas = $this->Programas->find('list', ['limit' => 200])
+            $programas = $programasTable->find('list', ['limit' => 200])
                 ->where(['carrera_id' => $carrera_id, 'activo' => 1])
                 ->toArray();
         }

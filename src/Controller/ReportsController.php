@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 class ReportsController extends AppController
 {
@@ -76,8 +77,8 @@ class ReportsController extends AppController
 
     public function tipousuarios()
     {
-        $this->loadModel('Rols');
-        $rols = $this->Rols->find('all', [
+        $rolsTable = TableRegistry::getTableLocator()->get('Rols');
+        $rols = $rolsTable->find('all', [
             'order' => ['Rols.nombre' => 'ASC']
         ]);
         $this->set(compact('rols'));
@@ -85,8 +86,8 @@ class ReportsController extends AppController
 
     public function tipousuariosPdf()
     {
-        $this->loadModel('Rols');
-        $rols = $this->Rols->find('all', [
+        $rolsTable = TableRegistry::getTableLocator()->get('Rols');
+        $rols = $rolsTable->find('all', [
             'order' => ['Rols.nombre' => 'ASC']
         ]);
         $this->set(compact('rols'));
@@ -111,8 +112,8 @@ class ReportsController extends AppController
 
     public function tipousuariosPdfEz()
     {
-        $this->loadModel('Rols');
-        $rols = $this->Rols->find('all', [
+        $rolsTable = TableRegistry::getTableLocator()->get('Rols');
+        $rols = $rolsTable->find('all', [
             'order' => ['Rols.nombre' => 'ASC']
         ]);
 

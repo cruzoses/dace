@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
  * Cursos Controller
@@ -69,9 +70,9 @@ class CursosController extends AppController
 
         $nombresProgramas = [];
         if (!empty($curso->programas)) {
-            $this->loadModel('Programas');
+            $programasTable = TableRegistry::getTableLocator()->get('Programas');
             $ids = explode(' ', $curso->programas);
-            $programasList = $this->Programas->find('list')
+            $programasList = $programasTable->find('list')
                 ->where(['id IN' => $ids])
                 ->toArray();
             foreach ($ids as $idP) {
@@ -185,8 +186,8 @@ class CursosController extends AppController
         $aulas = [];
         $horarios = [];
         if (!empty($curso->sede_id) && !empty($curso->periodo_id)) {
-            $this->loadModel('Horarios');
-            $horarios = $this->Horarios->find('list', [
+            $horariosTable = TableRegistry::getTableLocator()->get('Horarios');
+            $horarios = $horariosTable->find('list', [
                 'keyField' => 'codigo',
                 'valueField' => 'codigo'
             ])->where([
@@ -233,13 +234,13 @@ class CursosController extends AppController
 
         $programas = [];
         if ($carrera_id) {
-            $this->loadModel('Programas');
-            $programas = $this->Programas->find('list', ['limit' => 200])
+            $programasTable = TableRegistry::getTableLocator()->get('Programas');
+            $programas = $programasTable->find('list', ['limit' => 200])
                 ->where(['carrera_id' => $carrera_id, 'activo' => 1])
                 ->toArray();
         }
 
-        $this->response = $this->response->withType('application/json');
+        $this->response->withType('application/json');
         $this->response = $this->response->withStringBody(json_encode(['programas' => $programas]));
         return $this->response;
     }
@@ -289,8 +290,8 @@ class CursosController extends AppController
 
         $horarios = [];
         if ($sede_id && $periodo_id) {
-            $this->loadModel('Horarios');
-            $horarios = $this->Horarios->find('list', [
+            $horariosTable = TableRegistry::getTableLocator()->get('Horarios');
+            $horarios = $horariosTable->find('list', [
                 'keyField' => 'codigo',
                 'valueField' => 'codigo'
             ])->where([

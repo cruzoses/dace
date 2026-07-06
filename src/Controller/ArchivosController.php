@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Tools\ExcelBuilder;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 class ArchivosController extends AppController
 {
@@ -15,9 +16,8 @@ class ArchivosController extends AppController
 
     public function exportarEstados()
     {
-        $this->loadModel('Estados');
-
-        $estados = $this->Estados->find('all', [
+        $estadosTable = TableRegistry::getTableLocator()->get('Estados');
+        $estados = $estadosTable->find('all', [
             'contain' => ['Paises'],
             'order' => ['Paises.nombre' => 'ASC', 'Estados.nombre' => 'ASC']
         ]);
@@ -64,9 +64,8 @@ class ArchivosController extends AppController
 
     public function exportarMunicipios()
     {
-        $this->loadModel('Municipios');
-
-        $municipios = $this->Municipios->find('all', [
+        $municipiosTable = TableRegistry::getTableLocator()->get('Municipios');
+        $municipios = $municipiosTable->find('all', [
             'contain' => ['Estados'],
             'order' => ['Estados.nombre' => 'ASC', 'Municipios.nombre' => 'ASC']
         ]);
@@ -113,9 +112,8 @@ class ArchivosController extends AppController
 
     public function exportarParroquias()
     {
-        $this->loadModel('Parroquias');
-
-        $parroquias = $this->Parroquias->find('all', [
+        $parroquiasTable = TableRegistry::getTableLocator()->get('Parroquias');
+        $parroquias = $parroquiasTable->find('all', [
             'contain' => ['Municipios'],
             'order' => ['Municipios.nombre' => 'ASC', 'Parroquias.nombre' => 'ASC']
         ]);
@@ -162,9 +160,8 @@ class ArchivosController extends AppController
 
     public function exportarPeriodos()
     {
-        $this->loadModel('Periodos');
-
-        $periodos = $this->Periodos->find('all', [
+        $periodosTable = TableRegistry::getTableLocator()->get('Periodos');
+        $periodos = $periodosTable->find('all', [
             'order' => ['Periodos.lapso' => 'DESC', 'Periodos.codigo' => 'ASC']
         ]);
 
@@ -218,9 +215,8 @@ class ArchivosController extends AppController
 
     public function exportarDocentes()
     {
-        $this->loadModel('Docentes');
-
-        $docentes = $this->Docentes->find('all', [
+        $docentesTable = TableRegistry::getTableLocator()->get('Docentes');
+        $docentes = $docentesTable->find('all', [
             'contain' => ['Departamentos', 'Usuarios'],
             'order' => ['Docentes.apellidos' => 'ASC', 'Docentes.nombres' => 'ASC']
         ]);

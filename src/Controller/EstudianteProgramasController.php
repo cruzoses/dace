@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
  * EstudianteProgramas Controller
@@ -71,8 +72,8 @@ class EstudianteProgramasController extends AppController
     {
         $estudiantePrograma = $this->EstudianteProgramas->newEntity();
 
-        $this->loadModel('Estudiantes');
-        $estudiante = $this->Estudiantes->get($id);
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($id);
         $estudiantePrograma->estudiante_id = $estudiante->id;
 
         if ($this->request->is('post'))
