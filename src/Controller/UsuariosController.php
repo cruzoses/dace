@@ -29,7 +29,7 @@ class UsuariosController extends AppController
 
 	public function isAuthorized($user)
 	{
-		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] && $this->tienePermiso([1, 2])) {
+		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] && $this->tienePermiso([1,2])) {
 			return true;
 		}
 		$this->Flash->error(__('No tiene permisos para acceder a esta sección.'));

@@ -30,20 +30,40 @@ class DatosController extends AppController
 
     public function index()
     {
+        $this->loadModel('Estudiantes');
+        $conditions = $this->Estudiantes->formatConditions($this->request->getQueryParams());
+
+        if (!empty($conditions)) {
+            $this->paginate = [
+                'conditions' => $conditions,
+            ];
+            $estudiantes = $this->paginate($this->Estudiantes, ['order' => ['Estudiantes.cedula' => 'ASC']]);
+
+            if ($estudiantes->count() == 1) {
+                return $this->redirect(['action' => 'estudiante', $estudiantes->first()->id]);
+            }
+
+            $filtros = $this->request->getQuery();
+            $searchFields = $this->Estudiantes->getSearchFields();
+            $this->set(compact('estudiantes', 'filtros', 'searchFields'));
+        }
     }
 
     public function students()
     {
-        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        return $this->redirect(['action' => 'index', '?' => $this->request->getQuery()]);
+    }
 
-        $conditions = $estudiantesTable->formatConditions($this->request->getQueryParams());
-        $this->paginate = [
-            'conditions' => $conditions,
-        ];
-        $estudiantes = $this->paginate($estudiantesTable);
-        $filtros = $this->request->getQuery();
-        $searchFields = $estudiantesTable->getSearchFields();
+    public function estudiante($id)
+    {
+        $estudiante = $this->Estudiantes->get($id, [
+            'contain' => ['Paises', 'Estados', 'Municipios', 'Parroquias', 'Usuarios', 'EstudianteCursos', 'EstudianteProgramas', 
+            'Graduandos', 'Historicos', 'NotasCursos', 'SituacionEstudiantes'],
+        ]);
+        $aGeneros = Configure::read('aGeneros');
+        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Estudiantes ' . json_encode($estudiante->toArray()));
 
-        $this->set(compact('estudiantes', 'filtros', 'searchFields'));
+        $this->set(compact('aGeneros'));
+        $this->set('estudiante', $estudiante);
     }
 }
