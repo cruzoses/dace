@@ -11,6 +11,8 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\MensionCarrerasTable&\Cake\ORM\Association\BelongsTo $MensionCarreras
  * @property \App\Model\Table\CursosTable&\Cake\ORM\Association\HasMany $Cursos
+ * @property &\Cake\ORM\Association\HasMany $EstudianteProgramas
+ * @property \App\Model\Table\MallasTable&\Cake\ORM\Association\HasMany $Mallas
  * @property \App\Model\Table\ProgramasTable&\Cake\ORM\Association\HasMany $Programas
  * @property \App\Model\Table\SedesTable&\Cake\ORM\Association\BelongsToMany $Sedes
  *
@@ -24,7 +26,7 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Carrera findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
+*/
 class CarrerasTable extends AppTable
 {
     protected $searchFields = [
@@ -55,6 +57,9 @@ class CarrerasTable extends AppTable
             'joinType' => 'INNER',
         ]);
         $this->hasMany('Cursos', [
+            'foreignKey' => 'carrera_id',
+        ]);
+        $this->hasMany('EstudianteProgramas', [
             'foreignKey' => 'carrera_id',
         ]);
         $this->hasMany('Mallas', [

@@ -34,3 +34,8 @@ LEFT JOIN (
            ROW_NUMBER() OVER (PARTITION BY ep.estudiante_id ORDER BY ep.created ASC, ep.id ASC) AS rn
     FROM estudiante_programas ep
 ) ep ON ep.estudiante_id = e.id AND ep.rn = 1;
+
+
+Evita duplicados de registro
+ALTER TABLE estudiante_programas 
+ADD UNIQUE INDEX uq_estudiante_carrera_programa (estudiante_id, carrera_id, programa_id);

@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Asignatura $asignatura
+ * @var array $filtros
+ * @var array $searchFields
+*/
+?>
 <div class="row">
     <div class="col-xs-12">
         <div class="box box-info box-solid">
