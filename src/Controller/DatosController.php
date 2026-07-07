@@ -53,7 +53,9 @@ class DatosController extends AppController
 
     public function estudiante($id)
     {
-        $estudiante = $this->Estudiantes->get($id, [
+        //$this->loadModel('Estudiantes');
+        $estudiante = TableRegistry::getTableLocator()->get('Estudiantes')->get($id,[
+            //$estudiante = $this->Estudiantes->get($id, [
             'contain' => ['Paises', 'Estados', 'Municipios', 'Parroquias', 'Usuarios', 'EstudianteCursos', 'EstudianteProgramas', 
             'Graduandos', 'Historicos', 'NotasCursos', 'SituacionEstudiantes'],
         ]);
@@ -62,5 +64,10 @@ class DatosController extends AppController
 
         $this->set(compact('aGeneros'));
         $this->set('estudiante', $estudiante);
+    }
+
+    public function rendimiento()
+    {
+        
     }
 }

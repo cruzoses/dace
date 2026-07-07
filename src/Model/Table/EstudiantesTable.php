@@ -52,7 +52,7 @@ class EstudiantesTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('estudiantes');
-        $this->setDisplayField('id');
+        $this->setDisplayField('full_name');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

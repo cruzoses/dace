@@ -120,11 +120,24 @@ class Estudiante extends Entity
         'token',
     ];
 
+    protected $_virtual = [
+        'full_name',
+    ];
+
+    protected function _getFullName()
+    {
+        return $this->nombres .' '. $this->apellidos;
+    }
+
     protected function _getExpedienteFormateado()
     {
         $exp = $this->expediente;
-        if (!$exp || strlen($exp) < 12) {
+        if (!$exp /*|| strlen($exp) < 12*/) {
             return $exp ?? '';
+        } elseif( strlen($exp) == 9){
+            return substr($exp, 0, 3) . '.' . substr($exp, 3, 5) . '.' . substr($exp, 8);
+        } elseif( strlen($exp) == 12){
+            return substr($exp, 0, 3) . '.' . substr($exp, 3, 7) . '.' . substr($exp, -1);
         }
         return substr($exp, 0, 3) . '.' . substr($exp, 3, 4) . '.' . substr($exp, 7);
     }

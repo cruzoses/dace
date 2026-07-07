@@ -186,3 +186,7 @@ body.home-page .logo-container img {
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
 }
+
+.no-bg {
+	background-color: transparent !important;
+}
