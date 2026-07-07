@@ -37,7 +37,7 @@ class EstudianteProgramasController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Estudiantes', 'Sedes', 'Programas'],
+            'contain' => ['Estudiantes', 'Carreras', 'Programas', 'Sedes',],
         ];
         $estudianteProgramas = $this->paginate($this->EstudianteProgramas);
 
@@ -54,7 +54,7 @@ class EstudianteProgramasController extends AppController
     public function view($id = null)
     {
         $estudiantePrograma = $this->EstudianteProgramas->get($id, [
-            'contain' => ['Estudiantes', 'Sedes', 'Programas'],
+            'contain' => ['Estudiantes', 'Carreras', 'Programas', 'Sedes'],
         ]);
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS EstudianteProgramas ' . json_encode($estudiantePrograma->toArray()));
@@ -112,25 +112,54 @@ class EstudianteProgramasController extends AppController
         $this->set('_serialize', ['programas']);
     }
 
-    public function add()
+    public function add($estudianteId = null)
     {
         $estudiantePrograma = $this->EstudianteProgramas->newEntity();
-        if ($this->request->is('post')) 
+
+        if ($estudianteId) {
+            $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+            $estudiante = $estudiantesTable->get($estudianteId);
+            $estudiantePrograma->estudiante_id = $estudiante->id;
+        }
+
+        if ($this->request->is('post'))
         {
             $estudiantePrograma = $this->EstudianteProgramas->patchEntity($estudiantePrograma, $this->request->getData());
-            if ($this->EstudianteProgramas->save($estudiantePrograma)) 
+            if ($this->EstudianteProgramas->save($estudiantePrograma))
             {
-                $this->Flash->success(__('The {0} has been saved.', 'Estudiante Programa'));
-                $this->Auditorias->registrar('REGISTRA', 'REGISTRA LOS DATOS EstudianteProgramas ' . json_encode($this->request->getData()));
+                $this->Auditorias->registrar('REGISTRA', 'REGISTRA PROGRAMA A EstudianteProgramas ' . json_encode($this->request->getData()));
 
-                return $this->redirect(['action' => 'index']);
+                if ($this->request->is('ajax')) {
+                    return $this->response->withType('application/json')
+                        ->withStringBody(json_encode(['success' => true, 'message' => 'Programa registrado correctamente.']));
+                }
+
+                $this->Flash->success(__('Programa registrado correctamente.'));
+                return $this->redirect(['controller' => 'Estudiantes', 'action' => 'view', $estudiantePrograma->estudiante_id]);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Estudiante Programa'));
+
+            if ($this->request->is('ajax')) {
+                $errors = $estudiantePrograma->getErrors();
+                return $this->response->withType('application/json')
+                    ->withStringBody(json_encode(['success' => false, 'errors' => $errors, 'message' => 'Error al registrar el programa.']));
+            }
+
+            $this->Flash->error(__('No se pudo guardar el programa. Intente de nuevo.'));
         }
-        $estudiantes = $this->EstudianteProgramas->Estudiantes->find('list', ['limit' => 200]);
         $sedes = $this->EstudianteProgramas->Sedes->find('list', ['limit' => 200]);
-        $programas = $this->EstudianteProgramas->Programas->find('list', ['limit' => 200]);
-        $this->set(compact('estudiantePrograma', 'estudiantes', 'sedes', 'programas'));
+        $carreras = $this->EstudianteProgramas->Programas->Carreras->find('list', [
+            'conditions' => ['Carreras.activa' => 1],
+            'order' => ['Carreras.id' => 'ASC']
+        ]);
+        $this->set(compact('estudiantePrograma', 'sedes', 'carreras'));
+
+        if ($estudianteId) {
+            $this->set('estudiante', $estudiante);
+        }
+
+        if ($this->request->is('ajax') || $estudianteId) {
+            $this->viewBuilder()->setLayout('ajax');
+        }
     }
 
 
@@ -146,20 +175,42 @@ class EstudianteProgramasController extends AppController
         $estudiantePrograma = $this->EstudianteProgramas->get($id, [
             'contain' => []
         ]);
+
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($estudiantePrograma->estudiante_id);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $estudiantePrograma = $this->EstudianteProgramas->patchEntity($estudiantePrograma, $this->request->getData());
             if ($this->EstudianteProgramas->save($estudiantePrograma)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Estudiante Programa'));
-                $this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS EstudianteProgramas ' . json_encode($this->request->getData()));
+                $this->Auditorias->registrar('MODIFICA', 'MODIFICA PROGRAMA A EstudianteProgramas ' . json_encode($this->request->getData()));
 
-                return $this->redirect(['action' => 'index']);
+                if ($this->request->is('ajax')) {
+                    return $this->response->withType('application/json')
+                        ->withStringBody(json_encode(['success' => true, 'message' => 'Programa modificado correctamente.']));
+                }
+
+                $this->Flash->success(__('Programa modificado correctamente.'));
+                return $this->redirect(['controller' => 'Estudiantes', 'action' => 'view', $estudiante->id]);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Estudiante Programa'));
+
+            if ($this->request->is('ajax')) {
+                $errors = $estudiantePrograma->getErrors();
+                return $this->response->withType('application/json')
+                    ->withStringBody(json_encode(['success' => false, 'errors' => $errors, 'message' => 'Error al modificar el programa.']));
+            }
+
+            $this->Flash->error(__('No se pudo modificar el programa. Intente de nuevo.'));
         }
-        $estudiantes = $this->EstudianteProgramas->Estudiantes->find('list', ['limit' => 200]);
         $sedes = $this->EstudianteProgramas->Sedes->find('list', ['limit' => 200]);
-        $programas = $this->EstudianteProgramas->Programas->find('list', ['limit' => 200]);
-        $this->set(compact('estudiantePrograma', 'estudiantes', 'sedes', 'programas'));
+        $carreras = $this->EstudianteProgramas->Programas->Carreras->find('list', [
+            'conditions' => ['Carreras.activa' => 1],
+            'order' => ['Carreras.id' => 'ASC']
+        ]);
+        $this->set(compact('estudiantePrograma', 'estudiante', 'sedes', 'carreras'));
+
+        if ($this->request->is('ajax')) {
+            $this->viewBuilder()->setLayout('ajax');
+        }
     }
 
 
@@ -182,5 +233,27 @@ class EstudianteProgramasController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Estudiante Programa id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+    */
+    public function eliminar($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $estudiantePrograma = $this->EstudianteProgramas->get($id);
+        $estudianteId = $estudiantePrograma->estudiante_id;        
+        if ($this->EstudianteProgramas->delete($estudiantePrograma)) {
+            $this->Flash->success(__('The {0} has been deleted.', 'Estudiante Programa'));
+            $this->Auditorias->registrar('ELIMINA', 'ELIMINA LOS DATOS EstudianteProgramas ' . json_encode($estudiantePrograma->toArray()));
+        } else {
+            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Estudiante Programa'));
+        }
+
+        return $this->redirect(['controller' => 'datos', 'action' => 'estudiante',$estudianteId]);
     }
 }

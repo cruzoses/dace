@@ -3,8 +3,6 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Estudiante $estudiante
 */
-use Cake\Core\Configure;
-
 ?>
 <div class="col-md-12">
 
@@ -15,39 +13,35 @@ use Cake\Core\Configure;
                     <td class="pad"><strong>Estudiante</strong></td>
                     <td>
                         <?= $this->Html->link('Datos',
-                            array('action' => 'view',$estudiante->id),
-                            array('class' => 'btn btn-info btn-sm menuh','role' => 'button')); 
-                        ?>
-                        <?= $this->Html->link('Histórico',
-                            array('action' => 'historico',$estudiante->id),
-                            array('class' => 'btn bg-olive btn-sm menuh','title' => 'Histórico de Notas','role' => 'button')); 
-                        ?>
-                        <?= $this->Html->link('Notas de Lapso',
-                            array('action' => 'evaluaciones',$estudiante->id),
-                            array('class' => 'btn btn-warning btn-sm menuh','title' => 'Notas de Lapso','role' => 'button')); 
+                            ['action' => 'view',$estudiante->id],
+                            ['id' => 'btnDatos', 'class' => 'btn btn-info btn-sm menuh btnTools', 'role' => 'button']); 
                         ?>
                         <?= $this->Html->link('Programas',
-                            array('action' => 'programas',$estudiante->id),
-                            array('class' => 'btn bg-maroon btn-sm menuh','title' => 'Notas de Lapso','role' => 'button')); 
+                            ['action' => 'programas',$estudiante->id],
+                            ['id' => 'btnProgramas','class' => 'btn bg-maroon btn-sm menuh btnTools','title' => 'Programas Asignados','role' => 'button']); 
+                        ?>
+                        <?= $this->Html->link('Histórico',
+                            ['action' => 'historico',$estudiante->id],
+                            ['class' => 'btn bg-olive btn-sm menuh btnTools','title' => 'Histórico de Notas','role' => 'button', 'id' => 'btnHistorico']); 
+                        ?>
+                        <?= $this->Html->link('Notas de Lapso',
+                            ['action' => 'evaluaciones',$estudiante->id],
+                            ['id' => 'btnNotas','class' => 'btn btn-warning btn-sm menuh btnTools','title' => 'Notas de Lapso','role' => 'button']); 
                         ?>
                         <?= $this->Html->link('Situación',/*'#'*/ 
-                            array('action' => 'situacion',$estudiante->id),
-                            array('class' => 'btn bg-navy btn-sm menuh','title' => 'Situación Académica',
-                            'role' => 'button','id'=>'laSituacion')); 
+                            ['action' => 'situacion',$estudiante->id],
+                            ['id' => 'btnSituacion','class' => 'btn bg-navy btn-sm menuh btnTools','title' => 'Situación Académica','role' => 'button']); 
                         ?>
                         <?php 
                             if( isset($historep) && $historep  ){
                                 echo $this->Html->link('<i class="fa fa-print"></i>&nbsp;Imprimir Hostórico',
-                                array(
-                                    'controller' => 'reportes',
-                                    'action' => 'historialacademico', $estudiante->id
-                                ),
-                                array('class' => 'btn bg-orange btn-sm menuh','escape' => false));
+                                ['controller' => 'reportes','action' => 'historialacademico', $estudiante->id],
+                                ['id' => 'btnPrintHistorico','class' => 'btn bg-orange btn-sm menuh btnTools','escape' => false]);
                             }
                         ?>
                         <?= $this->Html->link('Inscripciones',
-                            array( 'controller' => 'estudiante_cursos', 'action' => 'index',$estudiante->id),
-                            array('class' => 'btn btn-primary btn-sm menuh','title' => 'Inscripciones','role' => 'button')); 
+                            ['controller' => 'estudiante_cursos', 'action' => 'index',$estudiante->id],
+                            ['id' => 'btnInscripcion','class' => 'btn btn-primary btn-sm menuh btnTools','title' => 'Inscripciones','role' => 'button']); 
                         ?>
                     </td>
                 </tr>
@@ -62,7 +56,7 @@ use Cake\Core\Configure;
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
                     <i class="fa fa-minus"></i>
-                </button>            
+                </button>
                 <?= $this->Html->link('<i class="fas fa-sign-in-alt"></i>',
                     ['controller' => 'datos', 'action' => 'index'],
                     ['class' => 'btn btn-box-tool', 'title' => 'cerrar', 'escape' => false]);

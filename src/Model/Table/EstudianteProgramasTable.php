@@ -10,8 +10,9 @@ use Cake\Validation\Validator;
  * EstudianteProgramas Model
  *
  * @property \App\Model\Table\EstudiantesTable&\Cake\ORM\Association\BelongsTo $Estudiantes
- * @property \App\Model\Table\SedesTable&\Cake\ORM\Association\BelongsTo $Sedes
  * @property \App\Model\Table\ProgramasTable&\Cake\ORM\Association\BelongsTo $Programas
+ * @property \App\Model\Table\CarrerasTable&\Cake\ORM\Association\BelongsTo $Carreras
+ * @property \App\Model\Table\SedesTable&\Cake\ORM\Association\BelongsTo $Sedes
  *
  * @method \App\Model\Entity\EstudiantePrograma get($primaryKey, $options = [])
  * @method \App\Model\Entity\EstudiantePrograma newEntity($data = null, array $options = [])
@@ -23,7 +24,7 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\EstudiantePrograma findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
+*/
 class EstudianteProgramasTable extends Table
 {
     /**
@@ -52,6 +53,10 @@ class EstudianteProgramasTable extends Table
         ]);
         $this->belongsTo('Programas', [
             'foreignKey' => 'programa_id',
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('Carreras', [
+            'foreignKey' => 'carrera_id',
             'joinType' => 'INNER',
         ]);
     }
@@ -106,6 +111,11 @@ class EstudianteProgramasTable extends Table
         $rules->add($rules->existsIn(['estudiante_id'], 'Estudiantes'));
         $rules->add($rules->existsIn(['sede_id'], 'Sedes'));
         $rules->add($rules->existsIn(['programa_id'], 'Programas'));
+        $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
+        $rules->add($rules->isUnique(
+            ['estudiante_id', 'carrera_id', 'programa_id'],
+            'Este estudiante ya tiene asignado este programa en esta carrera.'
+        ));
 
         return $rules;
     }

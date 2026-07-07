@@ -10,7 +10,7 @@ use Cake\ORM\TableRegistry;
  * Datos Controller
  *
  * @method \App\Model\Entity\Dato[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class DatosController extends AppController
 {
 
@@ -69,5 +69,19 @@ class DatosController extends AppController
     public function rendimiento()
     {
         
+    }
+
+    public function programas($estudianteId = null)
+    {
+        $programas = TableRegistry::getTableLocator()->get('EstudianteProgramas')->find('all', [
+            'conditions' => ['EstudianteProgramas.estudiante_id' => $estudianteId],
+            'contain' => ['Estudiantes', 'Carreras', 'Programas', 'Sedes'] 
+        ])
+        //->where(['EstudianteProgramas.estudiante_id' => $estudianteId])
+        ->toArray();
+
+        $this->set(compact('programas', 'estudianteId'));
+        $this->set('_serialize', ['programas']); // Para que se pueda serializar a JSON si se requiere
+        $this->viewBuilder()->setLayout('ajax'); // Usar un layout vacío para las llamadas AJAX
     }
 }

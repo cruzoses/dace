@@ -11,7 +11,7 @@ use Cake\Core\Configure;
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-primary">
+            <div class="box box-primary" id="information">
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-bordered table-condensed table-striped">
                         <tr>
@@ -69,6 +69,44 @@ use Cake\Core\Configure;
                 </div>
                 <div class="box-footer"></div>
             </div>
+            <div class="oculto" id="ajax-content"></div>
         </div>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('.btnTools').on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var btnId = $(this).attr('id');
+
+        if (btnId === 'btnDatos') {
+            $('#information').removeClass('oculto').show();
+            $('#ajax-content').addClass('oculto').hide();
+            return;
+        }
+
+        $('#information').hide();
+        $('#ajax-content').removeClass('oculto').show();
+        $('#ajax-content').html('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                $('#ajax-content').html(response);
+            },
+            error: function(xhr, status, error) {
+                $('#ajax-content').html('<div class="alert alert-danger">Error al cargar: ' + error + '</div>');
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-cerrar-ajax', function() {
+        $('#ajax-content').addClass('oculto').hide();
+        $('#information').removeClass('oculto').show();
+    });
+});
+</script>
