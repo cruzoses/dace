@@ -30,28 +30,25 @@ class DatosController extends AppController
 
     public function index()
     {
-        $this->loadModel('Estudiantes');
-        $conditions = $this->Estudiantes->formatConditions($this->request->getQueryParams());
-
-        if (!empty($conditions)) {
-            $this->paginate = [
-                'conditions' => $conditions,
-            ];
-            $estudiantes = $this->paginate($this->Estudiantes, ['order' => ['Estudiantes.cedula' => 'ASC']]);
-
-            if ($estudiantes->count() == 1) {
-                return $this->redirect(['action' => 'estudiante', $estudiantes->first()->id]);
-            }
-
-            $filtros = $this->request->getQuery();
-            $searchFields = $this->Estudiantes->getSearchFields();
-            $this->set(compact('estudiantes', 'filtros', 'searchFields'));
-        }
     }
 
     public function students()
     {
-        return $this->redirect(['action' => 'index', '?' => $this->request->getQuery()]);
+        $this->loadModel('Estudiantes');
+        $conditions = $this->Estudiantes->formatConditions($this->request->getQueryParams());
+        $this->paginate = [
+            'conditions' => $conditions,
+        ];
+        $estudiantes = $this->paginate($this->Estudiantes, ['order' => ['Estudiantes.cedula' => 'ASC']]);
+
+        if ($estudiantes->count() == 1) {
+            return $this->redirect(['action' => 'estudiante', $estudiantes->first()->id]);
+        }
+
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Estudiantes->getSearchFields();
+
+        $this->set(compact('estudiantes', 'filtros', 'searchFields'));
     }
 
     public function estudiante($id)

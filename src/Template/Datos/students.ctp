@@ -47,7 +47,10 @@
                                 <td><?= h($estudiante->apellidos) ?></td>
                                 <td class="text-center"><?= h($estudiante->fecha_nacimiento) ?></td>
                                 <td class="text-center"><?= h($estudiante->sexo) ?></td>
-                                <td><?= h($estudiante->expediente_formateado ?? $estudiante->expediente) ?></td>
+                                <td><?= $this->Html->link(
+                                    $estudiante->expediente_formateado ?? $estudiante->expediente,
+                                    ['action' => 'estudiante', $estudiante->id]
+                                ) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
