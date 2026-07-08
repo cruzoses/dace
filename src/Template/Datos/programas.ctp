@@ -1,3 +1,8 @@
+<?php 
+/**
+ * @var int $estudianteId
+*/
+?>
 <div class="box box-warning">
     <div class="box-header with-border">
         <h3 class="box-title"><i class="fa fa-cogs"></i>&nbsp;Programas Asignados</h3>

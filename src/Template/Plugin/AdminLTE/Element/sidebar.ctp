@@ -375,12 +375,9 @@
 					</a>
 					<ul class="treeview-menu">
 						<li>
-							<?php echo $this->Html->link('<i class="far fa-dot-circle"></i>&nbsp;Cursos Asignados',
-								array('controller' => 'Docentes', 'action' => 'cursosasignados','?' => array(
-									'DocenteId' => $this->request->getSession()->read('UsuarioActivo.Docente.0.id')
-								)),
-								array('escape' => false)
-							)?>
+							<a href="<?= $this->Url->build(['controller' => 'profesores','action' => 'index'])?>">
+								<i class="far fa-dot-circle"></i>&nbsp;Cursos Asignados
+							</a>
 						</li>
 					</ul>
 				</li>
