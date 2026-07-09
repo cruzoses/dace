@@ -2,7 +2,9 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Docente $docente
- */
+ * @var array $departamentos
+ * @var array $aGeneros
+*/
 ?>
 <div class="row">
     <div class="col-md-12">    

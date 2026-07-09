@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Docente $docente
+ * @var array $searchFields
+ * @var array $filtros
+ * @var array $docentes
+*/
+?>
 <div class="box box-primary">
 
 	<div class="box-header with-border">

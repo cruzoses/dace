@@ -1,6 +1,12 @@
+<?php 
+/**
+ * @var App\Model\Entity\Trayecto $trayectos
+ * @var App\View\AppView $this
+*/
+?>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-olive box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Trayectos</h3>
                 <div class="box-tools pull-right">
@@ -25,21 +31,21 @@
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('codigo') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('activo') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('activo') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($trayectos as $trayecto): ?>
                             <tr>
-                        <td><?= $this->Number->format($trayecto->id) ?></td>
+                                <td><?= $this->Number->format($trayecto->id) ?></td>
                                 <td><?= h($trayecto->codigo) ?></td>
                                 <td><?= h($trayecto->nombre) ?></td>
-                                <td><?= h($trayecto->activo) ?></td>
-                                <td><?= h($trayecto->created) ?></td>
-                                <td><?= h($trayecto->modified) ?></td>
+                                <td class="text-center"><?= h($trayecto->activo) ? 'SI' : 'NO' ?></td>
+                                <td class="text-center"><?= h($trayecto->created) ?></td>
+                                <td class="text-center"><?= h($trayecto->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $trayecto->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $trayecto->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -50,7 +56,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="7" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
@@ -68,7 +74,7 @@
             </div>
             <div class="box-footer">
                 <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
-                    ['action' => 'add'], ['class'=>'btn btn-success pull-left','escape' => false]) 
+                    ['action' => 'add'], ['class'=>'btn btn-primary pull-left','escape' => false]) 
                 ?>
                 <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
                     ['action' => 'homepage'], ['class'=>'btn bg-maroon pull-right','escape' => false]) 

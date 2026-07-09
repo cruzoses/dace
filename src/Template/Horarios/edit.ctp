@@ -2,7 +2,11 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Horario $horario
- */
+ * @var array $periodos
+ * @var array $aTurnos
+ * @var array $aDias
+ * @var array $sedes
+*/
 ?>
 <div class="row">
     <div class="col-md-12">    

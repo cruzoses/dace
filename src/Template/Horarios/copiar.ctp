@@ -32,16 +32,16 @@
                 </div>
                 <?php
                     echo $this->Form->control('sede_id', ['type' => 'select', 'options' => $sedes, 'empty' => true,
-                        'label' => 'Sede',
-                        'class' => 'form-control select2', 'data-widh' => '100%', 'prepend' => '<i class="fa fa-building"></i>']
+                        'label' => 'Sede','class' => 'form-control select2', 'data-widh' => '100%', 
+                        'prepend' => '<i class="fa fa-building"></i>', 'required' => true]
                     );
                     echo $this->Form->control('origen_id', ['type' => 'select', 'options' => $periodos, 'empty' => true,
-                        'label' => 'Periodo Origen',
-                        'class' => 'form-control select2', 'data-widh' => '100%','prepend' => '<i class="fas fa-history"></i>']
+                        'label' => 'Periodo Origen', 'class' => 'form-control select2', 'data-widh' => '100%',
+                        'prepend' => '<i class="fas fa-history"></i>', 'required' => true]
                     );
                     echo $this->Form->control('destino_id', ['type' => 'select', 'options' => $periodos, 'empty' => true,
-                        'label' => 'Periodo Destino',
-                        'class' => 'form-control select2', 'data-widh' => '100%','prepend' => '<i class="fas fa-clock"></i>']
+                        'label' => 'Periodo Destino', 'class' => 'form-control select2', 'data-widh' => '100%',
+                        'prepend' => '<i class="fas fa-clock"></i>', 'required' => true]
                     );
                 ?>
             </div>            

@@ -9,7 +9,7 @@
 ?>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-olive box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Docentes</h3>
                 <div class="box-tools pull-right">
@@ -106,7 +106,7 @@
             </div>
             <div class="box-footer">
                 <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
-                    ['action' => 'add'], ['class'=>'btn btn-success pull-left','escape' => false]) 
+                    ['action' => 'add'], ['class'=>'btn bg-navy pull-left','escape' => false]) 
                 ?>
                 <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
                     ['action' => 'homepage'], ['class'=>'btn bg-maroon pull-right','escape' => false]) 

@@ -8,7 +8,7 @@
     <div class="col-md-12">    
         <div class="box box-warning box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Trayectos</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Editar Trayecto</h3>
 		        <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['action' => 'index'],
@@ -26,9 +26,10 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('codigo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('codigo', ['label' => 'Código',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('activo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('activo', ['type' => 'checkbox']);
                 ?>
             </div>            
             <div class="box-footer">
