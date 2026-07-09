@@ -1,11 +1,14 @@
 <?php
+/**
+ * @var array $searchFields
+*/
 use Cake\Utility\Inflector;
 $title = $title ?? 'Buscar';
 $url = $url ?? ['action' => 'buscar'];
 $closeUrl = $closeUrl ?? ['action' => 'index'];
 ?>
 <div class="content">
-    <div class="box box-warning box-solid">
+    <div class="box box-info box-solid">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="fas fa-search"></i>&nbsp;<?= h($title) ?></h3>
             <div class="box-tools pull-right">
