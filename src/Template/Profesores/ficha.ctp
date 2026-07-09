@@ -34,7 +34,7 @@
                     <i class="fa fa-minus"></i>
                 </button>
                 <?= $this->Html->link('<i class="fas fa-sign-in-alt"></i>',
-                    ['action' => 'homepage'],
+                    ['action' => 'index'],
                     ['class' => 'btn btn-box-tool', 'title' => 'cerrar', 'escape' => false]);
                 ?>
             </div>

@@ -190,3 +190,39 @@ body.home-page .logo-container img {
 .no-bg {
 	background-color: transparent !important;
 }
+
+.box.box-purple {
+    border-top-color: #605ca8;
+}
+
+.box.box-solid.box-purple {
+    border: 1px solid #605ca8;
+}
+.box.box-solid.box-purple > .box-header {
+    color: #ffffff;
+    background: #605ca8;
+    background-color: #605ca8;
+}
+
+.box.box-solid.box-purple > .box-header a,
+.box.box-solid.box-purple > .box-header .btn {
+    color: #ffffff;
+}
+
+.box.box-olive {
+    border-top-color: #3d9970;
+}
+
+.box.box-solid.box-olive {
+    border: 1px solid #3d9970;
+}
+.box.box-solid.box-olive > .box-header {
+    color: #ffffff;
+    background: #3d9970;
+    background-color: #3d9970;
+}
+
+.box.box-solid.box-olive > .box-header a,
+.box.box-solid.box-olive > .box-header .btn {
+    color: #ffffff;
+}

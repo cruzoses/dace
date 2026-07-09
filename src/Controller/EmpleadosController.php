@@ -27,7 +27,7 @@ class EmpleadosController extends AppController
     /**
      * 
     */
-	public function isAuthorized($user)
+	public function isAuthorized($user = null)
 	{
 		return parent::isAuthorized($user);
 	}

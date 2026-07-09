@@ -2,7 +2,8 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Sede $sede
- */
+ * @var array $carreras
+*/
 ?>
 <div class="row">
     <div class="col-md-12">    

@@ -26,8 +26,9 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('activo', ['type' => 'checkbox', 'checked' => true]);
+                    echo $this->Form->control('nombre', ['label' => 'Nombre del Proceso',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->hidden('activo', ['type' => 'checkbox', 'value' => 1, 'checked' => true]);
                 ?>
             </div>            
             <div class="box-footer">

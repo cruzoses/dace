@@ -129,8 +129,8 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?= $this->Url->build(['controller' => 'subsistemas','action' => 'index'])?>">
-								<i class="far fa-dot-circle"></i>&nbsp;Sistemas de Estudio
+							<a href="<?= $this->Url->build(['controller' => 'indicadores','action' => 'index'])?>">
+								<i class="far fa-dot-circle"></i>&nbsp;Indicadores de Proceso
 							</a>
 						</li>
 						<li>
@@ -190,6 +190,11 @@
 						<li>
 							<a href="<?= $this->Url->build(['controller' => 'firmas','action' => 'index'])?>">
 								<i class="far fa-dot-circle"></i>&nbsp;Firmas
+							</a>
+						</li>
+						<li>
+							<a href="<?= $this->Url->build(['controller' => 'subsistemas','action' => 'index'])?>">
+								<i class="far fa-dot-circle"></i>&nbsp;Sistemas de Estudio
 							</a>
 						</li>
 						<li>

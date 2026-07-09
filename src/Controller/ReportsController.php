@@ -14,7 +14,7 @@ class ReportsController extends AppController
         $this->Auth->allow(['tipousuariosPdf', 'tipousuariosPdfEz']);
     }
 
-    public function isAuthorized($user)
+    public function isAuthorized($user = null)
     {
         return $this->tienePermiso([1,2,3,4]);
     }

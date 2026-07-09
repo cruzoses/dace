@@ -1,6 +1,14 @@
+<?php 
+/**
+ * @var \App\View\AppView this
+ * @var \App\Model\Entity\Carrera $carreras
+ * @var array $filtros
+ * @var array $searchFields
+*/
+?>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-olive box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Carreras</h3>
                 <div class="box-tools pull-right">

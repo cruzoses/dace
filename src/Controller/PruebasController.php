@@ -12,7 +12,7 @@ class PruebasController extends AppController
         $this->Auth->allow(['login', 'logout', 'index']);
     }
 
-    public function isAuthorized($user)
+    public function isAuthorized($user = null)
     {
         return parent::isAuthorized($user);
     }

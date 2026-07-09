@@ -14,18 +14,12 @@ use Cake\Event\Event;
 class RolsController extends AppController
 {
 
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
 	}
 
-    /**
-     * 
-    */
-	public function isAuthorized($user)
+	public function isAuthorized($user = [])
 	{
 		return parent::isAuthorized($user);
 	}
@@ -34,7 +28,7 @@ class RolsController extends AppController
      * Index method
      *
      * @return \Cake\Http\Response|null
-     */
+    */
     public function index()
     {
         $rols = $this->paginate($this->Rols);
@@ -48,7 +42,7 @@ class RolsController extends AppController
      * @param string|null $id Rol id.
      * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+    */
     public function view($id = null)
     {
         $rol = $this->Rols->get($id, [

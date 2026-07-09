@@ -18,7 +18,7 @@ class ReportesController extends AppController
         );
     }
 
-	public function isAuthorized($user)
+	public function isAuthorized($user = null)
 	{
         if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
         {

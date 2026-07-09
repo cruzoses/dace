@@ -7,7 +7,7 @@ use Cake\Core\Configure;
 ?>
 <div class="content">
     <div class="row">
-        <?= $this->element('Profesores/ficha', ['docente' => $docente, 'showOptions' => true]); ?>
+        <!--?= $this->element('Profesores/ficha', ['docente' => $docente, 'showOptions' => true]); ?-->
     </div>
     <div class="row">
         <div class="col-md-12">

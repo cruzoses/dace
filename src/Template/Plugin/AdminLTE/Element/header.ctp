@@ -45,9 +45,8 @@
                 <ul class="nav navbar-nav">
                     <?php if( !isset($userActivo) && !OUTSERVICE ) :?>
                         <li>
-                            <?php echo $this->Html->link('<i class="fa fa-sign-in"></i>&nbsp;Ingresar</a>',
-                                array('controller' => 'usuarios', 'action' => 'login'),
-                                array('escape' => false));
+                            <?= $this->Html->link('<i class="fas fa-sign-in-alt"></i>&nbsp;Ingresar</a>',
+                                ['controller' => 'usuarios', 'action' => 'login'],['escape' => false]);
                             ?>
                         </li>
                     <?php endif; ?>
@@ -127,7 +126,7 @@
                 </li>
                 <?php if( $this->Permiso->tiene(1) ) : ?>
                     <li>
-                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-cog"></i></a>
                     </li>
                 <?php endif; ?>
             </ul>

@@ -1,3 +1,9 @@
+<?php 
+/**
+ * @var \App\View\AppView this
+ * @var \App\Model\Entity\Carrera $carrera
+*/
+?>
 <div class="row">
 	<div class="col-md-12">
 		<div class="box box-info box-solid">

@@ -9,7 +9,7 @@
 ?>
 <div class="content">
     <div class="row">
-        <?= $this->element('Profesores/ficha',['docente' => $docente, 'showOptions' => false]); ?>
+        <?= $this->element('Profesores/ficha',['showOptions' => false]); ?>
     </div>
     <div class="margin box no-shadow no-border no-bg" role="group">
         <strong>Períodos</strong>
@@ -25,7 +25,7 @@
             ?>
             <?php elseif( $nPeriodo == ($inlineLimit + 1) ) : ?>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
+                    <button type="button" class="btn bg-navy dropdown-toggle btn-sm" data-toggle="dropdown">
                         Más períodos <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -41,14 +41,16 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-primary">
+            <div class="box box-default box-solid">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-dashboard"></i>&nbsp;Panel del Docente</h3>
+                    <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Cursos Asignados</h3>
                     <div class="box-tools pull-right">
+                        <!--
                         <?= $this->Html->link('<i class="fa fa-user"></i>&nbsp;' . h($docente->full_name),
                             ['action' => 'profesor', $docente->id],
                             ['class' => 'btn btn-info btn-sm', 'escape' => false, 'title' => 'Ver perfil'])
                         ?>
+                        -->
                     </div>
                 </div>
                 <div class="box-body">

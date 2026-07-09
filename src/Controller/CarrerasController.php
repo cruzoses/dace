@@ -14,19 +14,17 @@ use Cake\Event\Event;
 class CarrerasController extends AppController
 {
 
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
 	}
 
-    /**
-     * 
-    */
-	public function isAuthorized($user)
+	public function isAuthorized($user = array() )
 	{
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        {
+            return true;
+        }
 		return parent::isAuthorized($user);
 	}
 	
@@ -41,7 +39,7 @@ class CarrerasController extends AppController
         $this->paginate['conditions'] = $conditions;
         $this->paginate['contain'] = ['MensionCarreras'];
 
-        $carreras = $this->paginate($this->Carreras);
+        $carreras = $this->paginate($this->Carreras,['order' => ['Carreras.id' => 'DESC']]);
         $filtros = $this->request->getQuery();
 
         $searchFields = $this->Carreras->getSearchFields();

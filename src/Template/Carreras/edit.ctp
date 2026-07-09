@@ -2,13 +2,15 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Carrera $carrera
- */
+ * @var array $mensionCarreras
+ * @var array $sedes
+*/
 ?>
 <div class="row">
     <div class="col-md-12">    
         <div class="box box-warning box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Carreras</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Editar Carrera</h3>
 		        <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['action' => 'index'],
@@ -26,12 +28,17 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('codigo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('codigo', ['type' => 'text', 'Label' => 'Código',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('mension_carrera_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $mensionCarreras]);
-                    echo $this->Form->control('titulo_otorgado', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('activa', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('mension_carrera_id', ['type' => 'select', 'options' => $mensionCarreras, 'empty' => true, 
+                        'label' => 'Mensión Carrera', 'class' => 'form-control select2', 'data-width' => '100%',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('titulo_otorgado', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);                    
                     echo $this->Form->control('sedes._ids', ['prepend' => '<i class="fa fa-asterisk"></i>','options' => $sedes]);
+                    echo $this->Form->control('activa', ['type' => 'checkbox']);
                 ?>
             </div>            
             <div class="box-footer">

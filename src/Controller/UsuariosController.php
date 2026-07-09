@@ -27,7 +27,7 @@ class UsuariosController extends AppController
         $this->loadComponent('Captcha', ['preset' => 'Default']);
     }
 
-	public function isAuthorized($user)
+	public function isAuthorized($user = null)
 	{
 		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] && $this->tienePermiso([1,2])) {
 			return true;
@@ -46,7 +46,7 @@ class UsuariosController extends AppController
 		return !empty($ids) ? min($ids) : null;
 	}
 
-	private function _canAccessUser($targetUserId)
+	private function _canAccessUser($targetUserId = null)
 	{
 		$userLevel = $this->_getUserMinRoleId();
 		if ($userLevel === null) {

@@ -5,7 +5,7 @@ $title = $title ?? 'Buscar';
 <div class="content">
     <div class="box box-warning box-solid">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;<?= h($title) ?></h3>
+            <h3 class="box-title"><i class="fas fa-search"></i>&nbsp;<?= h($title) ?></h3>
             <div class="box-tools pull-right">
                 <?= $this->Html->link('<i class="fa fa-times"></i>',
                     ['action' => 'index'],
@@ -73,8 +73,8 @@ $title = $title ?? 'Buscar';
             <?= $this->Form->button('<i class="fa fa-search"></i>&nbsp;Buscar', ['type' => 'submit',
                 'class' => 'btn btn-success btn-sm','escape' => false]);
             ?>
-            <?= $this->Html->link('<i class="fa fa-eraser"></i>&nbsp;Limpiar',
-                ['action' => 'index'],['class' => 'btn btn-danger btn-sm','escape' => false]);
+            <?= $this->Form->button('<i class="fa fa-eraser"></i>&nbsp;Buscar', ['type' => 'reset',
+                'class' => 'btn btn-success btn-sm','escape' => false]);
             ?>
         </div>
         <?= $this->Form->end(); ?>

@@ -122,7 +122,7 @@ class AppController extends Controller
     /**
      * 
     */
-    public function isAuthorized($user)
+    public function isAuthorized($user = null)
     {        
         if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso(1) )
         {

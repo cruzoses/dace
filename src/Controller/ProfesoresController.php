@@ -19,7 +19,7 @@ class ProfesoresController extends AppController
 		parent::beforeFilter($event);
 	}
 
-	public function isAuthorized($user)
+	public function isAuthorized($user = null)
 	{
         if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([4,5,6]) )
         {

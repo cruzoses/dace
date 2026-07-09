@@ -19,7 +19,7 @@ class DatosController extends AppController
 		parent::beforeFilter($event);
 	}
 
-	public function isAuthorized($user)
+	public function isAuthorized($user = null)
 	{
         if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([2,3]) )
         {

@@ -80,8 +80,8 @@
             'C.I.U'       => 'C.I.U',
             'P.I.U'       => 'P-I-U',
             'TRIMESTRE'   => 'TRIMESTRE',
-            'SEMESTRE 1T'    => 'SEMESTRE 1T',
-            'SEMESTRE 2T'    => 'SEMESTRE 2T',
+            'SEMESTRE 1T' => 'SEMESTRE 1T',
+            'SEMESTRE 2T' => 'SEMESTRE 2T',
             'ACREDITABLE' => 'ACREDITABLE',
         ],
         'aTipoActo' => [

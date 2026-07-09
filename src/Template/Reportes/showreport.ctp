@@ -1,3 +1,8 @@
+<?php 
+/**
+ * @var string $sFileName
+*/
+?>
 <?php if (!empty($noData)): ?>
 <?php $this->Html->scriptBlock("
 Swal.fire({
@@ -11,7 +16,7 @@ Swal.fire({
 <?php else: ?>
 <div class="box box-warning">
     <div class="box-header with-border">
-		<h3 class="box-title"><i class="fa fa-file-pdf-o"></i>&nbsp;Visor de Reporte</h3>
+		<h3 class="box-title"><i class="far fa-file-pdf"></i>&nbsp;Visor de Reporte</h3>
 		<div class="box-tools pull-right">
 			<button type="button" class="btn btn-box-tool" data-widget="collapse" title="Contraer">
 				<i class="fa fa-minus"></i>

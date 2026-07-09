@@ -33,6 +33,7 @@ class CarrerasTable extends AppTable
         'id' => ['type' => 'int', 'label' => 'No. de ID', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'codigo' => ['type' => 'exact', 'label' => 'Código', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'activa' => ['type' => 'select', 'options' => [0 => 'NO', 1 => 'SI'],'label' => 'Activa', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => true],
         'mension_carrera_id' => ['type' => 'select', 'label' => 'Mención', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => '-- Todas --'],
     ];
 
