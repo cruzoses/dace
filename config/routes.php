@@ -113,13 +113,39 @@ Router::scope('/', function (RouteBuilder $routes) {
 });
 
 /*
- * If you need a different set of middleware or none at all,
- * open new scope and define routes there.
- *
- * ```
- * Router::scope('/api', function (RouteBuilder $routes) {
- *     // No $routes->applyMiddleware() here.
- *     // Connect API actions here.
- * });
- * ```
+ * API routes (without CSRF middleware)
  */
+Router::scope('/api', function (RouteBuilder $routes) {
+    $routes->connect('/login', ['controller' => 'Api', 'action' => 'login']);
+    $routes->connect('/logout', ['controller' => 'Api', 'action' => 'logout']);
+    $routes->connect('/profile', ['controller' => 'Api', 'action' => 'profile']);
+    $routes->connect('/dashboard', ['controller' => 'Api', 'action' => 'dashboard']);
+
+    $routes->connect('/estudiantes', ['controller' => 'Api', 'action' => 'estudiantes']);
+    $routes->connect('/estudiantes/{id}', ['controller' => 'Api', 'action' => 'estudianteView'], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('/estudiantes/guardar', ['controller' => 'Api', 'action' => 'estudianteGuardar']);
+    $routes->connect('/estudiantes/eliminar/{id}', ['controller' => 'Api', 'action' => 'estudianteEliminar'], ['id' => '\d+', 'pass' => ['id']]);
+
+    $routes->connect('/docentes', ['controller' => 'Api', 'action' => 'docentes']);
+    $routes->connect('/docentes/{id}', ['controller' => 'Api', 'action' => 'docenteView'], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('/docentes/guardar', ['controller' => 'Api', 'action' => 'docenteGuardar']);
+    $routes->connect('/docentes/eliminar/{id}', ['controller' => 'Api', 'action' => 'docenteEliminar'], ['id' => '\d+', 'pass' => ['id']]);
+
+    $routes->connect('/cursos', ['controller' => 'Api', 'action' => 'cursos']);
+    $routes->connect('/cursos/{id}', ['controller' => 'Api', 'action' => 'cursoView'], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('/cursos/guardar', ['controller' => 'Api', 'action' => 'cursoGuardar']);
+    $routes->connect('/cursos/eliminar/{id}', ['controller' => 'Api', 'action' => 'cursoEliminar'], ['id' => '\d+', 'pass' => ['id']]);
+
+    $routes->connect('/horarios', ['controller' => 'Api', 'action' => 'horarios']);
+    $routes->connect('/horarios/{id}', ['controller' => 'Api', 'action' => 'horarioView'], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('/horarios/guardar', ['controller' => 'Api', 'action' => 'horarioGuardar']);
+    $routes->connect('/horarios/eliminar/{id}', ['controller' => 'Api', 'action' => 'horarioEliminar'], ['id' => '\d+', 'pass' => ['id']]);
+
+    $routes->connect('/periodos', ['controller' => 'Api', 'action' => 'periodos']);
+    $routes->connect('/sedes', ['controller' => 'Api', 'action' => 'sedes']);
+    $routes->connect('/programas', ['controller' => 'Api', 'action' => 'programas']);
+    $routes->connect('/asignaturas', ['controller' => 'Api', 'action' => 'asignaturas']);
+    $routes->connect('/aulas', ['controller' => 'Api', 'action' => 'aulas']);
+    $routes->connect('/carreras', ['controller' => 'Api', 'action' => 'carreras']);
+    $routes->connect('/trayectos', ['controller' => 'Api', 'action' => 'trayectos']);
+});

@@ -39,3 +39,7 @@ LEFT JOIN (
 Evita duplicados de registro
 ALTER TABLE estudiante_programas 
 ADD UNIQUE INDEX uq_estudiante_carrera_programa (estudiante_id, carrera_id, programa_id);
+
+Ejecutar el SQL en la BD: ALTER TABLE usuarios ADD api_token VARCHAR(64) NULL;
+Configurar la IP del servidor en Constants.java
+Abrir E:\JavaSoft\Dace\ en Android Studio y compilar

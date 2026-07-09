@@ -1,0 +1,1 @@
+ALTER TABLE `usuarios` ADD `api_token` VARCHAR(64) NULL DEFAULT NULL AFTER `foto`;
