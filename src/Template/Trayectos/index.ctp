@@ -6,7 +6,7 @@
 ?>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-olive box-solid">
+        <div class="box box-sace box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Trayectos</h3>
                 <div class="box-tools pull-right">

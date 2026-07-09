@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 7/7/2026
+Modified: 9/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -805,6 +805,12 @@ CREATE TABLE IF NOT EXISTS `situacion_estudiantes`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
   `estudiante_id` Int NOT NULL,
+  `programa_id` Int NOT NULL,
+  `asignatura_id` Int NOT NULL,
+  `periodo_id` Int NOT NULL,
+  `seccion` Varchar(20),
+  `calificacion` Varchar(5),
+  `responsable` Varchar(50),
   `created` Datetime,
   `modified` Datetime,
   PRIMARY KEY (`id`)
@@ -812,6 +818,15 @@ CREATE TABLE IF NOT EXISTS `situacion_estudiantes`
 ;
 
 CREATE INDEX `IX_Situacion_Academica` ON `situacion_estudiantes` (`estudiante_id`)
+;
+
+CREATE INDEX `IX_Situacion_Programa` ON `situacion_estudiantes` (`programa_id`)
+;
+
+CREATE INDEX `IX_Situacion_Asignatura` ON `situacion_estudiantes` (`asignatura_id`)
+;
+
+CREATE INDEX `IX_Situacion_Periodo` ON `situacion_estudiantes` (`periodo_id`)
 ;
 
 -- Create foreign keys (relationships) section -------------------------------------------------
@@ -970,5 +985,14 @@ ALTER TABLE `mallas` ADD CONSTRAINT `pfk_carrera_malla` FOREIGN KEY (`carrera_id
 ;
 
 ALTER TABLE `estudiante_programas` ADD CONSTRAINT `pfk_carrera_estudiante` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `situacion_estudiantes` ADD CONSTRAINT `pfk_programa_situacion` FOREIGN KEY (`programa_id`) REFERENCES `programas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `situacion_estudiantes` ADD CONSTRAINT `pfk_asignatura_situacion` FOREIGN KEY (`asignatura_id`) REFERENCES `asignaturas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `situacion_estudiantes` ADD CONSTRAINT `pfk_periodo_situacion` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 

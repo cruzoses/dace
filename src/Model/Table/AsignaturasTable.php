@@ -58,6 +58,9 @@ class AsignaturasTable extends AppTable
         $this->hasMany('Mallas', [
             'foreignKey' => 'asignatura_id',
         ]);
+        $this->hasMany('SituacionEstudiantes', [
+            'foreignKey' => 'asignatura_id',
+        ]);
     }
 
     /**

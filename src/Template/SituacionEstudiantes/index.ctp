@@ -1,16 +1,8 @@
-<?php
-/**
- * @var \App\Model\Entity\Malla $mallas
- * @var \App\View\AppView $this
- * @var array $searchFields
- * @var array $filtros
-*/
-?>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-sace box-solid">
+        <div class="box box-info box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Mallas</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Situacion Estudiantes</h3>
                 <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
@@ -25,44 +17,48 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('search_form', ['title' => 'Buscar Malla', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
+			        <?= $this->element('buscador');?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('carrera_id') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('estudiante_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('programa_id') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('trayecto_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('asignatura_id') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('nota_minima') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('periodo_id') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('seccion') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('calificacion') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('responsable') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($mallas as $malla): ?>
+                        <?php foreach ($situacionEstudiantes as $situacionEstudiante): ?>
                             <tr>
-                                <td><?= $this->Number->format($malla->id) ?></td>
-                                <td><?= $malla->has('carrera') ? h($malla->carrera->codigo) : '' ?></td>
-                                <td><?= $malla->has('programa') ? h($malla->programa->codigo) : '' ?></td>
-                                <td class="text-center"><?= $malla->has('trayecto') ? h($malla->trayecto->codigo) : ''  ?></td>
-                                <td><?= $malla->has('asignatura') ? h($malla->asignatura->nombre) : '' ?></td>
-                                <td class="text-center"><?= h($malla->nota_minima) ?></td>
-                                <td class="text-center"><?= h($malla->created) ?></td>
-                                <td class="text-center"><?= h($malla->modified) ?></td>
+                                <td><?= $this->Number->format($situacionEstudiante->id) ?></td>
+                            <td><?= $situacionEstudiante->has('estudiante') ? $this->Html->link($situacionEstudiante->estudiante->full_name, ['controller' => 'Estudiantes', 'action' => 'view', $situacionEstudiante->estudiante->id]) : '' ?></td>
+                                <td><?= $situacionEstudiante->has('programa') ? $this->Html->link($situacionEstudiante->programa->codename, ['controller' => 'Programas', 'action' => 'view', $situacionEstudiante->programa->id]) : '' ?></td>
+                                <td><?= $situacionEstudiante->has('asignatura') ? $this->Html->link($situacionEstudiante->asignatura->codename, ['controller' => 'Asignaturas', 'action' => 'view', $situacionEstudiante->asignatura->id]) : '' ?></td>
+                                <td><?= $situacionEstudiante->has('periodo') ? $this->Html->link($situacionEstudiante->periodo->codename, ['controller' => 'Periodos', 'action' => 'view', $situacionEstudiante->periodo->id]) : '' ?></td>
+                                            <td><?= h($situacionEstudiante->seccion) ?></td>
+                                        <td><?= h($situacionEstudiante->calificacion) ?></td>
+                                        <td><?= h($situacionEstudiante->responsable) ?></td>
+                                        <td><?= h($situacionEstudiante->created) ?></td>
+                                        <td><?= h($situacionEstudiante->modified) ?></td>
                                 <td class="actions text-center">
-                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $malla->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $malla->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $malla->id], ['confirm' => __('Are you sure you want to delete # {0}?', $malla->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $situacionEstudiante->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $situacionEstudiante->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $situacionEstudiante->id], ['confirm' => __('Are you sure you want to delete # {0}?', $situacionEstudiante->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="9" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
@@ -89,11 +85,3 @@
         </div>
     </div>
 </div>
-
-<?php $this->start('script'); ?>
-<?= $this->Html->script('mallas') ?>
-<script>
-var MALLAS_PROGRAMAS_URL = '<?= $this->Url->build(['controller' => 'Mallas', 'action' => 'getProgramas']) ?>';
-$(document).ready(initMallasBuscar);
-</script>
-<?php $this->end(); ?>

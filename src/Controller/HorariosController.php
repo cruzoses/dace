@@ -40,14 +40,14 @@ class HorariosController extends AppController
             'conditions' => $conditions,
             'contain' => ['Sedes', 'Periodos'],
         ];
-        $horarios = $this->paginate($this->Horarios);
+        $horarios = $this->paginate($this->Horarios,['order' => ['Horarios.id' => 'DESC']]);
         $filtros = $this->request->getQuery();
 
         $searchFields = $this->Horarios->getSearchFields();
         $aDias = Configure::read('aDias');
         $aTurnos = Configure::read('aTurnos');
-        $searchFields['sede_id']['options'] = $this->Horarios->Sedes->find('list', ['limit' => 200])->where(['Sedes.activa' => 1])->toArray();
-        $searchFields['periodo_id']['options'] = $this->Horarios->Periodos->find('list', ['limit' => 200])->where(['Periodos.activo' => 1])->toArray();
+        $searchFields['sede_id']['options'] = $this->Horarios->Sedes->find('list')->where(['Sedes.activa' => 1])->toArray();
+        $searchFields['periodo_id']['options'] = $this->Horarios->Periodos->find('list')->where(['Periodos.activo' => 1])->toArray();
         $searchFields['dia']['options'] = $aDias;
         $searchFields['turno']['options'] = $aTurnos;
 

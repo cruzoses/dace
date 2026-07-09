@@ -53,6 +53,9 @@ class PeriodosTable extends AppTable
         $this->hasMany('Historicos', [
             'foreignKey' => 'periodo_id',
         ]);
+        $this->hasMany('SituacionEstudiantes', [
+            'foreignKey' => 'periodo_id',
+        ]);
     }
 
     /**

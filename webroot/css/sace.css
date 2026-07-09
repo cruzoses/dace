@@ -216,6 +216,7 @@ body.home-page .logo-container img {
 .box.box-solid.box-olive {
     border: 1px solid #3d9970;
 }
+
 .box.box-solid.box-olive > .box-header {
     color: #ffffff;
     background: #3d9970;
@@ -224,5 +225,43 @@ body.home-page .logo-container img {
 
 .box.box-solid.box-olive > .box-header a,
 .box.box-solid.box-olive > .box-header .btn {
+    color: #ffffff;
+}
+
+.box.box-sace {
+    border-top-color: #76BBBD;
+}
+
+.box.box-solid.box-sace {
+    border: 1px solid #76BBBD;
+}
+
+.box.box-solid.box-sace > .box-header {
+    color: #ffffff;
+    background: #76BBBD;
+    background-color: #76BBBD;
+}
+
+.box.box-solid.box-sace > .box-header a,
+.box.box-solid.box-sace > .box-header .btn {
+    color: #ffffff;
+}
+
+.box.box-purple {
+    border-top-color: #D25ED4;
+}
+
+.box.box-solid.box-purple {
+    border: 1px solid #D25ED4;
+}
+
+.box.box-solid.box-purple > .box-header {
+    color: #ffffff;
+    background: #D25ED4;
+    background-color: #D25ED4;
+}
+
+.box.box-solid.box-purple > .box-header a,
+.box.box-solid.box-purple > .box-header .btn {
     color: #ffffff;
 }

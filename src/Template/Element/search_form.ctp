@@ -1,6 +1,8 @@
 <?php
 use Cake\Utility\Inflector;
 $title = $title ?? 'Buscar';
+$url = $url ?? ['action' => 'buscar'];
+$closeUrl = $closeUrl ?? ['action' => 'index'];
 ?>
 <div class="content">
     <div class="box box-warning box-solid">
@@ -8,12 +10,12 @@ $title = $title ?? 'Buscar';
             <h3 class="box-title"><i class="fas fa-search"></i>&nbsp;<?= h($title) ?></h3>
             <div class="box-tools pull-right">
                 <?= $this->Html->link('<i class="fa fa-times"></i>',
-                    ['action' => 'index'],
+                    $closeUrl,
                     ['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
                 ?>
             </div>
         </div>
-        <?= $this->Form->create(null, ['url' => ['action' => 'buscar'],
+        <?= $this->Form->create(null, ['url' => $url,
             'role' => 'form', 'id' => 'buscadorForm',
             'align' => [
                 'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],

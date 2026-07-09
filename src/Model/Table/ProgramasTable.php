@@ -58,13 +58,13 @@ class ProgramasTable extends AppTable
             'foreignKey' => 'subsistema_id',
             'joinType' => 'INNER',
         ]);
-        $this->hasMany('Cursos', [
-            'foreignKey' => 'programa_id',
-        ]);
         $this->hasMany('EstudianteProgramas', [
             'foreignKey' => 'programa_id',
         ]);
         $this->hasMany('Mallas', [
+            'foreignKey' => 'programa_id',
+        ]);
+        $this->hasMany('SituacionEstudiantes', [
             'foreignKey' => 'programa_id',
         ]);
     }

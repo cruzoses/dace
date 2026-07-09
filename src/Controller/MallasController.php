@@ -154,10 +154,69 @@ class MallasController extends AppController
     }
 
     /**
+     * Mallas agrupadas por carrera, programa y trayecto con cantidad de asignaturas
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function agrupadas()
+    {
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+            unset($data['_csrfToken']);
+            $queryParams = array_map('trim', array_filter($data));
+            return $this->redirect(['action' => 'agrupadas', '?' => $queryParams]);
+        }
+
+        $conditions = $this->Mallas->formatConditions($this->request->getQueryParams());
+
+        $query = $this->Mallas->find();
+        $query->select([
+            'carrera_id' => 'Mallas.carrera_id',
+            'programa_id' => 'Mallas.programa_id',
+            'trayecto_id' => 'Mallas.trayecto_id',
+            'total_asignaturas' => $query->func()->count('Mallas.asignatura_id'),
+            'carrera_codigo' => 'Carreras.codigo',
+            'programa_codigo' => 'Programas.codigo',
+            'trayecto_codigo' => 'Trayectos.codigo',
+        ])
+        ->join([
+            'Carreras' => [
+                'table' => 'carreras',
+                'type' => 'INNER',
+                'conditions' => 'Carreras.id = Mallas.carrera_id',
+            ],
+            'Programas' => [
+                'table' => 'programas',
+                'type' => 'INNER',
+                'conditions' => 'Programas.id = Mallas.programa_id',
+            ],
+            'Trayectos' => [
+                'table' => 'trayectos',
+                'type' => 'INNER',
+                'conditions' => 'Trayectos.id = Mallas.trayecto_id',
+            ],
+        ])
+        ->where($conditions)
+        ->group(['Mallas.carrera_id', 'Mallas.programa_id', 'Mallas.trayecto_id'])
+        ->order(['Mallas.carrera_id' => 'ASC', 'Mallas.programa_id' => 'ASC', 'Mallas.trayecto_id' => 'ASC']);
+
+        $mallasAgrupadas = $this->paginate($query);
+
+        $filtros = $this->request->getQuery();
+        $searchFields = array_intersect_key($this->Mallas->getSearchFields(), array_flip(['carrera_id', 'programa_id', 'trayecto_id']));
+
+        $searchFields['carrera_id']['options'] = $this->Mallas->Carreras->find('list')->where(['Carreras.activa' => 1])->order(['Carreras.nombre' => 'ASC'])->toArray();
+        $searchFields['programa_id']['options'] = $this->Mallas->Programas->find('list')->where(['Programas.activo' => 1])->order(['Programas.nombre' => 'ASC'])->toArray();
+        $searchFields['trayecto_id']['options'] = $this->Mallas->Trayectos->find('list')->where(['Trayectos.activo' => 1])->order(['Trayectos.id' => 'ASC'])->toArray();
+
+        $this->set(compact('mallasAgrupadas', 'filtros', 'searchFields'));
+    }
+
+    /**
      * Get programas by carrera_id (AJAX)
      *
      * @return \Cake\Http\Response
-     */
+    */
     public function getProgramas()
     {
         $this->request->allowMethod(['ajax', 'get']);
