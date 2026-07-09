@@ -1,6 +1,15 @@
+<?php
+/**
+ * @var \App\Model\Entity\Aula $aulas
+ * @var \App\View\AppView $this
+ * @var array $searchFields
+ * @var array $filtros
+ * @var array $sedes 
+*/
+?>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-olive box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Aulas</h3>
                 <div class="box-tools pull-right">
@@ -46,7 +55,7 @@
                         <?php foreach ($aulas as $aula): ?>
                             <tr>
                                 <td><?= $this->Number->format($aula->id) ?></td>
-                                <td><?= $aula->has('sede') ? $this->Html->link($aula->sede->nombre, ['controller' => 'Sedes', 'action' => 'view', $aula->sede->id]) : '' ?></td>
+                                <td><?= $aula->has('sede') ? $aula->sede->nombre : '' ?></td>
                                 <td><?= h($aula->codigo) ?></td>
                                 <td><?= h($aula->nombre) ?></td>
                                 <!--
@@ -84,7 +93,7 @@
             </div>
             <div class="box-footer">
                 <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
-                    ['action' => 'add'], ['class'=>'btn btn-success pull-left','escape' => false]) 
+                    ['action' => 'add'], ['class'=>'btn bg-navy pull-left','escape' => false]) 
                 ?>
                 <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
                     ['action' => 'homepage'], ['class'=>'btn bg-maroon pull-right','escape' => false]) 

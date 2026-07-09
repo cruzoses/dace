@@ -73,8 +73,8 @@ $title = $title ?? 'Buscar';
             <?= $this->Form->button('<i class="fa fa-search"></i>&nbsp;Buscar', ['type' => 'submit',
                 'class' => 'btn btn-success btn-sm','escape' => false]);
             ?>
-            <?= $this->Form->button('<i class="fa fa-eraser"></i>&nbsp;Buscar', ['type' => 'reset',
-                'class' => 'btn btn-success btn-sm','escape' => false]);
+            <?= $this->Form->button('<i class="fas fa-eraser"></i>&nbsp;Limpiar', ['type' => 'reset', 'id' => 'resetForm',
+                'class' => 'btn bg-maroon btn-sm','escape' => false]);
             ?>
         </div>
         <?= $this->Form->end(); ?>

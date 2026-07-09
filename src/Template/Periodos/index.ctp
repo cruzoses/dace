@@ -1,16 +1,24 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Periodo $periodos
+ * @var array $searchFields
+ * @var array $filtros
+*/
+?>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-olive box-solid">
             <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Periodos</h3>
                 <div class="box-tools pull-right">
                     <?= $this->Html->link('<i class="fa fa-print"></i>',
                         ['controller' => 'Reportes', 'action' => 'listarPeriodos'], 
-                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                        ['class'=>'btn btn-box-tool', 'title' => 'imprimir','escape' => false]) 
                     ?>
-                    <?= $this->Html->link('<i class="fa fa-file-excel-o"></i>',
+                    <?= $this->Html->link('<i class="fas fa-file-excel"></i>',
                         ['controller' => 'Archivos', 'action' => 'exportarPeriodos'], 
-                        ['class'=>'btn btn-box-tool','escape' => false]) 
+                        ['class'=>'btn btn-box-tool', 'title' => 'Exportar a Excel','escape' => false]) 
                     ?>
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
@@ -86,7 +94,7 @@
             </div>
             <div class="box-footer">
                 <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
-                    ['action' => 'add'], ['class'=>'btn btn-success pull-left','escape' => false]) 
+                    ['action' => 'add'], ['class'=>'btn bg-navy pull-left','escape' => false]) 
                 ?>
                 <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
                     ['action' => 'homepage'], ['class'=>'btn bg-maroon pull-right','escape' => false]) 

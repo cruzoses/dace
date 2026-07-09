@@ -2,7 +2,9 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Usuario $usuario
- */
+ * @var array $aGeneros
+ * @var array $rols
+*/
 ?>
 <div class="row">
     <div class="col-md-12">    

@@ -104,6 +104,99 @@ class HorariosController extends AppController
         $this->set(compact('horario', 'sedes', 'periodos', 'aDias', 'aTurnos'));
     }
 
+    /**
+     * Copiar method
+     *
+     * Copia todos los horarios de un periodo origen a un periodo destino.
+     * @return \Cake\Http\Response|null Redirects to index on success, renders view otherwise.
+    */
+    public function copiar()
+    {
+        $aDias = Configure::read('aDias');
+        $aTurnos = Configure::read('aTurnos');
+
+        if ($this->request->is('post'))
+        {
+            $origenId = $this->request->getData('origen_id');
+            $destinoId = $this->request->getData('destino_id');
+            $sedeId = $this->request->getData('sede_id');
+
+            if (empty($origenId) || empty($destinoId) || empty($sedeId))
+            {
+                $this->Flash->error(__('Debe seleccionar la sede, el periodo origen y el periodo destino.'));
+                return $this->redirect(['action' => 'copiar']);
+            }
+
+            if ($origenId == $destinoId)
+            {
+                $this->Flash->error(__('El periodo origen y destino deben ser diferentes.'));
+                return $this->redirect(['action' => 'copiar']);
+            }
+
+            $origen = $this->Horarios->Periodos->get($origenId);
+            $destino = $this->Horarios->Periodos->get($destinoId);
+
+            $horariosOrigen = $this->Horarios->find()
+                ->where(['periodo_id' => $origenId, 'sede_id' => $sedeId])
+                ->toArray();
+
+            if (empty($horariosOrigen))
+            {
+                $this->Flash->warning(__('No hay horarios registrados en el periodo {0} para la sede seleccionada.', $origen->codename));
+                return $this->redirect(['action' => 'copiar']);
+            }
+
+            $copiados = 0;
+            $errores = 0;
+            foreach ($horariosOrigen as $h)
+            {
+                $nuevo = $this->Horarios->newEntity();
+                $data = [
+                    'sede_id' => $h->sede_id,
+                    'periodo_id' => $destinoId,
+                    'dia' => $h->dia,
+                    'turno' => $h->turno,
+                    'desde' => $h->desde,
+                    'hasta' => $h->hasta,
+                    'codigo' => $this->generarCodigo([
+                        'dia' => $h->dia,
+                        'turno' => $h->turno,
+                        'desde' => $h->desde,
+                        'hasta' => $h->hasta,
+                    ]),
+                    'activo' => $h->activo,
+                ];
+                $nuevo = $this->Horarios->patchEntity($nuevo, $data);
+                if ($this->Horarios->save($nuevo))
+                {
+                    $copiados++;
+                    $this->Auditorias->registrar('REGISTRA', 'COPIA HORARIO - ID: ' . $nuevo->id . ', Código: ' . $nuevo->codigo . ' desde periodo ' . $origenId . ' hacia periodo ' . $destinoId);
+                }
+                else
+                {
+                    $errores++;
+                }
+            }
+
+            $this->Flash->success(__('Se copiaron {0} horario(s) del periodo {1} al periodo {2}.', $copiados, $origen->codename, $destino->codename));
+            if ($errores > 0)
+            {
+                $this->Flash->warning(__('{0} horario(s) no pudieron ser copiados.', $errores));
+            }
+
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $periodos = $this->Horarios->Periodos->find('list', ['limit' => 200])
+            ->where(['Periodos.activo' => 1])
+            ->order(['Periodos.id' => 'DESC']);
+
+        $sedes = $this->Horarios->Sedes->find('list', ['limit' => 200])
+            ->where(['Sedes.activa' => 1]);
+
+        $this->set(compact('periodos', 'sedes', 'aDias', 'aTurnos'));
+    }
+
     private function generarCodigo($data)
     {
         $aDias = Configure::read('aDias');

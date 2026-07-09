@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 4/7/2026
+Modified: 7/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `estudiantes`
   `lugar_nacimiento` Text,
   `pais_id` Int,
   `estado_id` Int,
-  `municipio_id` Int NOT NULL,
+  `municipio_id` Int,
   `parroquia_id` Int,
   `asignado` Tinyint(1),
   `codigo_opsu` Varchar(20),
@@ -327,6 +327,10 @@ CREATE TABLE IF NOT EXISTS `estudiantes`
   `codigo_notas` Varchar(20),
   `fecha_titulo` Date,
   `codigo_titulo` Varchar(20),
+  `acta_nacimiento` Varchar(20),
+  `periodo` Int NOT NULL,
+  `carrera` Int NOT NULL,
+  `sede` Int NOT NULL,
   `expediente` Varchar(20) NOT NULL,
   `token` Varchar(10),
   `usuario_id` Int,
@@ -535,8 +539,9 @@ CREATE TABLE IF NOT EXISTS `cursos`
   `docente_id` Int NOT NULL,
   `seccion` Varchar(20) NOT NULL,
   `cupos` Smallint(6) NOT NULL,
-  `aula_id` Int(11),
+  `aula_id` Int(11) NOT NULL,
   `horario` Varchar(60) NOT NULL,
+  `cerrado` Tinyint(1) NOT NULL,
   `activo` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -660,12 +665,14 @@ CREATE TABLE IF NOT EXISTS `estudiante_programas`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
   `estudiante_id` Int NOT NULL,
-  `sede_id` Int NOT NULL,
+  `carrera_id` Int NOT NULL,
   `programa_id` Int NOT NULL,
+  `sede_id` Int NOT NULL,
   `fecha_egreso` Date,
   `cohorte` Varchar(20),
   `indice` Double,
   `culminado` Tinyint(1) NOT NULL,
+  `observacion` Text,
   `activo` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -680,6 +687,9 @@ CREATE INDEX `IX_Estudiante_Programa` ON `estudiante_programas` (`programa_id`)
 ;
 
 CREATE INDEX `IX_Estudiante_Sede` ON `estudiante_programas` (`sede_id`)
+;
+
+CREATE INDEX `IX_Estudiante_Carrera` ON `estudiante_programas` (`carrera_id`)
 ;
 
 -- Table notas_cursos
@@ -957,5 +967,8 @@ ALTER TABLE `cursos` ADD CONSTRAINT `pfk_asignatura_curso` FOREIGN KEY (`asignat
 ;
 
 ALTER TABLE `mallas` ADD CONSTRAINT `pfk_carrera_malla` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `estudiante_programas` ADD CONSTRAINT `pfk_carrera_estudiante` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 

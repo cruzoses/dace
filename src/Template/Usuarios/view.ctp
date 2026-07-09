@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Usuario $usuario
+*/
+?>
 <!-- Main content -->
 <section class="content">
   <div class="row">

@@ -1,9 +1,21 @@
+<?php
+/**
+ * @var \App\Model\Entity\Horario $horarios
+ * @var \App\View\AppView $this
+ * @var array $searchFields
+ * @var array $filtros
+ * @var array $sedes 
+*/
+?>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-olive box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Horarios</h3>
                 <div class="box-tools pull-right">
+                    <?= $this->Html->link('<i class="fa fa-copy"></i>',
+                        ['action' => 'copiar'], ['class'=>'btn btn-box-tool','escape' => false]) 
+                    ?>
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
@@ -30,9 +42,9 @@
                             <th scope="col"><?= $this->Paginator->sort('turno') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('desde') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('hasta') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('activo') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('activo') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
@@ -40,16 +52,16 @@
                         <?php foreach ($horarios as $horario): ?>
                             <tr>
                                 <td><?= $this->Number->format($horario->id) ?></td>
-                            <td><?= $horario->has('sede') ? $this->Html->link($horario->sede->codename, ['controller' => 'Sedes', 'action' => 'view', $horario->sede->id]) : '' ?></td>
-                                <td><?= $horario->has('periodo') ? $this->Html->link($horario->periodo->codename, ['controller' => 'Periodos', 'action' => 'view', $horario->periodo->id]) : '' ?></td>
-                                            <td><?= h($horario->codigo) ?></td>
-                                        <td><?= h($aDias[$horario->dia] ?? $horario->dia) ?></td>
-                                        <td><?= h($aTurnos[$horario->turno] ?? $horario->turno) ?></td>
-                                        <td><?= h($horario->desde) ?></td>
-                                        <td><?= h($horario->hasta) ?></td>
-                                        <td><?= h($horario->activo) ?></td>
-                                        <td><?= h($horario->created) ?></td>
-                                        <td><?= h($horario->modified) ?></td>
+                                <td><?= $horario->has('sede') ? $horario->sede->nombre : '' ?></td>
+                                <td><?= $horario->has('periodo') ? $horario->periodo->codigo : '' ?></td>
+                                <td><?= h($horario->codigo) ?></td>
+                                <td><?= h($aDias[$horario->dia] ?? $horario->dia) ?></td>
+                                <td><?= h($aTurnos[$horario->turno] ?? $horario->turno) ?></td>
+                                <td><?= h($horario->desde) ?></td>
+                                <td><?= h($horario->hasta) ?></td>
+                                <td class="text-center"><?= h($horario->activo) ? 'SI' : 'NO' ?></td>
+                                <td class="text-center"><?= h($horario->created) ?></td>
+                                <td class="text-center"><?= h($horario->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $horario->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $horario->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -78,7 +90,10 @@
             </div>
             <div class="box-footer">
                 <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
-                    ['action' => 'add'], ['class'=>'btn btn-success pull-left','escape' => false]) 
+                    ['action' => 'add'], ['class'=>'btn bg-navy pull-left','escape' => false]) 
+                ?>
+                <?= $this->Html->link('<i class="fa fa-copy"></i>&nbsp;Copiar',
+                    ['action' => 'copiar'], ['class'=>'btn btn-primary pull-left','escape' => false, 'style'=>'margin-left: 5px;']) 
                 ?>
                 <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
                     ['action' => 'homepage'], ['class'=>'btn bg-maroon pull-right','escape' => false]) 

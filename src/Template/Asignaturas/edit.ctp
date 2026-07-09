@@ -2,7 +2,10 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Asignatura $asignatura
- */
+ * @var array $aFrecuencia
+ * @var array $aTipoNota
+ * @var array $grupoAsignaturas
+*/
 ?>
 <div class="row">
     <div class="col-md-12">    

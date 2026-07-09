@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Usuario $usuario
+ * @var array $aGeneros
+ * @var array $rols
+*/
+?>
 <?= $this->Html->css('fileinput/css/fileinput.min', ['block' => true]); ?>
 <div class="row">
     <div class="col-md-12">    

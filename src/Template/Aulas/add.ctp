@@ -2,7 +2,8 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Aula $aula
- */
+ * @var array $sedes
+*/
 ?>
 <div class="row">
     <div class="col-md-12">    
@@ -26,15 +27,19 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('sede_id', ['type' => 'select', 'options' => $sedes, 'empty' => 'Seleccione una Sede',
+                    echo $this->Form->control('sede_id', ['type' => 'select', 'options' => $sedes, 'empty' => true,
                         'class' => 'form-control select2',  'data-width' => '100%', 'required' => true, 
                         'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->control('codigo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('codigo', ['label' => 'Código',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('capacidad', ['class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('ubicacion', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('condicion', ['type' => 'checkbox', 'label' => 'Condición']);
+                    echo $this->Form->control('capacidad', ['type' => 'text','class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('ubicacion', ['label' => 'Condición',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('condicion', ['type' => 'checkbox', 'label' => 'Apta para su uso', 'value' => 1, 'checked' => true]);
                 ?>
             </div>            
             <div class="box-footer">
