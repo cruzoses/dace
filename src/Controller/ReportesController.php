@@ -589,7 +589,14 @@ class ReportesController extends AppController
                 'order' => ['Carreras.id' => 'ASC']
             ])->where(['Carreras.activa' => 1])->toArray();
 
-            $this->set(compact('carreras'));
+            $trayectosTable = TableRegistry::getTableLocator()->get('Trayectos');
+            $trayectos = $trayectosTable->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'codigo',
+                'order' => ['Trayectos.id' => 'ASC']
+            ])->where(['Trayectos.activo' => 1])->toArray();
+
+            $this->set(compact('carreras', 'trayectos'));
             $this->render('mallas');
             return;
         }
@@ -598,6 +605,10 @@ class ReportesController extends AppController
         $programa_id = $this->request->getQuery('programa_id');
         if ($programa_id !== '' && $programa_id !== null) {
             $conditions['Mallas.programa_id'] = (int)$programa_id;
+        }
+        $trayecto_id = $this->request->getQuery('trayecto_id');
+        if ($trayecto_id !== '' && $trayecto_id !== null) {
+            $conditions['Mallas.trayecto_id'] = (int)$trayecto_id;
         }
 
         $mallas = $mallasTable->find('all', [
@@ -617,6 +628,13 @@ class ReportesController extends AppController
             $programasTable = TableRegistry::getTableLocator()->get('Programas');
             $programa = $programasTable->get((int)$programa_id);
             $programaNombre = $programa->nombre;
+        }
+
+        $trayectoNombre = '';
+        if ($trayecto_id !== '' && $trayecto_id !== null) {
+            $trayectosTable = TableRegistry::getTableLocator()->get('Trayectos');
+            $trayecto = $trayectosTable->get((int)$trayecto_id);
+            $trayectoNombre = $trayecto->codigo;
         }
 
         $data = [];
@@ -668,6 +686,9 @@ class ReportesController extends AppController
             }
             if ($programaNombre) {
                 $titulo .= ' / ' . strtoupper($programaNombre);
+            }
+            if ($trayectoNombre) {
+                $titulo .= ' / TRAYECTO ' . $trayectoNombre;
             }
 
             $pdfOutput = $pdfBuilder->generateReportWithSummary($data, $summary, $titulo);

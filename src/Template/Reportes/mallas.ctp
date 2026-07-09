@@ -35,6 +35,14 @@
                         'class' => 'form-control select2',
                         'data-width' => '100%',
                     ]) ?>
+                    <?= $this->Form->control('trayecto_id', [
+                        'label' => 'Seleccione el Trayecto (opcional)',
+                        'type' => 'select',
+                        'options' => $trayectos,
+                        'empty' => '-- Todos los Trayectos --',
+                        'class' => 'form-control select2',
+                        'data-width' => '100%',
+                    ]) ?>
                 </fieldset>
             </div>
             <div class="box-footer text-center">
