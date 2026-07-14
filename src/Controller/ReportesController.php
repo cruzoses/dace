@@ -702,6 +702,44 @@ class ReportesController extends AppController
         $this->render('showreport');
     }
 
+    public function listarProgramas()
+    {
+        $programasTable = TableRegistry::getTableLocator()->get('Programas');
+        $programas = $programasTable->find('all', [
+            'contain' => ['Carreras'],
+            'order' => ['Carreras.nombre' => 'ASC', 'Programas.nombre' => 'ASC']
+        ]);
+
+        $data = [];
+        foreach ($programas as $p) {
+            $data[] = [
+                'Codigo' => $p->codigo,
+                'Nombre' => $p->nombre,
+                'Creditos' => $p->creditos,
+            ];
+        }
+
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'Codigo' => ['justification' => 'center', 'width' => 80],
+                'Nombre' => ['justification' => 'left', 'width' => 340],
+                'Creditos' => ['justification' => 'center', 'width' => 80],
+            ]);
+
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'LISTADO DE PROGRAMAS');
+
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'programas_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
+        $this->render('showreport');
+    }
+
     public function getProgramas()
     {
         $this->request->allowMethod(['ajax', 'get']);

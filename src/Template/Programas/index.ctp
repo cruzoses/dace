@@ -15,6 +15,9 @@
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
+			        <?= $this->Html->link('<i class="fa fa-print"></i>',
+                        ['controller' => 'Reportes', 'action' => 'listarProgramas'],
+                        ['class' => 'btn btn-box-tool', 'title' => 'Imprimir Reporte', 'escape' => false]) ?>
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
 			        </button>

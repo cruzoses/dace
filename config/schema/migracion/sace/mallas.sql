@@ -1,3 +1,5 @@
-SELECT 1 AS carrera_id, programa_id, trayecto_id, asignatura_id, CAST(nota_minima AS UNSIGNED) AS nota_minima, created, modified
+SELECT CAST(p.carrera_id AS UNSIGNED) AS carrera_id, mallas.programa_id, mallas.trayecto_id, mallas.asignatura_id, mallas.nota_minima,
+mallas.created, mallas.modified
 FROM asignatura_programas AS mallas
-ORDER BY id
+INNER JOIN programas p ON p.id = mallas.programa_id
+ORDER BY mallas.id 

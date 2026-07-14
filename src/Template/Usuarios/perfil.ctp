@@ -9,7 +9,7 @@
 <?= $this->Html->css('fileinput/css/fileinput.min', ['block' => true]); ?>
 <div class="row">
     <div class="col-md-12">    
-        <div class="box box-warning box-solid">
+        <div class="box box-sace box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-user"></i>&nbsp;Mi Perfil</h3>
 		        <div class="box-tools pull-right">
@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-4 text-center">
+                    <div class="col-sm-5 text-center">
                         <?php $fotoUrl = !empty($usuario->foto) ? $this->Url->image('fotos/' . $usuario->foto, ['fullBase' => true]) : ''; ?>
                         <?= $this->Form->control('foto', [
                             'label' => 'Foto de perfil',
@@ -45,7 +45,7 @@
                             'id' => 'foto',
                         ]); ?>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-7">
                         <fieldset>
                             <legend>Redes Sociales</legend>
                             <?= $this->Form->control('twitter', [
@@ -53,21 +53,21 @@
                                 'type' => 'text',
                                 'class' => 'form-control',
                                 'placeholder' => '@usuario',
-                                'prepend' => '<i class="fa fa-twitter"></i>',
+                                'prepend' => '<i class="fab fa-twitter"></i>',
                             ]); ?>
                             <?= $this->Form->control('instagram', [
                                 'label' => 'Instagram',
                                 'type' => 'text',
                                 'class' => 'form-control',
                                 'placeholder' => '@usuario',
-                                'prepend' => '<i class="fa fa-instagram"></i>',
+                                'prepend' => '<i class="fab fa-instagram"></i>',
                             ]); ?>
                             <?= $this->Form->control('facebook', [
                                 'label' => 'Facebook',
                                 'type' => 'text',
                                 'class' => 'form-control',
                                 'placeholder' => 'https://facebook.com/usuario',
-                                'prepend' => '<i class="fa fa-facebook"></i>',
+                                'prepend' => '<i class="fab fa-facebook-f"></i>',
                             ]); ?>
                         </fieldset>
                     </div>

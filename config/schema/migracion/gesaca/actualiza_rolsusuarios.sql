@@ -1,1 +1,0 @@
-INSERT INTO rols_usuarios(SELECT rol_id,id FROM usuarios);

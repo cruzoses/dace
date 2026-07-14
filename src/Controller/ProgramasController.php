@@ -40,7 +40,7 @@ class ProgramasController extends AppController
             'conditions' => $conditions,
             'contain' => ['Carreras', 'Subsistemas'],
         ];
-        $programas = $this->paginate($this->Programas);
+        $programas = $this->paginate($this->Programas,['order' => ['Programas.id' => 'DESC'] ]);
         $filtros = $this->request->getQuery();
 
         $searchFields = $this->Programas->getSearchFields();
