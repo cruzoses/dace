@@ -5,54 +5,50 @@
  * @var array $situaciones
 */
 ?>
-<div class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <?php if (!empty($situaciones)): ?>
-                <?php foreach ($situaciones as $item): ?>
-                    <?php $programa = $item['programa']; ?>
-                    <?php $asignaturas = $item['asignaturas']; ?>
-                    <?php $totalCreditosPrograma = $item['totalCreditosPrograma']; ?>
-                    <?php $totalAsignaturas = $item['totalAsignaturas']; ?>
-                    <?php $totalCreditosAprobados = $item['totalCreditosAprobados']; ?>
-                    <?php $totalAsignaturasAprobadas = $item['totalAsignaturasAprobadas']; ?>
-                    <?php $porcentajeAprobado = $item['porcentajeAprobado']; ?>
-                    <?php $mallasPorAsignatura = $item['mallasPorAsignatura']; ?>
-                    <?php $notaMinimaPrograma = (float)$programa->programa->nota_minima; ?>
 
-                    <div class="box box-warning">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">
-                                <i class="fa fa-graduation-cap"></i>&nbsp;
-                                <?= h($programa->programa->codigo) ?> - <?= h($programa->programa->nombre) ?>
-                                &nbsp;|&nbsp;<?= h($programa->carrera->codigo) ?> - <?= h($programa->carrera->nombre) ?>
-                            </h3>
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                                    <i class="fa fa-minus"></i>
-                                </button>
-                            </div>
+<div class="row">
+    <div class="col-md-12">
+        <?php if (!empty($situaciones)): ?>
+            <?php foreach ($situaciones as $item): ?>
+                <?php $programa = $item['programa']; ?>
+                <?php $asignaturas = $item['asignaturas']; ?>
+                <?php $totalCreditosPrograma = $item['totalCreditosPrograma']; ?>
+                <?php $totalAsignaturas = $item['totalAsignaturas']; ?>
+                <?php $totalCreditosAprobados = $item['totalCreditosAprobados']; ?>
+                <?php $totalAsignaturasAprobadas = $item['totalAsignaturasAprobadas']; ?>
+                <?php $porcentajeAprobado = $item['porcentajeAprobado']; ?>
+                <?php $mallasPorAsignatura = $item['mallasPorAsignatura']; ?>
+                <?php $notaMinimaPrograma = (float)$programa->programa->nota_minima; ?>
+
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-graduation-cap"></i>&nbsp;<?= h($programa->programa->codename) ?></h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
                         </div>
-                        <div class="box-body table-responsive no-padding">
-                            <table class="table table-bordered table-hover table-condensed">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="width:40px">No</th>
-                                        <th>Trayecto</th>
-                                        <th>Cod. Asignatura</th>
-                                        <th class="text-center" style="width:70px">Cr&eacute;ditos</th>
-                                        <th>Nombre Asignatura</th>
-                                        <th class="text-center" style="width:60px">Nota</th>
-                                        <th class="text-center" style="width:70px">Secci&oacute;n</th>
-                                        <th>Per&iacute;odo</th>
-                                        <th>Responsable</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (!empty($asignaturas)): ?>
-                                        <?php $cont = 0; ?>
-                                        <?php foreach ($asignaturas as $asig): ?>
-                                            <?php
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-bordered table-hover table-condensed">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width:40px">No</th>
+                                    <th class="text-center">Trayecto</th>
+                                    <th>Asignatura</th>
+                                    <th class="text-center" style="width:70px">Cr&eacute;ditos</th>
+                                    <th>Nombre Asignatura</th>
+                                    <th class="text-center" style="width:60px">Nota</th>
+                                    <th class="text-center" style="width:70px">Secci&oacute;n</th>
+                                    <th class="text-center">Per&iacute;odo</th>
+                                    <th class="text-center">Responsable</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($asignaturas)): ?>
+                                    <?php $cont = 0; ?>
+                                    <?php foreach ($asignaturas as $asig): ?>
+                                        <?php
                                             $cont++;
                                             $aprobada = false;
                                             $esCualitativa = false;
@@ -68,32 +64,32 @@
                                                     $aprobada = (float)$asig->calificacion >= $notaMinimaFila;
                                                 }
                                             }
-                                            ?>
-                                            <tr data-id="<?= $asig->id ?>" data-tipo="<?= $esCualitativa ? 1 : 0 ?>" data-nota-minima="<?= $notaMinimaFila ?>">
-                                                <td class="text-center"><?= $cont ?></td>
-                                                <td><?= $asig->has('trayecto') ? h($asig->trayecto->codename) : '' ?></td>
-                                                <td>
-                                                    <?php if ($asig->has('asignatura')): ?>
-                                                        <?php if ($programa->programa->califica): ?>
-                                                            <?= $this->Html->link(h($asig->asignatura->codigo),
-                                                                '#',
-                                                                ['class' => 'btn-link btn-calificar',
-                                                                 'data-id' => $asig->id,
-                                                                 'data-nombre' => h($asig->asignatura->codename),
-                                                                 'title' => 'Cargar calificación']) ?>
-                                                        <?php else: ?>
-                                                            <?= h($asig->asignatura->codigo) ?>
-                                                        <?php endif; ?>
+                                        ?>
+                                        <tr data-id="<?= $asig->id ?>" data-tipo="<?= $esCualitativa ? 1 : 0 ?>" data-nota-minima="<?= $notaMinimaFila ?>">
+                                            <td class="text-center"><?= $cont ?></td>
+                                            <td class="text-center"><?= $asig->has('trayecto') ? h($asig->trayecto->codigo) : '' ?></td>
+                                            <td>
+                                                <?php if ($asig->has('asignatura')): ?>
+                                                    <?php if ($programa->programa->califica): ?>
+                                                        <?= $this->Html->link(h($asig->asignatura->codigo), '#',[
+                                                            'class' => 'btn-link btn-calificar',
+                                                            'data-id' => $asig->id,
+                                                            'data-nombre' => h($asig->asignatura->codename),
+                                                            'title' => 'Cargar calificación']) 
+                                                        ?>
+                                                    <?php else: ?>
+                                                        <?= h($asig->asignatura->codigo) ?>
                                                     <?php endif; ?>
-                                                </td>
-                                                <td class="text-center"><?= $asig->has('asignatura') ? $this->Number->format($asig->asignatura->creditos) : '' ?></td>
-                                                <td><?= $asig->has('asignatura') ? h($asig->asignatura->nombre) : '' ?></td>
-                                                <td class="text-center" style="<?= !empty($asig->calificacion) ? ($aprobada ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold') : '' ?>"><?= h($asig->calificacion) ?></td>
-                                                <td class="text-center"><?= !empty($asig->calificacion) ? h($asig->seccion) : '' ?></td>
-                                                <td><?= !empty($asig->calificacion) && $asig->has('periodo') ? h($asig->periodo->nombre) : '' ?></td>
-                                                <td><?= !empty($asig->calificacion) ? h($asig->responsable) : '' ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td class="text-center"><?= $asig->has('asignatura') ? $this->Number->format($asig->asignatura->creditos) : '' ?></td>
+                                            <td><?= $asig->has('asignatura') ? h($asig->asignatura->nombre) : '' ?></td>
+                                            <td class="text-center" style="<?= !empty($asig->calificacion) ? ($aprobada ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold') : '' ?>"><?= h($asig->calificacion) ?></td>
+                                            <td class="text-center"><?= !empty($asig->calificacion) ? h($asig->seccion) : '' ?></td>
+                                            <td><?= !empty($asig->calificacion) && $asig->has('periodo') ? h($asig->periodo->nombre) : '' ?></td>
+                                            <td><?= !empty($asig->calificacion) ? h($asig->responsable) : '' ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
                                             <td colspan="9" class="text-center">No hay asignaturas registradas en este programa.</td>
@@ -156,18 +152,18 @@
                             </table>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="callout callout-info">
-                    <p>No hay programas asociados a este estudiante.</p>
-                </div>
-            <?php endif; ?>
-        </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="callout callout-info">
+                <p>No hay programas asociados a este estudiante.</p>
+            </div>
+        <?php endif; ?>
     </div>
-</div>
+    </div>
+
 
 <div class="modal fade" id="modal-calificacion" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-aqua">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
