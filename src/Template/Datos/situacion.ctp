@@ -191,7 +191,7 @@ $(document).on('click', '.btn-calificar', function(e) {
         url: '<?= $this->Url->build(['controller' => 'SituacionEstudiantes', 'action' => 'califica']) ?>/' + id,
         type: 'GET',
         success: function(html) {
-            $('#modal-calificacion .modal-body').html(html);
+            $('#modal-calificacion .modal-body').removeClass('text-center').html(html);
             $('#modal-calificacion .modal-body .select2').select2({
                 language: 'es',
                 placeholder: 'Seleccione una Opción',
