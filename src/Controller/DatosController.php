@@ -110,7 +110,7 @@ class DatosController extends AppController
                     'SituacionEstudiantes.programa_id' => $programa->programa_id,
                 ])
                 ->contain(['Asignaturas', 'Trayectos', 'Periodos'])
-                ->order(['Trayectos.codigo' => 'ASC', 'Asignaturas.nombre' => 'ASC'])
+                ->order(['SituacionEstudiantes.programa_id' => 'ASC', 'SituacionEstudiantes.trayecto_id' => 'ASC', 'SituacionEstudiantes.asignatura_id' => 'ASC'])
                 ->toArray();
 
             $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
