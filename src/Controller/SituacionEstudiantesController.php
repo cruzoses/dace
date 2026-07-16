@@ -140,4 +140,125 @@ class SituacionEstudiantesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    /**
+     * Carga el formulario de calificación vía AJAX.
+     *
+     * @param string|null $id Situacion Estudiante id.
+     * @return \Cake\Http\Response|null
+     */
+    public function califica($id = null)
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+
+        $situacionEstudiante = $this->SituacionEstudiantes->get($id, [
+            'contain' => ['Asignaturas'],
+        ]);
+
+        $this->Auditorias->registrar('CONSULTA',
+            'CALIFICACION - CONSULTA ASIGNATURA ID: ' . $situacionEstudiante->asignatura_id
+            . ', ESTUDIANTE ID: ' . $situacionEstudiante->estudiante_id
+        );
+
+        $periodos = $this->SituacionEstudiantes->Periodos->find('list')
+            ->where(['Periodos.activo' => 1])
+            ->order(['Periodos.codigo' => 'DESC']);
+
+        $userAlias = $this->Auth->user('alias');
+
+        $this->set(compact('situacionEstudiante', 'periodos', 'userAlias'));
+        $this->viewBuilder()->setLayout('ajax');
+    }
+
+    /**
+     * Guarda la calificación de una asignatura vía AJAX.
+     *
+     * @return \Cake\Http\Response|null JSON response.
+     */
+    public function guardarCalifica()
+    {
+        $this->request->allowMethod(['ajax', 'post']);
+
+        $id = $this->request->getData('id');
+        $situacionEstudiante = $this->SituacionEstudiantes->get($id);
+
+        $calificacionAnterior = $situacionEstudiante->calificacion;
+        $responsable = $this->Auth->user('alias');
+
+        $situacionEstudiante = $this->SituacionEstudiantes->patchEntity(
+            $situacionEstudiante,
+            $this->request->getData()
+        );
+        $situacionEstudiante->responsable = $responsable;
+
+        if ($this->SituacionEstudiantes->save($situacionEstudiante)) {
+            $evento = empty($calificacionAnterior) ? 'REGISTRA' : 'MODIFICA';
+            $this->Auditorias->registrar($evento,
+                'CALIFICACION - ASIGNATURA ID: ' . $situacionEstudiante->asignatura_id
+                . ', ESTUDIANTE ID: ' . $situacionEstudiante->estudiante_id
+                . ', PROGRAMA ID: ' . $situacionEstudiante->programa_id
+                . ', NOTA ANTERIOR: ' . ($calificacionAnterior ?: 'S/N')
+                . ', NOTA NUEVA: ' . $situacionEstudiante->calificacion
+                . ', SECCION: ' . $situacionEstudiante->seccion
+                . ', PERIODO ID: ' . $situacionEstudiante->periodo_id
+                . ', RESPONSABLE: ' . $responsable
+            );
+
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode([
+                    'success' => true,
+                    'message' => 'Calificación guardada correctamente.'
+                ]));
+        }
+
+        return $this->response->withType('application/json')
+            ->withStringBody(json_encode([
+                'success' => false,
+                'errors' => $situacionEstudiante->getErrors(),
+                'message' => 'Error al guardar la calificación.'
+            ]));
+    }
+
+    /**
+     * Elimina la calificación de una asignatura vía AJAX.
+     *
+     * @param string|null $id Situacion Estudiante id.
+     * @return \Cake\Http\Response|null JSON response.
+     */
+    public function eliminarCalifica($id = null)
+    {
+        $this->request->allowMethod(['ajax', 'post']);
+
+        $situacionEstudiante = $this->SituacionEstudiantes->get($id);
+
+        $calificacionEliminada = $situacionEstudiante->calificacion;
+        $responsable = $this->Auth->user('alias');
+
+        $situacionEstudiante->calificacion = null;
+        $situacionEstudiante->seccion = null;
+        $situacionEstudiante->periodo_id = null;
+        $situacionEstudiante->responsable = $responsable;
+
+        if ($this->SituacionEstudiantes->save($situacionEstudiante)) {
+            $this->Auditorias->registrar('ELIMINA',
+                'CALIFICACION ELIMINADA - ASIGNATURA ID: ' . $situacionEstudiante->asignatura_id
+                . ', ESTUDIANTE ID: ' . $situacionEstudiante->estudiante_id
+                . ', PROGRAMA ID: ' . $situacionEstudiante->programa_id
+                . ', NOTA ELIMINADA: ' . $calificacionEliminada
+                . ', RESPONSABLE: ' . $responsable
+            );
+
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode([
+                    'success' => true,
+                    'message' => 'Calificación eliminada correctamente.'
+                ]));
+        }
+
+        return $this->response->withType('application/json')
+            ->withStringBody(json_encode([
+                'success' => false,
+                'message' => 'Error al eliminar la calificación.'
+            ]));
+    }
 }

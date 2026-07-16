@@ -69,7 +69,20 @@
                                             <tr>
                                                 <td class="text-center"><?= $cont ?></td>
                                                 <td><?= $asig->has('trayecto') ? h($asig->trayecto->codename) : '' ?></td>
-                                                <td><?= $asig->has('asignatura') ? h($asig->asignatura->codigo) : '' ?></td>
+                                                <td>
+                                                    <?php if ($asig->has('asignatura')): ?>
+                                                        <?php if ($programa->programa->califica): ?>
+                                                            <?= $this->Html->link(h($asig->asignatura->codigo),
+                                                                '#',
+                                                                ['class' => 'btn-link btn-calificar',
+                                                                 'data-id' => $asig->id,
+                                                                 'data-nombre' => h($asig->asignatura->codename),
+                                                                 'title' => 'Cargar calificación']) ?>
+                                                        <?php else: ?>
+                                                            <?= h($asig->asignatura->codigo) ?>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </td>
                                                 <td class="text-center"><?= $asig->has('asignatura') ? $this->Number->format($asig->asignatura->creditos) : '' ?></td>
                                                 <td><?= $asig->has('asignatura') ? h($asig->asignatura->nombre) : '' ?></td>
                                                 <td class="text-center" style="<?= !empty($asig->calificacion) ? ($aprobada ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold') : '' ?>"><?= h($asig->calificacion) ?></td>
@@ -149,3 +162,78 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-calificacion" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-aqua">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-pencil-square-o"></i>&nbsp;Calificación</h4>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fa fa-refresh fa-spin fa-3x"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).on('click', '.btn-calificar', function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    var nombre = $(this).data('nombre');
+    $('#modal-calificacion .modal-title').html('<i class="fa fa-pencil-square-o"></i>&nbsp;' + nombre);
+    $('#modal-calificacion .modal-body').html('<div class="text-center"><i class="fa fa-refresh fa-spin fa-3x"></i></div>');
+    $('#modal-calificacion').modal('show');
+
+    $.ajax({
+        url: '<?= $this->Url->build(['controller' => 'SituacionEstudiantes', 'action' => 'califica']) ?>/' + id,
+        type: 'GET',
+        success: function(html) {
+            $('#modal-calificacion .modal-body').html(html);
+        },
+        error: function() {
+            $('#modal-calificacion .modal-body').html('<div class="alert alert-danger">Error al cargar el formulario.</div>');
+        }
+    });
+});
+
+$(document).on('submit', '#form-calificar', function(e) {
+    e.preventDefault();
+    var form = $(this);
+    var url = form.attr('action');
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: form.serialize(),
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                $('#modal-calificacion').modal('hide');
+                toastr.success(response.message);
+                $('#btnSituacion').trigger('click');
+            } else {
+                var errorMsg = response.message || 'Error al guardar';
+                if (response.errors) {
+                    $.each(response.errors, function(field, msgs) {
+                        if (typeof msgs === 'object') {
+                            $.each(msgs, function(key, msg) {
+                                errorMsg += '<br>' + msg;
+                            });
+                        } else {
+                            errorMsg += '<br>' + msgs;
+                        }
+                    });
+                }
+                form.prepend('<div class="alert alert-danger">' + errorMsg + '</div>');
+            }
+        },
+        error: function() {
+            form.prepend('<div class="alert alert-danger">Error de conexión. Intente de nuevo.</div>');
+        }
+    });
+});
+</script>

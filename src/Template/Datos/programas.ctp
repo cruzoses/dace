@@ -33,7 +33,15 @@
                 <?php if (!empty($programas)): ?>
                     <?php foreach ($programas as $key): ?>
                         <tr>
-                            <td><?= h($key->carrera->codigo) ?></td>
+                            <td>
+                                <?php if ($key->programa->califica): ?>
+                                    <?= $this->Html->link(h($key->carrera->codigo),
+                                        ['action' => 'situacion', $estudianteId, $key->programa_id],
+                                        ['class' => 'btn-link', 'title' => 'Ver situación académica']) ?>
+                                <?php else: ?>
+                                    <?= h($key->carrera->codigo) ?>
+                                <?php endif; ?>
+                            </td>
                             <td><?= h($key->programa->codigo) ?></td>
                             <td><?= h($key->sede->nombre) ?></td>
                             <td class="text-center"><?= $key->created->format('d-m-Y') ?></td>

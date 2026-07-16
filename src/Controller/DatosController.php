@@ -85,16 +85,21 @@ class DatosController extends AppController
         $this->viewBuilder()->setLayout('ajax'); // Usar un layout vacío para las llamadas AJAX
     }
 
-    public function situacion($estudianteId = null)
+    public function situacion($estudianteId = null, $programaId = null)
     {
         $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
         $estudiante = $estudiantesTable->get($estudianteId);
 
         $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
-        $programas = $programasTable->find()
+        $programasQuery = $programasTable->find()
             ->where(['EstudianteProgramas.estudiante_id' => $estudianteId])
-            ->contain(['Carreras', 'Programas'])
-            ->toArray();
+            ->contain(['Carreras', 'Programas']);
+
+        if ($programaId) {
+            $programasQuery->where(['EstudianteProgramas.programa_id' => $programaId]);
+        }
+
+        $programas = $programasQuery->toArray();
 
         $situaciones = [];
         foreach ($programas as $programa) {
