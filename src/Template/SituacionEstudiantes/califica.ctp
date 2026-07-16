@@ -96,7 +96,7 @@
 <div class="form-group">
     <label class="col-md-3 control-label">Responsable</label>
     <div class="col-md-9">
-        <p class="form-control-static"><?= h($userAlias) ?></p>
+        <input type="text" class="form-control" value="<?= h($userAlias) ?>" readonly>
     </div>
 </div>
 
