@@ -74,23 +74,6 @@ class EstudianteProgramasController extends AppController
         $this->set('estudiantePrograma', $estudiantePrograma);
     }
 
-    public function getProgramasByCarrera()
-    {
-        $this->request->allowMethod(['ajax', 'get']);
-        $carrera_id = $this->request->getQuery('carrera_id');
-
-        $programas = [];
-        if ($carrera_id) {
-            $programas = $this->EstudianteProgramas->Programas->find('list', ['limit' => 200])
-                ->where(['carrera_id' => $carrera_id, 'Programas.activo' => 1])
-                ->order(['Programas.id' => 'DESC'])
-                ->toArray();
-        }
-
-        $this->set(compact('programas'));
-        $this->set('_serialize', ['programas']);
-    }
-
     public function add($estudianteId = null)
     {
         $estudiantePrograma = $this->EstudianteProgramas->newEntity();
@@ -237,6 +220,7 @@ class EstudianteProgramasController extends AppController
             $situacion->asignatura_id = $malla->asignatura_id;
             $situacion->trayecto_id = $malla->trayecto_id;
             $situacion->periodo_id = $estudiantePrograma->periodo_id;
+            $situacion->cursada = 1;
             $situacionEstudiantesTable->save($situacion);
         }
     }
@@ -283,11 +267,13 @@ class EstudianteProgramasController extends AppController
                 $this->Flash->success(__('Programa registrado correctamente.'));
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA PROGRAMA A EstudianteProgramas ' . json_encode($this->request->getData()));
 
-                return $this->redirect(['controller' => 'Estudiantes', 'action' => 'view', $estudiante->id]);
+                return $this->redirect(['controller' => 'Estudiantes',
+                    'action' => 'index', '?' => ['cedula' => $estudiante->cedula] ]
+                );
             }
             $this->Flash->error(__('No se pudo guardar el programa. Intente de nuevo.'));
         }
-        $sedes = $this->EstudianteProgramas->Sedes->find('list', ['limit' => 200]);
+        $sedes = $this->EstudianteProgramas->Sedes->find('list')->where(['Sedes.activa' => 1]);
         $carreras = $this->EstudianteProgramas->Programas->Carreras->find('list', [
             'conditions' => ['Carreras.activa' => 1],
             'order' => ['Carreras.id' => 'ASC']
@@ -319,5 +305,22 @@ class EstudianteProgramasController extends AppController
         }
 
         return $this->redirect(['controller' => 'datos', 'action' => 'estudiante',$estudianteId]);
+    }
+
+    public function getProgramasByCarrera()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $carrera_id = $this->request->getQuery('carrera_id');
+
+        $programas = [];
+        if ($carrera_id) {
+            $programas = $this->EstudianteProgramas->Programas->find('list')
+                ->where(['carrera_id' => $carrera_id, 'Programas.activo' => 1])
+                ->order(['Programas.id' => 'DESC'])
+                ->toArray();
+        }
+
+        $this->set(compact('programas'));
+        $this->set('_serialize', ['programas']);
     }
 }
