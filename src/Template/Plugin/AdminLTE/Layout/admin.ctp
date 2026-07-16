@@ -38,6 +38,8 @@
         <?= $this->Html->css('AdminLTE.skins/_all-skins.min'); ?>
         <!-- Google Font -->
         <!--?= $this->Html->css('google/css/fonts'); ?-->
+        <!-- Toastr -->
+        <?= $this->Html->css('toastr.min'); ?>
         <!-- Sace style -->
         <?= $this->Html->css('sace'); ?>
         <!-- jQuery 3 -->
@@ -99,6 +101,8 @@
         <?= $this->Html->script('AdminLTE./bower_components/jquery-slimscroll/jquery.slimscroll.min'); ?>
         <!-- FastClick -->
         <?= $this->Html->script('AdminLTE./bower_components/fastclick/lib/fastclick'); ?>
+        <!-- Toastr -->
+        <?= $this->Html->script('toastr.min'); ?>
         <!-- Funciones de la aplicacion -->
         <?= $this->Html->script('sace'); ?>
         <?= $this->Html->script('inactividad'); ?>
