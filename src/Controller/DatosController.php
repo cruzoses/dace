@@ -129,6 +129,8 @@ class DatosController extends AppController
             $totalAsignaturasAprobadas = 0;
             $isaNumerador = 0;
             $isaDenominador = 0;
+            $iraNumerador = 0;
+            $iraDenominador = 0;
 
             foreach ($asignaturas as $asig) {
                 if (empty($asig->calificacion)) {
@@ -153,6 +155,14 @@ class DatosController extends AppController
                 $creditosAsig = (int)$asig->asignatura->creditos;
                 $isaNumerador += $notaISA * $creditosAsig;
                 $isaDenominador += $creditosAsig;
+
+                if (!empty($asig->acumulado) && (int)$asig->acumulado > 0) {
+                    $iraNumerador += (int)$asig->acumulado;
+                } else {
+                    $notaIRA = $esCualitativa ? $notaISA : (float)$asig->calificacion;
+                    $iraNumerador += $notaIRA * $creditosAsig;
+                }
+                $iraDenominador += $creditosAsig;
             }
 
             $porcentajeAprobado = $totalCreditosPrograma > 0
@@ -160,6 +170,7 @@ class DatosController extends AppController
                 : 0;
 
             $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 2) : 0;
+            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 2) : 0;
 
             $situaciones[] = [
                 'programa' => $programa,
@@ -171,6 +182,7 @@ class DatosController extends AppController
                 'totalAsignaturasAprobadas' => $totalAsignaturasAprobadas,
                 'porcentajeAprobado' => $porcentajeAprobado,
                 'isa' => $isa,
+                'ira' => $ira,
             ];
         }
 

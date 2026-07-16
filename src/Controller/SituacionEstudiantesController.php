@@ -231,7 +231,9 @@ class SituacionEstudiantesController extends AppController
             }
         }
 
-        $situacionEstudiante = $this->SituacionEstudiantes->get($id);
+        $situacionEstudiante = $this->SituacionEstudiantes->get($id, [
+            'contain' => ['Asignaturas'],
+        ]);
         $calificacionAnterior = $situacionEstudiante->calificacion;
 
         $situacionEstudiante = $this->SituacionEstudiantes->patchEntity(
@@ -240,6 +242,10 @@ class SituacionEstudiantesController extends AppController
         );
         $situacionEstudiante->calificacion = $calificacion;
         $situacionEstudiante->responsable = $responsable;
+
+        $notaISA = (int)$tipoCalificacion === 1 ? (strtoupper($calificacion) === 'A' ? 20 : 0) : (float)$calificacion;
+        $creditosAsig = (int)$situacionEstudiante->asignatura->creditos;
+        $situacionEstudiante->acumulado = (int)($notaISA * $creditosAsig);
 
         if ($this->SituacionEstudiantes->save($situacionEstudiante)) {
             $evento = empty($calificacionAnterior) ? 'REGISTRA' : 'MODIFICA';
@@ -297,6 +303,8 @@ class SituacionEstudiantesController extends AppController
             $totalAsignaturasAprobadas = 0;
             $isaNumerador = 0;
             $isaDenominador = 0;
+            $iraNumerador = 0;
+            $iraDenominador = 0;
             foreach ($asignaturas as $asig) {
                 if (empty($asig->calificacion)) {
                     continue;
@@ -320,6 +328,14 @@ class SituacionEstudiantesController extends AppController
                 $creditosAsig = (int)$asig->asignatura->creditos;
                 $isaNumerador += $notaISA * $creditosAsig;
                 $isaDenominador += $creditosAsig;
+
+                if (!empty($asig->acumulado) && (int)$asig->acumulado > 0) {
+                    $iraNumerador += (int)$asig->acumulado;
+                } else {
+                    $notaIRA = $esCual ? $notaISA : (float)$asig->calificacion;
+                    $iraNumerador += $notaIRA * $creditosAsig;
+                }
+                $iraDenominador += $creditosAsig;
             }
 
             $porcentajeAprobado = $totalCreditosPrograma > 0
@@ -327,6 +343,7 @@ class SituacionEstudiantesController extends AppController
                 : 0;
 
             $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 2) : 0;
+            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 2) : 0;
 
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
@@ -344,6 +361,7 @@ class SituacionEstudiantesController extends AppController
                         'totalAsignaturasAprobadas' => $totalAsignaturasAprobadas,
                         'porcentajeAprobado' => $porcentajeAprobado,
                         'isa' => $isa,
+                        'ira' => $ira,
                     ]
                 ]));
         }
@@ -375,6 +393,7 @@ class SituacionEstudiantesController extends AppController
         $situacionEstudiante->seccion = null;
         $situacionEstudiante->periodo_id = null;
         $situacionEstudiante->responsable = $responsable;
+        $situacionEstudiante->acumulado = null;
 
         if ($this->SituacionEstudiantes->save($situacionEstudiante)) {
             $this->Auditorias->registrar('ELIMINA',
@@ -385,10 +404,51 @@ class SituacionEstudiantesController extends AppController
                 . ', RESPONSABLE: ' . $responsable
             );
 
+            $estudianteId = $situacionEstudiante->estudiante_id;
+            $programaId = $situacionEstudiante->programa_id;
+
+            $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+            $ep = $programasTable->find()
+                ->where(['EstudianteProgramas.estudiante_id' => $estudianteId, 'EstudianteProgramas.programa_id' => $programaId])
+                ->contain(['Programas'])
+                ->first();
+
+            $totalCreditosPrograma = $ep ? (int)$ep->programa->creditos : 0;
+
+            $asignaturas = $this->SituacionEstudiantes->find()
+                ->where([
+                    'SituacionEstudiantes.estudiante_id' => $estudianteId,
+                    'SituacionEstudiantes.programa_id' => $programaId,
+                ])
+                ->contain(['Asignaturas'])
+                ->toArray();
+
+            $iraNumerador = 0;
+            $iraDenominador = 0;
+            foreach ($asignaturas as $asig) {
+                if (empty($asig->calificacion)) {
+                    continue;
+                }
+                $creditosAsig = (int)$asig->asignatura->creditos;
+                if (!empty($asig->acumulado) && (int)$asig->acumulado > 0) {
+                    $iraNumerador += (int)$asig->acumulado;
+                } else {
+                    $esCual = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
+                    $notaIRA = $esCual ? (strtoupper($asig->calificacion) === 'A' ? 20 : 0) : (float)$asig->calificacion;
+                    $iraNumerador += $notaIRA * $creditosAsig;
+                }
+                $iraDenominador += $creditosAsig;
+            }
+            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 2) : 0;
+
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
                     'success' => true,
-                    'message' => 'Calificación eliminada correctamente.'
+                    'message' => 'Calificación eliminada correctamente.',
+                    'data' => [
+                        'programa_id' => $programaId,
+                        'ira' => $ira,
+                    ]
                 ]));
         }
 

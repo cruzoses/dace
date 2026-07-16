@@ -23,6 +23,7 @@
                                     <th class="text-center">Aprobados</th>
                                     <th class="text-center">%</th>
                                     <th class="text-center">ISA</th>
+                                    <th class="text-center">IRA</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,6 +36,9 @@
                                         <td class="text-center"><?= $item['porcentajeAprobado'] ?>%</td>
                                         <td class="text-center" style="<?= $item['isa'] >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
                                             <?= $item['isa'] ?>
+                                        </td>
+                                        <td class="text-center" style="<?= $item['ira'] >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
+                                            <?= $item['ira'] ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -53,6 +57,7 @@
                 <?php $porcentajeAprobado = $item['porcentajeAprobado']; ?>
                 <?php $mallasPorAsignatura = $item['mallasPorAsignatura']; ?>
                 <?php $isa = $item['isa']; ?>
+                <?php $ira = $item['ira']; ?>
                 <?php $notaMinimaPrograma = (float)$programa->programa->nota_minima; ?>
 
                 <div class="box box-warning">
@@ -162,7 +167,10 @@
                                                     </span>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    &Iacute;ndice del Proceso: (Pendiente)
+                                                    &Iacute;ndice del Proceso:
+                                                    <span id="ira-<?= $programa->programa_id ?>" style="<?= $ira >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
+                                                        <?= $ira ?>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div class="row" style="margin:0">
@@ -291,6 +299,9 @@ $(document).on('submit', '#form-calificar', function(e) {
 
                 var isaStyle = d.isa >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold';
                 $('#isa-' + pid).text(d.isa).attr('style', isaStyle);
+
+                var iraStyle = d.ira >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold';
+                $('#ira-' + pid).text(d.ira).attr('style', iraStyle);
             } else {
                 var errorMsg = response.message || 'Error al guardar';
                 if (response.errors) {
