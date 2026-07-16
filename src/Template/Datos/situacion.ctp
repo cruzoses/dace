@@ -7,9 +7,6 @@
 ?>
 <div class="content">
     <div class="row">
-        <?= $this->element('Datos/ficha', ['estudiante' => $estudiante, 'showOptions' => true]); ?>
-    </div>
-    <div class="row">
         <div class="col-md-12">
             <?php if (!empty($situaciones)): ?>
                 <?php foreach ($situaciones as $item): ?>
