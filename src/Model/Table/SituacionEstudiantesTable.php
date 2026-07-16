@@ -94,6 +94,10 @@ class SituacionEstudiantesTable extends Table
             ->allowEmptyString('cursada');
 
         $validator
+            ->integer('acumulado')
+            ->allowEmptyString('acumulado');
+
+        $validator
             ->scalar('responsable')
             ->maxLength('responsable', 50)
             ->allowEmptyString('responsable');

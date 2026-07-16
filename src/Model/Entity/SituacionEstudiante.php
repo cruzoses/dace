@@ -15,6 +15,7 @@ use Cake\ORM\Entity;
  * @property string|null $seccion
  * @property string|null $calificacion
  * @property int|null $cursada
+ * @property int|null $acumulado
  * @property string|null $responsable
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -45,6 +46,7 @@ class SituacionEstudiante extends Entity
         'seccion' => true,
         'calificacion' => true,
         'cursada' => true,
+        'acumulado' => true,
         'responsable' => true,
         'created' => true,
         'modified' => true,

@@ -221,6 +221,7 @@ class EstudianteProgramasController extends AppController
             $situacion->trayecto_id = $malla->trayecto_id;
             $situacion->periodo_id = $estudiantePrograma->periodo_id;
             $situacion->cursada = 1;
+            $situacion->acumulado = 1;
             $situacionEstudiantesTable->save($situacion);
         }
     }
