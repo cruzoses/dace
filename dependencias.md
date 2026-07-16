@@ -1,3 +1,8 @@
+composer create-project --prefer-dist cakephp/app:"^3.10" dace --no-blocking 
+ó
+
+COMPOSER_NO_BLOCKING=1 composer create-project --prefer-dist cakephp/app:"^3.10" dace
+
 https://github.com/FriendsOfCake/bootstrap-ui
 composer require friendsofcake/bootstrap-ui
 

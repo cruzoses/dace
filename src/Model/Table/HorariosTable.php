@@ -44,7 +44,7 @@ class HorariosTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('horarios');
-        $this->setDisplayField('id');
+        $this->setDisplayField('codigo');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

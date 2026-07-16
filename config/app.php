@@ -64,8 +64,9 @@ return [
         'paths' => [
             'plugins' => [ROOT . DS . 'plugins' . DS],
             'templates' => [APP . 'Template' . DS],
-            'locales' => [APP . 'Locale' . DS],
-            'tools'   => [APP . 'Tools' . DS],
+            'locales'  => [APP . 'Locale' . DS],
+            'reportes' => [APP . 'Reportes' . DS],
+            'tools'    => [APP . 'Tools' . DS],
         ],
     ],
 

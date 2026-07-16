@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 13/7/2026
+Modified: 16/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -485,6 +485,7 @@ CREATE TABLE `asignaturas`
   `costo` Double NOT NULL,
   `requisitos` Text,
   `convalidacion` Text,
+  `nota_minima` Smallint(6),
   `grupo_asignatura_id` Int NOT NULL,
   `activa` Tinyint(1) NOT NULL,
   `created` Datetime,
@@ -668,7 +669,7 @@ CREATE TABLE IF NOT EXISTS `estudiante_programas`
   `carrera_id` Int NOT NULL,
   `programa_id` Int NOT NULL,
   `sede_id` Int NOT NULL,
-  `periodo_id` Int NULL,
+  `periodo_id` Int NOT NULL,
   `fecha_egreso` Date,
   `cohorte` Varchar(20),
   `indice` Double,
@@ -693,9 +694,7 @@ CREATE INDEX `IX_Estudiante_Sede` ON `estudiante_programas` (`sede_id`)
 CREATE INDEX `IX_Estudiante_Carrera` ON `estudiante_programas` (`carrera_id`)
 ;
 
--- Migracion: agregar periodo_id
-ALTER TABLE `estudiante_programas`
-  ADD COLUMN `periodo_id` INT NULL AFTER `sede_id`
+CREATE INDEX `IX_Relationship2` ON `estudiante_programas` (`periodo_id`)
 ;
 
 -- Table notas_cursos
@@ -812,9 +811,9 @@ CREATE TABLE IF NOT EXISTS `situacion_estudiantes`
   `id` Int NOT NULL AUTO_INCREMENT,
   `estudiante_id` Int NOT NULL,
   `programa_id` Int NOT NULL,
+  `trayecto_id` Int NOT NULL,
   `asignatura_id` Int NOT NULL,
-  `trayecto_id` Int NULL,
-  `periodo_id` Int NULL,
+  `periodo_id` Int,
   `seccion` Varchar(20),
   `calificacion` Varchar(5),
   `responsable` Varchar(50),
@@ -836,10 +835,7 @@ CREATE INDEX `IX_Situacion_Asignatura` ON `situacion_estudiantes` (`asignatura_i
 CREATE INDEX `IX_Situacion_Periodo` ON `situacion_estudiantes` (`periodo_id`)
 ;
 
--- Migracion: agregar trayecto_id y hacer periodo_id nullable
-ALTER TABLE `situacion_estudiantes`
-  ADD COLUMN `trayecto_id` INT NULL AFTER `asignatura_id`,
-  MODIFY COLUMN `periodo_id` INT NULL
+CREATE INDEX `IX_Situacion_Trayecto` ON `situacion_estudiantes` (`trayecto_id`)
 ;
 
 -- Create foreign keys (relationships) section -------------------------------------------------
@@ -1007,5 +1003,11 @@ ALTER TABLE `situacion_estudiantes` ADD CONSTRAINT `pfk_asignatura_situacion` FO
 ;
 
 ALTER TABLE `situacion_estudiantes` ADD CONSTRAINT `pfk_periodo_situacion` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `situacion_estudiantes` ADD CONSTRAINT `pfk_trayecto_situacion` FOREIGN KEY (`trayecto_id`) REFERENCES `trayectos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+;
+
+ALTER TABLE `estudiante_programas` ADD CONSTRAINT `Relationship2` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ;
 

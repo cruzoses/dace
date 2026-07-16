@@ -33,12 +33,16 @@
                 </div>
                 <?php
                     echo $this->Form->hidden('estudiante_id');
-                    echo $this->Form->control('sede_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $sedes]);
+                    echo $this->Form->control('sede_id', [
+                        'type' => 'select', 'options' => $sedes, 'empty' => true,
+                        'class' => 'select2 form-control', 'data-width' => '100%',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('periodo_id', [
                         'label' => 'Período de Inscripción',
                         'type' => 'select',
                         'options' => $periodos,
-                        'empty' => '-- Seleccione --',
+                        'empty' => true,
                         'class' => 'form-control select2',
                         'data-width' => '100%',
                         'prepend' => '<i class="fa fa-asterisk"></i>',
@@ -70,7 +74,7 @@
 			        ['type' => 'submit','class'=>'btn btn-success btn-flat pull-left','escape'=>false]);
 		        ?>
 		        <?= $this->Html->link('<i class="fa fa-power-off"></i>&nbsp;Cerrar',
-			        ['controller' => 'Estudiantes', 'action' => 'view', $estudiante->id],
+			        ['controller' => 'Estudiantes', 'action' => 'index','?' => ['cedula' => $estudiante->cedula]],
 			        ['class' => 'btn bg-maroon btn-flat pull-right','escape' => false]);
 		        ?>
             </div>

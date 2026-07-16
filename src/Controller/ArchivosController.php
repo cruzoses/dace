@@ -3,15 +3,21 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Tools\ExcelBuilder;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Font;
 
 class ArchivosController extends AppController
 {
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarPeriodos', 'exportarDocentes']);
+        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarPeriodos', 'exportarDocentes', 'exportarSituacion']);
     }
 
     public function exportarEstados()
@@ -270,5 +276,194 @@ class ArchivosController extends AppController
 
         return $this->response;
     }
+
+    public function exportarSituacion($estudianteId = null, $programaId = null)
+    {
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($estudianteId);
+
+        $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+        $programasQuery = $programasTable->find()
+            ->where(['EstudianteProgramas.estudiante_id' => $estudianteId])
+            ->contain(['Carreras', 'Programas']);
+
+        if ($programaId) {
+            $programasQuery->where(['EstudianteProgramas.programa_id' => $programaId]);
+        }
+
+        $programas = $programasQuery->toArray();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $totalCols = 9;
+        $lastCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalCols);
+        $universidad = html_entity_decode(Configure::read('Universidad.Nombre'), ENT_QUOTES, 'UTF-8');
+        $cedula = $estudiante->origen . '-' . $estudiante->cedula;
+        $full_name = $estudiante->apellidos . ', ' . $estudiante->nombres;
+
+        $row = 1;
+
+        $sheet->mergeCells('A' . $row . ':' . $lastCol . $row);
+        $sheet->setCellValueByColumnAndRow(1, $row, $universidad);
+        $sheet->getStyleByColumnAndRow(1, $row)->getFont()->setBold(true)->setSize(13);
+        $sheet->getStyleByColumnAndRow(1, $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $row++;
+
+        $row++;
+
+        foreach ($programas as $programa) {
+            $sheet->mergeCells('A' . $row . ':' . $lastCol . $row);
+            $sheet->setCellValueByColumnAndRow(1, $row, $programa->programa->codename);
+            $sheet->getStyleByColumnAndRow(1, $row)->getFont()->setBold(true)->setSize(11);
+            $sheet->getStyleByColumnAndRow(1, $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $row++;
+
+            $sheet->mergeCells('A' . $row . ':' . $lastCol . $row);
+            $sheet->setCellValueByColumnAndRow(1, $row, 'Cédula: ' . $cedula . '    Nombre: ' . $full_name);
+            $sheet->getStyleByColumnAndRow(1, $row)->getFont()->setBold(true)->setSize(10);
+            $sheet->getStyleByColumnAndRow(1, $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $row++;
+
+            $row++;
+
+            $headers = ['No', 'Trayecto', 'Asignatura', 'Créditos', 'Nombre de la Asignatura', 'Nota', 'Sección', 'Periodo', 'Responsable'];
+            $colIndex = 1;
+            foreach ($headers as $header) {
+                $sheet->setCellValueByColumnAndRow($colIndex, $row, $header);
+                $sheet->getStyleByColumnAndRow($colIndex, $row)->getFont()->setBold(true)->setSize(10);
+                $sheet->getStyleByColumnAndRow($colIndex, $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyleByColumnAndRow($colIndex, $row)->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THIN);
+                $colIndex++;
+            }
+            $row++;
+
+            $asignaturasTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+            $asignaturas = $asignaturasTable->find()
+                ->where([
+                    'SituacionEstudiantes.estudiante_id' => $estudianteId,
+                    'SituacionEstudiantes.programa_id' => $programa->programa_id,
+                ])
+                ->contain(['Asignaturas', 'Trayectos', 'Periodos'])
+                ->order(['SituacionEstudiantes.trayecto_id' => 'ASC', 'SituacionEstudiantes.asignatura_id' => 'ASC'])
+                ->toArray();
+
+            $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+            $mallas = $mallasTable->find()
+                ->where(['Mallas.programa_id' => $programa->programa_id])
+                ->toArray();
+            $mallasPorAsignatura = [];
+            foreach ($mallas as $m) {
+                $mallasPorAsignatura[$m->asignatura_id] = $m;
+            }
+
+            $notaMinimaPrograma = (float)$programa->programa->nota_minima;
+            $totalCreditosPrograma = (int)$programa->programa->creditos;
+            $totalCreditosAprobados = 0;
+            $totalAsignaturasAprobadas = 0;
+            $isaNumerador = 0;
+            $isaDenominador = 0;
+            $iraNumerador = 0;
+            $iraDenominador = 0;
+
+            $i = 1;
+            foreach ($asignaturas as $asig) {
+                $creditos = $asig->has('asignatura') ? (int)$asig->asignatura->creditos : 0;
+                $aprobada = false;
+                if (!empty($asig->calificacion)) {
+                    $esCualitativa = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
+                    if ($esCualitativa) {
+                        $aprobada = strtoupper($asig->calificacion) === 'A';
+                        $notaISA = strtoupper($asig->calificacion) === 'A' ? 20 : 0;
+                    } else {
+                        $notaMinima = $notaMinimaPrograma;
+                        if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
+                            $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                        }
+                        $aprobada = (float)$asig->calificacion >= $notaMinima;
+                        $notaISA = (float)$asig->calificacion;
+                    }
+                    if ($aprobada) {
+                        $totalCreditosAprobados += $creditos;
+                        $totalAsignaturasAprobadas++;
+                    }
+                    $isaNumerador += $notaISA * $creditos;
+                    $isaDenominador += $creditos;
+                    if (!empty($asig->acumulado) && (int)$asig->acumulado > 0) {
+                        $iraNumerador += (int)$asig->acumulado;
+                    } else {
+                        $notaIRA = $esCualitativa ? $notaISA : (float)$asig->calificacion;
+                        $iraNumerador += $notaIRA * $creditos;
+                    }
+                    $iraDenominador += $creditos;
+                }
+
+                $rowData = [
+                    $i++,
+                    $asig->has('trayecto') ? $asig->trayecto->codigo : '',
+                    $asig->has('asignatura') ? $asig->asignatura->codigo : '',
+                    $creditos,
+                    $asig->has('asignatura') ? $asig->asignatura->nombre : '',
+                    !empty($asig->calificacion) ? $asig->calificacion : '',
+                    !empty($asig->calificacion) ? $asig->seccion : '',
+                    !empty($asig->calificacion) && $asig->has('periodo') ? $asig->periodo->lapso : '',
+                    !empty($asig->calificacion) ? $asig->responsable : '',
+                ];
+                $colIndex = 1;
+                $centerCols = [2, 4, 6, 7];
+                foreach ($rowData as $value) {
+                    $cell = $sheet->getCellByColumnAndRow($colIndex, $row);
+                    $cell->setValue($value);
+                    if (in_array($colIndex, $centerCols)) {
+                        $sheet->getStyleByColumnAndRow($colIndex, $row)->getAlignment()
+                            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                    }
+                    $colIndex++;
+                }
+                $row++;
+            }
+
+            $porcentajeAprobado = $totalCreditosPrograma > 0
+                ? round(($totalCreditosAprobados / $totalCreditosPrograma) * 100, 1) : 0;
+            $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 2) : 0;
+            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 2) : 0;
+
+            $sheet->mergeCells('A' . $row . ':' . $lastCol . $row);
+            $sheet->setCellValueByColumnAndRow(1, $row, 'Créditos Aprobados: ' . $totalCreditosAprobados . ' / ' . $totalCreditosPrograma . '    ISA: ' . $isa . '    IRA: ' . $ira . '    Aprobado: ' . $porcentajeAprobado . '%');
+            $sheet->getStyleByColumnAndRow(1, $row)->getFont()->setBold(true)->setSize(10);
+            $sheet->getStyleByColumnAndRow(1, $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $row++;
+
+            $row++;
+        }
+
+        foreach (range(1, $totalCols) as $col) {
+            $sheet->getColumnDimension(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col))->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        $dir = WWW_ROOT . 'files' . DS . 'excel';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $filename = 'situacion_academica_' . $estudianteId . '_' . date('Ymd_His') . '.xlsx';
+        $filePath = $dir . DS . $filename;
+        file_put_contents($filePath, $content);
+
+        $this->autoRender = false;
+        $this->viewBuilder()->setClassName(null);
+        $this->viewBuilder()->setLayout(null);
+        $this->response = $this->response->withType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->response = $this->response->withHeader('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $this->response->getBody()->write($content);
+
+        return $this->response;
+    }
+    
 }
 

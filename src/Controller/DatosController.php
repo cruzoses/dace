@@ -185,7 +185,7 @@ class DatosController extends AppController
                 'ira' => $ira,
             ];
         }
-
+        $this->set('title', 'Situación');
         $this->set(compact('estudiante', 'situaciones'));
         $this->viewBuilder()->setLayout('ajax');
     }

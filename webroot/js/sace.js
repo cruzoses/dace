@@ -39,7 +39,7 @@ $(document).ready( function () {
             .replace(/(\.\d{2})\d+/g, '$1');
     });
 
-    // Select2
+
     $('.select2').select2({
         language: 'es',
         placeholder: 'Seleccione una Opción',

@@ -10,7 +10,10 @@ use Cake\Validation\Validator;
  * Periodos Model
  *
  * @property \App\Model\Table\CursosTable&\Cake\ORM\Association\HasMany $Cursos
+ * @property \App\Model\Table\HorariosTable&\Cake\ORM\Association\HasMany $Horarios
  * @property \App\Model\Table\HistoricosTable&\Cake\ORM\Association\HasMany $Historicos
+ * @property \App\Model\Table\EstudianteProgramasTable&\Cake\ORM\Association\HasMany $EstudianteProgramas
+ * @property \App\Model\Table\SituacionEstudiantesTable&\Cake\ORM\Association\HasMany $SituacionEstudiantes
  *
  * @method \App\Model\Entity\Periodo get($primaryKey, $options = [])
  * @method \App\Model\Entity\Periodo newEntity($data = null, array $options = [])
@@ -36,7 +39,7 @@ class PeriodosTable extends AppTable
      *
      * @param array $config The configuration for the Table.
      * @return void
-     */
+    */
     public function initialize(array $config)
     {
         parent::initialize($config);
@@ -50,13 +53,16 @@ class PeriodosTable extends AppTable
         $this->hasMany('Cursos', [
             'foreignKey' => 'periodo_id',
         ]);
+        $this->hasMany('Horarios', [
+            'foreignKey' => 'periodo_id',
+        ]);
         $this->hasMany('Historicos', [
             'foreignKey' => 'periodo_id',
         ]);
-        $this->hasMany('SituacionEstudiantes', [
+        $this->hasMany('EstudianteProgramas', [
             'foreignKey' => 'periodo_id',
         ]);
-        $this->hasMany('EstudianteProgramas', [
+        $this->hasMany('SituacionEstudiantes', [
             'foreignKey' => 'periodo_id',
         ]);
     }

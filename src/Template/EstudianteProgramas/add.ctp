@@ -7,9 +7,9 @@
  * @var Object $estudiante
 */
 ?>
-<div class="box box-warning box-solid">
+<div class="box box-sace box-solid">
     <div class="box-header with-border">
-        <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Registrar Programa - <?= h($estudiante->cedula) ?> <?= h($estudiante->apellidos) ?> <?= h($estudiante->nombres) ?></h3>
+        <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Registrar Programa</h3>
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-dismiss="modal">
                 <i class="fa fa-times"></i>
@@ -26,36 +26,47 @@
         'class' => 'horizontal']);
     ?>
     <div class="box-body">
+        <div class="callout callout-info">
+            <i class="fa fa-info-circle"></i>&nbsp;Estudiante: 
+            <strong><?= $this->Number->format($estudiante->cedula) ?> <?= h($estudiante->full_name) ?></strong>
+        </div>
         <?php
             echo $this->Form->hidden('estudiante_id');
-            echo $this->Form->control('sede_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $sedes]);
+            echo $this->Form->control('sede_id',[
+                'type' => 'select', 
+                'options' => $sedes,
+                'empty' => true,
+                'class' => 'form-control select2', 
+                'data-width' => '100%', 
+                'prepend' => '<i class="fa fa-asterisk"></i>']
+            );
             echo $this->Form->control('periodo_id', [
                 'label' => 'Período de Inscripción',
                 'type' => 'select',
                 'options' => $periodos,
-                'empty' => '-- Seleccione --',
+                'empty' => true,
                 'class' => 'form-control select2',
                 'data-width' => '100%',
-                'prepend' => '<i class="fa fa-asterisk"></i>',
-            ]);
+                'prepend' => '<i class="fa fa-asterisk"></i>']
+            );
             echo $this->Form->control('carrera_id', [
                 'label' => 'Carrera',
                 'type' => 'select',
                 'options' => $carreras,
-                'empty' => '-- Seleccione --',
+                'empty' => true,
                 'class' => 'form-control select2',
                 'data-width' => '100%',
-                'prepend' => '<i class="fa fa-asterisk"></i>',
-            ]);
+                'prepend' => '<i class="fa fa-asterisk"></i>']
+            );
             echo $this->Form->control('programa_id', [
                 'type' => 'select',
                 'options' => [],
-                'empty' => '-- Seleccione una carrera primero --',
+                'empty' => true,
                 'class' => 'form-control select2',
                 'data-width' => '100%',
                 'prepend' => '<i class="fa fa-asterisk"></i>',
-                'disabled' => true,
-            ]);
+                'disabled' => true]
+            );
             echo $this->Form->hidden('culminado', ['value' => 0]);
             echo $this->Form->hidden('activo', ['value' => 1]);
         ?>
@@ -72,6 +83,7 @@
 </div>
 <script>
 $(document).ready(function() {
+
     $('#carrera-id').on('change', function() {
         var carreraId = $(this).val();
         var $programa = $('#programa-id');

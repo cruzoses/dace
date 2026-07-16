@@ -3,7 +3,7 @@
  * @var int $estudianteId
 */
 ?>
-<div class="box box-warning">
+<div class="box box-success">
     <div class="box-header with-border">
         <h3 class="box-title"><i class="fa fa-cogs"></i>&nbsp;Programas Asignados</h3>
         <div class="box-tools pull-right">
@@ -33,16 +33,16 @@
                 <?php if (!empty($programas)): ?>
                     <?php foreach ($programas as $key): ?>
                         <tr>
+                            <td><?= h($key->carrera->codigo) ?></td>
                             <td>
                                 <?php if ($key->programa->califica): ?>
-                                    <?= $this->Html->link(h($key->carrera->codigo),
+                                    <?= $this->Html->link(h($key->programa->codigo),
                                         ['action' => 'situacion', $estudianteId, $key->programa_id],
-                                        ['class' => 'btn-link btn-situacion', 'title' => 'Ver situación académica']) ?>
+                                        ['class' => 'btn bg-purple btn-xs btn-link btn-situacion', 'title' => 'Ver situación académica']) ?>
                                 <?php else: ?>
-                                    <?= h($key->carrera->codigo) ?>
+                                    <?= h($key->programa->codigo) ?>
                                 <?php endif; ?>
                             </td>
-                            <td><?= h($key->programa->codigo) ?></td>
                             <td><?= h($key->sede->nombre) ?></td>
                             <td class="text-center"><?= $key->created->format('d-m-Y') ?></td>
                             <td class="text-center"><?= $key->fecha_egreso ? $key->fecha_egreso->format('d-m-Y') : '' ?></td>

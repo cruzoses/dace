@@ -13,6 +13,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\ProgramasTable&\Cake\ORM\Association\BelongsTo $Programas
  * @property \App\Model\Table\CarrerasTable&\Cake\ORM\Association\BelongsTo $Carreras
  * @property \App\Model\Table\SedesTable&\Cake\ORM\Association\BelongsTo $Sedes
+ * @property \App\Model\Table\PeriodosTable&\Cake\ORM\Association\BelongsTo $Periodos
  *
  * @method \App\Model\Entity\EstudiantePrograma get($primaryKey, $options = [])
  * @method \App\Model\Entity\EstudiantePrograma newEntity($data = null, array $options = [])

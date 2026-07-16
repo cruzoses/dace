@@ -39,12 +39,18 @@
                     echo $this->Form->control('origen', ['type' => 'select', 'options' => $aOrigen, 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->control('cedula', ['type' => 'text', 'label' => 'No. de Cédula', 
+                    echo $this->Form->control('cedula', ['type' => 'text', 'label' => 'No. de Cédula',
+                        'placeholder' => 'No. de Cédula', 
                         'class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->control('nombres', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('apellidos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('nombres', ['class' => 'isUpper', 'placeholder' => 'Nombres del Estudiante',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('apellidos', ['class' => 'isUpper', 'placeholder' => 'Apellidos del Estudiante',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('fecha_nacimiento', ['type' => 'text', 'class' => 'datepicker',
+                        'placeholder' => 'Formato dd-mm-yyyy',
                         'prepend' => '<i class="fa fa-asterisk"></i>', 'append' => '<i class="fa fa-calendar"></i>']
                     );
                     echo $this->Form->control('sexo', ['type' => 'select', 'options' => $aGenero, 'empty' => true,
@@ -62,7 +68,10 @@
                 ?>
                 <h4 class="box-sub-title-info">Datos de Ubicaci&oacute;n</h4>
                 <?php
-                    echo $this->Form->control('lugar_nacimiento', ['rows' => 1,'prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('lugar_nacimiento', ['rows' => 1,
+                        'placeholder' => 'Lugar de nacimiento',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('pais_id', ['type' => 'select', 'options' => $paises, 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
@@ -76,7 +85,9 @@
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('direccion', ['rows' => 2,'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('telefonos', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('telefonos', ['type' => 'tel',  'pattern' => '[0-9]{3}-[0-9]{2}-[0-9]{3}',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('email', ['class' => 'isLower','prepend' => '<i class="fa fa-asterisk"></i>']);
                 ?>
                 <h4 class="box-sub-title-info">Informaci&oacute;n Acad&eacute;mica</h4>

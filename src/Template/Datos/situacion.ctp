@@ -65,15 +65,15 @@
                         <h3 class="box-title"><i class="fa fa-graduation-cap"></i>&nbsp;<?= h($programa->programa->codename) ?></h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-print"></i>&nbsp;Imprimir <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a href="#"><i class="fa fa-file-text-o"></i>&nbsp;Situaci&oacute;n Acad&eacute;mica</a></li>
+                                    <li><a href="<?= $this->Url->build(['controller' => 'Reportes', 'action' => 'situacionAcademica', $estudiante->id, $programa->programa_id]) ?>"><i class="fas fa-file-pdf"></i>&nbsp;Situaci&oacute;n Acad&eacute;mica</a></li>
                                     <li><a href="#"><i class="fa fa-certificate"></i>&nbsp;Notas Certificadas</a></li>
                                     <li><a href="#"><i class="fa fa-graduation-cap"></i>&nbsp;Constancia de Culminaci&oacute;n</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#"><i class="fa fa-file-excel-o"></i>&nbsp;Exportar a Excel</a></li>
+                                    <li><a href="<?= $this->Url->build(['controller' => 'Archivos', 'action' => 'exportarSituacion', $estudiante->id, $programa->programa_id]) ?>"><i class="fas fa-file-excel"></i>&nbsp;Exportar a Excel</a></li>
                                 </ul>
                             </div>
                             <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -217,8 +217,7 @@
             </div>
         <?php endif; ?>
     </div>
-    </div>
-
+</div>
 
 <div class="modal fade" id="modal-calificacion" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">

@@ -1,3 +1,4 @@
+<?php $this->assign('title','Index' ); ?>
 <?php if ($this->layout == 'default'): ?>
     <div class="visible-xs"><br></div>
     <div class="logo-container">
