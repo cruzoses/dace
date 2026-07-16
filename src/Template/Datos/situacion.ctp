@@ -197,6 +197,7 @@ $(document).on('click', '.btn-calificar', function(e) {
                 placeholder: 'Seleccione una Opción',
                 allowClear: true,
                 width: 'resolve',
+                dropdownParent: $('#modal-calificacion')
             });
         },
         error: function() {
