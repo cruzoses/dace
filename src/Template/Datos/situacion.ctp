@@ -268,7 +268,7 @@ $(document).on('submit', '#form-calificar', function(e) {
                 var tr = $('tr[data-id="' + d.id + '"]');
 
                 if (tr.length) {
-                    var tipo = parseInt(tr.data('tipo'));
+                    var tipo = d.tipo_calificacion;
                     var notaMinima = parseFloat(tr.data('nota-minima'));
                     var aprobada = false;
 
@@ -278,6 +278,7 @@ $(document).on('submit', '#form-calificar', function(e) {
                         aprobada = parseFloat(d.calificacion) >= notaMinima;
                     }
 
+                    tr.data('tipo', tipo);
                     var styleNota = d.calificacion
                         ? (aprobada ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold')
                         : '';
