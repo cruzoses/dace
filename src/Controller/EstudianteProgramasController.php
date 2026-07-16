@@ -11,7 +11,7 @@ use Cake\ORM\TableRegistry;
  * @property \App\Model\Table\EstudianteProgramasTable $EstudianteProgramas
  *
  * @method \App\Model\Entity\EstudiantePrograma[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class EstudianteProgramasController extends AppController
 {
 
@@ -36,12 +36,24 @@ class EstudianteProgramasController extends AppController
     */
     public function index()
     {
+        $conditions = $this->EstudianteProgramas->formatConditions($this->request->getQueryParams());
         $this->paginate = [
-            'contain' => ['Estudiantes', 'Carreras', 'Programas', 'Sedes',],
+            'contain' => ['Estudiantes', 'Carreras', 'Programas', 'Sedes'],
+            'conditions' => $conditions,
         ];
         $estudianteProgramas = $this->paginate($this->EstudianteProgramas);
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->EstudianteProgramas->getSearchFields();
+        $searchFields['carrera_id']['options'] = $this->EstudianteProgramas->Carreras->find('list', [
+            'conditions' => ['Carreras.activa' => 1],
+            'order' => ['Carreras.nombre' => 'ASC']
+        ])->toArray();
+        $searchFields['programa_id']['options'] = $this->EstudianteProgramas->Programas->find('list', [
+            'conditions' => ['Programas.activo' => 1],
+            'order' => ['Programas.nombre' => 'ASC']
+        ])->toArray();
 
-        $this->set(compact('estudianteProgramas'));
+        $this->set(compact('estudianteProgramas', 'filtros', 'searchFields'));
     }
 
     /**

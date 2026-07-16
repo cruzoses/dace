@@ -14,6 +14,12 @@
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Estudiantes</h3>
                 <div class="box-tools pull-right">
+                    <?php if( $this->Permiso->tiene(1)) : ?>
+                        <?= $this->Html->link('<i class="fa fa-cogs"></i>',
+                            ['controller' => 'estudiante_programas','action' => 'index'], 
+                            ['class'=>'btn btn-box-tool','escape' => false]) 
+                        ?>
+                    <?php endif; ?>
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-sace box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Estudiante Programas</h3>
                 <div class="box-tools pull-right">
@@ -17,13 +17,19 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('buscador');?>
+			        <?= $this->element('search_form', [
+                        'title' => 'Buscar Estudiante Programa',
+                        'searchFields' => $searchFields,
+                        'filtros' => $filtros
+                    ]); ?>
 		        </div>
+                <?php $this->Paginator->options(['url' => $filtros]); ?>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
                             <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col"><?= $this->Paginator->sort('estudiante_id') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('estudiante_id', 'Cédula') ?></th>
+                            <th scope="col">Nombre</th>
                             <th scope="col"><?= $this->Paginator->sort('sede_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('programa_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('fecha_egreso') ?></th>
@@ -40,7 +46,8 @@
                         <?php foreach ($estudianteProgramas as $estudiantePrograma): ?>
                             <tr>
                                 <td><?= $this->Number->format($estudiantePrograma->id) ?></td>
-                            <td><?= $estudiantePrograma->has('estudiante') ? $this->Html->link($estudiantePrograma->estudiante->id, ['controller' => 'Estudiantes', 'action' => 'view', $estudiantePrograma->estudiante->id]) : '' ?></td>
+                            <td><?= $estudiantePrograma->has('estudiante') ? $this->Html->link($estudiantePrograma->estudiante->cedula, ['controller' => 'Estudiantes', 'action' => 'view', $estudiantePrograma->estudiante->id]) : '' ?></td>
+                            <td><?= $estudiantePrograma->has('estudiante') ? h($estudiantePrograma->estudiante->full_name) : '' ?></td>
                                 <td><?= $estudiantePrograma->has('sede') ? $this->Html->link($estudiantePrograma->sede->codename, ['controller' => 'Sedes', 'action' => 'view', $estudiantePrograma->sede->id]) : '' ?></td>
                                 <td><?= $estudiantePrograma->has('programa') ? $this->Html->link($estudiantePrograma->programa->codename, ['controller' => 'Programas', 'action' => 'view', $estudiantePrograma->programa->id]) : '' ?></td>
                                             <td><?= h($estudiantePrograma->fecha_egreso) ?></td>
@@ -60,7 +67,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="13" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
