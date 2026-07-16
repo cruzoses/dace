@@ -55,20 +55,21 @@
                                             <?php
                                             $cont++;
                                             $aprobada = false;
+                                            $esCualitativa = false;
+                                            $notaMinimaFila = $notaMinimaPrograma;
                                             if (!empty($asig->calificacion)) {
                                                 $esCualitativa = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
                                                 if ($esCualitativa) {
                                                     $aprobada = strtoupper($asig->calificacion) === 'A';
                                                 } else {
-                                                    $notaMinima = $notaMinimaPrograma;
                                                     if ($asig->has('asignatura') && isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
-                                                        $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                                                        $notaMinimaFila = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
                                                     }
-                                                    $aprobada = (float)$asig->calificacion >= $notaMinima;
+                                                    $aprobada = (float)$asig->calificacion >= $notaMinimaFila;
                                                 }
                                             }
                                             ?>
-                                            <tr data-id="<?= $asig->id ?>">
+                                            <tr data-id="<?= $asig->id ?>" data-tipo="<?= $esCualitativa ? 1 : 0 ?>" data-nota-minima="<?= $notaMinimaFila ?>">
                                                 <td class="text-center"><?= $cont ?></td>
                                                 <td><?= $asig->has('trayecto') ? h($asig->trayecto->codename) : '' ?></td>
                                                 <td>
@@ -218,10 +219,14 @@ $(document).on('submit', '#form-calificar', function(e) {
                 var tr = $('tr[data-id="' + d.id + '"]');
 
                 if (tr.length) {
-                    var esCualitativa = d.tipo_calificacion === 1;
+                    var tipo = parseInt(tr.data('tipo'));
+                    var notaMinima = parseFloat(tr.data('nota-minima'));
                     var aprobada = false;
-                    if (esCualitativa) {
+
+                    if (tipo === 1) {
                         aprobada = d.calificacion.toUpperCase() === 'A';
+                    } else {
+                        aprobada = parseFloat(d.calificacion) >= notaMinima;
                     }
 
                     var styleNota = d.calificacion
