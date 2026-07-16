@@ -9,6 +9,40 @@
 <div class="row">
     <div class="col-md-12">
         <?php if (!empty($situaciones)): ?>
+            <?php if (count($situaciones) > 1): ?>
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-bar-chart"></i>&nbsp;Resumen de &Iacute;ndices Acad&eacute;micos</h3>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-bordered table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Programa</th>
+                                    <th class="text-center">Cr&eacute;ditos</th>
+                                    <th class="text-center">Aprobados</th>
+                                    <th class="text-center">%</th>
+                                    <th class="text-center">ISA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($situaciones as $item): ?>
+                                    <?php $prog = $item['programa']; ?>
+                                    <tr>
+                                        <td><?= h($prog->carrera->codigo) ?> - <?= h($prog->programa->codename) ?></td>
+                                        <td class="text-center"><?= $item['totalCreditosPrograma'] ?></td>
+                                        <td class="text-center"><?= $item['totalCreditosAprobados'] ?></td>
+                                        <td class="text-center"><?= $item['porcentajeAprobado'] ?>%</td>
+                                        <td class="text-center" style="<?= $item['isa'] >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
+                                            <?= $item['isa'] ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php endif; ?>
             <?php foreach ($situaciones as $item): ?>
                 <?php $programa = $item['programa']; ?>
                 <?php $asignaturas = $item['asignaturas']; ?>
@@ -18,6 +52,7 @@
                 <?php $totalAsignaturasAprobadas = $item['totalAsignaturasAprobadas']; ?>
                 <?php $porcentajeAprobado = $item['porcentajeAprobado']; ?>
                 <?php $mallasPorAsignatura = $item['mallasPorAsignatura']; ?>
+                <?php $isa = $item['isa']; ?>
                 <?php $notaMinimaPrograma = (float)$programa->programa->nota_minima; ?>
 
                 <div class="box box-warning">
@@ -121,7 +156,10 @@
                                                     </span>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    &Iacute;ndice de la Situaci&oacute;n: (Pendiente)
+                                                    &Iacute;ndice de la Situaci&oacute;n Acad&eacute;mica:
+                                                    <span id="isa-<?= $programa->programa_id ?>" style="<?= $isa >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
+                                                        <?= $isa ?>
+                                                    </span>
                                                 </div>
                                                 <div class="col-md-4">
                                                     &Iacute;ndice del Proceso: (Pendiente)
@@ -250,6 +288,9 @@ $(document).on('submit', '#form-calificar', function(e) {
                 $('#total-creditos-aprobados-' + pid).text(d.totalCreditosAprobados).attr('style', color);
                 $('#total-asignaturas-aprobadas-' + pid).text(d.totalAsignaturasAprobadas).attr('style', color);
                 $('#porcentaje-aprobado-' + pid).text(d.porcentajeAprobado + '%').attr('style', color);
+
+                var isaStyle = d.isa >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold';
+                $('#isa-' + pid).text(d.isa).attr('style', isaStyle);
             } else {
                 var errorMsg = response.message || 'Error al guardar';
                 if (response.errors) {

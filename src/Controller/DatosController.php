@@ -127,6 +127,8 @@ class DatosController extends AppController
             $totalAsignaturas = count($asignaturas);
             $totalCreditosAprobados = 0;
             $totalAsignaturasAprobadas = 0;
+            $isaNumerador = 0;
+            $isaDenominador = 0;
 
             foreach ($asignaturas as $asig) {
                 if (empty($asig->calificacion)) {
@@ -135,22 +137,29 @@ class DatosController extends AppController
                 $esCualitativa = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
                 if ($esCualitativa) {
                     $aprobada = strtoupper($asig->calificacion) === 'A';
+                    $notaISA = strtoupper($asig->calificacion) === 'A' ? 20 : 0;
                 } else {
                     $notaMinima = $notaMinimaPrograma;
                     if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
                         $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
                     }
                     $aprobada = (float)$asig->calificacion >= $notaMinima;
+                    $notaISA = (float)$asig->calificacion;
                 }
                 if ($aprobada) {
                     $totalCreditosAprobados += (int)$asig->asignatura->creditos;
                     $totalAsignaturasAprobadas++;
                 }
+                $creditosAsig = (int)$asig->asignatura->creditos;
+                $isaNumerador += $notaISA * $creditosAsig;
+                $isaDenominador += $creditosAsig;
             }
 
             $porcentajeAprobado = $totalCreditosPrograma > 0
                 ? round(($totalCreditosAprobados / $totalCreditosPrograma) * 100, 1)
                 : 0;
+
+            $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 2) : 0;
 
             $situaciones[] = [
                 'programa' => $programa,
@@ -161,6 +170,7 @@ class DatosController extends AppController
                 'totalCreditosAprobados' => $totalCreditosAprobados,
                 'totalAsignaturasAprobadas' => $totalAsignaturasAprobadas,
                 'porcentajeAprobado' => $porcentajeAprobado,
+                'isa' => $isa,
             ];
         }
 
