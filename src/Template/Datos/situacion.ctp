@@ -5,7 +5,7 @@
  * @var array $situaciones
 */
 ?>
-
+<?php $this->assign('title','Situación' ); ?>
 <div class="row">
     <div class="col-md-12">
         <?php if (!empty($situaciones)): ?>
@@ -64,6 +64,18 @@
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="fa fa-graduation-cap"></i>&nbsp;<?= h($programa->programa->codename) ?></h3>
                         <div class="box-tools pull-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-print"></i>&nbsp;Imprimir <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="#"><i class="fa fa-file-text-o"></i>&nbsp;Situaci&oacute;n Acad&eacute;mica</a></li>
+                                    <li><a href="#"><i class="fa fa-certificate"></i>&nbsp;Notas Certificadas</a></li>
+                                    <li><a href="#"><i class="fa fa-graduation-cap"></i>&nbsp;Constancia de Culminaci&oacute;n</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#"><i class="fa fa-file-excel-o"></i>&nbsp;Exportar a Excel</a></li>
+                                </ul>
+                            </div>
                             <button type="button" class="btn btn-box-tool" data-widget="collapse">
                                 <i class="fa fa-minus"></i>
                             </button>
