@@ -68,7 +68,7 @@
                                                 }
                                             }
                                             ?>
-                                            <tr>
+                                            <tr data-id="<?= $asig->id ?>">
                                                 <td class="text-center"><?= $cont ?></td>
                                                 <td><?= $asig->has('trayecto') ? h($asig->trayecto->codename) : '' ?></td>
                                                 <td>
@@ -214,9 +214,28 @@ $(document).on('submit', '#form-calificar', function(e) {
         dataType: 'json',
         success: function(response) {
             if (response.success) {
+                var d = response.data;
+                var tr = $('tr[data-id="' + d.id + '"]');
+
+                if (tr.length) {
+                    var esCualitativa = d.tipo_calificacion === 1;
+                    var aprobada = false;
+                    if (esCualitativa) {
+                        aprobada = d.calificacion.toUpperCase() === 'A';
+                    }
+
+                    var styleNota = d.calificacion
+                        ? (aprobada ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold')
+                        : '';
+
+                    tr.find('td:eq(5)').attr('style', styleNota).text(d.calificacion);
+                    tr.find('td:eq(6)').text(d.calificacion ? d.seccion : '');
+                    tr.find('td:eq(7)').text(d.calificacion ? d.periodo : '');
+                    tr.find('td:eq(8)').text(d.calificacion ? d.responsable : '');
+                }
+
                 $('#modal-calificacion').modal('hide');
                 toastr.success(response.message);
-                $('#btnSituacion').trigger('click');
             } else {
                 var errorMsg = response.message || 'Error al guardar';
                 if (response.errors) {

@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
  * SituacionEstudiantes Controller
@@ -236,10 +237,27 @@ class SituacionEstudiantesController extends AppController
                 . ', RESPONSABLE: ' . $responsable
             );
 
+            $periodoNombre = '';
+            if ($situacionEstudiante->has('periodo')) {
+                $periodoNombre = $situacionEstudiante->periodo->nombre;
+            } elseif ($situacionEstudiante->periodo_id) {
+                $periodosTable = TableRegistry::getTableLocator()->get('Periodos');
+                $periodo = $periodosTable->get($situacionEstudiante->periodo_id);
+                $periodoNombre = $periodo->nombre;
+            }
+
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
                     'success' => true,
-                    'message' => 'Calificación guardada correctamente.'
+                    'message' => 'Calificación guardada correctamente.',
+                    'data' => [
+                        'id' => $situacionEstudiante->id,
+                        'calificacion' => $calificacion,
+                        'seccion' => $situacionEstudiante->seccion,
+                        'periodo' => $periodoNombre,
+                        'responsable' => $responsable,
+                        'tipo_calificacion' => (int)$tipoCalificacion,
+                    ]
                 ]));
         }
 
