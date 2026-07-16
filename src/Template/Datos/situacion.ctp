@@ -86,7 +86,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="9" class="text-right" style="background-color:#f4f4f4;font-weight:bold">
+                                        <td colspan="9" style="background-color:#f4f4f4;font-weight:bold">
                                             <div class="row" style="margin:0">
                                                 <div class="col-md-4">
                                                     Total Cr&eacute;ditos del Programa: <?= $totalCreditosPrograma ?>
