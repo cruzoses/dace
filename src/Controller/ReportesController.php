@@ -198,7 +198,98 @@ class ReportesController extends AppController
         $result = $report->generate();
 
         $this->set($result);
-        $this->render('showreport');
+        $this->set('estudianteId', $estudianteId);
+        $this->render('/Datos/visorpdf');
+    }
+
+    public function notasCertificadas($estudianteId = null, $programaId = null)
+    {
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($estudianteId);
+
+        $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+        $programa = $programasTable->find()
+            ->where([
+                'EstudianteProgramas.estudiante_id' => $estudianteId,
+                'EstudianteProgramas.programa_id' => $programaId,
+            ])
+            ->contain(['Carreras', 'Programas'])
+            ->first();
+
+        $asignaturasTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+        $asignaturas = $asignaturasTable->find()
+            ->where([
+                'SituacionEstudiantes.estudiante_id' => $estudianteId,
+                'SituacionEstudiantes.programa_id' => $programaId,
+            ])
+            ->contain(['Asignaturas', 'Trayectos', 'Periodos'])
+            ->order(['SituacionEstudiantes.trayecto_id' => 'ASC', 'SituacionEstudiantes.asignatura_id' => 'ASC'])
+            ->toArray();
+
+        $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+        $mallas = $mallasTable->find()
+            ->where(['Mallas.programa_id' => $programaId])
+            ->toArray();
+        $mallasPorAsignatura = [];
+        foreach ($mallas as $m) {
+            $mallasPorAsignatura[$m->asignatura_id] = $m;
+        }
+
+        $notaMinimaPrograma = (float)$programa->programa->nota_minima;
+        $totalCreditosPrograma = (int)$programa->programa->creditos;
+        $totalAsignaturas = count($asignaturas);
+        $totalCreditosAprobados = 0;
+        $totalAsignaturasAprobadas = 0;
+        $iraNumerador = 0;
+        $iraDenominador = 0;
+
+        foreach ($asignaturas as $asig) {
+            if (empty($asig->calificacion)) {
+                continue;
+            }
+            $esCualitativa = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
+            if ($esCualitativa) {
+                $aprobada = strtoupper($asig->calificacion) === 'A';
+                $notaISA = strtoupper($asig->calificacion) === 'A' ? 20 : 0;
+            } else {
+                $notaMinima = $notaMinimaPrograma;
+                if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
+                    $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                }
+                $aprobada = (float)$asig->calificacion >= $notaMinima;
+                $notaISA = (float)$asig->calificacion;
+            }
+            if ($aprobada) {
+                $totalCreditosAprobados += (int)$asig->asignatura->creditos;
+                $totalAsignaturasAprobadas++;
+            }
+            if (!empty($asig->acumulado) && (int)$asig->acumulado > 0) {
+                $iraNumerador += (int)$asig->acumulado;
+            } else {
+                $notaIRA = $esCualitativa ? $notaISA : (float)$asig->calificacion;
+                $iraNumerador += $notaIRA * (int)$asig->asignatura->creditos;
+            }
+            $iraDenominador += (int)$asig->asignatura->creditos;
+        }
+
+        $porcentajeAprobado = $totalCreditosPrograma > 0
+            ? round(($totalCreditosAprobados / $totalCreditosPrograma) * 100, 2) : 0;
+        $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 4) : 0;
+
+        $resultado = [
+            'totalAsignaturas' => $totalAsignaturas,
+            'totalCreditosAprobados' => $totalCreditosAprobados,
+            'totalAsignaturasAprobadas' => $totalAsignaturasAprobadas,
+            'ira' => $ira,
+            'porcentajeAprobado' => $porcentajeAprobado,
+        ];
+
+        $report = new \App\Reportes\NotasCertificadas($estudiante, $programa, $asignaturas, $mallasPorAsignatura, $resultado);
+        $result = $report->generate();
+
+        $this->set($result);
+        $this->set('estudianteId', $estudianteId);
+        $this->render('/Datos/visorpdf');
     }
 
     public function downloadPdf()

@@ -817,6 +817,8 @@ CREATE TABLE IF NOT EXISTS `situacion_estudiantes`
   `seccion` Varchar(20),
   `calificacion` Varchar(5),
   `responsable` Varchar(50),
+  `cursada` Smallint(6),
+  `acumulado` Smallint(6),
   `created` Datetime,
   `modified` Datetime,
   PRIMARY KEY (`id`)

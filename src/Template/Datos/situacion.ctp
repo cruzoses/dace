@@ -70,7 +70,7 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li><a href="<?= $this->Url->build(['controller' => 'Reportes', 'action' => 'situacionAcademica', $estudiante->id, $programa->programa_id]) ?>"><i class="fas fa-file-pdf"></i>&nbsp;Situaci&oacute;n Acad&eacute;mica</a></li>
-                                    <li><a href="#"><i class="fa fa-certificate"></i>&nbsp;Notas Certificadas</a></li>
+                                    <li><a href="<?= $this->Url->build(['controller' => 'Reportes', 'action' => 'notasCertificadas', $estudiante->id, $programa->programa_id]) ?>"><i class="fa fa-certificate"></i>&nbsp;Notas Certificadas</a></li>
                                     <li><a href="#"><i class="fa fa-graduation-cap"></i>&nbsp;Constancia de Culminaci&oacute;n</a></li>
                                     <li class="divider"></li>
                                     <li><a href="<?= $this->Url->build(['controller' => 'Archivos', 'action' => 'exportarSituacion', $estudiante->id, $programa->programa_id]) ?>"><i class="fas fa-file-excel"></i>&nbsp;Exportar a Excel</a></li>
