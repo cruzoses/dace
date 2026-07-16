@@ -13,7 +13,7 @@
                     <td class="pad"><strong>Estudiante</strong></td>
                     <td>
                         <?= $this->Html->link('Datos',
-                            ['action' => 'view',$estudiante->id],
+                            ['action' => 'estudiante',$estudiante->id],
                             ['id' => 'btnDatos', 'class' => 'btn btn-info btn-sm menuh btnTools', 'role' => 'button']); 
                         ?>
                         <?= $this->Html->link('Programas',

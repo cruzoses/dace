@@ -219,4 +219,74 @@ class AppController extends Controller
         return $token;
     }
 
+    public function escala( $nValor )
+    {
+        switch ($nValor) {
+            case $nValor == 1 || $nValor <= 5:
+                $sNota = 1;
+                break;
+            case $nValor == 6 || $nValor <= 10:
+                $sNota = 2;
+                break;
+            case $nValor == 11 || $nValor <= 15:
+                $sNota = 3;
+                break;
+            case $nValor == 16 || $nValor <= 20:
+                $sNota = 4;
+                break;
+            case $nValor == 21 || $nValor <= 25:
+                $sNota = 5;
+                break;
+            case $nValor == 26 || $nValor <= 30:
+                $sNota = 6;
+                break;
+            case $nValor == 31 || $nValor <= 35:
+                $sNota = 7;
+                break;
+            case $nValor == 36 || $nValor <= 40:
+                $sNota = 8;
+                break;
+            case $nValor == 41 || $nValor <= 45:
+                $sNota = 9;
+                break;
+            case $nValor == 46 || $nValor <= 50:
+                $sNota = 10;
+                break;
+            case $nValor == 51 || $nValor <= 55:
+                $sNota = 11;
+                break;
+            case $nValor == 56 || $nValor <= 60:                
+                $sNota = 12;
+                break;
+            case $nValor == 61 || $nValor <= 65:
+                $sNota = 13;
+                break;
+            case $nValor == 66 || $nValor <= 70:
+                $sNota = 14;
+                break;
+            case $nValor == 71 || $nValor <= 75:
+                $sNota = 15;
+                break;
+            case $nValor == 76 || $nValor <= 80:
+                $sNota = 16;
+                break;
+            case $nValor == 81 || $nValor <= 85:
+                $sNota = 17;
+                break;
+            case $nValor == 86 || $nValor <= 90:
+                $sNota = 18;
+                break;
+            case $nValor == 91 || $nValor <= 95:
+                $sNota = 19;
+                break;
+            case $nValor == 96 || $nValor <= 100:
+                $sNota = 20;
+                break;           
+            default:
+                $sNota = "";
+                break;
+        }
+        return $sNota;
+    }
+
 }
