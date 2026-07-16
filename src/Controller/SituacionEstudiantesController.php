@@ -165,8 +165,9 @@ class SituacionEstudiantesController extends AppController
             ->order(['Periodos.codigo' => 'DESC']);
 
         $userAlias = $this->Auth->user('alias');
+        $tipoCalificacion = (int)$situacionEstudiante->asignatura->calificacion;
 
-        $this->set(compact('situacionEstudiante', 'periodos', 'userAlias'));
+        $this->set(compact('situacionEstudiante', 'periodos', 'userAlias', 'tipoCalificacion'));
         $this->viewBuilder()->setLayout('ajax');
     }
 
@@ -180,15 +181,45 @@ class SituacionEstudiantesController extends AppController
         $this->request->allowMethod(['ajax', 'post']);
 
         $id = $this->request->getData('id');
-        $situacionEstudiante = $this->SituacionEstudiantes->get($id);
-
-        $calificacionAnterior = $situacionEstudiante->calificacion;
+        $tipoCalificacion = $this->request->getData('tipo_calificacion');
+        $calificacion = trim($this->request->getData('calificacion'));
         $responsable = $this->Auth->user('alias');
+
+        if (empty($calificacion)) {
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode([
+                    'success' => false,
+                    'message' => 'La calificación es requerida.'
+                ]));
+        }
+
+        if ((int)$tipoCalificacion === 1) {
+            $calificacion = strtoupper($calificacion);
+            if (!in_array($calificacion, ['A', 'R'])) {
+                return $this->response->withType('application/json')
+                    ->withStringBody(json_encode([
+                        'success' => false,
+                        'message' => 'La calificación cualitativa solo permite A (Aprobado) o R (Reprobado).'
+                    ]));
+            }
+        } else {
+            if (!is_numeric($calificacion) || (float)$calificacion < 1 || (float)$calificacion > 20) {
+                return $this->response->withType('application/json')
+                    ->withStringBody(json_encode([
+                        'success' => false,
+                        'message' => 'La calificación cuantitativa debe ser un valor entre 1 y 20.'
+                    ]));
+            }
+        }
+
+        $situacionEstudiante = $this->SituacionEstudiantes->get($id);
+        $calificacionAnterior = $situacionEstudiante->calificacion;
 
         $situacionEstudiante = $this->SituacionEstudiantes->patchEntity(
             $situacionEstudiante,
             $this->request->getData()
         );
+        $situacionEstudiante->calificacion = $calificacion;
         $situacionEstudiante->responsable = $responsable;
 
         if ($this->SituacionEstudiantes->save($situacionEstudiante)) {
@@ -197,8 +228,9 @@ class SituacionEstudiantesController extends AppController
                 'CALIFICACION - ASIGNATURA ID: ' . $situacionEstudiante->asignatura_id
                 . ', ESTUDIANTE ID: ' . $situacionEstudiante->estudiante_id
                 . ', PROGRAMA ID: ' . $situacionEstudiante->programa_id
+                . ', TIPO: ' . ((int)$tipoCalificacion === 1 ? 'CUALITATIVA' : 'CUANTITATIVA')
                 . ', NOTA ANTERIOR: ' . ($calificacionAnterior ?: 'S/N')
-                . ', NOTA NUEVA: ' . $situacionEstudiante->calificacion
+                . ', NOTA NUEVA: ' . $calificacion
                 . ', SECCION: ' . $situacionEstudiante->seccion
                 . ', PERIODO ID: ' . $situacionEstudiante->periodo_id
                 . ', RESPONSABLE: ' . $responsable

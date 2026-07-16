@@ -4,6 +4,7 @@
  * @var \App\Model\Entity\SituacionEstudiante $situacionEstudiante
  * @var array $periodos
  * @var string $userAlias
+ * @var int $tipoCalificacion 0=CUANTITATIVA, 1=CUALITATIVA
 */
 ?>
 <?= $this->Form->create(null, [
@@ -14,12 +15,18 @@
     ]
 ]) ?>
 <?= $this->Form->hidden('id', ['value' => $situacionEstudiante->id]) ?>
+<?= $this->Form->hidden('tipo_calificacion', ['value' => $tipoCalificacion]) ?>
 
 <div class="form-group">
     <label class="col-sm-5 control-label">Asignatura</label>
     <div class="col-sm-7">
         <p class="form-control-static">
             <?= h($situacionEstudiante->asignatura->codigo) ?> - <?= h($situacionEstudiante->asignatura->nombre) ?>
+            <?php if ($tipoCalificacion == 1): ?>
+                <span class="label label-info">CUALITATIVA</span>
+            <?php else: ?>
+                <span class="label label-default">CUANTITATIVA</span>
+            <?php endif; ?>
         </p>
     </div>
 </div>
@@ -27,18 +34,34 @@
 <div class="form-group">
     <label class="col-sm-5 control-label">Calificación <span class="text-danger">*</span></label>
     <div class="col-sm-7">
-        <?= $this->Form->control('calificacion', [
-            'type' => 'number',
-            'label' => false,
-            'class' => 'form-control',
-            'min' => 0,
-            'max' => 20,
-            'step' => 0.5,
-            'value' => $situacionEstudiante->calificacion,
-            'required' => true,
-            'placeholder' => '0 - 20',
-            'div' => false
-        ]) ?>
+        <?php if ($tipoCalificacion == 1): ?>
+            <?= $this->Form->control('calificacion', [
+                'type' => 'select',
+                'label' => false,
+                'class' => 'form-control',
+                'options' => [
+                    'A' => 'A - APROBADO',
+                    'R' => 'R - REPROBADO'
+                ],
+                'empty' => '-- Seleccione --',
+                'value' => $situacionEstudiante->calificacion,
+                'required' => true,
+                'div' => false
+            ]) ?>
+        <?php else: ?>
+            <?= $this->Form->control('calificacion', [
+                'type' => 'number',
+                'label' => false,
+                'class' => 'form-control',
+                'min' => 1,
+                'max' => 20,
+                'step' => 0.5,
+                'value' => $situacionEstudiante->calificacion,
+                'required' => true,
+                'placeholder' => '1 - 20',
+                'div' => false
+            ]) ?>
+        <?php endif; ?>
     </div>
 </div>
 

@@ -132,11 +132,17 @@ class DatosController extends AppController
                 if (empty($asig->calificacion)) {
                     continue;
                 }
-                $notaMinima = $notaMinimaPrograma;
-                if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
-                    $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                $esCualitativa = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
+                if ($esCualitativa) {
+                    $aprobada = strtoupper($asig->calificacion) === 'A';
+                } else {
+                    $notaMinima = $notaMinimaPrograma;
+                    if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
+                        $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                    }
+                    $aprobada = (float)$asig->calificacion >= $notaMinima;
                 }
-                if ((float)$asig->calificacion >= $notaMinima) {
+                if ($aprobada) {
                     $totalCreditosAprobados += (int)$asig->asignatura->creditos;
                     $totalAsignaturasAprobadas++;
                 }

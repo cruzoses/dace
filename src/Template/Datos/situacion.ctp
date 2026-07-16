@@ -59,11 +59,16 @@
                                             $cont++;
                                             $aprobada = false;
                                             if (!empty($asig->calificacion)) {
-                                                $notaMinima = $notaMinimaPrograma;
-                                                if ($asig->has('asignatura') && isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
-                                                    $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                                                $esCualitativa = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
+                                                if ($esCualitativa) {
+                                                    $aprobada = strtoupper($asig->calificacion) === 'A';
+                                                } else {
+                                                    $notaMinima = $notaMinimaPrograma;
+                                                    if ($asig->has('asignatura') && isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
+                                                        $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                                                    }
+                                                    $aprobada = (float)$asig->calificacion >= $notaMinima;
                                                 }
-                                                $aprobada = (float)$asig->calificacion >= $notaMinima;
                                             }
                                             ?>
                                             <tr>
