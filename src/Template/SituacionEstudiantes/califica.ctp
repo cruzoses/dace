@@ -73,6 +73,7 @@
             'class' => 'form-control',
             'value' => $situacionEstudiante->seccion,
             'placeholder' => 'Ej: A, B, Única',
+            'required' => true,
             'div' => false
         ]) ?>
     </div>

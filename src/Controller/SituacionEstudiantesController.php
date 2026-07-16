@@ -184,6 +184,8 @@ class SituacionEstudiantesController extends AppController
         $id = $this->request->getData('id');
         $tipoCalificacion = $this->request->getData('tipo_calificacion');
         $calificacion = trim($this->request->getData('calificacion'));
+        $seccion = trim($this->request->getData('seccion', ''));
+        $periodoId = $this->request->getData('periodo_id');
         $responsable = $this->Auth->user('alias');
 
         if (empty($calificacion)) {
@@ -191,6 +193,22 @@ class SituacionEstudiantesController extends AppController
                 ->withStringBody(json_encode([
                     'success' => false,
                     'message' => 'La calificación es requerida.'
+                ]));
+        }
+
+        if (empty($seccion)) {
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode([
+                    'success' => false,
+                    'message' => 'La sección es requerida cuando se registra una calificación.'
+                ]));
+        }
+
+        if (empty($periodoId)) {
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode([
+                    'success' => false,
+                    'message' => 'El período es requerido cuando se registra una calificación.'
                 ]));
         }
 
