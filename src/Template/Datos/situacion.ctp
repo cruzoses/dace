@@ -192,6 +192,12 @@ $(document).on('click', '.btn-calificar', function(e) {
         type: 'GET',
         success: function(html) {
             $('#modal-calificacion .modal-body').html(html);
+            $('#modal-calificacion .modal-body .select2').select2({
+                language: 'es',
+                placeholder: 'Seleccione una Opción',
+                allowClear: true,
+                width: 'resolve',
+            });
         },
         error: function() {
             $('#modal-calificacion .modal-body').html('<div class="alert alert-danger">Error al cargar el formulario.</div>');
