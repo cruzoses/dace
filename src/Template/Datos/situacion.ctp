@@ -112,7 +112,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     Total Cr&eacute;ditos Aprobados:
-                                                    <span style="<?= $porcentajeAprobado == 100 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
+                                                    <span id="total-creditos-aprobados-<?= $programa->programa_id ?>" style="<?= $porcentajeAprobado == 100 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
                                                         <?= $totalCreditosAprobados ?>
                                                     </span>
                                                 </div>
@@ -120,7 +120,7 @@
                                             <div class="row" style="margin:0">
                                                 <div class="col-md-4">
                                                     Total Asignaturas Aprobadas:
-                                                    <span style="<?= $porcentajeAprobado == 100 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
+                                                    <span id="total-asignaturas-aprobadas-<?= $programa->programa_id ?>" style="<?= $porcentajeAprobado == 100 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
                                                         <?= $totalAsignaturasAprobadas ?>
                                                     </span>
                                                 </div>
@@ -134,7 +134,7 @@
                                             <div class="row" style="margin:0">
                                                 <div class="col-md-12">
                                                     Porcentaje Aprobado:
-                                                    <span style="<?= $porcentajeAprobado == 100 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
+                                                    <span id="porcentaje-aprobado-<?= $programa->programa_id ?>" style="<?= $porcentajeAprobado == 100 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
                                                         <?= $porcentajeAprobado ?>%
                                                     </span>
                                                 </div>
@@ -241,6 +241,12 @@ $(document).on('submit', '#form-calificar', function(e) {
 
                 $('#modal-calificacion').modal('hide');
                 toastr.success(response.message);
+
+                var pid = d.programa_id;
+                var color = d.porcentajeAprobado == 100 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold';
+                $('#total-creditos-aprobados-' + pid).text(d.totalCreditosAprobados).attr('style', color);
+                $('#total-asignaturas-aprobadas-' + pid).text(d.totalAsignaturasAprobadas).attr('style', color);
+                $('#porcentaje-aprobado-' + pid).text(d.porcentajeAprobado + '%').attr('style', color);
             } else {
                 var errorMsg = response.message || 'Error al guardar';
                 if (response.errors) {

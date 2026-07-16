@@ -246,6 +246,61 @@ class SituacionEstudiantesController extends AppController
                 $periodoNombre = $periodo->nombre;
             }
 
+            $estudianteId = $situacionEstudiante->estudiante_id;
+            $programaId = $situacionEstudiante->programa_id;
+
+            $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+            $ep = $programasTable->find()
+                ->where(['EstudianteProgramas.estudiante_id' => $estudianteId, 'EstudianteProgramas.programa_id' => $programaId])
+                ->contain(['Programas'])
+                ->first();
+
+            $totalCreditosPrograma = $ep ? (int)$ep->programa->creditos : 0;
+            $notaMinimaPrograma = $ep ? (float)$ep->programa->nota_minima : 0;
+
+            $asignaturas = $this->SituacionEstudiantes->find()
+                ->where([
+                    'SituacionEstudiantes.estudiante_id' => $estudianteId,
+                    'SituacionEstudiantes.programa_id' => $programaId,
+                ])
+                ->contain(['Asignaturas'])
+                ->toArray();
+
+            $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+            $mallas = $mallasTable->find()
+                ->where(['Mallas.programa_id' => $programaId])
+                ->toArray();
+            $mallasPorAsignatura = [];
+            foreach ($mallas as $m) {
+                $mallasPorAsignatura[$m->asignatura_id] = $m;
+            }
+
+            $totalCreditosAprobados = 0;
+            $totalAsignaturasAprobadas = 0;
+            foreach ($asignaturas as $asig) {
+                if (empty($asig->calificacion)) {
+                    continue;
+                }
+                $esCual = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
+                if ($esCual) {
+                    $aprobada = strtoupper($asig->calificacion) === 'A';
+                } else {
+                    $nm = $notaMinimaPrograma;
+                    if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
+                        $nm = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                    }
+                    $aprobada = (float)$asig->calificacion >= $nm;
+                }
+                if ($aprobada) {
+                    $totalCreditosAprobados += (int)$asig->asignatura->creditos;
+                    $totalAsignaturasAprobadas++;
+                }
+            }
+
+            $porcentajeAprobado = $totalCreditosPrograma > 0
+                ? round(($totalCreditosAprobados / $totalCreditosPrograma) * 100, 1)
+                : 0;
+
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
                     'success' => true,
@@ -257,6 +312,10 @@ class SituacionEstudiantesController extends AppController
                         'periodo' => $periodoNombre,
                         'responsable' => $responsable,
                         'tipo_calificacion' => (int)$tipoCalificacion,
+                        'programa_id' => $programaId,
+                        'totalCreditosAprobados' => $totalCreditosAprobados,
+                        'totalAsignaturasAprobadas' => $totalAsignaturasAprobadas,
+                        'porcentajeAprobado' => $porcentajeAprobado,
                     ]
                 ]));
         }
