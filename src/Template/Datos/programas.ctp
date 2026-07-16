@@ -37,7 +37,7 @@
                                 <?php if ($key->programa->califica): ?>
                                     <?= $this->Html->link(h($key->carrera->codigo),
                                         ['action' => 'situacion', $estudianteId, $key->programa_id],
-                                        ['class' => 'btn-link', 'title' => 'Ver situación académica']) ?>
+                                        ['class' => 'btn-link btn-situacion', 'title' => 'Ver situación académica']) ?>
                                 <?php else: ?>
                                     <?= h($key->carrera->codigo) ?>
                                 <?php endif; ?>
@@ -87,6 +87,25 @@
 
 <script>
 $(document).ready(function() {
+    $(document).on('click', '.btn-situacion', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $('#ajax-content').html('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+        $('#ajax-content').removeClass('oculto').show();
+        $('#information').hide();
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                $('#ajax-content').html(response);
+            },
+            error: function() {
+                $('#ajax-content').html('<div class="alert alert-danger">Error al cargar la situaci\u00f3n acad\u00e9mica.</div>');
+            }
+        });
+    });
+
     $(document).on('click', '.btn-abrir-modal', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
