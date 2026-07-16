@@ -14,6 +14,7 @@ use Cake\ORM\Entity;
  * @property int|null $periodo_id
  * @property string|null $seccion
  * @property string|null $calificacion
+ * @property int|null $cursada
  * @property string|null $responsable
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -43,6 +44,7 @@ class SituacionEstudiante extends Entity
         'periodo_id' => true,
         'seccion' => true,
         'calificacion' => true,
+        'cursada' => true,
         'responsable' => true,
         'created' => true,
         'modified' => true,
