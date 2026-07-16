@@ -55,9 +55,11 @@ class SituacionEstudiantesTable extends Table
             'foreignKey' => 'asignatura_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Trayectos', [
+            'foreignKey' => 'trayecto_id',
+        ]);
         $this->belongsTo('Periodos', [
             'foreignKey' => 'periodo_id',
-            'joinType' => 'INNER',
         ]);
     }
 
@@ -72,6 +74,10 @@ class SituacionEstudiantesTable extends Table
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
+
+        $validator
+            ->integer('trayecto_id')
+            ->allowEmptyString('trayecto_id');
 
         $validator
             ->scalar('seccion')
@@ -103,6 +109,7 @@ class SituacionEstudiantesTable extends Table
         $rules->add($rules->existsIn(['estudiante_id'], 'Estudiantes'));
         $rules->add($rules->existsIn(['programa_id'], 'Programas'));
         $rules->add($rules->existsIn(['asignatura_id'], 'Asignaturas'));
+        $rules->add($rules->existsIn(['trayecto_id'], 'Trayectos'));
         $rules->add($rules->existsIn(['periodo_id'], 'Periodos'));
 
         return $rules;

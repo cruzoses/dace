@@ -668,6 +668,7 @@ CREATE TABLE IF NOT EXISTS `estudiante_programas`
   `carrera_id` Int NOT NULL,
   `programa_id` Int NOT NULL,
   `sede_id` Int NOT NULL,
+  `periodo_id` Int NULL,
   `fecha_egreso` Date,
   `cohorte` Varchar(20),
   `indice` Double,
@@ -690,6 +691,11 @@ CREATE INDEX `IX_Estudiante_Sede` ON `estudiante_programas` (`sede_id`)
 ;
 
 CREATE INDEX `IX_Estudiante_Carrera` ON `estudiante_programas` (`carrera_id`)
+;
+
+-- Migracion: agregar periodo_id
+ALTER TABLE `estudiante_programas`
+  ADD COLUMN `periodo_id` INT NULL AFTER `sede_id`
 ;
 
 -- Table notas_cursos
@@ -807,7 +813,8 @@ CREATE TABLE IF NOT EXISTS `situacion_estudiantes`
   `estudiante_id` Int NOT NULL,
   `programa_id` Int NOT NULL,
   `asignatura_id` Int NOT NULL,
-  `periodo_id` Int NOT NULL,
+  `trayecto_id` Int NULL,
+  `periodo_id` Int NULL,
   `seccion` Varchar(20),
   `calificacion` Varchar(5),
   `responsable` Varchar(50),
@@ -827,6 +834,12 @@ CREATE INDEX `IX_Situacion_Asignatura` ON `situacion_estudiantes` (`asignatura_i
 ;
 
 CREATE INDEX `IX_Situacion_Periodo` ON `situacion_estudiantes` (`periodo_id`)
+;
+
+-- Migracion: agregar trayecto_id y hacer periodo_id nullable
+ALTER TABLE `situacion_estudiantes`
+  ADD COLUMN `trayecto_id` INT NULL AFTER `asignatura_id`,
+  MODIFY COLUMN `periodo_id` INT NULL
 ;
 
 -- Create foreign keys (relationships) section -------------------------------------------------

@@ -29,6 +29,15 @@
         <?php
             echo $this->Form->hidden('estudiante_id');
             echo $this->Form->control('sede_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $sedes]);
+            echo $this->Form->control('periodo_id', [
+                'label' => 'Período de Inscripción',
+                'type' => 'select',
+                'options' => $periodos,
+                'empty' => '-- Seleccione --',
+                'class' => 'form-control select2',
+                'data-width' => '100%',
+                'prepend' => '<i class="fa fa-asterisk"></i>',
+            ]);
             echo $this->Form->control('carrera_id', [
                 'label' => 'Carrera',
                 'type' => 'select',

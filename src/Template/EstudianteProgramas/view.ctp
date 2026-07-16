@@ -18,6 +18,8 @@
                     <dd><?= $estudiantePrograma->has('estudiante') ? $this->Html->link($estudiantePrograma->estudiante->id, ['controller' => 'Estudiantes', 'action' => 'view', $estudiantePrograma->estudiante->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Sede') ?></dt>
                     <dd><?= $estudiantePrograma->has('sede') ? $this->Html->link($estudiantePrograma->sede->codename, ['controller' => 'Sedes', 'action' => 'view', $estudiantePrograma->sede->id]) : '' ?></dd>
+                    <dt scope="row"><?= __('Período de Inscripción') ?></dt>
+                    <dd><?= $estudiantePrograma->has('periodo') ? h($estudiantePrograma->periodo->codigo) : '—' ?></dd>
                     <dt scope="row"><?= __('Programa') ?></dt>
                     <dd><?= $estudiantePrograma->has('programa') ? $this->Html->link($estudiantePrograma->programa->codename, ['controller' => 'Programas', 'action' => 'view', $estudiantePrograma->programa->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Cohorte') ?></dt>

@@ -66,45 +66,12 @@ class EstudianteProgramasController extends AppController
     public function view($id = null)
     {
         $estudiantePrograma = $this->EstudianteProgramas->get($id, [
-            'contain' => ['Estudiantes', 'Carreras', 'Programas', 'Sedes'],
+            'contain' => ['Estudiantes', 'Carreras', 'Programas', 'Sedes', 'Periodos'],
         ]);
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS EstudianteProgramas ' . json_encode($estudiantePrograma->toArray()));
 
         $this->set('estudiantePrograma', $estudiantePrograma);
-    }
-
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-    */
-    public function nuevo($id = null)
-    {
-        $estudiantePrograma = $this->EstudianteProgramas->newEntity();
-
-        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
-        $estudiante = $estudiantesTable->get($id);
-        $estudiantePrograma->estudiante_id = $estudiante->id;
-
-        if ($this->request->is('post'))
-        {
-            $estudiantePrograma = $this->EstudianteProgramas->patchEntity($estudiantePrograma, $this->request->getData());
-            if ($this->EstudianteProgramas->save($estudiantePrograma)) {
-                $this->Flash->success(__('Programa registrado correctamente.'));
-                $this->Auditorias->registrar('REGISTRA', 'REGISTRA PROGRAMA A EstudianteProgramas ' . json_encode($this->request->getData()));
-
-                return $this->redirect(['controller' => 'Estudiantes', 'action' => 'view', $estudiante->id]);
-            }
-            $this->Flash->error(__('No se pudo guardar el programa. Intente de nuevo.'));
-        }
-        $sedes = $this->EstudianteProgramas->Sedes->find('list', ['limit' => 200]);
-        $carreras = $this->EstudianteProgramas->Programas->Carreras->find('list', [
-            'conditions' => ['Carreras.activa' => 1],
-            'order' => ['Carreras.id' => 'ASC']
-        ]);
-        $this->set(compact('estudiantePrograma', 'estudiante', 'sedes', 'carreras'));
     }
 
     public function getProgramasByCarrera()
@@ -139,6 +106,7 @@ class EstudianteProgramasController extends AppController
             $estudiantePrograma = $this->EstudianteProgramas->patchEntity($estudiantePrograma, $this->request->getData());
             if ($this->EstudianteProgramas->save($estudiantePrograma))
             {
+                $this->_registrarMallaCurricular($estudiantePrograma);
                 $this->Auditorias->registrar('REGISTRA', 'REGISTRA PROGRAMA A EstudianteProgramas ' . json_encode($this->request->getData()));
 
                 if ($this->request->is('ajax')) {
@@ -163,7 +131,11 @@ class EstudianteProgramasController extends AppController
             'conditions' => ['Carreras.activa' => 1],
             'order' => ['Carreras.id' => 'ASC']
         ]);
-        $this->set(compact('estudiantePrograma', 'sedes', 'carreras'));
+        $periodos = $this->EstudianteProgramas->Periodos->find('list', [
+            'conditions' => ['Periodos.activo' => 1],
+            'order' => ['Periodos.codigo' => 'DESC']
+        ]);
+        $this->set(compact('estudiantePrograma', 'sedes', 'carreras', 'periodos'));
 
         if ($estudianteId) {
             $this->set('estudiante', $estudiante);
@@ -173,7 +145,6 @@ class EstudianteProgramasController extends AppController
             $this->viewBuilder()->setLayout('ajax');
         }
     }
-
 
     /**
      * Edit method
@@ -218,13 +189,57 @@ class EstudianteProgramasController extends AppController
             'conditions' => ['Carreras.activa' => 1],
             'order' => ['Carreras.id' => 'ASC']
         ]);
-        $this->set(compact('estudiantePrograma', 'estudiante', 'sedes', 'carreras'));
+        $periodos = $this->EstudianteProgramas->Periodos->find('list', [
+            'conditions' => ['Periodos.activo' => 1],
+            'order' => ['Periodos.codigo' => 'DESC']
+        ]);
+        $this->set(compact('estudiantePrograma', 'estudiante', 'sedes', 'carreras', 'periodos'));
 
         if ($this->request->is('ajax')) {
             $this->viewBuilder()->setLayout('ajax');
         }
     }
 
+    /**
+     * Delete method
+     *
+     * @param string|null $id Estudiante Programa id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+    */
+    private function _registrarMallaCurricular($estudiantePrograma)
+    {
+        $situacionEstudiantesTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+
+        $existe = $situacionEstudiantesTable->find()
+            ->where([
+                'estudiante_id' => $estudiantePrograma->estudiante_id,
+                'programa_id' => $estudiantePrograma->programa_id,
+            ])
+            ->count();
+
+        if ($existe > 0) {
+            return;
+        }
+
+        $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+        $mallas = $mallasTable->find()
+            ->where([
+                'carrera_id' => $estudiantePrograma->carrera_id,
+                'programa_id' => $estudiantePrograma->programa_id,
+            ])
+            ->toArray();
+
+        foreach ($mallas as $malla) {
+            $situacion = $situacionEstudiantesTable->newEntity();
+            $situacion->estudiante_id = $estudiantePrograma->estudiante_id;
+            $situacion->programa_id = $estudiantePrograma->programa_id;
+            $situacion->asignatura_id = $malla->asignatura_id;
+            $situacion->trayecto_id = $malla->trayecto_id;
+            $situacion->periodo_id = $estudiantePrograma->periodo_id;
+            $situacionEstudiantesTable->save($situacion);
+        }
+    }
 
     /**
      * Delete method
@@ -245,6 +260,43 @@ class EstudianteProgramasController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+    */
+    public function nuevo($id = null)
+    {
+        $estudiantePrograma = $this->EstudianteProgramas->newEntity();
+
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($id);
+        $estudiantePrograma->estudiante_id = $estudiante->id;
+
+        if ($this->request->is('post'))
+        {
+            $estudiantePrograma = $this->EstudianteProgramas->patchEntity($estudiantePrograma, $this->request->getData());
+            if ($this->EstudianteProgramas->save($estudiantePrograma)) {
+                $this->_registrarMallaCurricular($estudiantePrograma);
+                $this->Flash->success(__('Programa registrado correctamente.'));
+                $this->Auditorias->registrar('REGISTRA', 'REGISTRA PROGRAMA A EstudianteProgramas ' . json_encode($this->request->getData()));
+
+                return $this->redirect(['controller' => 'Estudiantes', 'action' => 'view', $estudiante->id]);
+            }
+            $this->Flash->error(__('No se pudo guardar el programa. Intente de nuevo.'));
+        }
+        $sedes = $this->EstudianteProgramas->Sedes->find('list', ['limit' => 200]);
+        $carreras = $this->EstudianteProgramas->Programas->Carreras->find('list', [
+            'conditions' => ['Carreras.activa' => 1],
+            'order' => ['Carreras.id' => 'ASC']
+        ]);
+        $periodos = $this->EstudianteProgramas->Periodos->find('list', [
+            'conditions' => ['Periodos.activo' => 1],
+            'order' => ['Periodos.codigo' => 'DESC']
+        ]);
+        $this->set(compact('estudiantePrograma', 'estudiante', 'sedes', 'carreras', 'periodos'));
     }
 
     /**

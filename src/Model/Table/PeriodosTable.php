@@ -56,6 +56,9 @@ class PeriodosTable extends AppTable
         $this->hasMany('SituacionEstudiantes', [
             'foreignKey' => 'periodo_id',
         ]);
+        $this->hasMany('EstudianteProgramas', [
+            'foreignKey' => 'periodo_id',
+        ]);
     }
 
     /**

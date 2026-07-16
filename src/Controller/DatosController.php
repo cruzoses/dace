@@ -84,4 +84,76 @@ class DatosController extends AppController
         $this->set('_serialize', ['programas']); // Para que se pueda serializar a JSON si se requiere
         $this->viewBuilder()->setLayout('ajax'); // Usar un layout vacío para las llamadas AJAX
     }
+
+    public function situacion($estudianteId = null)
+    {
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($estudianteId);
+
+        $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+        $programas = $programasTable->find()
+            ->where(['EstudianteProgramas.estudiante_id' => $estudianteId])
+            ->contain(['Carreras', 'Programas'])
+            ->toArray();
+
+        $situaciones = [];
+        foreach ($programas as $programa) {
+            $asignaturasTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+            $asignaturas = $asignaturasTable->find()
+                ->where([
+                    'SituacionEstudiantes.estudiante_id' => $estudianteId,
+                    'SituacionEstudiantes.programa_id' => $programa->programa_id,
+                ])
+                ->contain(['Asignaturas', 'Trayectos', 'Periodos'])
+                ->order(['Trayectos.codigo' => 'ASC', 'Asignaturas.nombre' => 'ASC'])
+                ->toArray();
+
+            $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+            $mallas = $mallasTable->find()
+                ->where(['Mallas.programa_id' => $programa->programa_id])
+                ->toArray();
+            $mallasPorAsignatura = [];
+            foreach ($mallas as $m) {
+                $mallasPorAsignatura[$m->asignatura_id] = $m;
+            }
+
+            $notaMinimaPrograma = (float)$programa->programa->nota_minima;
+            $totalCreditosPrograma = (int)$programa->programa->creditos;
+            $totalAsignaturas = count($asignaturas);
+            $totalCreditosAprobados = 0;
+            $totalAsignaturasAprobadas = 0;
+
+            foreach ($asignaturas as $asig) {
+                if (empty($asig->calificacion)) {
+                    continue;
+                }
+                $notaMinima = $notaMinimaPrograma;
+                if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
+                    $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                }
+                if ((float)$asig->calificacion >= $notaMinima) {
+                    $totalCreditosAprobados += (int)$asig->asignatura->creditos;
+                    $totalAsignaturasAprobadas++;
+                }
+            }
+
+            $porcentajeAprobado = $totalCreditosPrograma > 0
+                ? round(($totalCreditosAprobados / $totalCreditosPrograma) * 100, 1)
+                : 0;
+
+            $situaciones[] = [
+                'programa' => $programa,
+                'asignaturas' => $asignaturas,
+                'mallasPorAsignatura' => $mallasPorAsignatura,
+                'totalCreditosPrograma' => $totalCreditosPrograma,
+                'totalAsignaturas' => $totalAsignaturas,
+                'totalCreditosAprobados' => $totalCreditosAprobados,
+                'totalAsignaturasAprobadas' => $totalAsignaturasAprobadas,
+                'porcentajeAprobado' => $porcentajeAprobado,
+            ];
+        }
+
+        $this->set(compact('estudiante', 'situaciones'));
+        $this->viewBuilder()->setLayout('ajax');
+    }
 }

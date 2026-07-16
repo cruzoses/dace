@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property int $programa_id
  * @property int $carrera_id
  * @property int $sede_id
+ * @property int|null $periodo_id
  * @property \Cake\I18n\FrozenDate|null $fecha_egreso
  * @property string|null $cohorte
  * @property float|null $indice
@@ -24,6 +25,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Programa $programa
  * @property \App\Model\Entity\Carrera $carrera
  * @property \App\Model\Entity\Sede $sede
+ * @property \App\Model\Entity\Periodo $periodo
 */
 class EstudiantePrograma extends Entity
 {
@@ -41,6 +43,7 @@ class EstudiantePrograma extends Entity
         'programa_id' => true,
         'carrera_id' => true,
         'sede_id' => true,
+        'periodo_id' => true,
         'fecha_egreso' => true,
         'cohorte' => true,
         'indice' => true,
@@ -53,5 +56,6 @@ class EstudiantePrograma extends Entity
         'programa' => true,
         'carrera' => true,
         'sede' => true,
+        'periodo' => true,
     ];
 }

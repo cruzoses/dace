@@ -47,6 +47,9 @@ class TrayectosTable extends Table
         $this->hasMany('Mallas', [
             'foreignKey' => 'trayecto_id',
         ]);
+        $this->hasMany('SituacionEstudiantes', [
+            'foreignKey' => 'trayecto_id',
+        ]);
     }
 
     /**

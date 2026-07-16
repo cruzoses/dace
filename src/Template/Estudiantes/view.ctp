@@ -6,7 +6,7 @@
  * @var array $aGeneros
 */
 ?>
-<div class="box box-info box-solid">
+<div class="box box-sace box-solid">
 
 	<div class="box-header with-border">
 		<h3 class="box-title with-border"><i class="fa fa-info"></i>&nbsp;Datos del Estudiante</h3>
@@ -37,7 +37,7 @@
 					<td><strong>Cédula</strong></td>
 					<td>
 						<?= $this->Html->link($this->Number->format(h($estudiante->cedula)),
-							['controller' => 'datos', 'action' => 'view', $estudiante->id]); 
+							['controller' => 'datos', 'action' => 'estudiante', $estudiante->id]); 
 						?>
 					</td>
 				</tr>

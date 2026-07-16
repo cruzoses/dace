@@ -9,9 +9,9 @@
 ?>
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-warning box-solid">
+        <div class="box box-purple box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Registrar Programa - <?= h($estudiante->cedula) ?> <?= h($estudiante->apellidos) ?> <?= h($estudiante->nombres) ?></h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Registrar Programa</h3>
 		        <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['controller' => 'estudiantes','action' => 'index'],
@@ -28,9 +28,21 @@
                 'class' => 'horizontal']);
             ?>
             <div class="box-body">
+                <div class="callout callout-info">
+                    <i class="fa fa-info-circle"></i>&nbsp;Estudiante: <strong><?= $this->Number->format($estudiante->cedula) .' ' . h($estudiante->full_name) ?></strong>
+                </div>
                 <?php
                     echo $this->Form->hidden('estudiante_id');
                     echo $this->Form->control('sede_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $sedes]);
+                    echo $this->Form->control('periodo_id', [
+                        'label' => 'Período de Inscripción',
+                        'type' => 'select',
+                        'options' => $periodos,
+                        'empty' => '-- Seleccione --',
+                        'class' => 'form-control select2',
+                        'data-width' => '100%',
+                        'prepend' => '<i class="fa fa-asterisk"></i>',
+                    ]);
                     echo $this->Form->control('carrera_id', [
                         'label' => 'Carrera',
                         'type' => 'select',

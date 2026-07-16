@@ -10,7 +10,8 @@ use Cake\ORM\Entity;
  * @property int $estudiante_id
  * @property int $programa_id
  * @property int $asignatura_id
- * @property int $periodo_id
+ * @property int|null $trayecto_id
+ * @property int|null $periodo_id
  * @property string|null $seccion
  * @property string|null $calificacion
  * @property string|null $responsable
@@ -20,6 +21,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Estudiante $estudiante
  * @property \App\Model\Entity\Programa $programa
  * @property \App\Model\Entity\Asignatura $asignatura
+ * @property \App\Model\Entity\Trayecto $trayecto
  * @property \App\Model\Entity\Periodo $periodo
  */
 class SituacionEstudiante extends Entity
@@ -37,6 +39,7 @@ class SituacionEstudiante extends Entity
         'estudiante_id' => true,
         'programa_id' => true,
         'asignatura_id' => true,
+        'trayecto_id' => true,
         'periodo_id' => true,
         'seccion' => true,
         'calificacion' => true,
@@ -46,6 +49,7 @@ class SituacionEstudiante extends Entity
         'estudiante' => true,
         'programa' => true,
         'asignatura' => true,
+        'trayecto' => true,
         'periodo' => true,
     ];
 }

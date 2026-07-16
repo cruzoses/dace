@@ -67,6 +67,9 @@ class EstudianteProgramasTable extends AppTable
             'foreignKey' => 'carrera_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Periodos', [
+            'foreignKey' => 'periodo_id',
+        ]);
     }
 
     /**
@@ -84,6 +87,10 @@ class EstudianteProgramasTable extends AppTable
         $validator
             ->date('fecha_egreso')
             ->allowEmptyDate('fecha_egreso');
+
+        $validator
+            ->integer('periodo_id')
+            ->allowEmptyString('periodo_id');
 
         $validator
             ->scalar('cohorte')
@@ -120,6 +127,7 @@ class EstudianteProgramasTable extends AppTable
         $rules->add($rules->existsIn(['sede_id'], 'Sedes'));
         $rules->add($rules->existsIn(['programa_id'], 'Programas'));
         $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
+        $rules->add($rules->existsIn(['periodo_id'], 'Periodos'));
         $rules->add($rules->isUnique(
             ['estudiante_id', 'carrera_id', 'programa_id'],
             'Este estudiante ya tiene asignado este programa en esta carrera.'
