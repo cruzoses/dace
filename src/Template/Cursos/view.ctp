@@ -64,53 +64,58 @@
     <div class="col-md-12">
         <div class="box box-default box-solid">
             <div class="box-header with-border">                
-                <h3 class="box-title"><i class="fa fa-share-alt"></i>&nbsp;Estudiante Cursos</h3>
+                <h3 class="box-title"><i class="fa fa-users"></i>&nbsp;Estudiantes Inscritos (<?= count($curso->estudiante_cursos) ?>)</h3>
             </div>
-            <div class="box-body">
+            <div class="box-body table-responsive no-padding">
                 <?php if (!empty($curso->estudiante_cursos)): ?>
                     <table class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
-                                <th scope="col"><?= __('Id') ?></th>
-                                <th scope="col"><?= __('Curso Id') ?></th>
-                                <th scope="col"><?= __('Estudiante Id') ?></th>
-                                <th scope="col"><?= __('Calificacion') ?></th>
-                                <th scope="col"><?= __('Recuperacion') ?></th>
-                                <th scope="col"><?= __('Definitiva') ?></th>
-                                <th scope="col"><?= __('Responsable') ?></th>
-                                <th scope="col"><?= __('Observacion') ?></th>
-                                <th scope="col"><?= __('Activo') ?></th>
-                                <th scope="col"><?= __('Created') ?></th>
-                                <th scope="col"><?= __('Modified') ?></th>
-                                <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
+                                <th class="text-center">No.</th>
+                                <th>Cédula</th>
+                                <th>Estudiante</th>
+                                <th class="text-center">Calificación</th>
+                                <th class="text-center">Recuperación</th>
+                                <th class="text-center">Definitiva</th>
+                                <th>Responsable</th>
+                                <th>Observación</th>
+                                <th class="text-center">Activo</th>
+                                <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($curso->estudiante_cursos as $estudianteCursos): ?>
+                            <?php foreach ($curso->estudiante_cursos as $i => $ec): ?>
                                 <tr>
-                                    <td><?= h($estudianteCursos->id) ?></td>
-                                    <td><?= h($estudianteCursos->curso_id) ?></td>
-                                    <td><?= h($estudianteCursos->estudiante_id) ?></td>
-                                    <td><?= h($estudianteCursos->calificacion) ?></td>
-                                    <td><?= h($estudianteCursos->recuperacion) ?></td>
-                                    <td><?= h($estudianteCursos->definitiva) ?></td>
-                                    <td><?= h($estudianteCursos->responsable) ?></td>
-                                    <td><?= h($estudianteCursos->observacion) ?></td>
-                                    <td><?= h($estudianteCursos->activo) ?></td>
-                                    <td><?= h($estudianteCursos->created) ?></td>
-                                    <td><?= h($estudianteCursos->modified) ?></td>
+                                    <td class="text-center"><?= ($i + 1) ?></td>
+                                    <td><?= $ec->has('estudiante') ? $this->Number->format($ec->estudiante->cedula) : h($ec->estudiante_id) ?></td>
+                                    <td>
+                                        <?= $ec->has('estudiante')
+                                            ? $this->Html->link($ec->estudiante->full_name, ['controller' => 'Datos', 'action' => 'estudiante', $ec->estudiante->id])
+                                            : h($ec->estudiante_id) ?>
+                                    </td>
+                                    <td class="text-center"><?= h($ec->calificacion ?? '') ?></td>
+                                    <td class="text-center"><?= h($ec->recuperacion ?? '') ?></td>
+                                    <td class="text-center"><?= h($ec->definitiva ?? '') ?></td>
+                                    <td><?= h($ec->responsable) ?></td>
+                                    <td><?= h($ec->observacion ?? '') ?></td>
+                                    <td class="text-center"><?= $ec->activo ? 'Sí' : 'No' ?></td>
                                     <td class="actions text-center">
-                                        <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'EstudianteCursos', 'action' => 'view', $estudianteCursos->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'EstudianteCursos', 'action' => 'edit', $estudianteCursos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                        <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'EstudianteCursos', 'action' => 'delete', $estudianteCursos->id], ['confirm' => __('Are you sure you want to delete # {0}?', $estudianteCursos->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                        <?= $this->Form->postLink('<i class="fa fa-trash"></i>',
+                                            ['controller' => 'EstudianteCursos', 'action' => 'eliminar', $ec->id],
+                                            ['confirm' => '¿Está seguro de eliminar esta inscripción?', 'class' => 'btn btn-danger btn-xs', 'escape' => false])
+                                        ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                <?php else: ?>
+                    <p class="text-center text-muted">No hay estudiantes inscritos en este curso.</p>
                 <?php endif; ?>
             </div>
-            <div class="box-footer"></div>            
+            <div class="box-footer">
+                <span class="text-muted"><i class="fa fa-info-circle"></i> Para inscribir estudiantes, utilice la vista del estudiante &rarr; Inscripciones.</span>
+            </div>            
         </div>
     </div>
 </div>

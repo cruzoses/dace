@@ -40,7 +40,7 @@
                             }
                         ?>
                         <?= $this->Html->link('Inscripciones',
-                            ['controller' => 'estudiante_cursos', 'action' => 'index',$estudiante->id],
+                            ['controller' => 'EstudianteCursos', 'action' => 'index',$estudiante->id],
                             ['id' => 'btnInscripcion','class' => 'btn btn-primary btn-sm menuh btnTools','title' => 'Inscripciones','role' => 'button']); 
                         ?>
                     </td>

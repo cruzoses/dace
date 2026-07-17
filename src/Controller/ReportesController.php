@@ -292,6 +292,28 @@ class ReportesController extends AppController
         $this->render('/Datos/visorpdf');
     }
 
+    public function culminacionPrograma($estudianteId = null, $programaId = null)
+    {
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($estudianteId);
+
+        $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+        $programa = $programasTable->find()
+            ->where([
+                'EstudianteProgramas.estudiante_id' => $estudianteId,
+                'EstudianteProgramas.programa_id' => $programaId,
+            ])
+            ->contain(['Carreras', 'Programas'])
+            ->first();
+
+        $report = new \App\Reportes\CulminacionPrograma($estudiante, $programa);
+        $result = $report->generate();
+
+        $this->set($result);
+        $this->set('estudianteId', $estudianteId);
+        $this->render('/Datos/visorpdf');
+    }
+
     public function downloadPdf()
     {
         $rolsTable = TableRegistry::getTableLocator()->get('Rols');

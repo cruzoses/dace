@@ -65,7 +65,8 @@ class CursosController extends AppController
     public function view($id = null)
     {
         $curso = $this->Cursos->get($id, [
-            'contain' => ['Sedes', 'Periodos', 'Carreras', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas', 'EstudianteCursos', 'IndicadorCursos'],
+            'contain' => ['Sedes', 'Periodos', 'Carreras', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas',
+                'EstudianteCursos.Estudiantes', 'IndicadorCursos'],
         ]);
 
         $nombresProgramas = [];

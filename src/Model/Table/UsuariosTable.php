@@ -106,7 +106,14 @@ class UsuariosTable extends AppTable
         $validator
             ->date('fecha_nacimiento')
             ->requirePresence('fecha_nacimiento', 'create')
-            ->notEmptyDate('fecha_nacimiento');
+            ->notEmptyDate('fecha_nacimiento')
+            ->add('fecha_nacimiento', 'notToday', [
+                'rule' => function ($value, $context) {
+                    $fecha = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
+                    return $fecha !== date('Y-m-d');
+                },
+                'message' => 'La fecha de nacimiento no puede ser igual a la fecha actual.',
+            ]);
 
         $validator
             ->scalar('sexo')
