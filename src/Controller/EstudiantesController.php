@@ -65,7 +65,10 @@ class EstudiantesController extends AppController
         $aGeneros = Configure::read('aGeneros');
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Estudiantes ' . json_encode($estudiante->toArray()));
 
-        $this->set(compact('aGeneros'));
+        $aPeriodo = TableRegistry::getTableLocator()->get('Periodos')->find()
+            ->where(['Periodos.id' => $estudiante->periodo])
+            ->first();
+        $this->set(compact('aGeneros','aPeriodo'));
         $this->set('estudiante', $estudiante);
     }
 

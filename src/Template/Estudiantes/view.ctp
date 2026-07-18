@@ -2,6 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Estudiante $estudiante
+ * @var \App\Model\Entity\Periodo $aPeriodo
  * @var object $estudiante
  * @var array $aGeneros
 */
@@ -105,13 +106,13 @@
 					<td><strong>Expediente</strong></td>
 					<td>
 						<?= $this->Html->link($this->Number->format(h($estudiante->expediente)),
-							['controller' => 'datos', 'action' => 'view', $estudiante->id] ); 
+							['controller' => 'datos', 'action' => 'estudiante', $estudiante->id] ); 
 						?>
 					</td>
 				</tr>
 				<tr>
 					<td><strong>Per&iacute;odo Inicial</strong></td>
-                    <td><?= $estudiante->has('periodo') ? h($estudiante->periodo->codename) : '' ?></td>
+                    <td><?=  $aPeriodo ? h($aPeriodo->codename) : '' ?></td>
 				</tr>				
 				<tr>
 					<td><strong>Usuario</strong></td>
