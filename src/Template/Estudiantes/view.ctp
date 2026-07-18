@@ -148,36 +148,6 @@
 <div class="row">
     <div class="col-md-12">
         <div class="box box-default box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-text-width"></i>
-                <h3 class="box-title"><?= __('Direccion') ?></h3>
-            </div>
-            <div class="box-body">
-                <?= $this->Text->autoParagraph($estudiante->direccion); ?>
-            </div>
-            <div class="box-footer"></div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="box box-default box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-text-width"></i>
-                <h3 class="box-title"><?= __('Lugar Nacimiento') ?></h3>
-            </div>
-            <div class="box-body">
-                <?= $this->Text->autoParagraph($estudiante->lugar_nacimiento); ?>
-            </div>
-            <div class="box-footer"></div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="box box-default box-solid">
             <div class="box-header with-border">                
                 <h3 class="box-title"><i class="fa fa-share-alt"></i>&nbsp;Estudiante Cursos</h3>
             </div>
@@ -216,7 +186,7 @@
                                     <td><?= h($estudianteCursos->modified) ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'EstudianteCursos', 'action' => 'view', $estudianteCursos->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'EstudianteCursos', 'action' => 'edit', $estudianteCursos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fas fa-edit"></i>', ['controller' => 'EstudianteCursos', 'action' => 'edit', $estudianteCursos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'EstudianteCursos', 'action' => 'delete', $estudianteCursos->id], ['confirm' => __('Are you sure you want to delete # {0}?', $estudianteCursos->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     </td>
                                 </tr>
@@ -277,7 +247,7 @@
                                     <td><?= h($estudianteProgramas->modified) ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'EstudianteProgramas', 'action' => 'view', $estudianteProgramas->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'EstudianteProgramas', 'action' => 'edit', $estudianteProgramas->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-edit"></i>', ['controller' => 'EstudianteProgramas', 'action' => 'edit', $estudianteProgramas->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'EstudianteProgramas', 'action' => 'delete', $estudianteProgramas->id], ['confirm' => __('Are you sure you want to delete # {0}?', $estudianteProgramas->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     </td>
                                 </tr>

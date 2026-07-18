@@ -23,8 +23,18 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
 */
-class TrayectosTable extends Table
+class TrayectosTable extends AppTable
 {
+    protected $searchFields = [
+        'codigo' => ['type' => 'text', 'label' => 'Codigo', 'class' => 'form-control'],
+        'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control'],
+        'activo' => [
+            'type' => 'select',
+            'label' => 'Activo',
+            'options' => [1 => 'SI', 0 => 'NO'],
+            'empty' => '-- Activo --',
+        ],
+    ];
     /**
      * Initialize method
      *

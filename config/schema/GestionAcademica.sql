@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 16/7/2026
+Modified: 18/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS `firmas`
   `nombres` Varchar(50) NOT NULL,
   `datos` Text NOT NULL,
   `texto` Text NOT NULL,
+  `rubrica` Text NOT NULL,
+  `resolucion` Text,
   `lugar` Varchar(50) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -694,7 +696,7 @@ CREATE INDEX `IX_Estudiante_Sede` ON `estudiante_programas` (`sede_id`)
 CREATE INDEX `IX_Estudiante_Carrera` ON `estudiante_programas` (`carrera_id`)
 ;
 
-CREATE INDEX `IX_Relationship2` ON `estudiante_programas` (`periodo_id`)
+CREATE INDEX `IX_Periodo_Estudiante_Programa` ON `estudiante_programas` (`periodo_id`)
 ;
 
 -- Table notas_cursos
@@ -1010,6 +1012,6 @@ ALTER TABLE `situacion_estudiantes` ADD CONSTRAINT `pfk_periodo_situacion` FOREI
 ALTER TABLE `situacion_estudiantes` ADD CONSTRAINT `pfk_trayecto_situacion` FOREIGN KEY (`trayecto_id`) REFERENCES `trayectos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `estudiante_programas` ADD CONSTRAINT `Relationship2` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+ALTER TABLE `estudiante_programas` ADD CONSTRAINT `pfk_periodo_estudiante_programa` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 

@@ -2,6 +2,8 @@
 /**
  * @var App\Model\Entity\Trayecto $trayectos
  * @var App\View\AppView $this
+ * @var array $searchFields
+ * @var array $filtros
 */
 ?>
 <div class="row">
@@ -23,7 +25,11 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('buscador');?>
+			        <?= $this->element('search_form', [
+                        'title' => 'Buscar Trayecto',
+                        'searchFields' => $searchFields,
+                        'filtros' => $filtros,
+                    ]); ?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>

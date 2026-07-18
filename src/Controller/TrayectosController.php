@@ -35,9 +35,16 @@ class TrayectosController extends AppController
     */
     public function index()
     {
-        $trayectos = $this->paginate($this->Trayectos);
+        $conditions = $this->Trayectos->formatConditions($this->request->getQueryParams());
+        $this->paginate = [
+            'conditions' => $conditions,
+        ];
+        $trayectos = $this->paginate($this->Trayectos, ['order' => ['Trayectos.id' => 'ASC']]);
 
-        $this->set(compact('trayectos'));
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Trayectos->getSearchFields();
+
+        $this->set(compact('trayectos', 'filtros', 'searchFields'));
     }
 
     /**

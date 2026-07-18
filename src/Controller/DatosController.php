@@ -80,6 +80,16 @@ class DatosController extends AppController
         //->where(['EstudianteProgramas.estudiante_id' => $estudianteId])
         ->toArray();
 
+        $situacionEstudiantesTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+        foreach ($programas as $programa) {
+            $situacionEstudiantesTable->registrarDesdeMalla(
+                $estudianteId,
+                $programa->programa_id,
+                $programa->carrera_id,
+                $programa->periodo_id
+            );
+        }
+
         $this->set(compact('programas', 'estudianteId'));
         $this->set('_serialize', ['programas']); // Para que se pueda serializar a JSON si se requiere
         $this->viewBuilder()->setLayout('ajax'); // Usar un layout vacío para las llamadas AJAX
@@ -100,6 +110,16 @@ class DatosController extends AppController
         }
 
         $programas = $programasQuery->toArray();
+
+        $situacionEstudiantesTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+        foreach ($programas as $programa) {
+            $situacionEstudiantesTable->registrarDesdeMalla(
+                $estudianteId,
+                $programa->programa_id,
+                $programa->carrera_id,
+                $programa->periodo_id
+            );
+        }
 
         $situaciones = [];
         foreach ($programas as $programa) {

@@ -4,6 +4,7 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -121,5 +122,56 @@ class SituacionEstudiantesTable extends Table
         $rules->add($rules->existsIn(['periodo_id'], 'Periodos'));
 
         return $rules;
+    }
+
+    public function registrarDesdeMalla($estudianteId, $programaId, $carreraId, $periodoId)
+    {
+        \Cake\Log\Log::write('debug', 'registrarDesdeMalla INICIO: est=' . $estudianteId . ' prog=' . $programaId . ' carr=' . $carreraId . ' per=' . $periodoId);
+
+        $existe = $this->find()
+            ->where([
+                'estudiante_id' => $estudianteId,
+                'programa_id' => $programaId,
+            ])
+            ->count();
+
+        \Cake\Log\Log::write('debug', 'registrarDesdeMalla registros existentes: ' . $existe);
+
+        if ($existe > 0) {
+            \Cake\Log\Log::write('debug', 'registrarDesdeMalla YA EXISTEN registros, se omite');
+            return;
+        }
+
+        $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+        $mallas = $mallasTable->find()
+            ->where([
+                'carrera_id' => $carreraId,
+                'programa_id' => $programaId,
+            ])
+            ->toArray();
+
+        \Cake\Log\Log::write('debug', 'registrarDesdeMalla mallas encontradas: ' . count($mallas));
+
+        if (empty($mallas)) {
+            \Cake\Log\Log::write('debug', 'registrarDesdeMalla NO HAY MALLAS para carrera=' . $carreraId . ' programa=' . $programaId);
+            return;
+        }
+
+        foreach ($mallas as $malla) {
+            $situacion = $this->newEntity();
+            $situacion->estudiante_id = $estudianteId;
+            $situacion->programa_id = $programaId;
+            $situacion->asignatura_id = $malla->asignatura_id;
+            $situacion->trayecto_id = $malla->trayecto_id;
+            $situacion->periodo_id = $periodoId;
+            $situacion->cursada = 1;
+            $situacion->acumulado = 1;
+            $result = $this->save($situacion, ['checkRules' => false]);
+            if (!$result) {
+                \Cake\Log\Log::write('error', 'registrarDesdeMalla SAVE FALLÓ: est=' . $estudianteId . ' prog=' . $programaId . ' asig=' . $malla->asignatura_id . ' errors=' . json_encode($situacion->getErrors()));
+            }
+        }
+
+        \Cake\Log\Log::write('debug', 'registrarDesdeMalla FIN');
     }
 }

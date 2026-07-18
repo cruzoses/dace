@@ -193,37 +193,12 @@ class EstudianteProgramasController extends AppController
     private function _registrarMallaCurricular($estudiantePrograma)
     {
         $situacionEstudiantesTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
-
-        $existe = $situacionEstudiantesTable->find()
-            ->where([
-                'estudiante_id' => $estudiantePrograma->estudiante_id,
-                'programa_id' => $estudiantePrograma->programa_id,
-            ])
-            ->count();
-
-        if ($existe > 0) {
-            return;
-        }
-
-        $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
-        $mallas = $mallasTable->find()
-            ->where([
-                'carrera_id' => $estudiantePrograma->carrera_id,
-                'programa_id' => $estudiantePrograma->programa_id,
-            ])
-            ->toArray();
-
-        foreach ($mallas as $malla) {
-            $situacion = $situacionEstudiantesTable->newEntity();
-            $situacion->estudiante_id = $estudiantePrograma->estudiante_id;
-            $situacion->programa_id = $estudiantePrograma->programa_id;
-            $situacion->asignatura_id = $malla->asignatura_id;
-            $situacion->trayecto_id = $malla->trayecto_id;
-            $situacion->periodo_id = $estudiantePrograma->periodo_id;
-            $situacion->cursada = 1;
-            $situacion->acumulado = 1;
-            $situacionEstudiantesTable->save($situacion);
-        }
+        $situacionEstudiantesTable->registrarDesdeMalla(
+            $estudiantePrograma->estudiante_id,
+            $estudiantePrograma->programa_id,
+            $estudiantePrograma->carrera_id,
+            $estudiantePrograma->periodo_id
+        );
     }
 
     /**
