@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 18/7/2026
+Modified: 19/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -674,7 +674,8 @@ CREATE TABLE IF NOT EXISTS `estudiante_programas`
   `periodo_id` Int NOT NULL,
   `fecha_egreso` Date,
   `cohorte` Varchar(20),
-  `indice` Double,
+  `isa` Double,
+  `ira` Double,
   `culminado` Tinyint(1) NOT NULL,
   `observacion` Text,
   `activo` Tinyint(1) NOT NULL,

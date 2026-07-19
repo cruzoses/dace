@@ -1,0 +1,1 @@
+Archivo: E:\Aplicaciones\Dace\batch_situacion.py — ejecutable con python -u batch_situacion.py (credenciales por defecto: desoft/secret/gesaca).
