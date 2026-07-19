@@ -26,8 +26,10 @@
                     <dd><?= h($estudiantePrograma->cohorte) ?></dd>
                     <dt scope="row"><?= __('Id') ?></dt>
                     <dd><?= $this->Number->format($estudiantePrograma->id) ?></dd>
-                    <dt scope="row"><?= __('Indice') ?></dt>
-                    <dd><?= $this->Number->format($estudiantePrograma->indice) ?></dd>
+                    <dt scope="row"><?= __('I.S.A') ?></dt>
+                    <dd><?= $this->Number->format($estudiantePrograma->isa) ?></dd>
+                    <dt scope="row"><?= __('I.R.A') ?></dt>
+                    <dd><?= $this->Number->format($estudiantePrograma->ira) ?></dd>
                     <dt scope="row"><?= __('Fecha Egreso') ?></dt>
                     <dd><?= h($estudiantePrograma->fecha_egreso) ?></dd>
                     <dt scope="row"><?= __('Created') ?></dt>

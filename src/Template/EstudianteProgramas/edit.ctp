@@ -60,7 +60,8 @@
             ]);
             echo $this->Form->control('fecha_egreso', ['type' => 'text','class' => 'calendario','prepend' => '<i class="fa fa-asterisk"></i>','empty' => true]);
             echo $this->Form->control('cohorte', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-            echo $this->Form->control('indice', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+            echo $this->Form->control('isa', ['class' => 'isDouble','prepend' => '<i class="fa fa-asterisk"></i>']);
+            echo $this->Form->control('ira', ['class' => 'isDouble','prepend' => '<i class="fa fa-asterisk"></i>']);
             echo $this->Form->control('culminado', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
             echo $this->Form->control('activo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
         ?>

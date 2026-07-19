@@ -1,0 +1,1 @@
+SELECT * FROM historicos AS tablanotas ORDER BY id

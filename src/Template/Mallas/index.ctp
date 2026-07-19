@@ -34,6 +34,7 @@
                             <th scope="col"><?= $this->Paginator->sort('carrera_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('programa_id') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('trayecto_id') ?></th>
+                            <th scope="col">Código</th>
                             <th scope="col"><?= $this->Paginator->sort('asignatura_id') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('nota_minima') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
@@ -48,6 +49,7 @@
                                 <td><?= $malla->has('carrera') ? h($malla->carrera->codigo) : '' ?></td>
                                 <td><?= $malla->has('programa') ? h($malla->programa->codigo) : '' ?></td>
                                 <td class="text-center"><?= $malla->has('trayecto') ? h($malla->trayecto->codigo) : ''  ?></td>
+                                <td><?= $malla->has('asignatura') ? h($malla->asignatura->codigo) : '' ?></td>
                                 <td><?= $malla->has('asignatura') ? h($malla->asignatura->nombre) : '' ?></td>
                                 <td class="text-center"><?= h($malla->nota_minima) ?></td>
                                 <td class="text-center"><?= h($malla->created) ?></td>
@@ -62,7 +64,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="9" class="text-center">
+                            <td colspan="10" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>

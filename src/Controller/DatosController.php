@@ -53,9 +53,7 @@ class DatosController extends AppController
 
     public function estudiante($id)
     {
-        //$this->loadModel('Estudiantes');
         $estudiante = TableRegistry::getTableLocator()->get('Estudiantes')->get($id,[
-            //$estudiante = $this->Estudiantes->get($id, [
             'contain' => ['Paises', 'Estados', 'Municipios', 'Parroquias', 'Usuarios', 'EstudianteCursos', 'EstudianteProgramas', 
             'Graduandos', 'Historicos', 'NotasCursos', 'SituacionEstudiantes'],
         ]);
@@ -208,5 +206,41 @@ class DatosController extends AppController
         $this->set('title', 'Situación');
         $this->set(compact('estudiante', 'situaciones'));
         $this->viewBuilder()->setLayout('ajax');
+    }
+
+    public function actualizarsituacion($id = null)
+    {
+        if (!$id) {
+            $this->Flash->error(__('No se especificó el estudiante.'));
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($id);
+
+        $estudianteProgramasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+        $programas = $estudianteProgramasTable->find()
+            ->where(['estudiante_id' => $id])
+            ->toArray();
+
+        $situacionTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+
+        $totalProgramas = count($programas);
+        $totalActualizados = 0;
+
+        foreach ($programas as $prog) {
+            $situacionTable->registrarDesdeMalla(
+                $id,
+                $prog->programa_id,
+                $prog->carrera_id,
+                $prog->periodo_id
+            );
+
+            $totalActualizados += $situacionTable->sincronizarDesdeTablanotas($id, $prog->programa_id);
+        }
+
+        $this->Flash->success(__('Situación académica actualizada. Programas: {0}, Asignaturas actualizadas: {1}.', $totalProgramas, $totalActualizados));
+
+        return $this->redirect(['action' => 'estudiante', $id]);
     }
 }

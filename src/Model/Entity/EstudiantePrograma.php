@@ -14,7 +14,8 @@ use Cake\ORM\Entity;
  * @property int|null $periodo_id
  * @property \Cake\I18n\FrozenDate|null $fecha_egreso
  * @property string|null $cohorte
- * @property float|null $indice
+ * @property float|null $isa
+ * @property float|null $ira
  * @property bool $culminado
  * @property string|null $observacion
  * @property bool $activo
@@ -46,7 +47,8 @@ class EstudiantePrograma extends Entity
         'periodo_id' => true,
         'fecha_egreso' => true,
         'cohorte' => true,
-        'indice' => true,
+        'isa' => true,
+        'ira' => true,
         'culminado' => true,
         'observacion' => true,
         'activo' => true,

@@ -17,7 +17,6 @@ class ApiController extends AppController
         $this->viewBuilder()->setLayout(null);
         $this->autoRender = false;
         $this->response = $this->response->withType('application/json');
-
         $this->apiToken = $this->request->getHeaderLine('X-API-Token');
     }
 

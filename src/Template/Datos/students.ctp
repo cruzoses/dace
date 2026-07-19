@@ -10,13 +10,10 @@
 <div class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box box-info box-solid">
+            <div class="box box-sace box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Estudiantes</h3>
                     <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
-                            <i class="fa fa-search"></i>
-                        </button>
                         <button type="button" class="btn btn-box-tool" data-widget="collapse">
                             <i class="fa fa-minus"></i>
                         </button>

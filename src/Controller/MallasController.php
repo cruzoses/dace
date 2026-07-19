@@ -10,7 +10,7 @@ use Cake\Event\Event;
  * @property \App\Model\Table\MallasTable $Mallas
  *
  * @method \App\Model\Entity\Malla[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class MallasController extends AppController
 {
 
@@ -21,7 +21,7 @@ class MallasController extends AppController
 
 	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([2,3]) )
         {
             return true;
         }

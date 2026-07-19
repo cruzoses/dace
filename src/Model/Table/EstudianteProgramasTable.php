@@ -99,8 +99,12 @@ class EstudianteProgramasTable extends AppTable
             ->allowEmptyString('cohorte');
 
         $validator
-            ->numeric('indice')
-            ->allowEmptyString('indice');
+            ->numeric('isa')
+            ->allowEmptyString('isa');
+
+        $validator
+            ->numeric('ira')
+            ->allowEmptyString('ira');
 
         $validator
             ->boolean('culminado')

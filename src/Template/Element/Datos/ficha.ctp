@@ -91,13 +91,17 @@
             </table>
         </div>
         <div class="box-footer">
-            <?= $this->Html->link('Generar Historico',
-                ['action' => 'rendimiento', '?' => ['EstudianteId' => $estudiante->id]],
-                ['class' => 'btn bg-navy','escape' => false])
-            ?>
             <div id="resultado" class="oculto">
                 <?= $this->Html->image('site/loading.gif');?>
             </div>
+            <?= $this->Html->link('<i class="far fa-address-card"></i>&nbsp;Generar Historico',
+                ['action' => 'rendimiento', '?' => ['EstudianteId' => $estudiante->id]],
+                ['class' => 'btn bg-navy pull-left','escape' => false])
+            ?>
+            <?= $this->Html->link('<i class="far fa-list-alt"></i>&nbsp;Actualizar Situación',
+                ['action' => 'actualizarsituacion', $estudiante->id],
+                ['class' => 'btn bg-maroon pull-right','escape' => false])
+            ?>
         </div>
 
     </div>
