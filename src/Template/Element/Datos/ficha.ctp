@@ -100,7 +100,7 @@
             ?>
             <?= $this->Html->link('<i class="far fa-list-alt"></i>&nbsp;Actualizar Situación',
                 ['action' => 'actualizarsituacion', $estudiante->id],
-                ['class' => 'btn bg-maroon pull-right','escape' => false])
+                ['id' => 'btnActualizarSituacion', 'class' => 'btn bg-maroon pull-right','escape' => false])
             ?>
         </div>
 
@@ -115,3 +115,43 @@
     </div>
 
 </div>
+
+<?php $this->Html->scriptBlock("
+    \$('#btnActualizarSituacion').on('click', function(e) {
+        e.preventDefault();
+        var url = \$(this).attr('href');
+        Swal.fire({
+            title: 'Actualizando datos',
+            html: 'Procesando situaci\u00F3n acad\u00E9mica...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: function() {
+                Swal.showLoading();
+                \$.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Completado',
+                            html: data.message,
+                            icon: 'success',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            allowOutsideClick: false
+                        }).then(function(result) {
+                            window.location.href = data.redirect;
+                        });
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .fail(function() {
+                    Swal.fire('Error', 'No se pudo actualizar la situaci\u00F3n.', 'error');
+                });
+            }
+        });
+    });
+", ['block' => 'scriptBottom']); ?>

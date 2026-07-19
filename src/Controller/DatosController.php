@@ -211,6 +211,12 @@ class DatosController extends AppController
     public function actualizarsituacion($id = null)
     {
         if (!$id) {
+            if ($this->request->is('ajax')) {
+                $this->response = $this->response
+                    ->withType('json')
+                    ->withStringBody(json_encode(['success' => false, 'message' => __('No se especificó el estudiante.')]));
+                return $this->response;
+            }
             $this->Flash->error(__('No se especificó el estudiante.'));
             return $this->redirect(['action' => 'index']);
         }
@@ -237,6 +243,17 @@ class DatosController extends AppController
             );
 
             $totalActualizados += $situacionTable->sincronizarDesdeTablanotas($id, $prog->programa_id);
+        }
+
+        if ($this->request->is('ajax')) {
+            $this->response = $this->response
+                ->withType('json')
+                ->withStringBody(json_encode([
+                    'success' => true,
+                    'message' => __('Situación académica actualizada. Programas: {0}, Asignaturas actualizadas: {1}.', $totalProgramas, $totalActualizados),
+                    'redirect' => \Cake\Routing\Router::url(['action' => 'estudiante', $id]),
+                ]));
+            return $this->response;
         }
 
         $this->Flash->success(__('Situación académica actualizada. Programas: {0}, Asignaturas actualizadas: {1}.', $totalProgramas, $totalActualizados));
