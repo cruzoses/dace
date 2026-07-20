@@ -247,14 +247,15 @@ class SituacionEstudiantesTable extends Table
             $cursada = count($listaNotas);
 
             $acumulado = 0;
+            $creditosAsig = isset($asignaturasMap[$asignaturaId]) ? (int)$asignaturasMap[$asignaturaId]->creditos : 1;
             foreach ($listaNotas as $n) {
                 $val = strtoupper(trim($n->calificacion));
                 if ($val === 'A') {
-                    $acumulado += 20;
+                    $acumulado += 20 * $creditosAsig;
                 } elseif ($val === 'R') {
                     $acumulado += 0;
                 } else {
-                    $acumulado += (int)$n->calificacion;
+                    $acumulado += (int)$n->calificacion * $creditosAsig;
                 }
             }
 

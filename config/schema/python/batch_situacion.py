@@ -117,7 +117,7 @@ def main():
     print("  %d registros" % len(mallas_data), flush=True)
 
     print("[3/7] Cargando asignaturas...", flush=True)
-    cur.execute("SELECT id, codigo, nota_minima, convalidacion FROM asignaturas")
+    cur.execute("SELECT id, codigo, nota_minima, convalidacion, creditos FROM asignaturas")
     asignaturas_list = cur.fetchall()
     asignaturas_by_id = {}
     asignaturas_by_codigo = {}
@@ -202,21 +202,22 @@ def main():
             for asignatura_id, lista_notas in por_asignatura.items():
                 ultima = max(lista_notas, key=lambda x: int(x['periodo_id']))
                 cursada = len(lista_notas)
+                asig = asignaturas_by_id.get(asignatura_id)
+                creditos_asig = int(asig['creditos']) if asig and asig.get('creditos') else 1
                 acumulado = 0
                 for n in lista_notas:
                     val = str(n['calificacion']).strip().upper()
                     if val == 'A':
-                        acumulado += 20
+                        acumulado += 20 * creditos_asig
                     elif val == 'R':
                         acumulado += 0
                     else:
                         try:
-                            acumulado += int(n['calificacion'])
+                            acumulado += int(n['calificacion']) * creditos_asig
                         except (ValueError, TypeError):
                             acumulado += 0
 
                 malla_mm = mallas_nota_minima.get(asignatura_id)
-                asig = asignaturas_by_id.get(asignatura_id)
                 if malla_mm is not None:
                     nota_minima = malla_mm
                 elif asig and asig.get('nota_minima') is not None:

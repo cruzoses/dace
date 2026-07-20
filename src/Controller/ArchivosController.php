@@ -395,7 +395,7 @@ class ArchivosController extends AppController
                         $notaIRA = $esCualitativa ? $notaISA : (float)$asig->calificacion;
                         $iraNumerador += $notaIRA * $creditos;
                     }
-                    $iraDenominador += $creditos;
+                    $iraDenominador += $creditos * (int)$asig->cursada;
                 }
 
                 $rowData = [
@@ -425,8 +425,8 @@ class ArchivosController extends AppController
 
             $porcentajeAprobado = $totalCreditosPrograma > 0
                 ? round(($totalCreditosAprobados / $totalCreditosPrograma) * 100, 1) : 0;
-            $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 2) : 0;
-            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 2) : 0;
+            $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 5) : 0;
+            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 5) : 0;
 
             $sheet->mergeCells('A' . $row . ':' . $lastCol . $row);
             $sheet->setCellValueByColumnAndRow(1, $row, 'Créditos Aprobados: ' . $totalCreditosAprobados . ' / ' . $totalCreditosPrograma . '    ISA: ' . $isa . '    IRA: ' . $ira . '    Aprobado: ' . $porcentajeAprobado . '%');

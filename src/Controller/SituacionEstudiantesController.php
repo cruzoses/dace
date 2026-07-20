@@ -335,15 +335,15 @@ class SituacionEstudiantesController extends AppController
                     $notaIRA = $esCual ? $notaISA : (float)$asig->calificacion;
                     $iraNumerador += $notaIRA * $creditosAsig;
                 }
-                $iraDenominador += $creditosAsig;
+                $iraDenominador += $creditosAsig * (int)$asig->cursada;
             }
 
             $porcentajeAprobado = $totalCreditosPrograma > 0
                 ? round(($totalCreditosAprobados / $totalCreditosPrograma) * 100, 1)
                 : 0;
 
-            $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 2) : 0;
-            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 2) : 0;
+            $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 5) : 0;
+            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 5) : 0;
 
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
@@ -437,9 +437,9 @@ class SituacionEstudiantesController extends AppController
                     $notaIRA = $esCual ? (strtoupper($asig->calificacion) === 'A' ? 20 : 0) : (float)$asig->calificacion;
                     $iraNumerador += $notaIRA * $creditosAsig;
                 }
-                $iraDenominador += $creditosAsig;
+                $iraDenominador += $creditosAsig * (int)$asig->cursada;
             }
-            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 2) : 0;
+            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 5) : 0;
 
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([

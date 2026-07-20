@@ -128,7 +128,7 @@ class SituacionAcademica
                     $notaIRA = $esCualitativa ? $notaISA : (float)$asig->calificacion;
                     $iraNumerador += $notaIRA * $creditos;
                 }
-                $iraDenominador += $creditos;
+                $iraDenominador += $creditos * (int)$asig->cursada;
             }
 
             $allData[] = [
@@ -172,7 +172,7 @@ class SituacionAcademica
 
     private function _resumenAcademico($totalCreditos, $totalAsignaturas, $creditosAprobados, $asignaturasAprobadas, $iraNumerador, $iraDenominador)
     {
-        $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 2) : 0;
+        $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 5) : 0;
         $porcentaje = $totalCreditos > 0 ? round(($creditosAprobados / $totalCreditos) * 100, 1) : 0;
 
         $this->pdf->ezSetY($this->pdf->y - 15);

@@ -35,10 +35,10 @@
                                         <td class="text-center"><?= $item['totalCreditosAprobados'] ?></td>
                                         <td class="text-center"><?= $item['porcentajeAprobado'] ?>%</td>
                                         <td class="text-center" style="<?= $item['isa'] >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
-                                            <?= $item['isa'] ?>
+                                            <?= number_format($item['isa'], 5, '.', '') ?>
                                         </td>
                                         <td class="text-center" style="<?= $item['ira'] >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
-                                            <?= $item['ira'] ?>
+                                            <?= number_format($item['ira'], 5, '.', '') ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -191,7 +191,7 @@
                                                 <div class="col-md-4">
                                                     &Iacute;ndice de la Situaci&oacute;n Acad&eacute;mica:
                                                     <span id="isa-<?= $programa->programa_id ?>" style="<?= $isa >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold' ?>">
-                                                        <?= $isa ?>
+                                                        <?= number_format($isa, 5, '.', '') ?>
                                                     </span>
                                                 </div>
                                                 <div class="col-md-4">
@@ -326,7 +326,7 @@ $(document).on('submit', '#form-calificar', function(e) {
                 $('#porcentaje-aprobado-' + pid).text(d.porcentajeAprobado + '%').attr('style', color);
 
                 var isaStyle = d.isa >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold';
-                $('#isa-' + pid).text(d.isa).attr('style', isaStyle);
+                $('#isa-' + pid).text(d.isa.toFixed(5)).attr('style', isaStyle);
 
                 var iraStyle = d.ira >= 10 ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold';
                 $('#ira-' + pid).text(d.ira).attr('style', iraStyle);
