@@ -300,8 +300,14 @@ def main():
             ), flush=True)
 
     t_calc = time.time() - t_proc
+
+    insert_keys = {(s[0], s[1], s[2]) for s in insert_list}
+    malla_duplicados = len(malla_insert_list)
+    malla_insert_list = [m for m in malla_insert_list if (m[0], m[1], m[2]) not in insert_keys]
+    malla_duplicados -= len(malla_insert_list)
+
     print("\n  Calculo completado en %.1f segundos" % t_calc, flush=True)
-    print("  Malla inserts: %d" % len(malla_insert_list), flush=True)
+    print("  Malla inserts: %d (%d duplicados eliminados)" % (len(malla_insert_list), malla_duplicados), flush=True)
     print("  Sync inserts:  %d" % len(insert_list), flush=True)
     print("  Updates:       %d" % len(update_list), flush=True)
     print("  Convalidaciones: %d" % grand_total_convalidaciones, flush=True)
