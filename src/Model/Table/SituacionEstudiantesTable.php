@@ -232,10 +232,11 @@ class SituacionEstudiantesTable extends Table
         $actualizados = 0;
         foreach ($porAsignatura as $asignaturaId => $listaNotas) {
             $ultima = null;
-            $maxPeriodoId = 0;
+            $maxNota = -1;
             foreach ($listaNotas as $n) {
-                if ((int)$n->periodo_id >= $maxPeriodoId) {
-                    $maxPeriodoId = (int)$n->periodo_id;
+                $nota = $this->calificacionANumero($n->calificacion);
+                if ($nota > $maxNota) {
+                    $maxNota = $nota;
                     $ultima = $n;
                 }
             }
@@ -388,6 +389,18 @@ class SituacionEstudiantesTable extends Table
         return (int)$val >= (int)$notaMinima;
     }
 
+    private function calificacionANumero($calificacion)
+    {
+        $val = strtoupper(trim($calificacion));
+        if ($val === 'A') {
+            return 20;
+        }
+        if ($val === 'R' || $val === 'IN' || $val === '') {
+            return 0;
+        }
+        return (int)$val;
+    }
+
     private function buscarConvalidacion($estudianteId, array $codigosAlternativos, $programaNotaMinima)
     {
         if (empty($codigosAlternativos)) {
@@ -432,10 +445,11 @@ class SituacionEstudiantesTable extends Table
             }
 
             $ultimaAlt = null;
-            $maxPeriodoAlt = 0;
+            $maxNotaAlt = -1;
             foreach ($notasAlt as $na) {
-                if ((int)$na->periodo_id >= $maxPeriodoAlt) {
-                    $maxPeriodoAlt = (int)$na->periodo_id;
+                $nota = $this->calificacionANumero($na->calificacion);
+                if ($nota > $maxNotaAlt) {
+                    $maxNotaAlt = $nota;
                     $ultimaAlt = $na;
                 }
             }

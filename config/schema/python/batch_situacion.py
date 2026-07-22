@@ -41,6 +41,18 @@ def es_aprobada(calificacion, nota_minima):
         return False
 
 
+def calificacion_a_numero(calificacion):
+    val = str(calificacion).strip().upper()
+    if val == 'A':
+        return 20
+    if val in ('R', 'IN', ''):
+        return 0
+    try:
+        return int(val)
+    except (ValueError, TypeError):
+        return 0
+
+
 def buscar_convalidacion(estudiante_id, codigos_alternativos, nota_minima_prog,
                          asignaturas_by_codigo, notas_por_estudiante, mallas_nota_minima):
     if not codigos_alternativos:
@@ -60,7 +72,7 @@ def buscar_convalidacion(estudiante_id, codigos_alternativos, nota_minima_prog,
         notas_alt = notas_por_estudiante.get(estudiante_id, {}).get(alt_id, [])
         if not notas_alt:
             continue
-        ultima_alt = max(notas_alt, key=lambda x: int(x['periodo_id']))
+        ultima_alt = max(notas_alt, key=lambda x: calificacion_a_numero(x['calificacion']))
         if es_aprobada(str(ultima_alt['calificacion']), nota_minima_alt):
             return {
                 'calificacion': str(ultima_alt['calificacion']),
@@ -200,7 +212,7 @@ def main():
             por_asignatura = {aid: notas_est[aid] for aid in todos_ids if aid in notas_est}
 
             for asignatura_id, lista_notas in por_asignatura.items():
-                ultima = max(lista_notas, key=lambda x: int(x['periodo_id']))
+                ultima = max(lista_notas, key=lambda x: calificacion_a_numero(x['calificacion']))
                 cursada = len(lista_notas)
                 asig = asignaturas_by_id.get(asignatura_id)
                 creditos_asig = int(asig['creditos']) if asig and asig.get('creditos') else 1
