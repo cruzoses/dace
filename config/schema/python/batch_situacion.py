@@ -287,6 +287,28 @@ def main():
                     est_actualizados += 1
                     grand_total_convalidaciones += 1
 
+            for aid, m in asignaturas_en_malla.items():
+                if aid in por_asignatura:
+                    continue
+                se_key = (sid, pid, aid)
+                if se_key in situacion_map:
+                    continue
+                asig = asignaturas_by_id.get(aid)
+                if not asig or not asig.get('convalidacion'):
+                    continue
+                codigos = parse_convalidacion(asig['convalidacion'])
+                nota_cv = buscar_convalidacion(
+                    sid, codigos, prog_nota_minima,
+                    asignaturas_by_codigo, notas_por_estudiante, mallas_nota_minima
+                )
+                if nota_cv:
+                    insert_list.append((sid, pid, aid, m['trayecto_id'],
+                                        nota_cv['periodo_id'], nota_cv['seccion'],
+                                        nota_cv['calificacion'], nota_cv['responsable'],
+                                        1, 0))
+                    est_actualizados += 1
+                    grand_total_convalidaciones += 1
+
             for aid in por_asignatura:
                 se_key = (sid, pid, aid)
                 if se_key not in situacion_map:
