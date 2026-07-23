@@ -287,6 +287,12 @@ def main():
                     est_actualizados += 1
                     grand_total_convalidaciones += 1
 
+            for aid in por_asignatura:
+                se_key = (sid, pid, aid)
+                if se_key not in situacion_map:
+                    situacion_map[se_key] = {'id': None, 'estudiante_id': sid,
+                                              'programa_id': pid, 'asignatura_id': aid}
+
         grand_total_programas += len(progs)
         grand_total_actualizados += est_actualizados
 
@@ -302,13 +308,34 @@ def main():
     t_calc = time.time() - t_proc
 
     insert_keys = {(s[0], s[1], s[2]) for s in insert_list}
-    malla_duplicados = len(malla_insert_list)
+    malla_orig = len(malla_insert_list)
     malla_insert_list = [m for m in malla_insert_list if (m[0], m[1], m[2]) not in insert_keys]
-    malla_duplicados -= len(malla_insert_list)
+    malla_duplicados_cruz = malla_orig - len(malla_insert_list)
+
+    seen_malla = set()
+    malla_dedup = []
+    for m in malla_insert_list:
+        key = (m[0], m[1], m[2])
+        if key not in seen_malla:
+            seen_malla.add(key)
+            malla_dedup.append(m)
+    malla_duplicados_int = len(malla_insert_list) - len(malla_dedup)
+    malla_insert_list = malla_dedup
+
+    seen_insert = set()
+    insert_dedup = []
+    for s in insert_list:
+        key = (s[0], s[1], s[2])
+        if key not in seen_insert:
+            seen_insert.add(key)
+            insert_dedup.append(s)
+    insert_duplicados = len(insert_list) - len(insert_dedup)
+    insert_list = insert_dedup
 
     print("\n  Calculo completado en %.1f segundos" % t_calc, flush=True)
-    print("  Malla inserts: %d (%d duplicados eliminados)" % (len(malla_insert_list), malla_duplicados), flush=True)
-    print("  Sync inserts:  %d" % len(insert_list), flush=True)
+    print("  Malla inserts: %d (%d vs insert_list, %d internos)" % (
+        len(malla_insert_list), malla_duplicados_cruz, malla_duplicados_int), flush=True)
+    print("  Sync inserts:  %d (%d duplicados internos)" % (len(insert_list), insert_duplicados), flush=True)
     print("  Updates:       %d" % len(update_list), flush=True)
     print("  Convalidaciones: %d" % grand_total_convalidaciones, flush=True)
 
