@@ -7,7 +7,7 @@
 <div class="row">
 
     <div class="col-md-12">    
-        <div class="box box-warning box-solid">
+        <div class="box box-purple box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Registrar Curso</h3>
 		        <div class="box-tools pull-right">
@@ -60,7 +60,7 @@
                     );
                     echo $this->Form->control('horario', ['type' => 'select', 'options' => $horarios, 'empty' => true,
                         'label' => 'Horario Asignado', 'class' => 'form-control select2 multiValue', 'data-width' => '100%',
-                        'multiple' => 'multiple', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->hidden('cerrado', ['type' => 'checkbox', 'value' => 1, 'checked' => true]);
                     echo $this->Form->hidden('activo', ['type' => 'checkbox', 'value' => 1, 'checked' => true]);

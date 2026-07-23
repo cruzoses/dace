@@ -154,7 +154,7 @@
                                             <td><?= $asig->has('asignatura') ? h($asig->asignatura->nombre) : '' ?></td>
                                             <td class="text-center" style="<?= !empty($asig->calificacion) ? ($aprobada ? 'color:#0056b3;font-weight:bold' : 'color:#dc3545;font-weight:bold') : '' ?>"><?= h($asig->calificacion) ?></td>
                                             <td class="text-center"><?= !empty($asig->calificacion) ? h($asig->seccion) : '' ?></td>
-                                            <td><?= !empty($asig->calificacion) && $asig->has('periodo') ? h($asig->periodo->nombre) : '' ?></td>
+                                            <td><?= !empty($asig->calificacion) && $asig->has('periodo') ? h($asig->periodo->codigo) : '' ?></td>
                                             <td><?= !empty($asig->calificacion) ? h($asig->responsable) : '' ?></td>
                                         </tr>
                                     <?php endforeach; ?>

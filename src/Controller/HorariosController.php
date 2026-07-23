@@ -21,7 +21,7 @@ class HorariosController extends AppController
 
 	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([2,3]) )
         {
             return true;
         }
@@ -188,7 +188,7 @@ class HorariosController extends AppController
         }
 
         $periodos = $this->Horarios->Periodos->find('list', ['limit' => 200])
-            ->where(['Periodos.activo' => 1])
+            //->where(['Periodos.activo' => 1])
             ->order(['Periodos.id' => 'DESC']);
 
         $sedes = $this->Horarios->Sedes->find('list', ['limit' => 200])

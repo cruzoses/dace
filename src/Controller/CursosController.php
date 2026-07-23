@@ -22,7 +22,7 @@ class CursosController extends AppController
 
 	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([2,3]) )
         {
             return true;
         }
@@ -45,11 +45,11 @@ class CursosController extends AppController
         $filtros = $this->request->getQuery();
         $searchFields = $this->Cursos->getSearchFields();
 
-        $searchFields['sede_id']['options'] = $this->Cursos->Sedes->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC'])->toArray();
-        $searchFields['periodo_id']['options'] = $this->Cursos->Periodos->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC'])->toArray();
-        $searchFields['carrera_id']['options'] = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC'])->toArray();
-        $searchFields['trayecto_id']['options'] = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1])->toArray();
-        $searchFields['asignatura_id']['options'] = $this->Cursos->Asignaturas->find('list', ['limit' => 200])->where(['activa' => 1])->toArray();
+        $searchFields['sede_id']['options'] = $this->Cursos->Sedes->find('list')->where(['activa' => 1])->order(['id' => 'ASC'])->toArray();
+        $searchFields['periodo_id']['options'] = $this->Cursos->Periodos->find('list')->where(['activo' => 1])->order(['id' => 'DESC'])->toArray();
+        $searchFields['carrera_id']['options'] = $this->Cursos->Carreras->find('list')->where(['activa' => 1])->order(['id' => 'ASC'])->toArray();
+        $searchFields['trayecto_id']['options'] = $this->Cursos->Trayectos->find('list')->where(['activo' => 1])->toArray();
+        $searchFields['asignatura_id']['options'] = $this->Cursos->Asignaturas->find('list')->where(['activa' => 1])->toArray();
         $searchFields['docente_id']['options'] = $this->Cursos->Docentes->find('list')->where(['activo' => 1])->toArray();
 
         $this->set(compact('cursos', 'filtros', 'searchFields'));
@@ -83,9 +83,7 @@ class CursosController extends AppController
             }
         }
         $curso->programas = implode(', ', $nombresProgramas);
-
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Cursos ' . json_encode($curso->toArray()));
-
         $this->set('curso', $curso);
     }
 
@@ -119,10 +117,10 @@ class CursosController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Curso'));
         }
-        $sedes = $this->Cursos->Sedes->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
-        $periodos = $this->Cursos->Periodos->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
-        $carreras = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
-        $trayectos = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1]);
+        $sedes = $this->Cursos->Sedes->find('list')->where(['activa' => 1])->order(['id' => 'ASC']);
+        $periodos = $this->Cursos->Periodos->find('list')->where(['activo' => 1])->order(['id' => 'DESC']);
+        $carreras = $this->Cursos->Carreras->find('list')->where(['activa' => 1])->order(['id' => 'ASC']);
+        $trayectos = $this->Cursos->Trayectos->find('list')->where(['activo' => 1]);
         $asignaturas = $this->Cursos->Asignaturas->find('list')->where(['activa' => 1]);
         $docentes = $this->Cursos->Docentes->find('list')->where(['activo' => 1]);
         $profesores = $this->Cursos->Docentes->find('list', [
@@ -132,7 +130,9 @@ class CursosController extends AppController
 
         $aulas = [];
         $horarios = [];
-        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'trayectos', 'asignaturas', 'docentes', 'aulas', 'horarios', 'profesores'));
+        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'trayectos', 'asignaturas', 'docentes', 'aulas', 
+            'horarios', 'profesores')
+        );
     }
 
     /**
