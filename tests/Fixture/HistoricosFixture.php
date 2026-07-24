@@ -20,7 +20,7 @@ class HistoricosFixture extends TestFixture
         'periodo_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'asignatura_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'calificacion' => ['type' => 'string', 'length' => 10, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_spanish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'seccion' => ['type' => 'string', 'length' => 10, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_spanish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'seccion' => ['type' => 'string', 'length' => 20, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_spanish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'responsable' => ['type' => 'string', 'length' => 50, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_spanish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
@@ -55,10 +55,10 @@ class HistoricosFixture extends TestFixture
                 'periodo_id' => 1,
                 'asignatura_id' => 1,
                 'calificacion' => 'Lorem ip',
-                'seccion' => 'Lorem ip',
+                'seccion' => 'Lorem ipsum dolor ',
                 'responsable' => 'Lorem ipsum dolor sit amet',
-                'created' => '2026-07-03 17:00:21',
-                'modified' => '2026-07-03 17:00:21',
+                'created' => '2026-07-24 02:02:32',
+                'modified' => '2026-07-24 02:02:32',
             ],
         ];
         parent::init();

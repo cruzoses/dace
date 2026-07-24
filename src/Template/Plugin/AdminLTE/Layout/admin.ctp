@@ -10,6 +10,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">    
         <meta name="application-name" content="SACE UPTBAL">
+        <meta name="csrfToken" content="<?= $this->request->getParam('_csrfToken') ?>">
         <title>
             <?= $cakeDescription ?>:
             <?= $this->fetch('title') ?>
@@ -44,6 +45,16 @@
         <?= $this->Html->css('sace'); ?>
         <!-- jQuery 3 -->
         <?= $this->Html->script('AdminLTE./bower_components/jquery/dist/jquery.min'); ?>
+        <script>
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                var token = $('meta[name="csrfToken"]').attr('content');
+                if (token) {
+                    xhr.setRequestHeader('X-CSRF-Token', token);
+                }
+            }
+        });
+        </script>
         <!-- Google Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
         <?= $this->fetch('css') ?>

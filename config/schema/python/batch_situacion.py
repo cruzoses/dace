@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Batch processor: sync situacion_estudiantes from tablanotas for ALL students.
+Batch processor: sync situacion_estudiantes from historicos for ALL students.
 Bulk-optimized: pre-loads all reference data, processes in memory, batch writes.
 
 Usage:
@@ -161,8 +161,8 @@ def main():
         situacion_map[key] = s
     print("  %d registros" % len(se_data), flush=True)
 
-    print("[6/7] Cargando tablanotas...", flush=True)
-    cur.execute("SELECT estudiante_id, asignatura_id, periodo_id, calificacion, seccion, responsable FROM tablanotas")
+    print("[6/7] Cargando historicos...", flush=True)
+    cur.execute("SELECT estudiante_id, periodo_id, asignatura_id, calificacion, seccion, responsable FROM historicos")
     notas_data = cur.fetchall()
     notas_por_estudiante = {}
     for n in notas_data:

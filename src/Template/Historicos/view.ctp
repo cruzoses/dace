@@ -15,7 +15,7 @@
         	<div class="box-body">
           		<dl class="dl-horizontal">
                     <dt scope="row"><?= __('Estudiante') ?></dt>
-                    <dd><?= $historico->has('estudiante') ? $this->Html->link($historico->estudiante->id, ['controller' => 'Estudiantes', 'action' => 'view', $historico->estudiante->id]) : '' ?></dd>
+                    <dd><?= $historico->has('estudiante') ? $this->Html->link($historico->estudiante->full_name, ['controller' => 'Estudiantes', 'action' => 'view', $historico->estudiante->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Periodo') ?></dt>
                     <dd><?= $historico->has('periodo') ? $this->Html->link($historico->periodo->codename, ['controller' => 'Periodos', 'action' => 'view', $historico->periodo->id]) : '' ?></dd>
                     <dt scope="row"><?= __('Asignatura') ?></dt>

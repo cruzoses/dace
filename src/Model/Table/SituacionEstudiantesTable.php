@@ -175,7 +175,7 @@ class SituacionEstudiantesTable extends Table
         \Cake\Log\Log::write('debug', 'registrarDesdeMalla FIN');
     }
 
-    public function sincronizarDesdeTablanotas($estudianteId, $programaId)
+    public function sincronizarDesdeHistorico($estudianteId, $programaId)
     {
         $asignaturasPrograma = $this->find()
             ->where([
@@ -211,7 +211,7 @@ class SituacionEstudiantesTable extends Table
             }
         }
 
-        $tablanotasTable = TableRegistry::getTableLocator()->get('Tablanotas');
+        $tablanotasTable = TableRegistry::getTableLocator()->get('Historicos');
 
         $notas = $tablanotasTable->find()
             ->where([
@@ -408,7 +408,7 @@ class SituacionEstudiantesTable extends Table
         }
 
         $asignaturasTable = TableRegistry::getTableLocator()->get('Asignaturas');
-        $tablanotasTable = TableRegistry::getTableLocator()->get('Tablanotas');
+        $tablanotasTable = TableRegistry::getTableLocator()->get('Historicos');
         $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
 
         $alternativas = $asignaturasTable->find()

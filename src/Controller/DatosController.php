@@ -72,7 +72,7 @@ class DatosController extends AppController
     public function programas($estudianteId = null)
     {
         $programas = TableRegistry::getTableLocator()->get('EstudianteProgramas')->find('all', [
-            'conditions' => ['EstudianteProgramas.estudiante_id' => $estudianteId],
+            'conditions' => ['EstudianteProgramas.estudiante_id' => $estudianteId, 'EstudianteProgramas.congelado' => 0],
             'contain' => ['Estudiantes', 'Carreras', 'Programas', 'Sedes'] 
         ])
         //->where(['EstudianteProgramas.estudiante_id' => $estudianteId])
@@ -226,7 +226,7 @@ class DatosController extends AppController
 
         $estudianteProgramasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
         $programas = $estudianteProgramasTable->find()
-            ->where(['estudiante_id' => $id])
+            ->where(['estudiante_id' => $id, 'congelado' => 0])
             ->toArray();
 
         $situacionTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
@@ -242,7 +242,7 @@ class DatosController extends AppController
                 $prog->periodo_id
             );
 
-            $totalActualizados += $situacionTable->sincronizarDesdeTablanotas($id, $prog->programa_id);
+            $totalActualizados += $situacionTable->sincronizarDesdeHistorico($id, $prog->programa_id);
         }
 
         if ($this->request->is('ajax')) {

@@ -39,7 +39,6 @@ $(document).ready( function () {
             .replace(/(\.\d{2})\d+/g, '$1');
     });
 
-
     $('.select2').select2({
         language: 'es',
         placeholder: 'Seleccione una Opción',
@@ -50,7 +49,7 @@ $(document).ready( function () {
     $('.multiValue').select2({
         language: 'es',
         tags: true,
-        tokenSeparators: [''],
+        tokenSeparators: [',', ' '],
         placeholder: 'Seleccione una Opción',
         allowClear: true,
         width: 'resolve'

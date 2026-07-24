@@ -112,6 +112,11 @@ class EstudianteProgramasTable extends AppTable
             ->notEmptyString('culminado');
 
         $validator
+            ->boolean('congelado')
+            ->requirePresence('congelado', 'create')
+            ->notEmptyString('congelado');
+
+        $validator
             ->boolean('activo')
             ->requirePresence('activo', 'create')
             ->notEmptyString('activo');

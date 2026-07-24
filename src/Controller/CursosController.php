@@ -11,7 +11,7 @@ use Cake\ORM\TableRegistry;
  * @property \App\Model\Table\CursosTable $Cursos
  *
  * @method \App\Model\Entity\Curso[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class CursosController extends AppController
 {
 
@@ -47,7 +47,7 @@ class CursosController extends AppController
 
         $searchFields['sede_id']['options'] = $this->Cursos->Sedes->find('list')->where(['activa' => 1])->order(['id' => 'ASC'])->toArray();
         $searchFields['periodo_id']['options'] = $this->Cursos->Periodos->find('list')->where(['activo' => 1])->order(['id' => 'DESC'])->toArray();
-        $searchFields['carrera_id']['options'] = $this->Cursos->Carreras->find('list')->where(['activa' => 1])->order(['id' => 'ASC'])->toArray();
+        $searchFields['carrera_id']['options'] = $this->Cursos->Carreras->find('list')->where(['activa' => 1])->order(['id' => 'DESC'])->toArray();
         $searchFields['trayecto_id']['options'] = $this->Cursos->Trayectos->find('list')->where(['activo' => 1])->toArray();
         $searchFields['asignatura_id']['options'] = $this->Cursos->Asignaturas->find('list')->where(['activa' => 1])->toArray();
         $searchFields['docente_id']['options'] = $this->Cursos->Docentes->find('list')->where(['activo' => 1])->toArray();
@@ -86,7 +86,6 @@ class CursosController extends AppController
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Cursos ' . json_encode($curso->toArray()));
         $this->set('curso', $curso);
     }
-
 
     /**
      * Add method
@@ -129,9 +128,11 @@ class CursosController extends AppController
         ])->where(['activo' => 1])->toArray();
 
         $aulas = [];
-        $horarios = [];
-        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'trayectos', 'asignaturas', 'docentes', 'aulas', 
-            'horarios', 'profesores')
+        $horariosData = $this->_getHorariosAll();
+        $horarios = $horariosData['simple'];
+        $horariosJson = json_encode($horariosData['full']);
+        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'trayectos', 'asignaturas', 'docentes', 'aulas',
+            'horarios', 'profesores', 'horariosJson')
         );
     }
 
@@ -185,21 +186,11 @@ class CursosController extends AppController
         ])->where(['activo' => 1])->toArray();
 
         $aulas = [];
-        $horarios = [];
-        if (!empty($curso->sede_id) && !empty($curso->periodo_id)) {
-            $horariosTable = TableRegistry::getTableLocator()->get('Horarios');
-            $horarios = $horariosTable->find('list', [
-                'keyField' => 'codigo',
-                'valueField' => 'codigo'
-            ])->where([
-                'sede_id' => $curso->sede_id,
-                'periodo_id' => $curso->periodo_id,
-                'activo' => 1
-            ])->order(['Horarios.dia', 'Horarios.desde'])->toArray();
-        }
-        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'trayectos', 'asignaturas', 'docentes', 'aulas', 'horarios', 'profesores'));
+        $horariosData = $this->_getHorariosAll();
+        $horarios = $horariosData['simple'];
+        $horariosJson = json_encode($horariosData['full']);
+        $this->set(compact('curso', 'sedes', 'periodos', 'carreras', 'trayectos', 'asignaturas', 'docentes', 'aulas', 'horarios', 'profesores', 'horariosJson'));
     }
-
 
     /**
      * Delete method
@@ -323,6 +314,40 @@ class CursosController extends AppController
         $this->response = $this->response->withType('application/json');
         $this->response = $this->response->withStringBody(json_encode(['aulas' => $aulas]));
         return $this->response;
+    }
+
+    private function _getHorariosAll()
+    {
+        $horariosTable = TableRegistry::getTableLocator()->get('Horarios');
+        $year = date('Y');
+
+        $simple = $horariosTable->find('list', [
+            'keyField' => 'codigo',
+            'valueField' => 'codigo',
+        ])->where([
+            'YEAR(created)' => $year,
+            'activo' => 1,
+        ])->order(['dia' => 'ASC', 'desde' => 'ASC'])->toArray();
+
+        $query = $horariosTable->find()
+            ->select(['codigo', 'sede_id', 'periodo_id'])
+            ->where([
+                'YEAR(created)' => $year,
+                'activo' => 1,
+            ])
+            ->order(['dia' => 'ASC', 'desde' => 'ASC'])
+            ->all();
+
+        $full = [];
+        foreach ($query as $row) {
+            $full[$row->codigo] = [
+                'codigo' => $row->codigo,
+                'sede_id' => (string)$row->sede_id,
+                'periodo_id' => (string)$row->periodo_id,
+            ];
+        }
+
+        return ['simple' => $simple, 'full' => $full];
     }
 
 }

@@ -76,7 +76,7 @@ class HistoricosTable extends Table
 
         $validator
             ->scalar('seccion')
-            ->maxLength('seccion', 10)
+            ->maxLength('seccion', 20)
             ->requirePresence('seccion', 'create')
             ->notEmptyString('seccion');
 

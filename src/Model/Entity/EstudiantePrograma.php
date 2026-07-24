@@ -18,6 +18,7 @@ use Cake\ORM\Entity;
  * @property float|null $ira
  * @property bool $culminado
  * @property string|null $observacion
+ * @property bool $congelado
  * @property bool $activo
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -51,6 +52,7 @@ class EstudiantePrograma extends Entity
         'ira' => true,
         'culminado' => true,
         'observacion' => true,
+        'congelado' => true,
         'activo' => true,
         'created' => true,
         'modified' => true,

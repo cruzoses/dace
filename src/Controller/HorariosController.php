@@ -11,7 +11,7 @@ use Cake\Event\Event;
  * @property \App\Model\Table\HorariosTable $Horarios
  *
  * @method \App\Model\Entity\Horario[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class HorariosController extends AppController
 {
 	public function beforeFilter(Event $event)
@@ -47,7 +47,8 @@ class HorariosController extends AppController
         $aDias = Configure::read('aDias');
         $aTurnos = Configure::read('aTurnos');
         $searchFields['sede_id']['options'] = $this->Horarios->Sedes->find('list')->where(['Sedes.activa' => 1])->toArray();
-        $searchFields['periodo_id']['options'] = $this->Horarios->Periodos->find('list')->where(['Periodos.activo' => 1])->toArray();
+        $searchFields['periodo_id']['options'] = $this->Horarios->Periodos->find('list',['order' => ['id' => 'DESC']])
+            ->where(['Periodos.activo' => 1])->toArray();
         $searchFields['dia']['options'] = $aDias;
         $searchFields['turno']['options'] = $aTurnos;
 

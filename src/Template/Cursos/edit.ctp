@@ -58,7 +58,7 @@
                     'class' => 'form-control select2', 'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('horario', ['type' => 'select', 'options' => $horarios, 'empty' => true,
-                        'label' => 'Horario Asignado', 'class' => 'form-control select2 multiValue', 'data-width' => '100%',
+                        'label' => 'Horario Asignado', 'class' => 'form-control', 'data-width' => '100%',
                         'multiple' => 'multiple', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('cerrado', ['type' => 'checkbox', 'label' => 'Cierre Ejecutado']);
@@ -83,9 +83,9 @@
 <script>
 var CURSOS_PROGRAMAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getProgramas']) ?>';
 var CURSOS_ASIGNATURAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAsignaturas']) ?>';
-var CURSOS_HORARIOS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getHorarios']) ?>';
 var CURSOS_AULAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAulas']) ?>';
-var CURSOS_HORARIO_ACTUAL = '<?= h($curso->horario) ?>';
+var CURSOS_HORARIOS_ALL = <?= $horariosJson ?>;
+var CURSOS_HORARIO_ACTUAL = <?= json_encode(!empty($curso->horario) ? explode(' ', $curso->horario) : []) ?>;
 var CURSOS_ASIGNATURA_ACTUAL = '<?= h($curso->asignatura_id) ?>';
 var CURSOS_PROGRAMAS_ACTUAL = '<?= h($curso->programas) ?>';
 var CURSOS_AULA_ACTUAL = '<?= h($curso->aula_id) ?>';

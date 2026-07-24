@@ -34,7 +34,7 @@
                             <th scope="col"><?= $this->Paginator->sort('carrera_id') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('programa_id') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('trayecto_id') ?></th>
-                            <th scope="col">Código</th>
+                            <th scope="col" class="text-primary">Código</th>
                             <th scope="col"><?= $this->Paginator->sort('asignatura_id') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('nota_minima') ?></th>
                             <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>

@@ -34,28 +34,26 @@
                     </legend>
                     <?php
                         echo $this->Form->control('expediente', [
-                            'type' => 'text',
-                            'label' => 'No. Expediente',
+                            'type' => 'text', 'label' => 'No. Expediente',
+                            'autocomplete' => false,
                             'prepend' => '<i class="fa fa-folder-open"></i>',
                         ]);
                         echo $this->Form->control('cedula', [
-                            'type' => 'text',
-                            'label' => 'No. Cédula',
-                            'class' => 'isNumeric',
+                            'type' => 'text', 'label' => 'No. Cédula',
+                            'class' => 'isNumeric', 'autocomplete' => false,
                             'prepend' => '<i class="fa fa-id-card"></i>',
                         ]);
                         echo $this->Form->control('apellidos', [
-                            'class' => 'isUpper',
+                            'class' => 'isUpper', 'autocomplete' => false,
                             'prepend' => '<i class="fa fa-asterisk"></i>',
                         ]);
                         echo $this->Form->control('nombres', [
-                            'class' => 'isUpper',
+                            'class' => 'isUpper', 'autocomplete' => false,
                             'prepend' => '<i class="fa fa-asterisk"></i>',
                         ]);
                         echo $this->Form->control('id', [
-                            'type' => 'text',
-                            'label' => 'No. Id',
-                            'class' => 'isNumeric',
+                            'type' => 'text', 'label' => 'No. Id',
+                            'class' => 'isNumeric', 'autocomplete' => false,
                             'prepend' => '<i class="fa fa-hashtag"></i>',
                         ]);
                     ?>

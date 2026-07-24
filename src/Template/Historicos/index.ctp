@@ -38,7 +38,7 @@
                         <?php foreach ($historicos as $historico): ?>
                             <tr>
                                 <td><?= $this->Number->format($historico->id) ?></td>
-                            <td><?= $historico->has('estudiante') ? $this->Html->link($historico->estudiante->id, ['controller' => 'Estudiantes', 'action' => 'view', $historico->estudiante->id]) : '' ?></td>
+                            <td><?= $historico->has('estudiante') ? $this->Html->link($historico->estudiante->full_name, ['controller' => 'Estudiantes', 'action' => 'view', $historico->estudiante->id]) : '' ?></td>
                                 <td><?= $historico->has('periodo') ? $this->Html->link($historico->periodo->codename, ['controller' => 'Periodos', 'action' => 'view', $historico->periodo->id]) : '' ?></td>
                                 <td><?= $historico->has('asignatura') ? $this->Html->link($historico->asignatura->codename, ['controller' => 'Asignaturas', 'action' => 'view', $historico->asignatura->id]) : '' ?></td>
                                             <td><?= h($historico->calificacion) ?></td>

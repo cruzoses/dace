@@ -62,8 +62,9 @@
             echo $this->Form->control('cohorte', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
             echo $this->Form->control('isa', ['class' => 'isDouble','prepend' => '<i class="fa fa-asterisk"></i>']);
             echo $this->Form->control('ira', ['class' => 'isDouble','prepend' => '<i class="fa fa-asterisk"></i>']);
-            echo $this->Form->control('culminado', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-            echo $this->Form->control('activo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+            echo $this->Form->hidden('culminado', ['value' => 0]);
+            echo $this->Form->hidden('congelado', ['value' => 0]);
+            echo $this->Form->hidden('activo', ['value' => 1]);
         ?>
     </div>
     <div class="box-footer">

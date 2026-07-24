@@ -68,6 +68,7 @@
                 'disabled' => true]
             );
             echo $this->Form->hidden('culminado', ['value' => 0]);
+            echo $this->Form->hidden('congelado', ['value' => 0]);
             echo $this->Form->hidden('activo', ['value' => 1]);
         ?>
     </div>

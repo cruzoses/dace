@@ -163,19 +163,19 @@ function actualizarBotonEliminar() {
 }
 
 $(document).ready(function() {
-    $('#check-todos').on('change', function() {
+    $('#check-todos').off('change.insc').on('change.insc', function() {
         $('.check-inscripcion').prop('checked', $(this).prop('checked'));
         actualizarBotonEliminar();
     });
 
-    $(document).on('change', '.check-inscripcion', function() {
+    $(document).off('change.checkinsc').on('change.checkinsc', '.check-inscripcion', function() {
         var total = $('.check-inscripcion').length;
         var marcados = $('.check-inscripcion:checked').length;
         $('#check-todos').prop('checked', total > 0 && marcados === total);
         actualizarBotonEliminar();
     });
 
-    $(document).on('click', '.btn-inscribir-programa', function(e) {
+    $(document).off('click.inscribirprog').on('click.inscribirprog', '.btn-inscribir-programa', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
         $('#modal-inscripcion .modal-body').html('<div class="text-center"><i class="fa fa-refresh fa-spin fa-3x"></i></div>');
@@ -188,7 +188,7 @@ $(document).ready(function() {
                 $('#modal-inscripcion .modal-body').html(response);
                 var $modal = $('#modal-inscripcion');
                 $modal.find('.select2').select2({ width: '100%', dropdownParent: $modal });
-                $modal.find('#sel-periodo').on('change select2:select', function(e) {
+                $modal.find('#sel-periodo').off('change.selperiodo select2:select.selperiodo').on('change.selperiodo select2:select.selperiodo', function(e) {
                     var periodoId = $(this).val();
                     var carreraId = $('#hid-carrera-id').val();
                     var estudianteId = $('#hid-estudiante-id').val();
@@ -240,21 +240,21 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '#btn-inscribir-cursos', function() {
+    $(document).off('click.inscribirbtn').on('click.inscribirbtn', '#btn-inscribir-cursos', function() {
         $('#form-inscribir').submit();
     });
 
-    $(document).on('change', '#modal-inscripcion .check-curso', function() {
+    $(document).off('change.checkcurso').on('change.checkcurso', '#modal-inscripcion .check-curso', function() {
         var total = $('#modal-inscripcion .check-curso').not(':disabled').length;
         var marcados = $('#modal-inscripcion .check-curso:checked').length;
         $('#modal-inscripcion #check-todos-cursos').prop('checked', total > 0 && marcados === total);
     });
 
-    $(document).on('change', '#modal-inscripcion #check-todos-cursos', function() {
+    $(document).off('change.checktodocursos').on('change.checktodocursos', '#modal-inscripcion #check-todos-cursos', function() {
         $('#modal-inscripcion .check-curso').not(':disabled').prop('checked', $(this).prop('checked'));
     });
 
-    $(document).on('submit', '#form-inscribir', function(e) {
+    $(document).off('submit.inscribir').on('submit.inscribir', '#form-inscribir', function(e) {
         e.preventDefault();
         var form = $(this);
         var cursos = [];
@@ -293,7 +293,7 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '#btn-eliminar-seleccionados', function() {
+    $(document).off('click.elimsel').on('click.elimsel', '#btn-eliminar-seleccionados', function() {
         var ids = [];
         $('.check-inscripcion:checked').each(function() { ids.push($(this).val()); });
 

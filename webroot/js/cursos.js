@@ -1,3 +1,10 @@
+var S2_OPTS = {
+    language: 'es',
+    placeholder: 'Seleccione una Opción',
+    allowClear: true,
+    width: 'resolve'
+};
+
 function cargarAsignaturas(programaIds, trayectoId, selectedValue) {
     var $asignatura = $('#asignatura-id');
     if (!programaIds || !programaIds.length || !trayectoId) {
@@ -52,31 +59,25 @@ function cargarAulas(sedeId, selectedValue) {
     });
 }
 
-function cargarHorarios(sedeId, periodoId, selectedValue) {
-    var $horario = $('#horario');
-    if (!sedeId || !periodoId) {
-        $horario.empty().append('<option value="" selected>Seleccione una Opción</option>');
-        $horario.val('').trigger('change');
-        return;
-    }
-    $.ajax({
-        url: CURSOS_HORARIOS_URL,
-        type: 'GET',
-        data: { sede_id: sedeId, periodo_id: periodoId },
-        dataType: 'json',
-        beforeSend: function () {
-            $horario.empty().append('<option value="">Cargando...</option>');
-        }
-    }).done(function (response) {
-        $horario.empty().append('<option value="" selected>Seleccione una Opción</option>');
-        $.each(response.horarios, function (value, text) {
-            var selected = (value == selectedValue) ? ' selected' : '';
-            $horario.append('<option value="' + value + '"' + selected + '>' + text + '</option>');
-        });
-        $horario.val(selectedValue || '').trigger('change');
-    }).fail(function () {
-        $horario.empty().append('<option value="" selected>Error al cargar horarios</option>');
+function filterHorarios(sedeId, periodoId, selectedValues) {
+    var $h = $('#horario');
+    var all = (typeof CURSOS_HORARIOS_ALL !== 'undefined') ? CURSOS_HORARIOS_ALL : {};
+    var selected = selectedValues || [];
+
+    $h.empty();
+    $h.append('<option value="">Seleccione una Opción</option>');
+
+    $.each(all, function (codigo, info) {
+        if (sedeId && info.sede_id !== String(sedeId)) return;
+        if (periodoId && info.periodo_id !== String(periodoId)) return;
+        var isSel = selected.indexOf(codigo) !== -1;
+        $h.append('<option value="' + codigo + '"' + (isSel ? ' selected' : '') + '>' + codigo + '</option>');
     });
+
+    if (selected.length) {
+        $h.val(selected);
+    }
+    $h.trigger('change');
 }
 
 function initCursos() {
@@ -85,17 +86,13 @@ function initCursos() {
     var initialTrayecto = $('#trayecto-id').val();
     var initialSede = $('#sede-id').val();
     var initialPeriodo = $('#periodo-id').val();
-    var initialHorario = $('#horario').val() || (typeof CURSOS_HORARIO_ACTUAL !== 'undefined' ? CURSOS_HORARIO_ACTUAL : '');
+    var initialHorario = typeof CURSOS_HORARIO_ACTUAL !== 'undefined' ? CURSOS_HORARIO_ACTUAL : [];
 
     if (!initialTrayecto) {
         $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
     }
 
-    if (initialSede && initialPeriodo) {
-        cargarHorarios(initialSede, initialPeriodo, initialHorario);
-    } else {
-        $('#horario').empty().append('<option value="" selected>Seleccione una Opción</option>');
-    }
+    filterHorarios(initialSede, initialPeriodo, initialHorario);
 
     $('#carrera-id').on('change', function () {
         if (!esEdicion) {
@@ -129,15 +126,21 @@ function initCursos() {
         var sedeId = $(this).val();
         var periodoId = $('#periodo-id').val();
         cargarAulas(sedeId, null);
-        cargarHorarios(sedeId, periodoId, null);
+        filterHorarios(sedeId, periodoId, null);
     });
 
     $('#periodo-id').on('change', function () {
         var sedeId = $('#sede-id').val();
-        cargarHorarios(sedeId, $(this).val(), null);
+        filterHorarios(sedeId, $(this).val(), null);
     });
 
     if (esEdicion && CURSOS_ASIGNATURA_ACTUAL) {
         $('#asignatura-id').val(CURSOS_ASIGNATURA_ACTUAL).trigger('change');
     }
 }
+
+$(document).ready(function () {
+    if ($('#horario').length) {
+        $('#horario').select2(S2_OPTS);
+    }
+});
