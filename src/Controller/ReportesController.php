@@ -15,13 +15,13 @@ class ReportesController extends AppController
         parent::beforeFilter($event);
         $this->Auth->allow([
             'downloadPdf', 'listarParroquias', 'listarPeriodos', 'listarEstados', 'listarMunicipios', 'listarDocentes',
-            'listarUsuarios', 'listarAulas', 'listarMallas', 'getProgramas', 'download']
+            'listarUsuarios', 'listarAulas', 'listarMallas', 'getProgramas', 'download', 'listarParticipantes']
         );
     }
 
 	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([2,3]) )
         {
             return true;
         }
@@ -996,6 +996,57 @@ class ReportesController extends AppController
         $this->response = $this->response->withHeader('Content-Disposition', 'inline;filename="' . $file . '"');
         $this->response->getBody()->write(file_get_contents($path));
         return $this->response;
+    }
+
+    public function listarParticipantes($cursoId = null)
+    {
+        $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
+        $curso = $cursosTable->get($cursoId, [
+            'contain' => ['Asignaturas', 'Periodos'],
+        ]);
+
+        $titulo = strtoupper($curso->asignatura->nombre) . ' - ' . $curso->periodo->codigo;
+
+        $inscritos = TableRegistry::getTableLocator()->get('EstudianteCursos')->find()
+            ->contain(['Estudiantes'])
+            ->where(['EstudianteCursos.curso_id' => $cursoId, 'EstudianteCursos.activo' => 1])
+            ->order(['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC']);
+
+        $data = [];
+        $i = 1;
+        foreach ($inscritos as $ec) {
+            $data[] = [
+                'No.' => $i++,
+                'Cedula' => $ec->estudiante->cedula,
+                'Apellidos' => $ec->estudiante->apellidos,
+                'Nombres' => $ec->estudiante->nombres,
+                'Expediente' => $ec->estudiante->expediente,
+                'Seccion' => $curso->seccion,
+            ];
+        }
+
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder();
+            $pdfBuilder->setColumns([
+                'No.' => ['justification' => 'center', 'width' => 35],
+                'Cedula' => ['justification' => 'center', 'width' => 70],
+                'Apellidos' => ['justification' => 'left', 'width' => 140],
+                'Nombres' => ['justification' => 'left', 'width' => 140],
+                'Expediente' => ['justification' => 'center', 'width' => 80],
+                'Seccion' => ['justification' => 'center', 'width' => 50],
+            ]);
+
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, $titulo, 'LISTA DE PARTICIPANTES');
+
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'participantes_curso_' . $cursoId . '_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
+        $this->render('showreport');
     }
 
     private function _getReportConfig()

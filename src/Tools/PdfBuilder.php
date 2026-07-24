@@ -35,7 +35,7 @@ class PdfBuilder
         $this->user = $session->read('Auth.User.alias');
     }
 
-    public function generateSimpleReport($data, $title = 'REPORTE')
+    public function generateSimpleReport($data, $title = 'REPORTE', $tableTitle = '')
     {
         $this->pageHeader($title);
 
@@ -49,7 +49,7 @@ class PdfBuilder
             $config['maxWidth'] = 700;
         }
 
-        $this->pdf->ezTable($data, null, '', $config);
+        $this->pdf->ezTable($data, null, $tableTitle, $config);
         $this->pdf->ezStopPageNumbers(1,1);
 
         return $this->pdf->ezOutput();

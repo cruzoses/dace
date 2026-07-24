@@ -17,7 +17,7 @@ class ArchivosController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarPeriodos', 'exportarDocentes', 'exportarSituacion']);
+        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarPeriodos', 'exportarDocentes', 'exportarSituacion', 'exportarParticipantes']);
     }
 
     public function exportarEstados()
@@ -452,6 +452,66 @@ class ArchivosController extends AppController
         }
 
         $filename = 'situacion_academica_' . $estudianteId . '_' . date('Ymd_His') . '.xlsx';
+        $filePath = $dir . DS . $filename;
+        file_put_contents($filePath, $content);
+
+        $this->autoRender = false;
+        $this->viewBuilder()->setClassName(null);
+        $this->viewBuilder()->setLayout(null);
+        $this->response = $this->response->withType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->response = $this->response->withHeader('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $this->response->getBody()->write($content);
+
+        return $this->response;
+    }
+
+    public function exportarParticipantes($cursoId = null)
+    {
+        $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
+        $curso = $cursosTable->get($cursoId, [
+            'contain' => ['Asignaturas', 'Periodos'],
+        ]);
+
+        $titulo = strtoupper($curso->asignatura->nombre) . ' - ' . $curso->periodo->codigo;
+
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $inscritos = TableRegistry::getTableLocator()->get('EstudianteCursos')->find()
+            ->contain(['Estudiantes'])
+            ->where(['EstudianteCursos.curso_id' => $cursoId, 'EstudianteCursos.activo' => 1])
+            ->order(['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC']);
+
+        $data = [];
+        $i = 1;
+        foreach ($inscritos as $ec) {
+            $data[] = [
+                'No.' => $i++,
+                'Cedula' => $ec->estudiante->cedula,
+                'Apellidos' => $ec->estudiante->apellidos,
+                'Nombres' => $ec->estudiante->nombres,
+                'Expediente' => $ec->estudiante->expediente,
+                'Seccion' => $curso->seccion,
+            ];
+        }
+
+        $excel = new ExcelBuilder();
+        $excel->setColumns([
+            'No.' => ['justification' => 'center'],
+            'Cedula' => ['justification' => 'center'],
+            'Apellidos' => ['justification' => 'left'],
+            'Nombres' => ['justification' => 'left'],
+            'Expediente' => ['justification' => 'center'],
+            'Seccion' => ['justification' => 'center'],
+        ]);
+        $excel->setFileName('participantes_curso_' . $cursoId);
+
+        $content = $excel->generateExcel($data, 'PARTICIPANTES - ' . $titulo);
+
+        $dir = WWW_ROOT . 'files' . DS . 'excel';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $filename = $excel->getFileName() . '_' . date('Ymd_His') . '.xlsx';
         $filePath = $dir . DS . $filename;
         file_put_contents($filePath, $content);
 

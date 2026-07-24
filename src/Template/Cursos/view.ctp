@@ -100,6 +100,18 @@
         <div class="box box-default box-solid">
             <div class="box-header with-border">                
                 <h3 class="box-title"><i class="fa fa-users"></i>&nbsp;Estudiantes Inscritos (<?= count($curso->estudiante_cursos) ?>)</h3>
+                <div class="box-tools pull-right">
+                    <div class="btn-group">
+                        <?= $this->Html->link('<i class="fa fa-print"></i>&nbsp;Imprimir',
+                            ['controller' => 'Reportes', 'action' => 'listarParticipantes', $curso->id],
+                            ['class' => 'btn btn-default btn-sm', 'escape' => false, 'title' => 'Imprimir Lista'])
+                        ?>
+                        <?= $this->Html->link('<i class="fas fa-file-excel"></i>&nbsp;Exportar',
+                            ['controller' => 'Archivos', 'action' => 'exportarParticipantes', $curso->id],
+                            ['class' => 'btn btn-default btn-sm', 'escape' => false, 'title' => 'Exportar Lista'])
+                        ?>
+                    </div>
+                </div>
             </div>
             <div class="box-body table-responsive no-padding">
                 <?php if (!empty($curso->estudiante_cursos)): ?>
