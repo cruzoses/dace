@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-md-12">
-		<div class="box box-info box-solid">
+		<div class="box box-sace box-solid">
 			<div class="box-header with-border">
 				<h3 class="box-title"><i class="fa fa-info"></i>&nbsp;Curso</h3>
 				<div class="box-tools pull-right">
@@ -10,8 +10,43 @@
 			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['action' => 'index'],['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
 			        ?>
-		        </div>
-        	</div>        
+                </div>
+            </div>
+
+<div class="modal fade" id="modal-registrar-participantes" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+(function(){
+    var BASE_URL = <?= json_encode($this->Url->build('/')) ?>;
+    var cursoId = <?= json_encode($curso->id) ?>;
+
+    $(document).off('click.rpabrir').on('click.rpabrir', '#btn-registrar-participantes', function(e) {
+        e.preventDefault();
+        var $modal = $('#modal-registrar-participantes');
+        $modal.find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i></div>');
+        $modal.modal('show');
+
+        $.ajax({
+            url: BASE_URL + 'estudiante-cursos/registrar-participantes/' + cursoId,
+            type: 'GET',
+            success: function(response) {
+                $modal.find('.modal-body').html(response);
+            },
+            error: function() {
+                $modal.find('.modal-body').html('<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> Error al cargar el formulario.</div>');
+            }
+        });
+    });
+})();
+</script>
         	<div class="box-body">
           		<dl class="dl-horizontal">
                     <dt scope="row"><?= __('Sede') ?></dt>
@@ -114,7 +149,10 @@
                 <?php endif; ?>
             </div>
             <div class="box-footer">
-                <span class="text-muted"><i class="fa fa-info-circle"></i> Para inscribir estudiantes, utilice la vista del estudiante &rarr; Inscripciones.</span>
+                <?= $this->Html->link('<i class="fa fa-users"></i>&nbsp;Registrar Participantes',
+                    ['#'], ['id' => 'btn-registrar-participantes', 'class' => 'btn btn-primary btn-flat pull-right', 'escape' => false])
+                ?>
+                <span class="text-muted" style="margin-left:15px;"><i class="fa fa-info-circle"></i> Para inscribir estudiantes individualmente, utilice la vista del estudiante &rarr; Inscripciones.</span>
             </div>            
         </div>
     </div>
@@ -168,4 +206,230 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-registrar-participantes" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+(function(){
+    var BASE_URL = <?= json_encode($this->Url->build('/')) ?>;
+    var cursoId = <?= json_encode($curso->id) ?>;
+    var rpCursoCupos = 0;
+    var rpCursoInscritos = <?= json_encode(count($curso->estudiante_cursos)) ?>;
+    var rpFaltantes = 0;
+
+    $(document).off('click.rpabrir').on('click.rpabrir', '#btn-registrar-participantes', function(e) {
+        e.preventDefault();
+        var $modal = $('#modal-registrar-participantes');
+        $modal.find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i></div>');
+        $modal.modal('show');
+
+        $.ajax({
+            url: BASE_URL + 'estudiante-cursos/registrar-participantes/' + cursoId,
+            type: 'GET',
+            success: function(response) {
+                $modal.find('.modal-body').html(response);
+                rpCursoCupos = parseInt($('#rp-curso-cupos').val()) || 0;
+                rpFaltantes = rpCursoCupos - rpCursoInscritos;
+
+                if (rpFaltantes <= 0) {
+                    $('#rp-alerta-texto').text('Este curso ya no tiene cupos disponibles (' + rpCursoInscritos + '/' + rpCursoCupos + ').');
+                    $('#rp-alerta').show();
+                    $('#rp-btn-registrar').prop('disabled', true);
+                }
+            },
+            error: function() {
+                $modal.find('.modal-body').html('<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> Error al cargar el formulario.</div>');
+            }
+        });
+    });
+
+    $(document).off('change.rptrayecto').on('change.rptrayecto', '#rp-trayecto-origen', function() {
+        $('#rp-btn-cargar-trayecto').prop('disabled', !$(this).val());
+        $('#rp-resultado-trayecto').hide();
+    });
+
+    $(document).off('click.rpcargar').on('click.rpcargar', '#rp-btn-cargar-trayecto', function() {
+        var trayectoId = $('#rp-trayecto-origen').val();
+        if (!trayectoId) return;
+        var $tbody = $('#tbl-rp-trayecto tbody');
+        $tbody.html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> Cargando...</td></tr>');
+        $('#rp-resultado-trayecto').show();
+        $('#rp-btn-registrar').prop('disabled', true);
+
+        $.ajax({
+            url: BASE_URL + 'estudiante-cursos/get-estudiantes-trayecto',
+            type: 'GET',
+            data: { curso_id: cursoId, trayecto_origen_id: trayectoId },
+            dataType: 'json',
+            success: function(resp) {
+                $tbody.empty();
+                if (resp.estudiantes.length === 0) {
+                    $tbody.html('<tr><td colspan="5" class="text-center text-muted">No se encontraron estudiantes del trayecto anterior.</td></tr>');
+                    return;
+                }
+                $.each(resp.estudiantes, function(i, e) {
+                    var cls = e.tiene_programa ? '' : ' class="text-muted"';
+                    var disabled = e.tiene_programa ? '' : ' disabled';
+                    var estado = e.tiene_programa
+                        ? '<span class="label label-success">OK</span>'
+                        : '<span class="label label-warning">Sin programa</span>';
+                    $tbody.append(
+                        '<tr' + cls + '>' +
+                        '<td class="text-center"><input type="checkbox" class="check-rp-trayecto" value="' + e.id + '"' + disabled + '></td>' +
+                        '<td>' + e.cedula + '</td>' +
+                        '<td>' + e.nombre + '</td>' +
+                        '<td>' + e.expediente + '</td>' +
+                        '<td class="text-center">' + estado + '</td>' +
+                        '</tr>'
+                    );
+                });
+                $('#rp-contador-trayecto').text(resp.estudiantes.length);
+                rpActualizarBotonRegistrar();
+            },
+            error: function() {
+                $tbody.html('<tr><td colspan="5" class="text-center text-red"><i class="fa fa-exclamation-triangle"></i> Error al cargar estudiantes.</td></tr>');
+            }
+        });
+    });
+
+    $(document).off('change.rparchivo').on('change.rparchivo', '#rp-archivo', function() {
+        $('#rp-btn-procesar-excel').prop('disabled', !this.files.length);
+        $('#rp-resultado-excel').hide();
+    });
+
+    $(document).off('click.rpprocesar').on('click.rpprocesar', '#rp-btn-procesar-excel', function() {
+        var archivo = $('#rp-archivo')[0].files[0];
+        if (!archivo) return;
+        var fd = new FormData();
+        fd.append('archivo', archivo);
+        fd.append('curso_id', cursoId);
+        var $tbody = $('#tbl-rp-excel tbody');
+        $tbody.html('<tr><td colspan="6" class="text-center"><i class="fa fa-spinner fa-spin"></i> Procesando archivo...</td></tr>');
+        $('#rp-resultado-excel').show();
+        $('#rp-btn-registrar').prop('disabled', true);
+
+        $.ajax({
+            url: BASE_URL + 'estudiante-cursos/procesar-excel',
+            type: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(resp) {
+                $tbody.empty();
+                $('#rp-validos-contador').text(resp.total_validos);
+                $('#rp-rechazados-contador').text(resp.total_rechazados);
+
+                if (!resp.success) {
+                    $tbody.html('<tr><td colspan="6" class="text-center text-red"><i class="fa fa-exclamation-triangle"></i> ' + resp.message + '</td></tr>');
+                    return;
+                }
+
+                $.each(resp.validos, function(i, e) {
+                    $tbody.append(
+                        '<tr>' +
+                        '<td class="text-center"><input type="checkbox" class="check-rp-excel" value="' + e.estudiante_id + '" checked></td>' +
+                        '<td class="text-center">-</td>' +
+                        '<td>' + e.cedula + '</td>' +
+                        '<td>' + e.nombre + '</td>' +
+                        '<td>' + e.expediente + '</td>' +
+                        '<td class="text-center"><span class="label label-success">Valido</span></td>' +
+                        '</tr>'
+                    );
+                });
+
+                $.each(resp.rechazados, function(i, e) {
+                    $tbody.append(
+                        '<tr class="text-muted danger">' +
+                        '<td class="text-center"><input type="checkbox" disabled></td>' +
+                        '<td class="text-center">' + e.fila + '</td>' +
+                        '<td>' + e.cedula + '</td>' +
+                        '<td>' + e.nombre + '</td>' +
+                        '<td colspan="2"><span class="text-red"><i class="fa fa-exclamation-circle"></i> ' + e.error + '</span></td>' +
+                        '</tr>'
+                    );
+                });
+
+                rpActualizarBotonRegistrar();
+            },
+            error: function() {
+                $tbody.html('<tr><td colspan="6" class="text-center text-red"><i class="fa fa-exclamation-triangle"></i> Error al procesar el archivo.</td></tr>');
+            }
+        });
+    });
+
+    $(document).off('change.rpcktrayecto').on('change.rpcktrayecto', '#rp-check-todos-trayecto', function() {
+        $('#tbl-rp-trayecto .check-rp-trayecto').not(':disabled').prop('checked', $(this).prop('checked'));
+        rpActualizarBotonRegistrar();
+    });
+
+    $(document).off('change.rpckexcel').on('change.rpckexcel', '#rp-check-todos-excel', function() {
+        $('#tbl-rp-excel .check-rp-excel').not(':disabled').prop('checked', $(this).prop('checked'));
+        rpActualizarBotonRegistrar();
+    });
+
+    $(document).off('change.rpckfila').on('change.rpckfila', '.check-rp-trayecto, .check-rp-excel', function() {
+        var $tabla = $(this).closest('table');
+        var total = $tabla.find('.check-rp-trayecto:not(:disabled), .check-rp-excel:not(:disabled)').length;
+        var marcados = $tabla.find('.check-rp-trayecto:checked, .check-rp-excel:checked').length;
+        var ckAll = $tabla.closest('.tab-pane').find('input[type="checkbox"][id^="rp-check-todos"]');
+        ckAll.prop('checked', total > 0 && marcados === total);
+        rpActualizarBotonRegistrar();
+    });
+
+    function rpActualizarBotonRegistrar() {
+        var count = $('.check-rp-trayecto:checked, .check-rp-excel:checked').length;
+        $('#rp-btn-registrar').prop('disabled', count === 0 || rpFaltantes <= 0);
+    }
+
+    $(document).off('click.rpregistrar').on('click.rpregistrar', '#rp-btn-registrar', function() {
+        var ids = [];
+        $('.check-rp-trayecto:checked, .check-rp-excel:checked').each(function() {
+            ids.push($(this).val());
+        });
+
+        if (ids.length === 0) return;
+
+        if (ids.length > rpFaltantes) {
+            $('#rp-alerta-texto').text('Solo quedan ' + rpFaltantes + ' cupo(s) disponible(s). Selecciono ' + ids.length + ' estudiante(s).');
+            $('#rp-alerta').show();
+            return;
+        }
+
+        var $btn = $(this);
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>&nbsp;Registrando...');
+        $('#rp-alerta').hide();
+
+        $.ajax({
+            url: BASE_URL + 'estudiante-cursos/registrar-lote',
+            type: 'POST',
+            data: { curso_id: cursoId, estudiante_ids: ids },
+            dataType: 'json',
+            success: function(resp) {
+                if (resp.success) {
+                    $('#modal-registrar-participantes').modal('hide');
+                    window.location.href = BASE_URL + 'cursos/view/' + cursoId;
+                } else {
+                    $('#rp-alerta-texto').text(resp.message);
+                    $('#rp-alerta').show();
+                    $btn.prop('disabled', false).html('<i class="fa fa-save"></i>&nbsp;Registrar Participantes');
+                }
+            },
+            error: function() {
+                $('#rp-alerta-texto').text('Error de conexion al registrar.');
+                $('#rp-alerta').show();
+                $btn.prop('disabled', false).html('<i class="fa fa-save"></i>&nbsp;Registrar Participantes');
+            }
+        });
+    });
+})();
+</script>
 

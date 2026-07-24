@@ -130,6 +130,13 @@ $(document).ready( function () {
         minuteStep: 5,
     });
 
+    $("#rp-archivo").fileinput({
+        showUpload: false, // Hide upload button
+        showRemove: true,  // Show remove button
+        dropZoneEnabled: true, // Enable drag & drop zone
+        allowedFileExtensions: ["xlx", "xlsx", "cvs"] // Restrict file types
+    });
+
     $('#goSearch').click(function (e) {
         e.preventDefault();
         if ( $('#buscar').is(':visible') ) 

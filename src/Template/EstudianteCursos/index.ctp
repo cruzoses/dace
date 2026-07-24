@@ -104,7 +104,12 @@
                                             <td class="text-center"><?= $ins->curso->id ?></td>
                                             <td><?= $ins->curso->has('carrera') ? h($ins->curso->carrera->codigo) : '' ?></td>
                                             <td><?= $ins->curso->has('trayecto') ? h($ins->curso->trayecto->codigo) : '' ?></td>
-                                            <td class="text-center"><?= h($ins->curso->seccion) ?></td>
+                                            <td class="text-center">
+                                                <?= $this->Html->link( h($ins->curso->seccion),
+                                                    ['controller' => 'cursos', 'action' => 'view',$ins->curso->id],
+                                                    ['class' => 'btn btn-default btn-xs'] )
+                                                ?>
+                                            </td>
                                             <td><?= $ins->curso->has('asignatura') ? h($ins->curso->asignatura->codename) : '' ?></td>
                                             <td class="text-center"><?= $ins->created->format('d/m/Y') ?></td>
                                             <td><?= h($ins->responsable) ?></td>
@@ -140,6 +145,7 @@ var EC_URLS = {
     index: '<?= $this->Url->build(["controller" => "EstudianteCursos", "action" => "index"]) ?>',
     getCursos: '<?= $this->Url->build(["controller" => "EstudianteCursos", "action" => "getCursos"]) ?>',
     inscribirCurso: '<?= $this->Url->build(["controller" => "EstudianteCursos", "action" => "inscribirCurso"]) ?>',
+    getInscripciones: '<?= $this->Url->build(["controller" => "EstudianteCursos", "action" => "getInscripciones"]) ?>',
     eliminar: '<?= $this->Url->build(["controller" => "EstudianteCursos", "action" => "eliminar"]) ?>',
     eliminarSeleccionados: '<?= $this->Url->build(["controller" => "EstudianteCursos", "action" => "eliminarSeleccionados"]) ?>'
 };
@@ -149,6 +155,33 @@ function recargarPagina(estudianteId) {
         url: EC_URLS.index + '/' + estudianteId,
         type: 'GET',
         success: function(html) { $('#ajax-content').html(html); }
+    });
+}
+
+function refrescarInscripciones(estudianteId) {
+    $.ajax({
+        url: EC_URLS.getInscripciones + '/' + estudianteId,
+        type: 'GET',
+        success: function(html) {
+            var $box = $('#tabla-inscripciones').closest('.box');
+            if ($box.length) {
+                $box.replaceWith(html);
+            } else {
+                var $container = $('#ajax-content .box.box-primary .row').last().find('.col-md-12');
+                $container.html(html);
+            }
+            $('#check-todos').off('change.insc').on('change.insc', function() {
+                $('.check-inscripcion').prop('checked', $(this).prop('checked'));
+                actualizarBotonEliminar();
+            });
+            $(document).off('change.checkinsc').on('change.checkinsc', '.check-inscripcion', function() {
+                var total = $('.check-inscripcion').length;
+                var marcados = $('.check-inscripcion:checked').length;
+                $('#check-todos').prop('checked', total > 0 && marcados === total);
+                actualizarBotonEliminar();
+            });
+            actualizarBotonEliminar();
+        }
     });
 }
 
@@ -282,7 +315,7 @@ $(document).ready(function() {
                 if (resp.success) {
                     $('#modal-inscripcion').modal('hide');
                     toastr.success(resp.message);
-                    recargarPagina(postData.estudiante_id);
+                    refrescarInscripciones(postData.estudiante_id);
                 } else {
                     toastr.error(resp.message);
                 }
@@ -309,7 +342,7 @@ $(document).ready(function() {
             success: function(resp) {
                 if (resp.success) {
                     toastr.success(resp.message);
-                    recargarPagina('<?= $estudiante->id ?>');
+                    refrescarInscripciones('<?= $estudiante->id ?>');
                 } else {
                     toastr.error(resp.message);
                 }

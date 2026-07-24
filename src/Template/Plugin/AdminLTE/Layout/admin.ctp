@@ -22,6 +22,8 @@
         <?= $this->Html->css('AdminLTE./bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min'); ?>
         <!-- Bootstrap TimePicker -->
         <?= $this->Html->css('AdminLTE./plugins/timepicker/bootstrap-timepicker.min'); ?>
+        <!-- Bootstrap File Input -->
+        <?= $this->Html->css('fileinput/css/fileinput.min'); ?>
         <!-- Font Awesome -->
         <?= $this->Html->css('fontawesome/css/all.min') ?>
         <!--?= $this->Html->css('AdminLTE./bower_components/font-awesome/css/font-awesome.min'); ?-->        
@@ -98,6 +100,8 @@
         <?= $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min'); ?>
         <!-- Bootstrap TimePicker -->
         <?= $this->Html->script('AdminLTE./bower_components/bootstrap-timepicker/js/bootstrap-timepicker'); ?>
+        <!-- Bootstrap File Input -->
+        <?= $this->Html->script('fileinput/js/fileinput.min'); ?>
         <!-- sweetalert2 -->
         <?= $this->Html->script('sweetalert2.min'); ?>
         <!-- jQueryUI -->
