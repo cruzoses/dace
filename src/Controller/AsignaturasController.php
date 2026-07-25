@@ -44,7 +44,7 @@ class AsignaturasController extends AppController
         $filtros = $this->request->getQuery();
 
         $searchFields = $this->Asignaturas->getSearchFields();
-        $searchFields['grupo_asignatura_id']['options'] = $this->Asignaturas->GrupoAsignaturas->find('list', ['limit' => 200])->toArray();
+        $searchFields['grupo_asignatura_id']['options'] = $this->Asignaturas->GrupoAsignaturas->find('list')->toArray();
 
         $this->set(compact('asignaturas', 'filtros', 'searchFields'));
     }

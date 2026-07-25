@@ -13,6 +13,7 @@ use Cake\ORM\TableRegistry;
  */
 class ProfesoresController extends AppController
 {
+    public $paginate = [];
 
 	public function beforeFilter(Event $event)
 	{
@@ -21,17 +22,20 @@ class ProfesoresController extends AppController
 
 	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([4,5,6]) )
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] )
         {
-            return true;
+            if ( $this->tienePermiso([4,5,6]) ) {
+                return true;
+            }            
         }
 		return parent::isAuthorized($user);
 	}
 
     public function index()
-    {
+    {   
+        $this->loadModel('Docentes');
         $userId = $this->Auth->user('id');
-        $docente = TableRegistry::getTableLocator()->get('Docentes')->find() //$this->Docentes->find()
+        $docente = TableRegistry::getTableLocator()->get('Docentes')->find()
             ->where(['Docentes.usuario_id' => $userId])
             ->contain(['Departamentos','Usuarios'])
             ->first();
@@ -42,7 +46,7 @@ class ProfesoresController extends AppController
             return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
         }
 
-        $periodos = $this->Docentes->Cursos->Periodos->find('list', [
+        $periodos = $this->Docentes->Cursos->Periodos->find('list', [        
             'keyField' => 'id',
             'valueField' => 'codigo',
             'order' => ['Periodos.id' => 'DESC'],
@@ -83,6 +87,22 @@ class ProfesoresController extends AppController
 
         $this->set(compact('aGeneros'));
         $this->set('docente', $docente);
+    }
+
+    public function listadeclase($nCursoId = null)
+    {
+        $oCurso = TableRegistry::getTableLocator()->get('Cursos')->find()
+            ->where(['Cursos.id' => $nCursoId])
+            ->contain(['Sedes','Periodos','Carreras','Trayectos','Asignaturas','Docentes'])
+            ->first();
+
+        $aEstudiantes = $this->paginate('EstudianteCursos', [
+            'conditions' => ['EstudianteCursos.curso_id' => $nCursoId],
+            'contain' => ['Estudiantes'],
+            'order' => ['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC'],
+        ]);
+
+        $this->set(compact('oCurso', 'aEstudiantes'));
     }
 
     public function indicadores($cursoId)

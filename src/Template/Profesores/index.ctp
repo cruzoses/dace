@@ -85,7 +85,7 @@
                                                 <td class="text-center"><?= $curso->asignatura->creditos ?? '' ?></td>
                                                 <td class="text-center">
                                                     <?= $this->Html->link(h($curso->seccion),
-                                                        '#',
+                                                        ['action' => 'listadeclase',$curso->id],
                                                         ['class' => 'btn btn-xs btn-default', 'escape' => false])
                                                     ?>
                                                 </td>
