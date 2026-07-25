@@ -30,8 +30,6 @@ class ProfesoresController extends AppController
 
     public function index()
     {
-        $this->loadModel('Docentes');
-
         $userId = $this->Auth->user('id');
         $docente = TableRegistry::getTableLocator()->get('Docentes')->find() //$this->Docentes->find()
             ->where(['Docentes.usuario_id' => $userId])

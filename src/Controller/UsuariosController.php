@@ -29,11 +29,19 @@ class UsuariosController extends AppController
 
 	public function isAuthorized($user = null)
 	{
-		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] && $this->tienePermiso([1,2])) {
-			return true;
+        $aValues = $this->request->getParam('action');
+		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] ) 
+        {
+            if ( $this->tienePermiso([1,2]) ) 
+            {
+                return true;
+            } elseif( in_array($aValues,['perfil','cambiaclave']) ) {
+                return true;
+            }
 		}
-		$this->Flash->error(__('No tiene permisos para acceder a esta sección.'));
-		return false;
+        return parent::isAuthorized($user);
+		//$this->Flash->error(__('No tiene permisos para acceder a esta sección.'));
+		//return false;
 	}
 
 	private function _getUserMinRoleId()
@@ -343,7 +351,10 @@ class UsuariosController extends AppController
                 if ($this->Usuarios->save($usuario)) {
                     $this->Auditorias->registrar('MODIFICA', 'Cambia la contraseña');
                     $this->Flash->success(__('Contraseña actualizada correctamente.'));
-                    return $this->redirect(['action' => 'index']);
+                    if ($this->tienePermiso([1,2])) {
+                        return $this->redirect(['action' => 'index']);
+                    }
+                    return $this->redirect(['action' => 'homepage']);
                 }
                 $this->Flash->error(__('No se pudo guardar la contraseña. Intente de nuevo.'));
                 $captchaId = $this->Captcha->generate();
@@ -518,7 +529,6 @@ class UsuariosController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
-
 
     /**
      * Edit method
