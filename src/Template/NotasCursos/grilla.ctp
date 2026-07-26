@@ -320,6 +320,26 @@ $(document).ready(function () {
         });
     }
 
+    function fnAplicarColores() {
+        $('.nota-input').each(function () {
+            var $input = $(this);
+            var sVal = ($input.val() || '').toString().trim().toUpperCase();
+            $input.removeClass('nota-aprobada nota-reprobada');
+            if (sVal === '') return;
+
+            if (nTipoCalificacion == 1) {
+                if (sVal === 'A') $input.addClass('nota-aprobada');
+                else if (sVal === 'R') $input.addClass('nota-reprobada');
+            } else {
+                var nVal = parseFloat(sVal);
+                if (isNaN(nVal)) return;
+                var nMax = parseInt($input.data('max')) || 20;
+                if (nVal >= nMax / 2) $input.addClass('nota-aprobada');
+                else $input.addClass('nota-reprobada');
+            }
+        });
+    }
+
     $.ajax({
         url: sBasePath + 'getNotas/<?= $nCursoId ?>',
         type: 'GET',
@@ -334,6 +354,7 @@ $(document).ready(function () {
                 }
             });
             fnCalcularTotales();
+            fnAplicarColores();
         }
     });
 
@@ -395,6 +416,7 @@ $(document).ready(function () {
             }
         }
         fnCalcularTotales();
+        fnAplicarColores();
     });
 
     $(document).on('keydown', 'input.nota-input:not(:disabled)', function (e) {
@@ -511,6 +533,22 @@ $(document).ready(function () {
 </script>
 
 <style>
+.nota-input:disabled {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    text-align: center;
+    font-weight: bold;
+    cursor: default;
+}
+select.nota-input:disabled {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-align: center;
+}
+.nota-aprobada { color: #0073b7 !important; }
+.nota-reprobada { color: #dd4b39 !important; }
 .input-error {
     border-color: #dd4b39 !important;
     box-shadow: 0 0 5px rgba(221, 75, 57, 0.5);
