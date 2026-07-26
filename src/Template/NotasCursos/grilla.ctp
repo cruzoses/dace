@@ -505,6 +505,7 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     toastr.success(response.message);
+                    setTimeout(function () { location.reload(); }, 800);
                 } else {
                     toastr.warning(response.message);
                     if (response.errores) {
