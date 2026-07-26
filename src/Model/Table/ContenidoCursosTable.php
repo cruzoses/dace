@@ -76,6 +76,7 @@ class ContenidoCursosTable extends Table
 
         $validator
             ->scalar('detalle')
+            ->minLength('detalle', 30, 'La descripción debe tener al menos 30 caracteres.')
             ->requirePresence('detalle', 'create')
             ->notEmptyString('detalle');
 
