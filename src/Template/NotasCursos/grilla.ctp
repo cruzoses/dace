@@ -279,8 +279,11 @@ $(document).ready(function () {
                 return;
             }
 
-            var nTotalPct = 0;
+            var nTotalNat = 0;
+            var nTotalNorm = 0;
             var bCompleto = false;
+            var bMixto = false;
+            var nPrimeraEscala = 0;
 
             $fila.find('.nota-input').each(function () {
                 var $input = $(this);
@@ -295,8 +298,16 @@ $(document).ready(function () {
                 var oMeta = aEvalMeta[nEvalIdx];
                 if (!oMeta) return;
 
+                if (nPrimeraEscala === 0) {
+                    nPrimeraEscala = oMeta.escala;
+                } else if (oMeta.escala !== nPrimeraEscala) {
+                    bMixto = true;
+                }
+
+                nTotalNat += nNota * (oMeta.ponderacion / 100);
+
                 var nNorm = fnNormalizar(nNota, oMeta.escala, oMeta.maxNota);
-                nTotalPct += nNorm * (oMeta.ponderacion / 100);
+                nTotalNorm += nNorm * (oMeta.ponderacion / 100);
             });
 
             if (!bCompleto) {
@@ -305,8 +316,13 @@ $(document).ready(function () {
                 return;
             }
 
-            $fila.find('#total-' + nEstudiante).text(nTotalPct.toFixed(2));
-            $fila.find('#final-' + nEstudiante).text(fnAEscala20(nTotalPct));
+            $fila.find('#total-' + nEstudiante).text(nTotalNat.toFixed(2));
+
+            if (!bMixto && nPrimeraEscala === 1) {
+                $fila.find('#final-' + nEstudiante).text(nTotalNat.toFixed(0));
+            } else {
+                $fila.find('#final-' + nEstudiante).text(fnAEscala20(nTotalNorm));
+            }
         });
     }
 
