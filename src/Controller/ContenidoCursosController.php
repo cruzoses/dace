@@ -18,6 +18,7 @@ class ContenidoCursosController extends AppController
         '5'  => '5 %',
         '10' => '10 %',
         '15' => '15 %',
+        '20' => '20 %',
         '25' => '25 %'
     ];
 
@@ -76,10 +77,10 @@ class ContenidoCursosController extends AppController
         $nIndicadoresMin = $aLimites[$nFrecuencia];
         $nIndicadoresMax = $aLimites[$nFrecuencia];
 
-        $oQueryPorcentaje = TableRegistry::getTableLocator()->get('IndicadorCursos')->find()
-            ->where(['curso_id' => $nCursoId]);
-        $nPorcentajeDefinido = (int)$oQueryPorcentaje->select([
-            'total' => $oQueryPorcentaje->func()->sum('porcentaje')
+        $oQueryPonderacion = $this->ContenidoCursos->find()
+            ->where(['indicador_curso_id IN' => $aIndicadorCursoIds]);
+        $nPorcentajeDefinido = (int)$oQueryPonderacion->select([
+            'total' => $oQueryPonderacion->func()->sum('ponderacion')
         ])->first()->total;
 
         $nEvaluacionesDefinidas = (int)$this->ContenidoCursos->find()
