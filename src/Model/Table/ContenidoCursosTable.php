@@ -24,7 +24,7 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class ContenidoCursosTable extends Table
+class ContenidoCursosTable extends AppTable
 {
     /**
      * Initialize method
@@ -46,7 +46,7 @@ class ContenidoCursosTable extends Table
             'foreignKey' => 'indicador_curso_id',
             'joinType' => 'INNER',
         ]);
-        $this->hasMany('NotasCursos', [
+        $this->hasMany('CursoNotas', [
             'foreignKey' => 'contenido_curso_id',
         ]);
     }
@@ -129,7 +129,9 @@ class ContenidoCursosTable extends Table
 
             if ($nTotal > $nPorcentajeIndicador) {
                 $nDisponible = $nPorcentajeIndicador - $nSumaExistente;
-                $options['errors'][] = 'La ponderación (' . $nNuevaPonderacion . '%) excede el límite del indicador. Disponible: ' . $nDisponible . '% de ' . $nPorcentajeIndicador . '%';
+                $entity->setError('ponderacion', [
+                    'La ponderación (' . $nNuevaPonderacion . '%) excede el límite del indicador. Disponible: ' . $nDisponible . '% de ' . $nPorcentajeIndicador . '%'
+                ]);
                 return false;
             }
 

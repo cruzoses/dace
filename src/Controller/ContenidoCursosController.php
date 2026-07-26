@@ -128,7 +128,16 @@ class ContenidoCursosController extends AppController
 
                 return $this->redirect(['action' => 'index', $nCursoId]);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Contenido Curso'));
+            $aErrores = $contenidoCurso->getErrors();
+            if (!empty($aErrores)) {
+                foreach ($aErrores as $aCampo => $aMensajes) {
+                    foreach ($aMensajes as $sMensaje) {
+                        $this->Flash->error($sMensaje);
+                    }
+                }
+            } else {
+                $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Contenido Curso'));
+            }
         }
         $indicadorCursos = $this->_getIndicadoresByCurso($nCursoId);
         $this->set('aPorcentajes', $this->aPorcentajes);
@@ -159,7 +168,16 @@ class ContenidoCursosController extends AppController
 
                 return $this->redirect(['action' => 'index', $nCursoId]);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Contenido Curso'));
+            $aErrores = $contenidoCurso->getErrors();
+            if (!empty($aErrores)) {
+                foreach ($aErrores as $aCampo => $aMensajes) {
+                    foreach ($aMensajes as $sMensaje) {
+                        $this->Flash->error($sMensaje);
+                    }
+                }
+            } else {
+                $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Contenido Curso'));
+            }
         }
         $indicadorCursos = $this->_getIndicadoresByCurso($nCursoId);
         $this->set('aPorcentajes', $this->aPorcentajes);
