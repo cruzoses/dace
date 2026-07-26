@@ -127,7 +127,7 @@
                                             } elseif ($nEscala == 3) {
                                                 $nMaxNota = 100;
                                             }
-                                            $sAttrMax = ' max="' . $nMaxNota . '" step="0.01"';
+                                            $sAttrMax = '';
                                         }
                                     ?>
                                         <td class="text-center">
@@ -145,13 +145,13 @@
                                                     <option value="R">R</option>
                                                 </select>
                                             <?php else : ?>
-                                                <input type="number" class="nota-input form-control input-sm"
+                                                <input type="text" class="nota-input form-control input-sm"
                                                        data-estudiante="<?= $oEst->id ?>"
                                                        data-contenido="<?= $oEvaluacion->id ?>"
                                                        data-eval="<?= $nColEval ?>"
                                                        data-escala="<?= $nEscala ?>"
                                                        data-max="<?= $nMaxNota ?>"
-                                                       min="1"<?= $sAttrMax ?>
+                                                       inputmode="decimal"<?= $sAttrMax ?>
                                                        disabled
                                                        style="width: 70px; display: inline-block;">
                                             <?php endif; ?>
@@ -275,6 +275,50 @@ $(document).ready(function () {
                 $input.removeClass('input-error');
                 $input.val(sValor);
             }
+        }
+    });
+
+    $(document).on('keydown', 'input.nota-input:not(:disabled)', function (e) {
+        if (nTipoCalificacion != 0) return;
+        var $input = $(this);
+        var sTecla = e.key;
+        var nCodigo = e.keyCode;
+        var bCtrl = e.ctrlKey || e.metaKey;
+
+        if (bCtrl || nCodigo === 8 || nCodigo === 9 || nCodigo === 13 ||
+            nCodigo === 37 || nCodigo === 39 || nCodigo === 46) {
+            return;
+        }
+
+        if (sTecla === '.' && $input.val().indexOf('.') === -1) {
+            return;
+        }
+
+        if (!/^\d$/.test(sTecla)) {
+            e.preventDefault();
+        }
+    });
+
+    $(document).on('input', 'input.nota-input:not(:disabled)', function () {
+        if (nTipoCalificacion != 0) return;
+        var $input = $(this);
+        var sVal = $input.val();
+        var nMax = parseInt($input.data('max'));
+
+        if (sVal === '') {
+            $input.removeClass('input-error');
+            return;
+        }
+
+        if (/^\d+(\.\d{0,2})?$/.test(sVal)) {
+            var nVal = parseFloat(sVal);
+            if (nVal >= 1 && nVal <= nMax) {
+                $input.removeClass('input-error');
+            } else {
+                $input.addClass('input-error');
+            }
+        } else {
+            $input.addClass('input-error');
         }
     });
 
