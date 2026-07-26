@@ -329,8 +329,15 @@ $(document).ready(function () {
                     }
                 }
             },
-            error: function () {
-                toastr.error('Error de conexión al guardar las notas.');
+            error: function (jqXHR, textStatus, errorThrown) {
+                var sMsg = 'Error al guardar las notas.';
+                if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    sMsg = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                    console.error('Respuesta del servidor:', jqXHR.responseText);
+                }
+                console.error('Status:', jqXHR.status, '|', textStatus, '|', errorThrown);
+                toastr.error(sMsg);
             },
             complete: function () {
                 $btn.prop('disabled', false).html('<i class="fa fa-save"></i>&nbsp;Guardar Notas');
