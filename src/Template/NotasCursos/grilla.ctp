@@ -56,11 +56,6 @@
                 <div class="row" id="toolbar-evaluaciones" style="margin-bottom: 10px;">
                     <div class="col-xs-12">
                         <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div>
-                                <button type="button" class="btn btn-danger btn-xs" id="btnCerrarActa" disabled>
-                                    <i class="fa fa-lock"></i>&nbsp;Cerrar Acta
-                                </button>
-                            </div>
                             <div style="display: flex; align-items: center; gap: 5px;">
                                 <span class="text-muted" style="margin-right: 5px;">Evaluaciones:</span>
                                 <?php $nEvalBtn = 1; ?>
@@ -74,6 +69,11 @@
                                     </button>
                                     <?php $nEvalBtn++; ?>
                                 <?php endforeach; ?>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-danger btn-xs" id="btnCerrarActa" disabled>
+                                    <i class="fa fa-lock"></i>&nbsp;Cerrar Acta
+                                </button>
                             </div>
                         </div>
                     </div>
