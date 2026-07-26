@@ -41,7 +41,6 @@
                     </tr>
                 </table>
             </div>
-
         </div>
     </div>
 </div>
@@ -49,7 +48,7 @@
     <div class="col-xs-12">
         <div class="box box-sace box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Plan de Evaluación</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Plan de Evaluaci&oacute;n</h3>
                 <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
@@ -70,12 +69,12 @@
                             <th scope="col" class="text-center">No.</th>
                             <th scope="col" class="text-center">No.Control</th>
                             <th scope="col" class="text-center">Fecha</th>
-                            <th scope="col" class="text-center">Descripción de la Evaluación</th>
-                            <th scope="col" class="text-center">Ponderación</th>
+                            <th scope="col" class="text-center">Descripci&oacute;n de la Evaluaci&oacute;n</th>
+                            <th scope="col" class="text-center">Ponderaci&oacute;n</th>
                             <th scope="col" class="text-center">Indicador</th>
-                            <th scope="col" class="text-center"><?= __('Created') ?></th>
-                            <th scope="col" class="text-center"><?= __('Modified') ?></th>
-                            <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
+                            <th scope="col" class="text-center">Created</th>
+                            <th scope="col" class="text-center">Modified</th>
+                            <th scope="col" class="actions text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,11 +94,24 @@
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $contenidoCurso->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $contenidoCurso->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $contenidoCurso->id], ['confirm' => __('Are you sure you want to delete # {0}?', $contenidoCurso->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $contenidoCurso->id], ['confirm' => 'Are you sure you want to delete # ' . $contenidoCurso->id . '?', 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                 </td>
                             </tr>
                             <?php $nRow++; ?>
                         <?php endforeach; ?>
+                        <?php if ($nPorcentajeDefinido < 100): ?>
+                            <tr>
+                                <td colspan="9">
+                                    <div class="callout callout-info">
+                                        <h4><i class="fa fa-exclamation-triangle"></i>&nbsp;PLAN DE EVALUACION INCOMPLETO!</h4>
+                                        <p>
+                                            El Plan de Evaluaci&oacute;n est&aacute; incompleto, faltan evaluaciones por definir. Hasta el momento s&oacute;lo tiene definido el <b><?= $nPorcentajeDefinido ?>%</b>
+                                            <br>Debe definir las evaluaciones correspondientes al <b><?= 100 - $nPorcentajeDefinido ?>%</b> faltante.
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
@@ -112,30 +124,62 @@
                                         <?= $this->Paginator->next('<i class="fa fa-angle-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                         <?= $this->Paginator->last('<i class="fa fa-angle-double-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                     </ul>
-                                    <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+                                    <p><?= $this->Paginator->counter(['format' => 'Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total']) ?></p>
                                 </div>
                             </td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
-            <?php if ($nPorcentajeDefinido < 100): ?>
-            <div class="box-body">
-                <div class="callout callout-warning">
-                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp;PLAN DE EVALUACION INCOMPLETO!</h4>
-                    <p>El Plan de Evaluaci&oacute;n est&aacute; incompleto, faltan evaluaciones por definir. Hasta el momento s&oacute;lo tiene definido el <b><?= $nPorcentajeDefinido ?>%</b>.</p>
-                    <p>Debe definir las evaluaciones correspondientes al <b><?= 100 - $nPorcentajeDefinido ?>%</b> faltante.</p>
-                </div>
-            </div>
-            <?php endif; ?>
             <div class="box-footer">
-                <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
+                <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;New', 
                     ['action' => 'add', $nCursoId], ['class'=>'btn btn-success pull-left','escape' => false]) 
                 ?>
-                <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
+                <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Go Back',
                     ['controller' => 'profesores','action' => 'listadeclase',$oCurso->id], 
                     ['class'=>'btn bg-maroon pull-right','escape' => false]) 
                 ?>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-clipboard-list"></i>&nbsp;Resumen del Plan de Evaluaci&oacute;n</h3>
+            </div>
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                        <tr>
+                            <th class="bg-gray text-center" style="width: 40%;">Descripci&oacute;n</th>
+                            <th class="bg-gray text-center" style="width: 20%;">M&iacute;nimo</th>
+                            <th class="bg-gray text-center" style="width: 20%;">M&aacute;ximo</th>
+                            <th class="bg-gray text-center" style="width: 20%;">Definido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="fa fa-cubes"></i>&nbsp;Cantidad de Indicadores</td>
+                            <td class="text-center"><?= $nIndicadoresMin ?></td>
+                            <td class="text-center"><?= $nIndicadoresMax ?></td>
+                            <td class="text-center"><?= $nIndicadoresDefinidos ?></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa fa-percent"></i>&nbsp;Porcentaje definido</td>
+                            <td class="text-center">0%</td>
+                            <td class="text-center"><?= $nPorcentajeMaximo ?>%</td>
+                            <td class="text-center"><?= $nPorcentajeDefinido ?>%</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa fa-list-ol"></i>&nbsp;Cantidad de Evaluaciones</td>
+                            <td class="text-center">4</td>
+                            <td class="text-center">20</td>
+                            <td class="text-center"><?= $nEvaluacionesDefinidas ?></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

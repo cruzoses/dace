@@ -76,7 +76,25 @@ class ContenidoCursosController extends AppController
             'total' => $oQuerySuma->func()->sum('ponderacion')
         ])->first()->total;
 
-        $this->set(compact('contenidoCursos','oCurso','nCursoId','nPorcentajeDefinido'));
+        $nFrecuencia = (int)$oCurso->asignatura->frecuencia;
+        $aLimites = [1 => 1, 2 => 2, 3 => 3];
+        $nIndicadoresDefinidos = count($aIndicadorCursoIds);
+        $nIndicadoresMin = $aLimites[$nFrecuencia];
+        $nIndicadoresMax = $aLimites[$nFrecuencia];
+
+        $oQueryPorcentajeMax = TableRegistry::getTableLocator()->get('IndicadorCursos')->find()
+            ->where(['curso_id' => $nCursoId]);
+        $nPorcentajeMaximo = (int)$oQueryPorcentajeMax->select([
+            'total' => $oQueryPorcentajeMax->func()->sum('porcentaje')
+        ])->first()->total;
+
+        $nEvaluacionesDefinidas = (int)$this->ContenidoCursos->find()
+            ->where(['indicador_curso_id IN' => $aIndicadorCursoIds])
+            ->count();
+
+        $this->set(compact('contenidoCursos','oCurso','nCursoId','nPorcentajeDefinido',
+            'nIndicadoresMin','nIndicadoresMax','nIndicadoresDefinidos',
+            'nPorcentajeMaximo','nEvaluacionesDefinidas'));
     }
 
     /**
@@ -89,7 +107,7 @@ class ContenidoCursosController extends AppController
     public function view($id = null)
     {
         $contenidoCurso = $this->ContenidoCursos->get($id, [
-            'contain' => ['IndicadorCursos', 'NotasCursos'],
+            'contain' => ['IndicadorCursos', 'CursoNotas'],
         ]);
 
         $nCursoId = $contenidoCurso->indicador_curso->curso_id;
