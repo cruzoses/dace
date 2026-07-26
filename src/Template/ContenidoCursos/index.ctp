@@ -67,15 +67,14 @@
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">No.Control</th>
-                            <th scope="col">Fecha</th>
-                            <th scope="col">Evaluación</th>
-                            <th scope="col">Ponderación</th>
-                            <th scope="col">Indicador</th>
-                            <th scope="col">Activo</th>
-                            <th scope="col"><?= __('Created') ?></th>
-                            <th scope="col"><?= __('Modified') ?></th>
+                            <th scope="col" class="text-center">No.</th>
+                            <th scope="col" class="text-center">No.Control</th>
+                            <th scope="col" class="text-center">Fecha</th>
+                            <th scope="col" class="text-center">Descripción de la Evaluación</th>
+                            <th scope="col" class="text-center">Ponderación</th>
+                            <th scope="col" class="text-center">Indicador</th>
+                            <th scope="col" class="text-center"><?= __('Created') ?></th>
+                            <th scope="col" class="text-center"><?= __('Modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
@@ -86,12 +85,13 @@
                                 <td class="text-center"><?= $this->Number->format($nRow) ?></td>
                                 <td class="text-center"><?= $this->Number->format($contenidoCurso->id) ?></td>
                                 <td class="text-center"><?= h($contenidoCurso->fecha) ?></td>
-                                <td class="text-center"><?= h($contenidoCurso->descripcion) ?></td>
+                                <td><?= h($contenidoCurso->descripcion) ?></td>
                                 <td class="text-center"><?= $this->Number->toPercentage($contenidoCurso->ponderacion, 0) ?></td>
-                                <td class="text-center"><?= $contenidoCurso->has('indicador_curso') ? $this->Html->link($contenidoCurso->indicador_curso->id, ['controller' => 'IndicadorCursos', 'action' => 'view', $contenidoCurso->indicador_curso->id]) : '' ?></td>
-                                <td><?= h($contenidoCurso->activo) ?></td>
-                                <td><?= h($contenidoCurso->created) ?></td>
-                                <td><?= h($contenidoCurso->modified) ?></td>
+                                <td class="text-center">
+                                    <?= $contenidoCurso->has('indicador_curso') ? $contenidoCurso->indicador_curso->id : '' ?>
+                                </td>
+                                <td class="text-center"><?= h($contenidoCurso->created) ?></td>
+                                <td class="text-center"><?= h($contenidoCurso->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $contenidoCurso->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $contenidoCurso->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -103,7 +103,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="10" class="text-center">
+                            <td colspan="9" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
@@ -119,6 +119,15 @@
                     </tfoot>
                 </table>
             </div>
+            <?php if ($nPorcentajeDefinido < 100): ?>
+            <div class="box-body">
+                <div class="callout callout-warning">
+                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp;PLAN DE EVALUACION INCOMPLETO!</h4>
+                    <p>El Plan de Evaluaci&oacute;n est&aacute; incompleto, faltan evaluaciones por definir. Hasta el momento s&oacute;lo tiene definido el <b><?= $nPorcentajeDefinido ?>%</b>.</p>
+                    <p>Debe definir las evaluaciones correspondientes al <b><?= 100 - $nPorcentajeDefinido ?>%</b> faltante.</p>
+                </div>
+            </div>
+            <?php endif; ?>
             <div class="box-footer">
                 <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
                     ['action' => 'add', $nCursoId], ['class'=>'btn btn-success pull-left','escape' => false]) 

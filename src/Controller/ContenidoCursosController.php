@@ -70,7 +70,13 @@ class ContenidoCursosController extends AppController
 
         $contenidoCursos = $this->paginate($this->ContenidoCursos);
 
-        $this->set(compact('contenidoCursos','oCurso','nCursoId'));
+        $oQuerySuma = $this->ContenidoCursos->find()
+            ->where(['indicador_curso_id IN' => $aIndicadorCursoIds]);
+        $nPorcentajeDefinido = (int)$oQuerySuma->select([
+            'total' => $oQuerySuma->func()->sum('ponderacion')
+        ])->first()->total;
+
+        $this->set(compact('contenidoCursos','oCurso','nCursoId','nPorcentajeDefinido'));
     }
 
     /**
