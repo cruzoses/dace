@@ -2,9 +2,9 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\ORM\TableRegistry;
 
 /**
  * Profesores Controller
@@ -33,7 +33,6 @@ class ProfesoresController extends AppController
 
     public function index()
     {   
-        $this->loadModel('Docentes');
         $userId = $this->Auth->user('id');
         $docente = TableRegistry::getTableLocator()->get('Docentes')->find()
             ->where(['Docentes.usuario_id' => $userId])
@@ -43,10 +42,10 @@ class ProfesoresController extends AppController
         if (!$docente) 
         {
             $this->Flash->error(__('No se encontró un docente asociado a su usuario.'));
-            return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'home']);
+            return $this->redirect(['action' => 'homepage']);
         }
 
-        $periodos = $this->Docentes->Cursos->Periodos->find('list', [        
+        $periodos = TableRegistry::getTableLocator()->get('Periodos')->find('list', [
             'keyField' => 'id',
             'valueField' => 'codigo',
             'order' => ['Periodos.id' => 'DESC'],
@@ -64,7 +63,7 @@ class ProfesoresController extends AppController
 
         $cursos = [];
         if ($periodoId) {
-            $cursos = $this->Docentes->Cursos->find()
+            $cursos = TableRegistry::getTableLocator()->get('Cursos')->find()
                 ->where([
                     'Cursos.docente_id' => $docente->id,
                     'Cursos.periodo_id' => $periodoId,
@@ -102,7 +101,8 @@ class ProfesoresController extends AppController
             'order' => ['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC'],
         ]);
 
-        $this->set(compact('oCurso', 'aEstudiantes'));
+        $lCargaNota = $oCurso->has('periodo') ? $oCurso->periodo->califica : false;
+        $this->set(compact('oCurso', 'aEstudiantes','lCargaNota'));
     }
 
     public function indicadores($cursoId)
@@ -117,7 +117,7 @@ class ProfesoresController extends AppController
 
     public function cargaNotas($cursoId)
     {
-        $this->viewBuilder()->setLayout('ajax');
+        return $this->redirect(['controller' => 'NotasCursos', 'action' => 'grilla', $cursoId]);
     }
 
     public function cursos($profesorId)
