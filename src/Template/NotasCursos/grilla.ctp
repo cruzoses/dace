@@ -105,6 +105,8 @@
                                     </th>
                                     <?php $nEvalIdx++; ?>
                                 <?php endforeach; ?>
+                                <th class="bg-aqua text-center" rowspan="2" style="width: 80px;">Total</th>
+                                <th class="bg-green text-center" rowspan="2" style="width: 80px;">Final</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -158,6 +160,8 @@
                                         </td>
                                         <?php $nColEval++; ?>
                                     <?php endforeach; ?>
+                                    <td class="text-center" id="total-<?= $oEst->id ?>">&mdash;</td>
+                                    <td class="text-center" id="final-<?= $oEst->id ?>">&mdash;</td>
                                 </tr>
                                 <?php $nIdx++; ?>
                             <?php endforeach; ?>
@@ -203,6 +207,109 @@ $(document).ready(function () {
     var bCalifica = <?= $bCalifica ? 'true' : 'false' ?>;
     var nEvalActiva = 0;
 
+    var aEvalMeta = [
+        <?php $nMetaIdx = 0; ?>
+        <?php foreach ($aEvaluaciones as $oEvaluacion) :
+            $nEscala = (int)$oEvaluacion->indicador_curso->escala_nota;
+            $nMaxNota = 20;
+            if ($nTipoCalificacion == 0) {
+                if ($nEscala == 2) {
+                    $nMaxNota = (int)$oEvaluacion->indicador_curso->porcentaje;
+                } elseif ($nEscala == 3) {
+                    $nMaxNota = 100;
+                }
+            }
+        ?>
+        { ponderacion: <?= (int)$oEvaluacion->ponderacion ?>,
+          escala: <?= $nEscala ?>,
+          maxNota: <?= $nMaxNota ?>,
+          contenidoId: <?= (int)$oEvaluacion->id ?> }<?= ++$nMetaIdx < count($aEvaluaciones) ? ',' : '' ?>
+        <?php endforeach; ?>
+    ];
+
+    function fnNormalizar(nNota, nEscala, nMaxNota) {
+        switch (nEscala) {
+            case 1:  return (nNota / 20) * 100;
+            case 2:  return (nNota / nMaxNota) * 100;
+            case 3:  return nNota;
+            default: return 0;
+        }
+    }
+
+    function fnAEscala20(nValor) {
+        nValor = Math.max(1, Math.min(100, Math.round(nValor)));
+        if (nValor <= 5)  return 1;
+        if (nValor <= 10) return 2;
+        if (nValor <= 15) return 3;
+        if (nValor <= 20) return 4;
+        if (nValor <= 25) return 5;
+        if (nValor <= 30) return 6;
+        if (nValor <= 35) return 7;
+        if (nValor <= 40) return 8;
+        if (nValor <= 45) return 9;
+        if (nValor <= 50) return 10;
+        if (nValor <= 55) return 11;
+        if (nValor <= 60) return 12;
+        if (nValor <= 65) return 13;
+        if (nValor <= 70) return 14;
+        if (nValor <= 75) return 15;
+        if (nValor <= 80) return 16;
+        if (nValor <= 85) return 17;
+        if (nValor <= 90) return 18;
+        if (nValor <= 95) return 19;
+        return 20;
+    }
+
+    function fnCalcularTotales() {
+        $('#grillaNotas tbody tr').each(function () {
+            var $fila = $(this);
+            var nEstudiante = $fila.find('.nota-input').first().data('estudiante');
+            if (!nEstudiante) return;
+
+            if (nTipoCalificacion == 1) {
+                var nA = 0, nR = 0;
+                $fila.find('.nota-input').each(function () {
+                    var sVal = ($(this).val() || '').toString().trim().toUpperCase();
+                    if (sVal === 'A') nA++;
+                    else if (sVal === 'R') nR++;
+                });
+                var sResultado = (nA + nR === 0) ? '&mdash;' : (nA >= nR ? 'A' : 'R');
+                $fila.find('#total-' + nEstudiante).html(sResultado);
+                $fila.find('#final-' + nEstudiante).html(sResultado);
+                return;
+            }
+
+            var nTotalPct = 0;
+            var bCompleto = false;
+
+            $fila.find('.nota-input').each(function () {
+                var $input = $(this);
+                var sVal = ($input.val() || '').toString().trim();
+                if (sVal === '') return;
+
+                var nNota = parseFloat(sVal);
+                if (isNaN(nNota)) return;
+
+                bCompleto = true;
+                var nEvalIdx = parseInt($input.data('eval')) - 1;
+                var oMeta = aEvalMeta[nEvalIdx];
+                if (!oMeta) return;
+
+                var nNorm = fnNormalizar(nNota, oMeta.escala, oMeta.maxNota);
+                nTotalPct += nNorm * (oMeta.ponderacion / 100);
+            });
+
+            if (!bCompleto) {
+                $fila.find('#total-' + nEstudiante).html('&mdash;');
+                $fila.find('#final-' + nEstudiante).html('&mdash;');
+                return;
+            }
+
+            $fila.find('#total-' + nEstudiante).text(nTotalPct.toFixed(2));
+            $fila.find('#final-' + nEstudiante).text(fnAEscala20(nTotalPct));
+        });
+    }
+
     $.ajax({
         url: sBasePath + 'getNotas/<?= $nCursoId ?>',
         type: 'GET',
@@ -216,6 +323,7 @@ $(document).ready(function () {
                     $input.val(data[nEstudiante][nContenido]);
                 }
             });
+            fnCalcularTotales();
         }
     });
 
@@ -276,6 +384,7 @@ $(document).ready(function () {
                 $input.val(sValor);
             }
         }
+        fnCalcularTotales();
     });
 
     $(document).on('keydown', 'input.nota-input:not(:disabled)', function (e) {

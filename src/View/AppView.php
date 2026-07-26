@@ -40,6 +40,7 @@ class AppView extends View
         $this->loadHelper('Form', ['className' => 'BootstrapUI.Form']);
         $this->loadHelper('Permiso');
         $this->loadHelper('Captcha');
+        $this->loadHelper('EscalaNotas');
         //$this->loadHelper('Form', ['className' => 'AdminLTE.Form']);
     }
 }
