@@ -122,9 +122,9 @@ class NotasCursosController extends AppController
                     'contain' => ['IndicadorCursos'],
                 ]);
 
-                $oIndicadorCurso = $indicadorTable->get($oContenidoCurso->indicador_curso_id);
-                $nEscalaNota = (int)$oIndicadorCurso->escala_nota;
-                $nPorcentaje = (int)$oIndicadorCurso->porcentaje;
+                    $oIndicadorCurso = $indicadorTable->get($oContenidoCurso->indicador_curso_id);
+                    $nEscalaNota = (int)$oIndicadorCurso->escala_nota;
+                    $nPonderacion = (int)$oContenidoCurso->ponderacion;
 
                 if ((int)$nTipoCalificacion === 1) {
                     $sCalificacion = strtoupper($sCalificacion);
@@ -146,15 +146,10 @@ class NotasCursosController extends AppController
                         if (!$bValida) {
                             $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: La calificación debe estar entre 1 y 20 (Escala 1-20).";
                         }
-                    } elseif ($nEscalaNota === 2) {
-                        $bValida = ($nCalificacion >= 1 && $nCalificacion <= $nPorcentaje);
+                    } elseif ($nEscalaNota === 2 || $nEscalaNota === 3) {
+                        $bValida = ($nCalificacion >= 1 && $nCalificacion <= $nPonderacion);
                         if (!$bValida) {
-                            $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: La calificación debe estar entre 1 y {$nPorcentaje} (Escala 1-{$nPorcentaje}).";
-                        }
-                    } elseif ($nEscalaNota === 3) {
-                        $bValida = ($nCalificacion >= 1 && $nCalificacion <= 100);
-                        if (!$bValida) {
-                            $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: La calificación debe estar entre 1 y 100 (Escala 1-100).";
+                            $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: La calificación debe estar entre 1 y {$nPonderacion} (Ponderación: {$nPonderacion}%).";
                         }
                     }
 

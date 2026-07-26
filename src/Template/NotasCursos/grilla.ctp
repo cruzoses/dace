@@ -71,7 +71,7 @@
                                 <?php endforeach; ?>
                             </div>
                             <div>
-                                <button type="button" class="btn btn-danger btn-xs" id="btnCerrarActa" disabled>
+                                <button type="button" class="btn bg-purple btn-sm" id="btnCerrarActa" disabled>
                                     <i class="fa fa-lock"></i>&nbsp;Cerrar Acta
                                 </button>
                             </div>
@@ -92,10 +92,8 @@
                                     $nEscala = (int)$oEvaluacion->indicador_curso->escala_nota;
                                     $nMaxNota = 20;
                                     if ($nTipoCalificacion == 0) {
-                                        if ($nEscala == 2) {
-                                            $nMaxNota = (int)$oEvaluacion->indicador_curso->porcentaje;
-                                        } elseif ($nEscala == 3) {
-                                            $nMaxNota = 100;
+                                        if ($nEscala == 2 || $nEscala == 3) {
+                                            $nMaxNota = (int)$oEvaluacion->ponderacion;
                                         }
                                     }
                                 ?>
@@ -124,10 +122,8 @@
                                         $nMaxNota = 20;
                                         $sAttrMax = '';
                                         if ($nTipoCalificacion == 0) {
-                                            if ($nEscala == 2) {
-                                                $nMaxNota = (int)$oEvaluacion->indicador_curso->porcentaje;
-                                            } elseif ($nEscala == 3) {
-                                                $nMaxNota = 100;
+                                            if ($nEscala == 2 || $nEscala == 3) {
+                                                $nMaxNota = (int)$oEvaluacion->ponderacion;
                                             }
                                             $sAttrMax = '';
                                         }
@@ -213,10 +209,8 @@ $(document).ready(function () {
             $nEscala = (int)$oEvaluacion->indicador_curso->escala_nota;
             $nMaxNota = 20;
             if ($nTipoCalificacion == 0) {
-                if ($nEscala == 2) {
-                    $nMaxNota = (int)$oEvaluacion->indicador_curso->porcentaje;
-                } elseif ($nEscala == 3) {
-                    $nMaxNota = 100;
+                if ($nEscala == 2 || $nEscala == 3) {
+                    $nMaxNota = (int)$oEvaluacion->ponderacion;
                 }
             }
         ?>
