@@ -133,8 +133,8 @@ class NotasCursosController extends AppController
                         continue;
                     }
                 } else {
-                    if (!is_numeric($sCalificacion)) {
-                        $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: La calificación debe ser numérica.";
+                    if (!is_numeric($sCalificacion) || !preg_match('/^\d+(\.\d{1,2})?$/', $sCalificacion)) {
+                        $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: La calificación debe ser numérica con máximo 2 decimales.";
                         continue;
                     }
 

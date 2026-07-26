@@ -127,7 +127,7 @@
                                             } elseif ($nEscala == 3) {
                                                 $nMaxNota = 100;
                                             }
-                                            $sAttrMax = ' max="' . $nMaxNota . '" step="any"';
+                                            $sAttrMax = ' max="' . $nMaxNota . '" step="0.01"';
                                         }
                                     ?>
                                         <td class="text-center">
@@ -257,7 +257,7 @@ $(document).ready(function () {
         if (sValor === '' || sValor === null) return;
 
         if (nTipoCalificacion == 0) {
-            if (!/^\d+(\.\d+)?$/.test(sValor)) {
+            if (!/^\d+(\.\d{1,2})?$/.test(sValor)) {
                 $input.addClass('input-error');
                 return;
             }
