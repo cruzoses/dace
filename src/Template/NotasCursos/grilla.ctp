@@ -58,6 +58,7 @@
                             <th class="bg-gray text-center" rowspan="2" style="width: 40px;">No.</th>
                             <th class="bg-gray text-center" rowspan="2" style="width: 80px;">C&eacute;dula</th>
                             <th class="bg-gray text-center" rowspan="2">Estudiante</th>
+                            <?php $nEvalIdx = 1; ?>
                             <?php foreach ($aEvaluaciones as $oEvaluacion) :
                                 $nEscala = (int)$oEvaluacion->indicador_curso->escala_nota;
                                 $nMaxNota = 20;
@@ -69,11 +70,11 @@
                                     }
                                 }
                             ?>
-                                <th class="bg-gray text-center" style="min-width: 80px;">
-                                    <?= h($oEvaluacion->descripcion) ?>
-                                    <br><small>(<?= $oEvaluacion->ponderacion ?>%)</small>
-                                    <br><small>M&aacute;x: <?= $nMaxNota ?></small>
+                                <th class="bg-gray text-center" style="min-width: 80px;"
+                                    title="<?= h($oEvaluacion->descripcion) ?> — Máx: <?= $nMaxNota ?> puntos">
+                                    <?= $nEvalIdx ?> (<?= $oEvaluacion->ponderacion ?>%)
                                 </th>
+                                <?php $nEvalIdx++; ?>
                             <?php endforeach; ?>
                         </tr>
                     </thead>
