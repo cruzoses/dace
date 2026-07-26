@@ -51,88 +51,126 @@
                     </button>
                 </div>
             </div>
-            <div class="box-body table-responsive">
-                <table class="table table-bordered table-condensed table-hover" id="grillaNotas">
-                    <thead>
-                        <tr>
-                            <th class="bg-gray text-center" rowspan="2" style="width: 40px;">No.</th>
-                            <th class="bg-gray text-center" rowspan="2" style="width: 80px;">C&eacute;dula</th>
-                            <th class="bg-gray text-center" rowspan="2">Estudiante</th>
-                            <?php $nEvalIdx = 1; ?>
-                            <?php foreach ($aEvaluaciones as $oEvaluacion) :
-                                $nEscala = (int)$oEvaluacion->indicador_curso->escala_nota;
-                                $nMaxNota = 20;
-                                if ($nTipoCalificacion == 0) {
-                                    if ($nEscala == 2) {
-                                        $nMaxNota = (int)$oEvaluacion->indicador_curso->porcentaje;
-                                    } elseif ($nEscala == 3) {
-                                        $nMaxNota = 100;
-                                    }
-                                }
-                            ?>
-                                <th class="bg-gray text-center" style="min-width: 80px;"
-                                    title="<?= h($oEvaluacion->descripcion) ?> — Máx: <?= $nMaxNota ?> puntos">
-                                    <?= $nEvalIdx ?> (<?= $oEvaluacion->ponderacion ?>%)
-                                </th>
-                                <?php $nEvalIdx++; ?>
-                            <?php endforeach; ?>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $nIdx = 1; ?>
-                        <?php foreach ($aEstudiantes as $oEstudianteCurso) :
-                            $oEst = $oEstudianteCurso->estudiante;
-                        ?>
+            <div class="box-body">
+                <?php if ($bCalifica) : ?>
+                <div class="row" id="toolbar-evaluaciones" style="margin-bottom: 10px;">
+                    <div class="col-xs-12">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <button type="button" class="btn btn-danger btn-xs" id="btnCerrarActa" disabled>
+                                    <i class="fa fa-lock"></i>&nbsp;Cerrar Acta
+                                </button>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <span class="text-muted" style="margin-right: 5px;">Evaluaciones:</span>
+                                <?php $nEvalBtn = 1; ?>
+                                <?php foreach ($aEvaluaciones as $oEvaluacion) : ?>
+                                    <button type="button"
+                                            class="btn btn-primary btn-xs btn-eval"
+                                            data-eval="<?= $nEvalBtn ?>"
+                                            data-contenido-id="<?= $oEvaluacion->id ?>"
+                                            title="<?= h($oEvaluacion->descripcion) ?>">
+                                        <?= $nEvalBtn ?>
+                                    </button>
+                                    <?php $nEvalBtn++; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-hover" id="grillaNotas">
+                        <thead>
                             <tr>
-                                <td class="text-center"><?= $nIdx ?></td>
-                                <td class="text-center"><?= $this->Number->format($oEst->cedula) ?></td>
-                                <td><?= h($oEst->full_name) ?></td>
+                                <th class="bg-gray text-center" rowspan="2" style="width: 40px;">No.</th>
+                                <th class="bg-gray text-center" rowspan="2" style="width: 80px;">C&eacute;dula</th>
+                                <th class="bg-gray text-center" rowspan="2">Estudiante</th>
+                                <?php $nEvalIdx = 1; ?>
                                 <?php foreach ($aEvaluaciones as $oEvaluacion) :
                                     $nEscala = (int)$oEvaluacion->indicador_curso->escala_nota;
                                     $nMaxNota = 20;
-                                    $sAttrMax = '';
                                     if ($nTipoCalificacion == 0) {
                                         if ($nEscala == 2) {
                                             $nMaxNota = (int)$oEvaluacion->indicador_curso->porcentaje;
                                         } elseif ($nEscala == 3) {
                                             $nMaxNota = 100;
                                         }
-                                        $sAttrMax = ' max="' . $nMaxNota . '" step="any"';
                                     }
                                 ?>
-                                    <td class="text-center">
-                                        <?php if ($nTipoCalificacion == 1) : ?>
-                                            <select class="nota-input form-control input-sm"
-                                                    data-estudiante="<?= $oEst->id ?>"
-                                                    data-contenido="<?= $oEvaluacion->id ?>"
-                                                    data-escala="<?= $nEscala ?>"
-                                                    data-max="<?= $nMaxNota ?>"
-                                                    style="width: 70px; display: inline-block;">
-                                                <option value=""></option>
-                                                <option value="A">A</option>
-                                                <option value="R">R</option>
-                                            </select>
-                                        <?php else : ?>
-                                            <input type="number" class="nota-input form-control input-sm"
-                                                   data-estudiante="<?= $oEst->id ?>"
-                                                   data-contenido="<?= $oEvaluacion->id ?>"
-                                                   data-escala="<?= $nEscala ?>"
-                                                   data-max="<?= $nMaxNota ?>"
-                                                   min="1"<?= $sAttrMax ?>
-                                                   style="width: 70px; display: inline-block;">
-                                        <?php endif; ?>
-                                    </td>
+                                    <th class="bg-gray text-center" style="min-width: 80px;"
+                                        title="<?= h($oEvaluacion->descripcion) ?> — Máx: <?= $nMaxNota ?> puntos">
+                                        <?= $nEvalIdx ?> (<?= $oEvaluacion->ponderacion ?>%)
+                                    </th>
+                                    <?php $nEvalIdx++; ?>
                                 <?php endforeach; ?>
                             </tr>
-                            <?php $nIdx++; ?>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php $nIdx = 1; ?>
+                            <?php foreach ($aEstudiantes as $oEstudianteCurso) :
+                                $oEst = $oEstudianteCurso->estudiante;
+                            ?>
+                                <tr>
+                                    <td class="text-center"><?= $nIdx ?></td>
+                                    <td class="text-center"><?= $this->Number->format($oEst->cedula) ?></td>
+                                    <td><?= h($oEst->full_name) ?></td>
+                                    <?php $nColEval = 1; ?>
+                                    <?php foreach ($aEvaluaciones as $oEvaluacion) :
+                                        $nEscala = (int)$oEvaluacion->indicador_curso->escala_nota;
+                                        $nMaxNota = 20;
+                                        $sAttrMax = '';
+                                        if ($nTipoCalificacion == 0) {
+                                            if ($nEscala == 2) {
+                                                $nMaxNota = (int)$oEvaluacion->indicador_curso->porcentaje;
+                                            } elseif ($nEscala == 3) {
+                                                $nMaxNota = 100;
+                                            }
+                                            $sAttrMax = ' max="' . $nMaxNota . '" step="any"';
+                                        }
+                                    ?>
+                                        <td class="text-center">
+                                            <?php if ($nTipoCalificacion == 1) : ?>
+                                                <select class="nota-input form-control input-sm"
+                                                        data-estudiante="<?= $oEst->id ?>"
+                                                        data-contenido="<?= $oEvaluacion->id ?>"
+                                                        data-eval="<?= $nColEval ?>"
+                                                        data-escala="<?= $nEscala ?>"
+                                                        data-max="<?= $nMaxNota ?>"
+                                                        disabled
+                                                        style="width: 70px; display: inline-block;">
+                                                    <option value=""></option>
+                                                    <option value="A">A</option>
+                                                    <option value="R">R</option>
+                                                </select>
+                                            <?php else : ?>
+                                                <input type="number" class="nota-input form-control input-sm"
+                                                       data-estudiante="<?= $oEst->id ?>"
+                                                       data-contenido="<?= $oEvaluacion->id ?>"
+                                                       data-eval="<?= $nColEval ?>"
+                                                       data-escala="<?= $nEscala ?>"
+                                                       data-max="<?= $nMaxNota ?>"
+                                                       min="1"<?= $sAttrMax ?>
+                                                       disabled
+                                                       style="width: 70px; display: inline-block;">
+                                            <?php endif; ?>
+                                        </td>
+                                        <?php $nColEval++; ?>
+                                    <?php endforeach; ?>
+                                </tr>
+                                <?php $nIdx++; ?>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            <?php if ($bCalifica) : ?>
             <div class="box-footer">
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-success btn-lg" id="btnGuardarNotas">
+                        <button type="button" class="btn btn-success btn-lg" id="btnGuardarNotas" disabled>
                             <i class="fa fa-save"></i>&nbsp;Guardar Notas
                         </button>
                         <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Volver',
@@ -141,6 +179,17 @@
                     </div>
                 </div>
             </div>
+            <?php else : ?>
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Volver',
+                            ['controller' => 'profesores', 'action' => 'listadeclase', $oCurso->id],
+                            ['class' => 'btn bg-maroon btn-lg', 'escape' => false]) ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -151,6 +200,8 @@ $(document).ready(function () {
 
     var sBasePath = basePath + 'notasCursos/';
     var nTipoCalificacion = <?= $nTipoCalificacion ?>;
+    var bCalifica = <?= $bCalifica ? 'true' : 'false' ?>;
+    var nEvalActiva = 0;
 
     $.ajax({
         url: sBasePath + 'getNotas/<?= $nCursoId ?>',
@@ -167,6 +218,36 @@ $(document).ready(function () {
             });
         }
     });
+
+    if (bCalifica) {
+        $('.btn-eval').click(function () {
+            var $btn = $(this);
+            var nEval = parseInt($btn.data('eval'));
+
+            if (nEvalActiva === nEval) {
+                return;
+            }
+
+            $('.nota-input').prop('disabled', true).removeClass('input-activa');
+            $('.btn-eval').removeClass('active').removeClass('btn-warning').addClass('btn-primary');
+
+            $('.nota-input[data-eval="' + nEval + '"]').prop('disabled', false).addClass('input-activa');
+            $btn.addClass('active').removeClass('btn-primary').addClass('btn-warning');
+
+            nEvalActiva = nEval;
+            $('#btnCerrarActa').prop('disabled', false);
+            $('#btnGuardarNotas').prop('disabled', false);
+        });
+
+        $('#btnCerrarActa').click(function () {
+            $('.nota-input').prop('disabled', true).removeClass('input-activa');
+            $('.btn-eval').removeClass('active').removeClass('btn-warning').addClass('btn-primary');
+            $(this).prop('disabled', true);
+            $('#btnGuardarNotas').prop('disabled', true);
+            nEvalActiva = 0;
+            toastr.info('Acta cerrada. Las calificaciones no se modifican hasta seleccionar otra evaluación.');
+        });
+    }
 
     $('.nota-input').on('change', function () {
         var $input = $(this);
@@ -201,7 +282,7 @@ $(document).ready(function () {
         var aNotas = [];
         var bHayNotas = false;
 
-        $('.nota-input').each(function () {
+        $('.nota-input:not(:disabled)').each(function () {
             var $input = $(this);
             var sValor = ($input.val() || '').toString().trim();
 
@@ -263,6 +344,10 @@ $(document).ready(function () {
 .input-error {
     border-color: #dd4b39 !important;
     box-shadow: 0 0 5px rgba(221, 75, 57, 0.5);
+}
+.input-activa {
+    background-color: #fcf8e3 !important;
+    border-color: #faebcc !important;
 }
 </style>
 

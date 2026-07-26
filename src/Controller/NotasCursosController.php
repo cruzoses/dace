@@ -48,10 +48,7 @@ class NotasCursosController extends AppController
             return $this->redirect(['controller' => 'Profesores', 'action' => 'index']);
         }
 
-        if (!$oCurso->periodo->califica) {
-            $this->Flash->error('El período actual no permite carga de calificaciones.');
-            return $this->redirect(['controller' => 'Profesores', 'action' => 'index']);
-        }
+        $bCalifica = (bool)$oCurso->periodo->califica;
 
         $aIndicadorCursoIds = TableRegistry::getTableLocator()->get('IndicadorCursos')->find()
             ->where(['curso_id' => $nCursoId])
@@ -80,7 +77,7 @@ class NotasCursosController extends AppController
 
         $nTipoCalificacion = (int)$oCurso->asignatura->calificacion;
 
-        $this->set(compact('oCurso', 'aEstudiantes', 'aEvaluaciones', 'nTipoCalificacion', 'nCursoId'));
+        $this->set(compact('oCurso', 'aEstudiantes', 'aEvaluaciones', 'nTipoCalificacion', 'nCursoId', 'bCalifica'));
     }
 
     /**
