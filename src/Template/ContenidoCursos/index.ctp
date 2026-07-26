@@ -168,8 +168,8 @@
                         </tr>
                         <tr>
                             <td><i class="fa fa-percent"></i>&nbsp;Porcentaje definido</td>
-                            <td class="text-center">0%</td>
-                            <td class="text-center"><?= $nPorcentajeMaximo ?>%</td>
+                            <td class="text-center">100%</td>
+                            <td class="text-center">100%</td>
                             <td class="text-center"><?= $nPorcentajeDefinido ?>%</td>
                         </tr>
                         <tr>
