@@ -29,7 +29,7 @@ class NotasCursosTable extends AppTable
     {
         parent::initialize($config);
 
-        $this->setTable('notas_cursos');
+        $this->setTable('curso_notas');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
