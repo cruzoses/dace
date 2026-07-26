@@ -61,7 +61,7 @@
                                 <?php $nEvalBtn = 1; ?>
                                 <?php foreach ($aEvaluaciones as $oEvaluacion) : ?>
                                     <button type="button"
-                                            class="btn btn-primary btn-xs btn-eval"
+                                            class="btn btn-default btn-xs btn-eval"
                                             data-eval="<?= $nEvalBtn ?>"
                                             data-contenido-id="<?= $oEvaluacion->id ?>"
                                             title="<?= h($oEvaluacion->descripcion) ?>">
@@ -229,10 +229,10 @@ $(document).ready(function () {
             }
 
             $('.nota-input').prop('disabled', true).removeClass('input-activa');
-            $('.btn-eval').removeClass('active').removeClass('btn-warning').addClass('btn-primary');
+            $('.btn-eval').removeClass('active').removeClass('btn-primary').addClass('btn-default');
 
             $('.nota-input[data-eval="' + nEval + '"]').prop('disabled', false).addClass('input-activa');
-            $btn.addClass('active').removeClass('btn-primary').addClass('btn-warning');
+            $btn.addClass('active').removeClass('btn-default').addClass('btn-primary');
 
             nEvalActiva = nEval;
             $('#btnCerrarActa').prop('disabled', false);
@@ -241,7 +241,7 @@ $(document).ready(function () {
 
         $('#btnCerrarActa').click(function () {
             $('.nota-input').prop('disabled', true).removeClass('input-activa');
-            $('.btn-eval').removeClass('active').removeClass('btn-warning').addClass('btn-primary');
+            $('.btn-eval').removeClass('active').removeClass('btn-primary').addClass('btn-default');
             $(this).prop('disabled', true);
             $('#btnGuardarNotas').prop('disabled', true);
             nEvalActiva = 0;
