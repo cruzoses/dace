@@ -6,13 +6,13 @@ use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
 
 /**
- * NotasCursos Controller
+ * CursoNotas Controller
  *
- * @property \App\Model\Table\NotasCursosTable $NotasCursos
+ * @property \App\Model\Table\CursoNotasTable $CursoNotas
  *
- * @method \App\Model\Entity\NotasCurso[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @method \App\Model\Entity\CursoNota[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class NotasCursosController extends AppController
+class CursoNotasController extends AppController
 {
     public function beforeFilter(Event $event)
     {
@@ -69,7 +69,7 @@ class NotasCursosController extends AppController
             ->order(['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC'])
             ->toArray();
 
-        $aEvaluaciones = $this->NotasCursos->ContenidoCursos->find()
+        $aEvaluaciones = $this->CursoNotas->ContenidoCursos->find()
             ->where(['indicador_curso_id IN' => $aIndicadorCursoIds])
             ->contain(['IndicadorCursos'])
             ->order(['IndicadorCursos.id' => 'ASC', 'ContenidoCursos.fecha' => 'ASC'])
@@ -105,7 +105,7 @@ class NotasCursosController extends AppController
             $aErrores = [];
             $nGuardadas = 0;
 
-            $notasTable = $this->NotasCursos;
+            $notasTable = $this->CursoNotas;
             $contenidoTable = $notasTable->ContenidoCursos;
             $indicadorTable = TableRegistry::getTableLocator()->get('IndicadorCursos');
 
@@ -256,7 +256,7 @@ class NotasCursosController extends AppController
                 ->extract('id')
                 ->toArray();
 
-            $aContenidoCursos = $this->NotasCursos->ContenidoCursos->find()
+            $aContenidoCursos = $this->CursoNotas->ContenidoCursos->find()
                 ->where(['indicador_curso_id IN' => $aIndicadorCursoIds])
                 ->contain(['IndicadorCursos'])
                 ->toArray();
@@ -265,7 +265,7 @@ class NotasCursosController extends AppController
                 return $this->_jsonError('No hay evaluaciones definidas en el plan de evaluación.');
             }
 
-            $aNotas = $this->NotasCursos->find()
+            $aNotas = $this->CursoNotas->find()
                 ->where(['contenido_curso_id IN' => array_map(function ($o) { return $o->id; }, $aContenidoCursos)])
                 ->toArray();
 
@@ -370,14 +370,14 @@ class NotasCursosController extends AppController
                 ->extract('id')
                 ->toArray();
 
-            $aContenidoCursoIds = $this->NotasCursos->ContenidoCursos->find()
+            $aContenidoCursoIds = $this->CursoNotas->ContenidoCursos->find()
                 ->where(['indicador_curso_id IN' => $aIndicadorCursoIds])
                 ->extract('id')
                 ->toArray();
 
             $aNotas = [];
             if (!empty($aContenidoCursoIds)) {
-                $aNotasQuery = $this->NotasCursos->find()
+                $aNotasQuery = $this->CursoNotas->find()
                     ->where(['contenido_curso_id IN' => $aContenidoCursoIds])
                     ->toArray();
 

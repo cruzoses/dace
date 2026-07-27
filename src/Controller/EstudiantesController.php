@@ -60,7 +60,7 @@ class EstudiantesController extends AppController
     {
         $estudiante = $this->Estudiantes->get($id, [
             'contain' => ['Paises', 'Estados', 'Municipios', 'Parroquias', 'Usuarios', 'EstudianteCursos', 'EstudianteProgramas', 
-            'Graduandos', 'Historicos', 'NotasCursos', 'SituacionEstudiantes'],
+            'Graduandos', 'Historicos', 'CursoNotas', 'SituacionEstudiantes'],
         ]);
         $aGeneros = Configure::read('aGeneros');
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Estudiantes ' . json_encode($estudiante->toArray()));

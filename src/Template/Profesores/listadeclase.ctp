@@ -166,7 +166,7 @@
         $('#cargaNotas').click(function (e) {
             e.preventDefault();
             let nCurso = "<?= $oCurso->id ?>";
-            let sUrl = basePath + "notasCursos/grilla/" + nCurso;
+            let sUrl = basePath + "cursoNotas/grilla/" + nCurso;
             $('#procesando').show();
             window.location.replace(sUrl);
         });        

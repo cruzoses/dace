@@ -4,7 +4,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * NotasCurso Entity
+ * CursoNota Entity
  *
  * @property int $id
  * @property int $contenido_curso_id
@@ -17,7 +17,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\ContenidoCurso $contenido_curso
  * @property \App\Model\Entity\Estudiante $estudiante
  */
-class NotasCurso extends Entity
+class CursoNota extends Entity
 {
     protected $_accessible = [
         'contenido_curso_id' => true,

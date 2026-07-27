@@ -102,7 +102,7 @@ class ContenidoCursosController extends AppController
     public function view($id = null)
     {
         $contenidoCurso = $this->ContenidoCursos->get($id, [
-            'contain' => ['IndicadorCursos', 'NotasCursos'],
+            'contain' => ['IndicadorCursos', 'CursoNotas'],
         ]);
 
         $nCursoId = $contenidoCurso->indicador_curso->curso_id;

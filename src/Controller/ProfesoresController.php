@@ -117,7 +117,7 @@ class ProfesoresController extends AppController
 
     public function cargaNotas($cursoId)
     {
-        return $this->redirect(['controller' => 'NotasCursos', 'action' => 'grilla', $cursoId]);
+        return $this->redirect(['controller' => 'CursoNotas', 'action' => 'grilla', $cursoId]);
     }
 
     public function cursos($profesorId)

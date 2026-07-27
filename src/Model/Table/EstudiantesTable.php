@@ -18,7 +18,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\EstudianteProgramasTable&\Cake\ORM\Association\HasMany $EstudianteProgramas
  * @property \App\Model\Table\GraduandosTable&\Cake\ORM\Association\HasMany $Graduandos
  * @property \App\Model\Table\HistoricosTable&\Cake\ORM\Association\HasMany $Historicos
- * @property \App\Model\Table\NotasCursosTable&\Cake\ORM\Association\HasMany $NotasCursos
+ * @property \App\Model\Table\CursoNotasTable&\Cake\ORM\Association\HasMany $CursoNotas
  * @property \App\Model\Table\SituacionEstudiantesTable&\Cake\ORM\Association\HasMany $SituacionEstudiantes
  *
  * @method \App\Model\Entity\Estudiante get($primaryKey, $options = [])
@@ -84,7 +84,7 @@ class EstudiantesTable extends AppTable
         $this->hasMany('Historicos', [
             'foreignKey' => 'estudiante_id',
         ]);
-        $this->hasMany('NotasCursos', [
+        $this->hasMany('CursoNotas', [
             'foreignKey' => 'estudiante_id',
         ]);
         $this->hasMany('SituacionEstudiantes', [

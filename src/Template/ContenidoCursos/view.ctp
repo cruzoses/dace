@@ -65,7 +65,7 @@
                 <h3 class="box-title"><i class="fa fa-share-alt"></i>&nbsp;Notas Cursos</h3>
             </div>
             <div class="box-body">
-                <?php if (!empty($contenidoCurso->notas_cursos)): ?>
+                <?php if (!empty($contenidoCurso->curso_notas)): ?>
                     <table class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
@@ -80,19 +80,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($contenidoCurso->notas_cursos as $notasCursos): ?>
+                            <?php foreach ($contenidoCurso->curso_notas as $cursoNotas): ?>
                                 <tr>
-                                    <td><?= h($notasCursos->id) ?></td>
-                                    <td><?= h($notasCursos->contenido_curso_id) ?></td>
-                                    <td><?= h($notasCursos->estudiante_id) ?></td>
-                                    <td><?= h($notasCursos->calificacion) ?></td>
-                                    <td><?= h($notasCursos->responsable) ?></td>
-                                    <td><?= h($notasCursos->created) ?></td>
-                                    <td><?= h($notasCursos->modified) ?></td>
+                                    <td><?= h($cursoNotas->id) ?></td>
+                                    <td><?= h($cursoNotas->contenido_curso_id) ?></td>
+                                    <td><?= h($cursoNotas->estudiante_id) ?></td>
+                                    <td><?= h($cursoNotas->calificacion) ?></td>
+                                    <td><?= h($cursoNotas->responsable) ?></td>
+                                    <td><?= h($cursoNotas->created) ?></td>
+                                    <td><?= h($cursoNotas->modified) ?></td>
                                     <td class="actions text-center">
-                                        <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'NotasCursos', 'action' => 'view', $notasCursos->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'NotasCursos', 'action' => 'edit', $notasCursos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                        <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'NotasCursos', 'action' => 'delete', $notasCursos->id], ['confirm' => __('Are you sure you want to delete # {0}?', $notasCursos->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'CursoNotas', 'action' => 'view', $cursoNotas->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'CursoNotas', 'action' => 'edit', $cursoNotas->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'CursoNotas', 'action' => 'delete', $cursoNotas->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cursoNotas->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

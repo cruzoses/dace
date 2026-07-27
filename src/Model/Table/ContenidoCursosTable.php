@@ -11,7 +11,7 @@ use Cake\Validation\Validator;
  * ContenidoCursos Model
  *
  * @property \App\Model\Table\IndicadorCursosTable&\Cake\ORM\Association\BelongsTo $IndicadorCursos
- * @property \App\Model\Table\NotasCursosTable&\Cake\ORM\Association\HasMany $NotasCursos
+ * @property \App\Model\Table\CursoNotasTable&\Cake\ORM\Association\HasMany $CursoNotas
  *
  * @method \App\Model\Entity\ContenidoCurso get($primaryKey, $options = [])
  * @method \App\Model\Entity\ContenidoCurso newEntity($data = null, array $options = [])
@@ -46,7 +46,7 @@ class ContenidoCursosTable extends AppTable
             'foreignKey' => 'indicador_curso_id',
             'joinType' => 'INNER',
         ]);
-        $this->hasMany('NotasCursos', [
+        $this->hasMany('CursoNotas', [
             'foreignKey' => 'contenido_curso_id',
         ]);
     }
@@ -98,7 +98,7 @@ class ContenidoCursosTable extends AppTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
-     */
+    */
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['indicador_curso_id'], 'IndicadorCursos'));

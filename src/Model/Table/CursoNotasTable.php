@@ -7,23 +7,23 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * NotasCursos Model
+ * CursoNotas Model
  *
  * @property \App\Model\Table\ContenidoCursosTable&\Cake\ORM\Association\BelongsTo $ContenidoCursos
  * @property \App\Model\Table\EstudiantesTable&\Cake\ORM\Association\BelongsTo $Estudiantes
  *
- * @method \App\Model\Entity\NotasCurso get($primaryKey, $options = [])
- * @method \App\Model\Entity\NotasCurso newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\NotasCurso[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\NotasCurso|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\NotasCurso saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\NotasCurso patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\NotasCurso[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\NotasCurso findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\CursoNota get($primaryKey, $options = [])
+ * @method \App\Model\Entity\CursoNota newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\CursoNota[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\CursoNota|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\CursoNota saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\CursoNota patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\CursoNota[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\CursoNota findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class NotasCursosTable extends AppTable
+class CursoNotasTable extends AppTable
 {
     public function initialize(array $config)
     {

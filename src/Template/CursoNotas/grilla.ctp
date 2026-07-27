@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <?php if ($bCalifica) : ?>
+                <?php if ($bCalifica && $oCurso->cerrado == 0) : ?>
                 <div class="row" id="toolbar-evaluaciones" style="margin-bottom: 10px;">
                     <div class="col-xs-12">
                         <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -201,7 +201,7 @@
 $(document).ready(function () {
     $('#modulo').text("Docente > Carga de Notas");
 
-    var sBasePath = basePath + 'notasCursos/';
+    var sBasePath = basePath + 'cursoNotas/';
     var nTipoCalificacion = <?= $nTipoCalificacion ?>;
     var bCalifica = <?= $bCalifica ? 'true' : 'false' ?>;
     var nEvalActiva = 0;

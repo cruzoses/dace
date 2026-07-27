@@ -50,7 +50,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\EstudiantePrograma[] $estudiante_programas
  * @property \App\Model\Entity\Graduando[] $graduandos
  * @property \App\Model\Entity\Historico[] $historicos
- * @property \App\Model\Entity\NotasCurso[] $notas_cursos
+ * @property \App\Model\Entity\CursoNota[] $curso_notas
  * @property \App\Model\Entity\SituacionEstudiante[] $situacion_estudiantes
  */
 class Estudiante extends Entity
@@ -107,7 +107,7 @@ class Estudiante extends Entity
         'estudiante_programas' => true,
         'graduandos' => true,
         'historicos' => true,
-        'notas_cursos' => true,
+        'curso_notas' => true,
         'situacion_estudiantes' => true,
     ];
 
