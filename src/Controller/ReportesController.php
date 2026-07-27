@@ -27,8 +27,10 @@ class ReportesController extends AppController
             if ( $this->tienePermiso([1,2]) ) 
             {
                 return true;
-            } elseif( $this->tienePermiso([4,5]) && in_array($aValues,['listarParticipantes'] ) ) {
-                return true;
+            } elseif( $this->tienePermiso([4,5]) ) {
+                if (in_array($aValues,['listarParticipantes', 'listarActadeNotas'] )) {
+                    return true;
+                }                
             }
 		}
         return parent::isAuthorized($user);
@@ -1087,8 +1089,11 @@ class ReportesController extends AppController
         $titulo = strtoupper($oCurso->asignatura->nombre) . ' - ' . $oCurso->periodo->codigo;
 
         $aHeaders = ['No.', 'Cedula', 'Apellidos', 'Nombres'];
+        $aEvalLabels = [];
         foreach ($aDatos['evaluaciones'] as $idx => $oEval) {
-            $aHeaders[] = ($idx + 1) . ' (' . $oEval->ponderacion . '%)';
+            $sLabel = ($idx + 1) . ' (' . $oEval->ponderacion . '%)';
+            $aHeaders[] = $sLabel;
+            $aEvalLabels[$oEval->id] = $sLabel;
         }
         $aHeaders[] = 'Total';
         $aHeaders[] = 'Final';
@@ -1121,7 +1126,7 @@ class ReportesController extends AppController
                 'Nombres' => $aRow['nombres'],
             ];
             foreach ($aDatos['evaluaciones'] as $oEval) {
-                $aData[$oEval->id] = $aRow['notas'][$oEval->id] ?? '';
+                $aData[$aEvalLabels[$oEval->id]] = $aRow['notas'][$oEval->id] ?? '';
             }
             $aData['Total'] = $aRow['total'];
             $aData['Final'] = $aRow['final'];
