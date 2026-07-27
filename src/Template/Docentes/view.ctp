@@ -211,7 +211,7 @@
 						<tr>
 							<td><?= $curso->periodo->codigo;?></td>
 							<td><?= $curso->id;?></td>
-							<td><?= $curso->programa->codigo;?></td>
+							<td><?= $curso->has('carrera') ? $curso->carrera->codigo : '—';?></td>
 							<td><?= $curso->asignatura->codigo;?></td>
 							<td><?= $curso->asignatura->nombre;?></td>
 							<td class="text-center"><?= $curso->asignatura->creditos;?></td>

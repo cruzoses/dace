@@ -63,7 +63,7 @@ class DocentesController extends AppController
     public function view($id = null)
     {
         $docente = $this->Docentes->get($id, [
-            'contain' => ['Departamentos', 'Usuarios', 'Cursos'],
+            'contain' => ['Departamentos', 'Usuarios', 'Cursos' => ['Periodos', 'Asignaturas', 'Carreras']],
         ]);
 
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Docentes ' . json_encode($docente->toArray()));
