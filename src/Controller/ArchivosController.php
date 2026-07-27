@@ -581,14 +581,14 @@ class ArchivosController extends AppController
 
         $nCol = 1;
         foreach ($aHeaders as $sHeader) {
-            $cell = $sheet->getCellByColumnAndRow($nCol, $nRow);
-            $cell->setValue($sHeader);
-            $cell->getFont()->setBold(true)->setSize(9);
-            $cell->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $cell->getAlignment()->setWrapText(true);
-            $cell->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-            $cell->getFill()->setFillType('solid');
-            $cell->getFill()->getStartColor()->setRGB('D9E1F2');
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($sHeader);
+            $style = $sheet->getStyleByColumnAndRow($nCol, $nRow);
+            $style->getFont()->setBold(true)->setSize(9);
+            $style->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $style->getAlignment()->setWrapText(true);
+            $style->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $style->getFill()->setFillType('solid');
+            $style->getFill()->getStartColor()->setRGB('D9E1F2');
             $nCol++;
         }
         $nRow++;
@@ -598,40 +598,40 @@ class ArchivosController extends AppController
             $nCol = 1;
 
             $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($nIdx++);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $nCol++;
 
             $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['cedula']);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $nCol++;
 
             $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['apellidos']);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
             $nCol++;
 
             $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['nombres']);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
             $nCol++;
 
             foreach ($aDatos['evaluaciones'] as $oEval) {
                 $sVal = $aRow['notas'][$oEval->id] ?? '';
                 $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($sVal);
-                $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-                $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyleByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+                $sheet->getStyleByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $nCol++;
             }
 
             $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['total']);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $nCol++;
 
             $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['final']);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getCellByColumnAndRow($nCol, $nRow)->getFont()->setBold(true);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyleByColumnAndRow($nCol, $nRow)->getFont()->setBold(true);
 
             $nRow++;
         }
@@ -648,14 +648,14 @@ class ArchivosController extends AppController
 
         $sheet->mergeCells('C' . $nLineRow . ':D' . $nLineRow);
         $sheet->getCellByColumnAndRow(3, $nLineRow)->setValue($sDocenteName);
-        $sheet->getCellByColumnAndRow(3, $nLineRow)->getFont()->setBold(true)->setSize(9);
-        $sheet->getCellByColumnAndRow(3, $nLineRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyleByColumnAndRow(3, $nLineRow)->getFont()->setBold(true)->setSize(9);
+        $sheet->getStyleByColumnAndRow(3, $nLineRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $nLineRow++;
 
         $sheet->mergeCells('C' . $nLineRow . ':D' . $nLineRow);
         $sheet->getCellByColumnAndRow(3, $nLineRow)->setValue('C.I. ' . $sDocenteCedula);
-        $sheet->getCellByColumnAndRow(3, $nLineRow)->getFont()->setSize(9);
-        $sheet->getCellByColumnAndRow(3, $nLineRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyleByColumnAndRow(3, $nLineRow)->getFont()->setSize(9);
+        $sheet->getStyleByColumnAndRow(3, $nLineRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         $nRow = $nLineRow + 2;
         $sheet->setCellValueByColumnAndRow(1, $nRow, 'Generado por: ' . $this->Auth->user('alias') . ' — ' . date('d/m/Y h:i A'));
