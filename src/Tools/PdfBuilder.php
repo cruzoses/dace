@@ -48,15 +48,11 @@ class PdfBuilder
         $this->pdf->setLineStyle(0.5);
         $this->pdf->line($xStart, $y, $xStart + $width, $y);
 
-        $sBoldName = '<b>' . $sName . '</b>';
-        $nameWidth = $this->pdf->getTextLength(9, $sBoldName);
-        $cedulaWidth = $this->pdf->getTextLength(9, 'C.I. ' . $sCedula);
+        $this->pdf->ezSetY($y - 15);
+        $this->pdf->ezText('<b>' . $sName . '</b>', 9, ['justification' => 'center']);
 
-        $xName = $xStart + (($width - $nameWidth) / 2);
-        $xCedula = $xStart + (($width - $cedulaWidth) / 2);
-
-        $this->pdf->addText($xName, $y - 15, 9, $sBoldName);
-        $this->pdf->addText($xCedula, $y - 27, 9, 'C.I. ' . $sCedula);
+        $this->pdf->ezSetY($this->pdf->y - 2);
+        $this->pdf->ezText('C.I. ' . $sCedula, 9, ['justification' => 'center']);
     }
 
     public function generateSimpleReport($data, $title = 'REPORTE', $tableTitle = '')
