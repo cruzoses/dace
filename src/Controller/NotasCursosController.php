@@ -340,6 +340,9 @@ class NotasCursosController extends AppController
                 }
             }
 
+            $oCurso->cerrado = 1;
+            $cursosTable->save($oCurso);
+
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
                     'success' => true,
