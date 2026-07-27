@@ -17,7 +17,10 @@ class ArchivosController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarPeriodos', 'exportarDocentes', 'exportarSituacion', 'exportarParticipantes']);
+        $this->Auth->allow([
+            'exportarEstados', 'exportarMunicipios', 'exportarParroquias', 'exportarPeriodos', 'exportarDocentes', 
+            'exportarSituacion', 'exportarParticipantes', 'exportarActadeNotas'
+        ]);
     }
 
     public function exportarEstados()
@@ -634,6 +637,27 @@ class ArchivosController extends AppController
         }
 
         $nRow += 2;
+        $oDocente = $oCurso->docente;
+        $sDocenteName = strtoupper($oDocente->apellidos . ', ' . $oDocente->nombres);
+        $sDocenteCedula = $oDocente->cedula;
+
+        $nLineRow = $nRow;
+        $sheet->mergeCells('C' . $nLineRow . ':D' . $nLineRow);
+        $sheet->getStyleByColumnAndRow(3, $nLineRow)->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THIN);
+        $nLineRow++;
+
+        $sheet->mergeCells('C' . $nLineRow . ':D' . $nLineRow);
+        $sheet->getCellByColumnAndRow(3, $nLineRow)->setValue($sDocenteName);
+        $sheet->getCellByColumnAndRow(3, $nLineRow)->getFont()->setBold(true)->setSize(9);
+        $sheet->getCellByColumnAndRow(3, $nLineRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $nLineRow++;
+
+        $sheet->mergeCells('C' . $nLineRow . ':D' . $nLineRow);
+        $sheet->getCellByColumnAndRow(3, $nLineRow)->setValue('C.I. ' . $sDocenteCedula);
+        $sheet->getCellByColumnAndRow(3, $nLineRow)->getFont()->setSize(9);
+        $sheet->getCellByColumnAndRow(3, $nLineRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $nRow = $nLineRow + 2;
         $sheet->setCellValueByColumnAndRow(1, $nRow, 'Generado por: ' . $this->Auth->user('alias') . ' — ' . date('d/m/Y h:i A'));
         $sheet->getStyleByColumnAndRow(1, $nRow)->getFont()->setSize(8);
 

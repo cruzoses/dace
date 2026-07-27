@@ -1138,9 +1138,37 @@ class ReportesController extends AppController
         if (!$noData) {
             $pdfBuilder = new PdfBuilder($sOrientation);
             $pdfBuilder->setColumns($aColumns);
+            $pdfBuilder->pageHeader('ACTA DE NOTAS');
+
+            $pdf = $pdfBuilder->getPdf();
+            $isLandscape = $sOrientation === 'landscape';
+            $pdf->ezSetY($isLandscape ? 475 : 665);
+
+            $aConfig = [
+                'showHeadings'  => 1,
+                'fontSize'      => 8,
+                'titleFontSize' => 10,
+                'showLines'     => 1,
+                'shaded'        => 0,
+                'width'         => $isLandscape ? 700 : 500,
+                'maxWidth'      => $isLandscape ? 700 : 500,
+                'xOrientation'  => 'centre',
+                'outerLineThickness' => 0.5,
+                'innerLineThickness' => 0.5,
+                'cols' => $aColumns,
+            ];
 
             $sSubtitulo = $titulo . ' — ' . $aDatos['proceso_label'];
-            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'ACTA DE NOTAS', $sSubtitulo);
+            $pdf->ezTable($data, null, $sSubtitulo, $aConfig);
+
+            $sDocenteName = strtoupper($oCurso->docente->apellidos . ', ' . $oCurso->docente->nombres);
+            $sDocenteCedula = $oCurso->docente->cedula;
+            $xStart = $isLandscape ? 100 : 90;
+            $lineWidth = $isLandscape ? 300 : 240;
+            $pdfBuilder->drawSignatureBlock($sDocenteName, $sDocenteCedula, $xStart, $lineWidth);
+
+            $pdf->ezStopPageNumbers(1, 1);
+            $pdfOutput = $pdf->ezOutput();
 
             $reportConfig = $this->_getReportConfig();
             $filename = 'acta_notas_' . $nCursoId . '_' . date('Ymd_His') . '.pdf';

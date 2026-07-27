@@ -35,6 +35,24 @@ class PdfBuilder
         $this->user = $session->read('Auth.User.alias');
     }
 
+    public function getPdf()
+    {
+        return $this->pdf;
+    }
+
+    public function drawSignatureBlock($sName, $sCedula, $xStart, $width, $yOffset = 0)
+    {
+        $y = $this->pdf->y - 40 + $yOffset;
+
+        $this->pdf->setStrokeColor(0, 0, 0);
+        $this->pdf->setLineStyle(0.5);
+        $this->pdf->line($xStart, $y, $xStart + $width, $y);
+
+        $xCenter = $xStart + ($width / 2);
+        $this->pdf->addText($xCenter - 100, $y - 15, 9, '<b>' . $sName . '</b>', ['justification' => 'center']);
+        $this->pdf->addText($xCenter - 100, $y - 27, 9, 'C.I. ' . $sCedula, ['justification' => 'center']);
+    }
+
     public function generateSimpleReport($data, $title = 'REPORTE', $tableTitle = '')
     {
         $this->pageHeader($title);
@@ -155,7 +173,7 @@ class PdfBuilder
         return $this->user;
     }
 
-    private function pageHeader($sTitle)
+    public function pageHeader($sTitle)
     {
         $sFullname = Configure::read('Universidad.Title1') ." \u{201C}" . Configure::read('Universidad.Title2') ."\u{201D}" ;
         $userAlias = isset( $this->user['alias'] ) ? $this->user['alias'] : 'SACE UPTBAL';
