@@ -74,8 +74,8 @@
                                 </button>
                             </div>
                             <div>
-                                <button type="button" class="btn bg-maroon btn-sm" id="btnCerrarActa" disabled>
-                                    <i class="fa fa-file-text-o"></i>&nbsp;Cerrar Acta
+                                <button type="button" class="btn bg-navy btn-sm" id="btnCerrarActa">
+                                    <i class="fas fa-user-cog"></i>&nbsp;Cerrar Acta
                                 </button>
                             </div>
                         </div>
@@ -381,13 +381,63 @@ $(document).ready(function () {
             $('#btnGuardarNotas').prop('disabled', false);
         });
 
-        $('#btnCerrarNota').click(function () {
+            $('#btnCerrarNota').click(function () {
             $('.nota-input').prop('disabled', true).removeClass('input-activa');
             $('.btn-eval').removeClass('active').removeClass('btn-primary').addClass('btn-default');
             $(this).prop('disabled', true);
             $('#btnGuardarNotas').prop('disabled', true);
             nEvalActiva = 0;
             toastr.info('Acta cerrada. Las calificaciones no se modifican hasta seleccionar otra evaluación.');
+        });
+
+        $('#btnCerrarActa').prop('disabled', false).click(function () {
+            var $btn = $(this);
+            Swal.fire({
+                title: 'Cerrar Acta',
+                text: 'Se calculará la nota final de cada estudiante y se actualizará su calificación en el curso. Esta acción no se puede deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dd4b39',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, cerrar acta',
+                cancelButtonText: 'Cancelar'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>&nbsp;Procesando...');
+                    $.ajax({
+                        url: sBasePath + 'cerrarActa',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            curso_id: <?= $nCursoId ?>,
+                            _csrfToken: $('#csrf-token').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: '¡Éxito!',
+                                    text: response.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'Aceptar'
+                                }).then(function () {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', response.message, 'error');
+                                $btn.prop('disabled', false).html('<i class="fa fa-file-text-o"></i>&nbsp;Cerrar Acta');
+                            }
+                        },
+                        error: function (jqXHR) {
+                            var sMsg = 'Error al cerrar el acta.';
+                            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                                sMsg = jqXHR.responseJSON.message;
+                            }
+                            Swal.fire('Error', sMsg, 'error');
+                            $btn.prop('disabled', false).html('<i class="fa fa-file-text-o"></i>&nbsp;Cerrar Acta');
+                        }
+                    });
+                }
+            });
         });
     }
 

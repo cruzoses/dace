@@ -122,9 +122,9 @@ class NotasCursosController extends AppController
                     'contain' => ['IndicadorCursos'],
                 ]);
 
-                    $oIndicadorCurso = $indicadorTable->get($oContenidoCurso->indicador_curso_id);
-                    $nEscalaNota = (int)$oIndicadorCurso->escala_nota;
-                    $nPonderacion = (int)$oContenidoCurso->ponderacion;
+                $oIndicadorCurso = $indicadorTable->get($oContenidoCurso->indicador_curso_id);
+                $nEscalaNota = (int)$oIndicadorCurso->escala_nota;
+                $nPonderacion = (int)$oContenidoCurso->ponderacion;
 
                 if ((int)$nTipoCalificacion === 1) {
                     $sCalificacion = strtoupper($sCalificacion);
@@ -215,6 +215,143 @@ class NotasCursosController extends AppController
     }
 
     /**
+     * Cierra el acta: calcula nota final por estudiante y actualiza estudiante_cursos.calificacion.
+     *
+     * @return \Cake\Http\Response
+     */
+    public function cerrarActa()
+    {
+        $this->request->allowMethod(['ajax', 'post']);
+
+        try {
+            $nCursoId = (int)$this->request->getData('curso_id');
+            $sResponsable = $this->Auth->user('alias');
+
+            if (empty($nCursoId)) {
+                return $this->_jsonError('Curso no especificado.');
+            }
+
+            $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
+            $oCurso = $cursosTable->get($nCursoId, ['contain' => ['Asignaturas']]);
+            if (!$oCurso) {
+                return $this->_jsonError('Curso no encontrado.');
+            }
+
+            $nTipoCalificacion = (int)$oCurso->asignatura->calificacion;
+
+            $ecTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
+            $aEstudiantes = $ecTable->find()
+                ->where([
+                    'EstudianteCursos.curso_id' => $nCursoId,
+                    'EstudianteCursos.activo' => 1,
+                ])
+                ->toArray();
+
+            if (empty($aEstudiantes)) {
+                return $this->_jsonError('No hay estudiantes inscritos en este curso.');
+            }
+
+            $aIndicadorCursoIds = TableRegistry::getTableLocator()->get('IndicadorCursos')->find()
+                ->where(['curso_id' => $nCursoId])
+                ->extract('id')
+                ->toArray();
+
+            $aContenidoCursos = $this->NotasCursos->ContenidoCursos->find()
+                ->where(['indicador_curso_id IN' => $aIndicadorCursoIds])
+                ->contain(['IndicadorCursos'])
+                ->toArray();
+
+            if (empty($aContenidoCursos)) {
+                return $this->_jsonError('No hay evaluaciones definidas en el plan de evaluación.');
+            }
+
+            $aNotas = $this->NotasCursos->find()
+                ->where(['contenido_curso_id IN' => array_map(function ($o) { return $o->id; }, $aContenidoCursos)])
+                ->toArray();
+
+            $aNotasMap = [];
+            foreach ($aNotas as $oNota) {
+                $nEstId = (int)$oNota->estudiante_id;
+                $nContId = (int)$oNota->contenido_curso_id;
+                $aNotasMap[$nEstId][$nContId] = $oNota->calificacion;
+            }
+
+            $nActualizados = 0;
+
+            foreach ($aEstudiantes as $oEc) {
+                $nEstId = (int)$oEc->estudiante_id;
+                $sFinal = '';
+
+                if ($nTipoCalificacion === 1) {
+                    $nA = 0;
+                    $nR = 0;
+                    foreach ($aContenidoCursos as $oCont) {
+                        $sVal = $aNotasMap[$nEstId][$oCont->id] ?? '';
+                        $sVal = strtoupper(trim($sVal));
+                        if ($sVal === 'A') $nA++;
+                        elseif ($sVal === 'R') $nR++;
+                    }
+                    $sFinal = ($nA + $nR === 0) ? '' : ($nA >= $nR ? 'A' : 'R');
+                } else {
+                    $nTotalNat = 0;
+                    $nTotalNorm = 0;
+                    $bCompleto = false;
+                    $bMixto = false;
+                    $nPrimeraEscala = 0;
+
+                    foreach ($aContenidoCursos as $oCont) {
+                        $sVal = $aNotasMap[$nEstId][$oCont->id] ?? '';
+                        if (trim($sVal) === '') continue;
+
+                        $nNota = (float)$sVal;
+                        $nEscala = (int)$oCont->indicador_curso->escala_nota;
+                        $nPonderacion = (int)$oCont->ponderacion;
+                        $nMaxNota = ($nEscala == 2 || $nEscala == 3) ? $nPonderacion : 20;
+
+                        $bCompleto = true;
+
+                        if ($nPrimeraEscala === 0) {
+                            $nPrimeraEscala = $nEscala;
+                        } elseif ($nEscala !== $nPrimeraEscala) {
+                            $bMixto = true;
+                        }
+
+                        $nTotalNat += $nNota * ($nPonderacion / 100);
+
+                        $nNorm = $this->_normalizar($nNota, $nEscala, $nMaxNota);
+                        $nTotalNorm += $nNorm * ($nPonderacion / 100);
+                    }
+
+                    if (!$bCompleto) continue;
+
+                    if (!$bMixto && $nPrimeraEscala === 1) {
+                        $sFinal = (string)round($nTotalNat);
+                    } else {
+                        $sFinal = (string)$this->_aEscala20($nTotalNorm);
+                    }
+                }
+
+                if ($sFinal !== '') {
+                    $oEc->calificacion = $sFinal;
+                    $oEc->responsable = $sResponsable;
+                    if ($ecTable->save($oEc)) {
+                        $nActualizados++;
+                    }
+                }
+            }
+
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode([
+                    'success' => true,
+                    'message' => "Acta cerrada. Se actualizó la calificación de {$nActualizados} estudiante(s)."
+                ]));
+
+        } catch (\Exception $e) {
+            return $this->_jsonError('Error del servidor: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Obtiene las notas existentes para un curso vía AJAX.
      *
      * @param int|string $nCursoId
@@ -258,5 +395,49 @@ class NotasCursosController extends AppController
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([]));
         }
+    }
+
+    private function _normalizar($nNota, $nEscala, $nPorcentaje = 100)
+    {
+        switch ((int)$nEscala) {
+            case 1: return ($nNota / 20) * 100;
+            case 2: return ($nNota / $nPorcentaje) * 100;
+            case 3: return $nNota;
+            default: return 0;
+        }
+    }
+
+    private function _aEscala20($nValor)
+    {
+        $nValor = max(1, min(100, round($nValor)));
+        if ($nValor <= 5)  return 1;
+        if ($nValor <= 10) return 2;
+        if ($nValor <= 15) return 3;
+        if ($nValor <= 20) return 4;
+        if ($nValor <= 25) return 5;
+        if ($nValor <= 30) return 6;
+        if ($nValor <= 35) return 7;
+        if ($nValor <= 40) return 8;
+        if ($nValor <= 45) return 9;
+        if ($nValor <= 50) return 10;
+        if ($nValor <= 55) return 11;
+        if ($nValor <= 60) return 12;
+        if ($nValor <= 65) return 13;
+        if ($nValor <= 70) return 14;
+        if ($nValor <= 75) return 15;
+        if ($nValor <= 80) return 16;
+        if ($nValor <= 85) return 17;
+        if ($nValor <= 90) return 18;
+        if ($nValor <= 95) return 19;
+        return 20;
+    }
+
+    private function _jsonError($sMessage)
+    {
+        return $this->response->withType('application/json')
+            ->withStringBody(json_encode([
+                'success' => false,
+                'message' => $sMessage
+            ]));
     }
 }
