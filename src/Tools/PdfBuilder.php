@@ -42,11 +42,16 @@ class PdfBuilder
 
     public function drawSignatureBlock($sName, $sCedula, $xStart, $width, $yOffset = 0)
     {
+        $pageWidth = $this->pdf->ez['pageWidth'];
+        $tableWidth = $this->pdf->ez['width'];
+        $tableX = ($pageWidth - $tableWidth) / 2;
+
+        $lineX = $tableX + $xStart;
         $y = $this->pdf->y - 40 + $yOffset;
 
         $this->pdf->setStrokeColor(0, 0, 0);
         $this->pdf->setLineStyle(0.5);
-        $this->pdf->line($xStart, $y, $xStart + $width, $y);
+        $this->pdf->line($lineX, $y, $lineX + $width, $y);
 
         $this->pdf->ezSetY($y - 15);
         $this->pdf->ezText('<b>' . $sName . '</b>', 9, ['justification' => 'center']);
