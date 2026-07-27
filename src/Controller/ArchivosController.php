@@ -524,6 +524,146 @@ class ArchivosController extends AppController
 
         return $this->response;
     }
+
+    public function exportarActadeNotas($nCursoId = null)
+    {
+        $sProceso = $this->request->getQuery('proceso');
+
+        $aDatos = $this->_obtenerDatosActa($nCursoId, $sProceso);
+
+        if (!$aDatos) {
+            $this->Flash->error('No hay datos disponibles para exportar el acta de notas.');
+            return $this->redirect(['controller' => 'Reportes', 'action' => 'listarActadeNotas', $nCursoId]);
+        }
+
+        $oCurso = $aDatos['curso'];
+        $titulo = strtoupper($oCurso->asignatura->nombre) . ' - ' . $oCurso->periodo->codigo;
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $nCol = 1;
+        $lastCol = 'A';
+
+        $sheet->setCellValueByColumnAndRow($nCol, 1, Configure::read('Universidad.Title1'));
+        $sheet->mergeCells('A1:' . 'E1');
+        $sheet->getStyleByColumnAndRow(1, 1)->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyleByColumnAndRow(1, 1)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $nRow = 2;
+
+        $sheet->setCellValueByColumnAndRow(1, $nRow, 'ACTA DE NOTAS — ' . $titulo . ' — ' . $aDatos['proceso_label']);
+        $sheet->mergeCells('A' . $nRow . ':E' . $nRow);
+        $sheet->getStyleByColumnAndRow(1, $nRow)->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyleByColumnAndRow(1, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $nRow++;
+
+        $sheet->setCellValueByColumnAndRow(1, $nRow, 'Asignatura: ' . strtoupper($oCurso->asignatura->nombre));
+        $sheet->mergeCells('A' . $nRow . ':E' . $nRow);
+        $sheet->getStyleByColumnAndRow(1, $nRow)->getFont()->setBold(true)->setSize(9);
+        $nRow++;
+
+        $sheet->setCellValueByColumnAndRow(1, $nRow, 'Sección: ' . h($oCurso->seccion) . '    Docente: ' . ($oCurso->has('docente') ? h($oCurso->docente->codename) : '—'));
+        $sheet->mergeCells('A' . $nRow . ':E' . $nRow);
+        $sheet->getStyleByColumnAndRow(1, $nRow)->getFont()->setSize(9);
+        $nRow++;
+
+        $nRow++;
+
+        $aHeaders = ['No.', 'Cédula', 'Apellidos', 'Nombres'];
+        foreach ($aDatos['evaluaciones'] as $idx => $oEval) {
+            $aHeaders[] = ($idx + 1) . ' (' . $oEval->ponderacion . '%)';
+        }
+        $aHeaders[] = 'Total';
+        $aHeaders[] = 'Final';
+
+        $nCol = 1;
+        foreach ($aHeaders as $sHeader) {
+            $cell = $sheet->getCellByColumnAndRow($nCol, $nRow);
+            $cell->setValue($sHeader);
+            $cell->getFont()->setBold(true)->setSize(9);
+            $cell->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $cell->getAlignment()->setWrapText(true);
+            $cell->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $cell->getFill()->setFillType('solid');
+            $cell->getFill()->getStartColor()->setRGB('D9E1F2');
+            $nCol++;
+        }
+        $nRow++;
+
+        $nIdx = 1;
+        foreach ($aDatos['grillas'] as $aRow) {
+            $nCol = 1;
+
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($nIdx++);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $nCol++;
+
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['cedula']);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $nCol++;
+
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['apellidos']);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $nCol++;
+
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['nombres']);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $nCol++;
+
+            foreach ($aDatos['evaluaciones'] as $oEval) {
+                $sVal = $aRow['notas'][$oEval->id] ?? '';
+                $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($sVal);
+                $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+                $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $nCol++;
+            }
+
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['total']);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $nCol++;
+
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->setValue($aRow['final']);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getCellByColumnAndRow($nCol, $nRow)->getFont()->setBold(true);
+
+            $nRow++;
+        }
+
+        $nRow += 2;
+        $sheet->setCellValueByColumnAndRow(1, $nRow, 'Generado por: ' . $this->Auth->user('alias') . ' — ' . date('d/m/Y h:i A'));
+        $sheet->getStyleByColumnAndRow(1, $nRow)->getFont()->setSize(8);
+
+        foreach (range(1, count($aHeaders)) as $col) {
+            $sheet->getColumnDimension(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col))->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        $dir = WWW_ROOT . 'files' . DS . 'excel';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $filename = 'acta_notas_' . $nCursoId . '_' . date('Ymd_His') . '.xlsx';
+        $filePath = $dir . DS . $filename;
+        file_put_contents($filePath, $content);
+
+        $this->autoRender = false;
+        $this->viewBuilder()->setClassName(null);
+        $this->viewBuilder()->setLayout(null);
+        $this->response = $this->response->withType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->response = $this->response->withHeader('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $this->response->getBody()->write($content);
+
+        return $this->response;
+    }
     
 }
 

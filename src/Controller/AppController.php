@@ -219,7 +219,7 @@ class AppController extends Controller
         return $token;
     }
 
-    public function escala( $nValor )
+    public function escaladenotas( $nValor )
     {
         switch ($nValor) {
             case $nValor == 1 || $nValor <= 5:
@@ -287,6 +287,243 @@ class AppController extends Controller
                 break;
         }
         return $sNota;
+    }
+
+    /**
+     * Obtiene los datos necesarios para el Acta de Notas de un curso.
+     *
+     * @param int $nCursoId
+     * @param string|null $sProceso 'T1','T2','T3','S1','S2' o null/TODAS para todos
+     * @return array|false false si no hay datos, array con curso, estudiantes, evaluaciones, grillas
+     */
+    protected function _obtenerDatosActa($nCursoId, $sProceso = null)
+    {
+        $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
+        $oCurso = $cursosTable->get($nCursoId, [
+            'contain' => ['Asignaturas', 'Periodos', 'Docentes'],
+        ]);
+
+        if (!$oCurso) {
+            return false;
+        }
+
+        $nFrecuencia = (int)$oCurso->asignatura->frecuencia;
+        $nTipoCalificacion = (int)$oCurso->asignatura->calificacion;
+
+        $aEstudiantes = TableRegistry::getTableLocator()->get('EstudianteCursos')->find()
+            ->where([
+                'EstudianteCursos.curso_id' => $nCursoId,
+                'EstudianteCursos.activo' => 1,
+            ])
+            ->contain(['Estudiantes'])
+            ->order(['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC'])
+            ->toArray();
+
+        if (empty($aEstudiantes)) {
+            return false;
+        }
+
+        $aIndicadorCursoIds = TableRegistry::getTableLocator()->get('IndicadorCursos')->find()
+            ->where(['curso_id' => $nCursoId])
+            ->extract('id')
+            ->toArray();
+
+        if (empty($aIndicadorCursoIds)) {
+            return false;
+        }
+
+        $aIndicadores = TableRegistry::getTableLocator()->get('IndicadorCursos')->find()
+            ->where(['id IN' => $aIndicadorCursoIds])
+            ->toArray();
+
+        $aEvaluaciones = TableRegistry::getTableLocator()->get('CursoNotas')
+            ->ContenidoCursos->find()
+            ->where(['indicador_curso_id IN' => $aIndicadorCursoIds])
+            ->contain(['IndicadorCursos'])
+            ->order(['IndicadorCursos.id' => 'ASC', 'ContenidoCursos.fecha' => 'ASC'])
+            ->toArray();
+
+        if (empty($aEvaluaciones)) {
+            return false;
+        }
+
+        if ($sProceso !== null && $sProceso !== 'TODAS') {
+            $aFiltradas = [];
+            foreach ($aIndicadores as $oInd) {
+                if ($this->_mapearProceso($oInd->id, $nFrecuencia) === $sProceso) {
+                    $aFiltradas[] = $oInd->id;
+                }
+            }
+            $aEvaluaciones = array_values(array_filter($aEvaluaciones, function ($o) use ($aFiltradas) {
+                return in_array($o->indicador_curso_id, $aFiltradas);
+            }));
+        }
+
+        if (empty($aEvaluaciones)) {
+            return false;
+        }
+
+        $aNotas = TableRegistry::getTableLocator()->get('CursoNotas')->find()
+            ->where(['contenido_curso_id IN' => array_map(function ($o) { return $o->id; }, $aEvaluaciones)])
+            ->toArray();
+
+        $aNotasMap = [];
+        foreach ($aNotas as $oNota) {
+            $nEstId = (int)$oNota->estudiante_id;
+            $nContId = (int)$oNota->contenido_curso_id;
+            $aNotasMap[$nEstId][$nContId] = $oNota->calificacion;
+        }
+
+        $aGrillas = [];
+        foreach ($aEstudiantes as $oEc) {
+            $nEstId = (int)$oEc->estudiante_id;
+            $oEst = $oEc->estudiante;
+            $aRow = [
+                'cedula' => $oEst->cedula,
+                'apellidos' => $oEst->apellidos,
+                'nombres' => $oEst->nombres,
+                'notas' => [],
+                'total' => '',
+                'final' => '',
+            ];
+
+            if ($nTipoCalificacion === 1) {
+                $nA = 0;
+                $nR = 0;
+                foreach ($aEvaluaciones as $oCont) {
+                    $sVal = $aNotasMap[$nEstId][$oCont->id] ?? '';
+                    $aRow['notas'][$oCont->id] = $sVal;
+                    $sVal = strtoupper(trim($sVal));
+                    if ($sVal === 'A') $nA++;
+                    elseif ($sVal === 'R') $nR++;
+                }
+                $sResultado = ($nA + $nR === 0) ? '' : ($nA >= $nR ? 'A' : 'R');
+                $aRow['total'] = $sResultado;
+                $aRow['final'] = $sResultado;
+            } else {
+                $nTotalNat = 0;
+                $nTotalNorm = 0;
+                $bCompleto = false;
+                $bMixto = false;
+                $nPrimeraEscala = 0;
+
+                foreach ($aEvaluaciones as $oCont) {
+                    $sVal = $aNotasMap[$nEstId][$oCont->id] ?? '';
+                    $aRow['notas'][$oCont->id] = $sVal;
+
+                    if (trim($sVal) === '') continue;
+
+                    $nNota = (float)$sVal;
+                    $nEscala = (int)$oCont->indicador_curso->escala_nota;
+                    $nPonderacion = (int)$oCont->ponderacion;
+                    $nMaxNota = ($nEscala == 2 || $nEscala == 3) ? $nPonderacion : 20;
+
+                    $bCompleto = true;
+
+                    if ($nPrimeraEscala === 0) {
+                        $nPrimeraEscala = $nEscala;
+                    } elseif ($nEscala !== $nPrimeraEscala) {
+                        $bMixto = true;
+                    }
+
+                    $nTotalNat += $nNota * ($nPonderacion / 100);
+
+                    $nNorm = $this->_normalizarNota($nNota, $nEscala, $nMaxNota);
+                    $nTotalNorm += $nNorm * ($nPonderacion / 100);
+                }
+
+                if ($bCompleto) {
+                    $aRow['total'] = number_format($nTotalNat, 2, '.', '');
+                    if (!$bMixto && $nPrimeraEscala === 1) {
+                        $aRow['final'] = (string)round($nTotalNat);
+                    } else {
+                        $aRow['final'] = (string)$this->_convertirAEscala20($nTotalNorm);
+                    }
+                }
+            }
+
+            $aGrillas[] = $aRow;
+        }
+
+        $sProcesoLabel = 'TODAS LAS EVALUACIONES';
+        if ($sProceso !== null && $sProceso !== 'TODAS') {
+            $sProcesoLabel = $sProceso;
+        }
+
+        return [
+            'curso' => $oCurso,
+            'evaluaciones' => $aEvaluaciones,
+            'grillas' => $aGrillas,
+            'frecuencia' => $nFrecuencia,
+            'tipo_calificacion' => $nTipoCalificacion,
+            'proceso_label' => $sProcesoLabel,
+        ];
+    }
+
+    private function _mapearProceso($nIndicadorCursoId, $nFrecuencia)
+    {
+        $oInd = TableRegistry::getTableLocator()->get('IndicadorCursos')->get($nIndicadorCursoId);
+        $aIndicadores = TableRegistry::getTableLocator()->get('IndicadorCursos')->find()
+            ->where(['curso_id' => $oInd->curso_id])
+            ->order(['IndicadorCursos.id' => 'ASC'])
+            ->extract('id')
+            ->toArray();
+
+        $nIdx = array_search($nIndicadorCursoId, $aIndicadores);
+
+        switch ((int)$nFrecuencia) {
+            case 1:
+                return 'TRIMESTRE';
+            case 2:
+                $aMap = ['S1' => 0, 'S2' => 1];
+                foreach ($aMap as $sKey => $nIdxMap) {
+                    if ($nIdx === $nIdxMap) return $sKey;
+                }
+                return 'S1';
+            case 3:
+                $aMap = ['T1' => 0, 'T2' => 1, 'T3' => 2];
+                foreach ($aMap as $sKey => $nIdxMap) {
+                    if ($nIdx === $nIdxMap) return $sKey;
+                }
+                return 'T1';
+            default:
+                return 'TRIMESTRE';
+        }
+    }
+
+    private function _normalizarNota($nNota, $nEscala, $nPorcentaje = 100)
+    {
+        switch ((int)$nEscala) {
+            case 1: return ($nNota / 20) * 100;
+            case 2: return ($nNota / $nPorcentaje) * 100;
+            case 3: return $nNota;
+            default: return 0;
+        }
+    }
+
+    private function _convertirAEscala20($nValor)
+    {
+        $nValor = max(1, min(100, round($nValor)));
+        if ($nValor <= 5)  return 1;
+        if ($nValor <= 10) return 2;
+        if ($nValor <= 15) return 3;
+        if ($nValor <= 20) return 4;
+        if ($nValor <= 25) return 5;
+        if ($nValor <= 30) return 6;
+        if ($nValor <= 35) return 7;
+        if ($nValor <= 40) return 8;
+        if ($nValor <= 45) return 9;
+        if ($nValor <= 50) return 10;
+        if ($nValor <= 55) return 11;
+        if ($nValor <= 60) return 12;
+        if ($nValor <= 65) return 13;
+        if ($nValor <= 70) return 14;
+        if ($nValor <= 75) return 15;
+        if ($nValor <= 80) return 16;
+        if ($nValor <= 85) return 17;
+        if ($nValor <= 90) return 18;
+        if ($nValor <= 95) return 19;
+        return 20;
     }
 
 }

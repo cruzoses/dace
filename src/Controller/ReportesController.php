@@ -21,12 +21,18 @@ class ReportesController extends AppController
 
 	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([2,3]) )
+        $aValues = $this->request->getParam('action');
+		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] ) 
         {
-            return true;
-        }
-		return parent::isAuthorized($user);
-	}    
+            if ( $this->tienePermiso([1,2]) ) 
+            {
+                return true;
+            } elseif( $this->tienePermiso([4,5]) && in_array($aValues,['listarParticipantes'] ) ) {
+                return true;
+            }
+		}
+        return parent::isAuthorized($user);
+	}
 
     public function fichaEstudiante($id = null)
     {
@@ -1047,6 +1053,120 @@ class ReportesController extends AppController
         }
         $this->set(compact('sFileName', 'noData'));
         $this->render('showreport');
+    }
+
+    public function listarActadeNotas($nCursoId = null)
+    {
+        $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
+        $oCurso = $cursosTable->get($nCursoId, [
+            'contain' => ['Asignaturas', 'Periodos', 'Docentes'],
+        ]);
+
+        $nFrecuencia = (int)$oCurso->asignatura->frecuencia;
+        $sProceso = $this->request->getQuery('proceso');
+
+        $aProcesos = $this->_obtenerOpcionesProceso($nFrecuencia);
+
+        if ($nFrecuencia !== 1 && $sProceso === null) {
+            $this->set(compact('oCurso', 'nFrecuencia', 'aProcesos', 'nCursoId'));
+            $this->render('actadenotas');
+            return;
+        }
+
+        $aDatos = $this->_obtenerDatosActa($nCursoId, $sProceso);
+
+        if (!$aDatos) {
+            $this->Flash->error('No hay datos disponibles para generar el acta de notas.');
+            return $this->redirect(['action' => 'listarActadeNotas', $nCursoId]);
+        }
+
+        $nNumEvals = count($aDatos['evaluaciones']);
+        $sOrientation = ($nNumEvals + 2) <= 4 ? 'portrait' : 'landscape';
+
+        $oCurso = $aDatos['curso'];
+        $titulo = strtoupper($oCurso->asignatura->nombre) . ' - ' . $oCurso->periodo->codigo;
+
+        $aHeaders = ['No.', 'Cedula', 'Apellidos', 'Nombres'];
+        foreach ($aDatos['evaluaciones'] as $idx => $oEval) {
+            $aHeaders[] = ($idx + 1) . ' (' . $oEval->ponderacion . '%)';
+        }
+        $aHeaders[] = 'Total';
+        $aHeaders[] = 'Final';
+
+        $aWidths = [30, 60, 120, 120];
+        $nRemaining = $sOrientation === 'landscape' ? 590 : 400;
+        $nFixedWidth = array_sum($aWidths);
+        $nEvalWidth = max(30, floor(($nRemaining - $nFixedWidth) / $nNumEvals));
+        for ($i = 0; $i < $nNumEvals; $i++) {
+            $aWidths[] = $nEvalWidth;
+        }
+        $aWidths[] = 45;
+        $aWidths[] = 45;
+
+        $aColumns = [];
+        foreach ($aHeaders as $idx => $sHeader) {
+            $aColumns[$sHeader] = [
+                'justification' => $idx < 4 ? 'left' : 'center',
+                'width' => $aWidths[$idx],
+            ];
+        }
+
+        $data = [];
+        $nIdx = 1;
+        foreach ($aDatos['grillas'] as $aRow) {
+            $aData = [
+                'No.' => $nIdx++,
+                'Cedula' => $aRow['cedula'],
+                'Apellidos' => $aRow['apellidos'],
+                'Nombres' => $aRow['nombres'],
+            ];
+            foreach ($aDatos['evaluaciones'] as $oEval) {
+                $aData[$oEval->id] = $aRow['notas'][$oEval->id] ?? '';
+            }
+            $aData['Total'] = $aRow['total'];
+            $aData['Final'] = $aRow['final'];
+            $data[] = $aData;
+        }
+
+        $noData = empty($data);
+        $sFileName = '';
+        if (!$noData) {
+            $pdfBuilder = new PdfBuilder($sOrientation);
+            $pdfBuilder->setColumns($aColumns);
+
+            $sSubtitulo = $titulo . ' — ' . $aDatos['proceso_label'];
+            $pdfOutput = $pdfBuilder->generateSimpleReport($data, 'ACTA DE NOTAS', $sSubtitulo);
+
+            $reportConfig = $this->_getReportConfig();
+            $filename = 'acta_notas_' . $nCursoId . '_' . date('Ymd_His') . '.pdf';
+            file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+            $sFileName = $reportConfig['webroot'] . $filename;
+        }
+        $this->set(compact('sFileName', 'noData'));
+        $this->render('showreport');
+    }
+
+    private function _obtenerOpcionesProceso($nFrecuencia)
+    {
+        switch ((int)$nFrecuencia) {
+            case 1:
+                return ['TRIMESTRE' => 'TRIMESTRE'];
+            case 2:
+                return [
+                    'S1' => 'SEMESTRE 1',
+                    'S2' => 'SEMESTRE 2',
+                    'TODAS' => 'TODAS',
+                ];
+            case 3:
+                return [
+                    'T1' => 'TRIMESTRE 1',
+                    'T2' => 'TRIMESTRE 2',
+                    'T3' => 'TRIMESTRE 3',
+                    'TODAS' => 'TODAS',
+                ];
+            default:
+                return ['TODAS' => 'TODAS'];
+        }
     }
 
     private function _getReportConfig()
