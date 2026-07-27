@@ -1,14 +1,14 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Indicadore $indicadore
+ * @var \App\Model\Entity\CursoNota $cursoNota
  */
 ?>
 <div class="row">
     <div class="col-md-12">    
-        <div class="box box-purple box-solid">
+        <div class="box box-warning box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Registrar Indicadore</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Curso Notas</h3>
 		        <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['action' => 'index'],
@@ -16,7 +16,7 @@
 			        ?>
 		        </div>
             </div>                    
-            <?= $this->Form->create($indicadore, [
+            <?= $this->Form->create($cursoNota, [
                 'role' => 'form', 
                 'align' => [
                     'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],
@@ -26,14 +26,10 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('nombre', ['label' => 'Nombre del Proceso',
-                        'class' => 'isUpper', 'autocomplete' => 'off',
-                        'prepend' => '<i class="fa fa-asterisk"></i>']
-                    );
-                    echo $this->Form->control('frecuencia', ['type' => 'select', 'options' => $aFrecuencia, 'empty' => true,
-                        'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
-                    );
-                    echo $this->Form->hidden('activo', ['type' => 'checkbox', 'value' => 1, 'checked' => true]);
+                    echo $this->Form->control('contenido_curso_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $contenidoCursos]);
+                    echo $this->Form->control('estudiante_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $estudiantes]);
+                    echo $this->Form->control('calificacion', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('responsable', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                 ?>
             </div>            
             <div class="box-footer">

@@ -80,6 +80,13 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     $routes->connect('/sedes', ['controller' => 'Sedes', 'action' => 'index']);
 
+    $routes->connect(
+        '/contenidos/:id',
+        ['controller' => 'IndicadorCursos', 'action' => 'index']
+    )
+    ->setPatterns(['id' => '\d+'])
+    ->setPass(['id']);
+
     $routes->connect('/keepalive', ['controller' => 'Usuarios', 'action' => 'keepalive']);
 
     $routes->connect('/captcha-image/:id', ['controller' => 'Captcha', 'action' => 'image'], ['id' => '.+', 'pass' => ['id']]);

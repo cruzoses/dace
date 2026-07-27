@@ -33,7 +33,7 @@ class IndicadoresTable extends Table
         parent::initialize($config);
 
         $this->setTable('indicadores');
-        $this->setDisplayField('id');
+        $this->setDisplayField('nombre');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -56,6 +56,10 @@ class IndicadoresTable extends Table
             ->maxLength('nombre', 50)
             ->requirePresence('nombre', 'create')
             ->notEmptyString('nombre');
+
+        $validator
+            ->requirePresence('frecuencia', 'create')
+            ->notEmptyString('frecuencia');
 
         $validator
             ->boolean('activo')

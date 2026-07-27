@@ -118,7 +118,7 @@ class IndicadorCursosController extends AppController
         }
         $aEscala = Configure::read('aEscala');
         $aPorcentajes = $this->_getOpcionesPorcentaje($oCurso->asignatura->frecuencia);
-        $cursos = $this->IndicadorCursos->Cursos->find('list', ['limit' => 200]);
+        $cursos = $this->IndicadorCursos->Cursos->find('list')->where(['Cursos.id' => $nCursoId])->first();
         $indicadores = $this->IndicadorCursos->Indicadores->find('list', ['limit' => 200]);
         $this->set(compact('indicadorCurso', 'cursos', 'indicadores','aEscala','oCurso','aPorcentajes'));
     }
@@ -155,7 +155,7 @@ class IndicadorCursosController extends AppController
         }
         $aEscala = Configure::read('aEscala');
         $aPorcentajes = $this->_getOpcionesPorcentaje($oCurso->asignatura->frecuencia);
-        $cursos = $this->IndicadorCursos->Cursos->find('list', ['limit' => 200]);
+        $cursos = $this->IndicadorCursos->Cursos->find('list')->where(['Cursos.id' => $oCurso->id])->first();
         $indicadores = $this->IndicadorCursos->Indicadores->find('list', ['limit' => 200]);
         $this->set(compact('indicadorCurso', 'cursos', 'indicadores','oCurso','aEscala','aPorcentajes'));
     }

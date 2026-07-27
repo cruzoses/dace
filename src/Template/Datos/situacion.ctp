@@ -59,7 +59,6 @@
                 <?php $isa = $item['isa']; ?>
                 <?php $ira = $item['ira']; ?>
                 <?php $notaMinimaPrograma = (float)$programa->programa->nota_minima; ?>
-
                 <div class="box box-warning">
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="fa fa-graduation-cap"></i>&nbsp;<?= h($programa->programa->codename) ?></h3>

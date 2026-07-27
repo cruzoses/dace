@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 19/7/2026
+Modified: 26/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -630,6 +630,7 @@ CREATE TABLE IF NOT EXISTS `indicador_cursos`
   `desde` Date NOT NULL,
   `hasta` Date NOT NULL,
   `escala_nota` Smallint(6) NOT NULL,
+  `porcentaje` Smallint(6) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
   PRIMARY KEY (`id`)
@@ -642,9 +643,9 @@ CREATE INDEX `IX_Indicador_Curso` ON `indicador_cursos` (`curso_id`)
 CREATE INDEX `IX_Curso_Indicador` ON `indicador_cursos` (`indicador_id`)
 ;
 
--- Table contenidos_cursos
+-- Table contenido_cursos
 
-CREATE TABLE IF NOT EXISTS `contenidos_cursos`
+CREATE TABLE IF NOT EXISTS `contenido_cursos`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
   `fecha` Date NOT NULL,
@@ -659,7 +660,7 @@ CREATE TABLE IF NOT EXISTS `contenidos_cursos`
 ) ENGINE = InnoDB
 ;
 
-CREATE INDEX `IX_Cursos_Indicadores` ON `contenidos_cursos` (`indicador_curso_id`)
+CREATE INDEX `IX_Cursos_Indicadores` ON `contenido_cursos` (`indicador_curso_id`)
 ;
 
 -- Table estudiante_programas
@@ -678,6 +679,7 @@ CREATE TABLE IF NOT EXISTS `estudiante_programas`
   `ira` Double,
   `culminado` Tinyint(1) NOT NULL,
   `observacion` Text,
+  `congelado` Tinyint(1) NOT NULL,
   `activo` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -700,9 +702,9 @@ CREATE INDEX `IX_Estudiante_Carrera` ON `estudiante_programas` (`carrera_id`)
 CREATE INDEX `IX_Periodo_Estudiante_Programa` ON `estudiante_programas` (`periodo_id`)
 ;
 
--- Table notas_cursos
+-- Table curso_notas
 
-CREATE TABLE IF NOT EXISTS `notas_cursos`
+CREATE TABLE IF NOT EXISTS `curso_notas`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
   `contenido_curso_id` Int NOT NULL,
@@ -715,10 +717,10 @@ CREATE TABLE IF NOT EXISTS `notas_cursos`
 ) ENGINE = InnoDB
 ;
 
-CREATE INDEX `IX_Calificaciones_Estudiantes` ON `notas_cursos` (`estudiante_id`)
+CREATE INDEX `IX_Calificaciones_Estudiantes` ON `curso_notas` (`estudiante_id`)
 ;
 
-CREATE INDEX `IX_Evaluaciones_Contenidos` ON `notas_cursos` (`contenido_curso_id`)
+CREATE INDEX `IX_Evaluaciones_Contenidos` ON `curso_notas` (`contenido_curso_id`)
 ;
 
 -- Table indicadores
@@ -727,6 +729,7 @@ CREATE TABLE IF NOT EXISTS `indicadores`
 (
   `id` Int NOT NULL AUTO_INCREMENT,
   `nombre` Varchar(50) NOT NULL,
+  `frecuencia` Smallint(6) NOT NULL,
   `activo` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
@@ -767,7 +770,7 @@ CREATE TABLE IF NOT EXISTS `historicos`
   `estudiante_id` Int NOT NULL,
   `periodo_id` Int NOT NULL,
   `asignatura_id` Int NOT NULL,
-  `calificacion` Varchar(10) NOT NULL,
+  `calificacion` Varchar(20) NOT NULL,
   `seccion` Varchar(10) NOT NULL,
   `responsable` Varchar(50) NOT NULL,
   `created` Datetime,
@@ -938,7 +941,7 @@ ALTER TABLE `noticias` ADD CONSTRAINT `pfk_usuario_noticia` FOREIGN KEY (`usuari
 ALTER TABLE `indicador_cursos` ADD CONSTRAINT `pfk_indicador_curso` FOREIGN KEY (`indicador_id`) REFERENCES `indicadores` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `contenidos_cursos` ADD CONSTRAINT `pfk_indicadores_cursos` FOREIGN KEY (`indicador_curso_id`) REFERENCES `indicador_cursos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+ALTER TABLE `contenido_cursos` ADD CONSTRAINT `pfk_indicadores_cursos` FOREIGN KEY (`indicador_curso_id`) REFERENCES `indicador_cursos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
 ALTER TABLE `estudiante_cursos` ADD CONSTRAINT `pfk_curso_estudiante` FOREIGN KEY (`curso_id`) REFERENCES `cursos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
@@ -947,10 +950,10 @@ ALTER TABLE `estudiante_cursos` ADD CONSTRAINT `pfk_curso_estudiante` FOREIGN KE
 ALTER TABLE `estudiante_cursos` ADD CONSTRAINT `pfk_estudiante_curso` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `notas_cursos` ADD CONSTRAINT `pfk_estudiante_calificaciones` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+ALTER TABLE `curso_notas` ADD CONSTRAINT `pfk_estudiante_calificaciones` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ;
 
-ALTER TABLE `notas_cursos` ADD CONSTRAINT `pfk_evaluacion_contenidos` FOREIGN KEY (`contenido_curso_id`) REFERENCES `contenidos_cursos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+ALTER TABLE `curso_notas` ADD CONSTRAINT `pfk_evaluacion_contenidos` FOREIGN KEY (`contenido_curso_id`) REFERENCES `contenido_cursos` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
 ALTER TABLE `historicos` ADD CONSTRAINT `pfk_estudiante_historico` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION

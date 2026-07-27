@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-sace box-solid">
+        <div class="box box-info box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Indicadores</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Curso Notas</h3>
                 <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
@@ -22,32 +22,36 @@
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
                         <tr>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('id') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('nombre') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('activo') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col" class="text-center"><?= $this->Paginator->sort('modified') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('contenido_curso_id') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('estudiante_id') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('calificacion') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('responsable') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('created') ?></th>
+                            <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                             <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($indicadores as $indicadore): ?>
+                        <?php foreach ($cursoNotas as $cursoNota): ?>
                             <tr>
-                                <td><?= $this->Number->format($indicadore->id) ?></td>
-                                <td><?= h($indicadore->nombre) ?></td>
-                                <td class="text-center"><?= h($indicadore->activo) ? 'SI' : 'NO' ?></td>
-                                <td class="text-center"><?= h($indicadore->created) ?></td>
-                                <td class="text-center"><?= h($indicadore->modified) ?></td>
+                                <td><?= $this->Number->format($cursoNota->id) ?></td>
+                            <td><?= $cursoNota->has('contenido_curso') ? $this->Html->link($cursoNota->contenido_curso->id, ['controller' => 'ContenidoCursos', 'action' => 'view', $cursoNota->contenido_curso->id]) : '' ?></td>
+                                <td><?= $cursoNota->has('estudiante') ? $this->Html->link($cursoNota->estudiante->full_name, ['controller' => 'Estudiantes', 'action' => 'view', $cursoNota->estudiante->id]) : '' ?></td>
+                                            <td><?= h($cursoNota->calificacion) ?></td>
+                                        <td><?= h($cursoNota->responsable) ?></td>
+                                        <td><?= h($cursoNota->created) ?></td>
+                                        <td><?= h($cursoNota->modified) ?></td>
                                 <td class="actions text-center">
-                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $indicadore->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                    <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $indicadore->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $indicadore->id], ['confirm' => __('Are you sure you want to delete # {0}?', $indicadore->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $cursoNota->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
+                                    <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $cursoNota->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $cursoNota->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cursoNota->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                     <tfoot class="no-padding">
-                        <tr>    
+                        <tr>
                             <td colspan="6" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">

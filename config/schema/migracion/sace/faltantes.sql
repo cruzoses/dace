@@ -1,3 +1,11 @@
+SET max_recursive_iterations = 100000;
+-- Opcion 1
+SELECT a.id + 1 AS id_faltante
+FROM estudiantes a
+LEFT JOIN estudiantes b ON b.id = a.id + 1
+WHERE b.id IS NULL AND a.id < (SELECT MAX(id) FROM estudiantes)
+ORDER BY a.id;
+-- Opcion 2
 WITH RECURSIVE secuencia AS (
     -- 1. Buscamos el punto de inicio y el punto final
     SELECT MIN(id) AS id_esperado, MAX(id) AS id_maximo FROM estudiantes

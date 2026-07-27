@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 
 /**
@@ -76,7 +77,8 @@ class IndicadoresController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Indicadore'));
         }
-        $this->set(compact('indicadore'));
+        $aFrecuencia = Configure::read('aFrecuencia');
+        $this->set(compact('indicadore','aFrecuencia'));
     }
 
 

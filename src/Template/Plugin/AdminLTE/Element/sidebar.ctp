@@ -193,6 +193,11 @@
 							</a>
 						</li>
 						<li>
+							<a href="<?= $this->Url->build(['controller' => 'indicadores','action' => 'index'])?>">
+								<i class="far fa-dot-circle"></i>&nbsp;Indicadores
+							</a>
+						</li>
+						<li>
 							<a href="<?= $this->Url->build(['controller' => 'subsistemas','action' => 'index'])?>">
 								<i class="far fa-dot-circle"></i>&nbsp;Sistemas de Estudio
 							</a>

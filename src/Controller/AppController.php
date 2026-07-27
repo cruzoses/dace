@@ -16,6 +16,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
+use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 

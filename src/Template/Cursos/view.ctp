@@ -13,40 +13,41 @@
                 </div>
             </div>
 
-<div class="modal fade" id="modal-registrar-participantes" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
+            <div class="modal fade" id="modal-registrar-participantes" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
 
-<script type="text/javascript">
-(function(){
-    var BASE_URL = <?= json_encode($this->Url->build('/')) ?>;
-    var cursoId = <?= json_encode($curso->id) ?>;
+            <script type="text/javascript">
+            (function(){
+                var BASE_URL = <?= json_encode($this->Url->build('/')) ?>;
+                var cursoId = <?= json_encode($curso->id) ?>;
 
-    $(document).off('click.rpabrir').on('click.rpabrir', '#btn-registrar-participantes', function(e) {
-        e.preventDefault();
-        var $modal = $('#modal-registrar-participantes');
-        $modal.find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i></div>');
-        $modal.modal('show');
+                $(document).off('click.rpabrir').on('click.rpabrir', '#btn-registrar-participantes', function(e) {
+                    e.preventDefault();
+                    var $modal = $('#modal-registrar-participantes');
+                    $modal.find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i></div>');
+                    $modal.modal('show');
 
-        $.ajax({
-            url: BASE_URL + 'estudiante-cursos/registrar-participantes/' + cursoId,
-            type: 'GET',
-            success: function(response) {
-                $modal.find('.modal-body').html(response);
-            },
-            error: function() {
-                $modal.find('.modal-body').html('<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> Error al cargar el formulario.</div>');
-            }
-        });
-    });
-})();
-</script>
+                    $.ajax({
+                        url: BASE_URL + 'estudiante-cursos/registrar-participantes/' + cursoId,
+                        type: 'GET',
+                        success: function(response) {
+                            $modal.find('.modal-body').html(response);
+                        },
+                        error: function() {
+                            $modal.find('.modal-body').html('<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> Error al cargar el formulario.</div>');
+                        }
+                    });
+                });
+            })();
+            </script>
+            
         	<div class="box-body">
           		<dl class="dl-horizontal">
                     <dt scope="row"><?= __('Sede') ?></dt>

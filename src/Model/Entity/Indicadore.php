@@ -8,6 +8,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $nombre
+ * @property int $frecuencia
  * @property bool $activo
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -25,6 +26,7 @@ class Indicadore extends Entity
      */
     protected $_accessible = [
         'nombre' => true,
+        'frecuencia' => true,
         'activo' => true,
         'created' => true,
         'modified' => true,

@@ -55,15 +55,18 @@ class AppTable extends Table
     
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
-        $fechaCampos = ['fecha_nacimiento', 'inicio', 'cierre', 'fecha_notas', 'fecha_titulo'];
+        $fechaCampos = ['fecha_nacimiento', 'inicio', 'cierre', 'fecha_notas', 'fecha_titulo', 'desde', 'hasta', 'fecha'];
         foreach ($fechaCampos as $campo) {
-            if (isset($data[$campo]) && !empty($data[$campo])) {
+            if (isset($data[$campo]) && !empty($data[$campo])) 
+            {
                 $fechaOriginal = str_replace('/', '-', $data[$campo]);
                 $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
-                if ($fechaFormateada === false) {
+                if ($fechaFormateada === false) 
+                {
                     $fechaFormateada = Time::createFromFormat('Y-m-d', $fechaOriginal);
                 }
-                if ($fechaFormateada !== false) {
+                if ($fechaFormateada !== false) 
+                {
                     $data[$campo] = $fechaFormateada->format('Y-m-d');
                 }
             }

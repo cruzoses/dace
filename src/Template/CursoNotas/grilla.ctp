@@ -44,8 +44,24 @@
     <div class="col-xs-12">
         <div class="box box-sace box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-pencil-alt"></i>&nbsp;Grilla de Calificaciones</h3>
+                <h3 class="box-title"><i class="fa fa-pencil-alt"></i>&nbsp;Acta de Notas</h3>
                 <div class="box-tools pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-print"></i>&nbsp;Imprimir <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="<?= $this->Url->build([
+                                'controller' => 'Reportes', 'action' => 'listarActadeNotas', $oCurso->id]) ?>">
+                                <i class="fas fa-file-pdf"></i>&nbsp;Acta de Notas</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="<?= $this->Url->build([
+                                'controller' => 'Archivos', 'action' => 'exportarActadeNotas', $oCurso->id]) ?>">
+                                <i class="fas fa-file-excel"></i>&nbsp;Exportar a Excel</a>
+                            </li>
+                        </ul>
+                    </div>
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
                         <i class="fa fa-minus"></i>
                     </button>
@@ -83,7 +99,7 @@
                 </div>
                 <?php endif; ?>
 
-                <div class="table-responsive">
+                <div class="table no-padding">
                     <table class="table table-bordered table-condensed table-hover" id="grillaNotas">
                         <thead>
                             <tr>
@@ -169,16 +185,17 @@
                 </div>
             </div>
 
-            <?php if ($bCalifica) : ?>
+            <?php if ($bCalifica && $oCurso->cerrado == 0) : ?>
             <div class="box-footer">
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-success btn-lg" id="btnGuardarNotas" disabled>
+                        <button type="button" class="btn btn-success" id="btnGuardarNotas" disabled>
                             <i class="fa fa-save"></i>&nbsp;Guardar Notas
                         </button>
                         <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Volver',
                             ['controller' => 'profesores', 'action' => 'listadeclase', $oCurso->id],
-                            ['class' => 'btn bg-maroon btn-lg', 'escape' => false]) ?>
+                            ['class' => 'btn bg-maroon btn-lg', 'escape' => false]) 
+                        ?>
                     </div>
                 </div>
             </div>
@@ -188,7 +205,8 @@
                     <div class="col-xs-12 text-center">
                         <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Volver',
                             ['controller' => 'profesores', 'action' => 'listadeclase', $oCurso->id],
-                            ['class' => 'btn bg-maroon btn-lg', 'escape' => false]) ?>
+                            ['class' => 'btn bg-maroon', 'escape' => false]) 
+                        ?>
                     </div>
                 </div>
             </div>

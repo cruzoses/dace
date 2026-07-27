@@ -45,7 +45,7 @@
         'aFrecuencia' => [
             '1' => 'TRIMESTRAL',
             '2' => 'SEMESTRAL',
-            '3' => 'ANUALIZADA'
+            '3' => 'ANUALIZADA',                        
         ],
         'aTipoNota' => [
             0 => 'CUANTITATIVA',
@@ -78,7 +78,7 @@
             'TRIMESTRE 3' => 'TRIMESTRE 3',
             'P.E.R'       => 'P.E.R',
             'C.I.U'       => 'C.I.U',
-            'P.I.U'       => 'P-I-U',
+            'P.I.U'       => 'P.I.U',
             'TRIMESTRE'   => 'TRIMESTRE',
             'SEMESTRE 1T' => 'SEMESTRE 1T',
             'SEMESTRE 2T' => 'SEMESTRE 2T',
