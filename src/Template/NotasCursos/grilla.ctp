@@ -69,10 +69,13 @@
                                     </button>
                                     <?php $nEvalBtn++; ?>
                                 <?php endforeach; ?>
+                                <button type="button" class="btn bg-purple btn-sm" id="btnCerrarNota" disabled>
+                                    <i class="fa fa-lock"></i>&nbsp;Cerrar Carga
+                                </button>
                             </div>
                             <div>
-                                <button type="button" class="btn bg-purple btn-sm" id="btnCerrarActa" disabled>
-                                    <i class="fa fa-lock"></i>&nbsp;Cerrar Acta
+                                <button type="button" class="btn bg-maroon btn-sm" id="btnCerrarActa" disabled>
+                                    <i class="fa fa-file-text-o"></i>&nbsp;Cerrar Acta
                                 </button>
                             </div>
                         </div>
@@ -374,11 +377,11 @@ $(document).ready(function () {
             $btn.addClass('active').removeClass('btn-default').addClass('btn-primary');
 
             nEvalActiva = nEval;
-            $('#btnCerrarActa').prop('disabled', false);
+            $('#btnCerrarNota').prop('disabled', false);
             $('#btnGuardarNotas').prop('disabled', false);
         });
 
-        $('#btnCerrarActa').click(function () {
+        $('#btnCerrarNota').click(function () {
             $('.nota-input').prop('disabled', true).removeClass('input-activa');
             $('.btn-eval').removeClass('active').removeClass('btn-primary').addClass('btn-default');
             $(this).prop('disabled', true);
