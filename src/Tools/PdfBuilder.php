@@ -43,10 +43,9 @@ class PdfBuilder
     public function drawSignatureBlock($sName, $sCedula, $xStart, $width, $yOffset = 0)
     {
         $pageWidth = $this->pdf->ez['pageWidth'];
-        $tableWidth = $this->pdf->ez['width'];
-        $tableX = ($pageWidth - $tableWidth) / 2;
+        $centerX = $pageWidth / 2;
+        $lineX = $centerX - ($width / 2);
 
-        $lineX = $tableX + $xStart;
         $y = $this->pdf->y - 40 + $yOffset;
 
         $this->pdf->setStrokeColor(0, 0, 0);
