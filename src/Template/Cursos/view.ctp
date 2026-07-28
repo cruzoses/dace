@@ -162,14 +162,24 @@
                     </table>
                     <div class="box-footer clearfix">
                         <div class="text-center">
-                            <?= $this->Paginator->controls([
-                                'prev' => '<i class="fa fa-chevron-left"></i>',
-                                'next' => '<i class="fa fa-chevron-right"></i>',
-                            ], [
+                            <?= $this->Paginator->prev(
+                                '<i class="fa fa-chevron-left"></i>',
+                                ['escape' => false, 'class' => 'btn btn-default btn-sm', 'disabledTag' => 'span'],
+                                '<span class="btn btn-default btn-sm disabled"><i class="fa fa-chevron-left"></i></span>'
+                            ) ?>
+                            <?= $this->Paginator->numbers([
                                 'class' => 'pagination pagination-sm no-margin',
-                                'before' => '<div class="pagination-wrapper">',
-                                'after' => '</div>',
+                                'tag' => 'li',
+                                'activeClass' => 'active',
+                                'disabledTag' => 'span',
+                                'before' => '<ul class="pagination pagination-sm no-margin">',
+                                'after' => '</ul>',
                             ]) ?>
+                            <?= $this->Paginator->next(
+                                '<i class="fa fa-chevron-right"></i>',
+                                ['escape' => false, 'class' => 'btn btn-default btn-sm', 'disabledTag' => 'span'],
+                                '<span class="btn btn-default btn-sm disabled"><i class="fa fa-chevron-right"></i></span>'
+                            ) ?>
                         </div>
                     </div>
                 <?php else: ?>
