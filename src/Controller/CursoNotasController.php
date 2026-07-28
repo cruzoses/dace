@@ -142,13 +142,41 @@ class CursoNotasController extends AppController
             $notasTable = $this->CursoNotas;
             $contenidoTable = $notasTable->ContenidoCursos;
             $indicadorTable = TableRegistry::getTableLocator()->get('IndicadorCursos');
+            $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
 
             foreach ($aNotas as $aNota) {
                 $nContenidoCursoId = (int)($aNota['contenido_curso_id'] ?? 0);
                 $nEstudianteId = (int)($aNota['estudiante_id'] ?? 0);
                 $sCalificacion = trim($aNota['calificacion'] ?? '');
 
-                if (empty($sCalificacion) || $nContenidoCursoId === 0 || $nEstudianteId === 0) {
+                if ($nContenidoCursoId === 0 || $nEstudianteId === 0) {
+                    continue;
+                }
+
+                $oEstudiante = $estudiantesTable->get($nEstudianteId);
+                $sEstudianteNombre = $oEstudiante->apellidos . ', ' . $oEstudiante->nombres;
+                $sEstudianteCedula = $oEstudiante->cedula;
+
+                $oExistente = $notasTable->find()
+                    ->where([
+                        'contenido_curso_id' => $nContenidoCursoId,
+                        'estudiante_id' => $nEstudianteId,
+                    ])
+                    ->first();
+
+                if (empty($sCalificacion)) {
+                    if ($oExistente) {
+                        $sCalifAnterior = $oExistente->calificacion;
+                        if ($notasTable->delete($oExistente)) {
+                            $nGuardadas++;
+                            $this->Auditorias->registrar(
+                                'ELIMINA',
+                                "Elimina calificacion [{$sCalifAnterior}] del estudiante {$sEstudianteNombre} (C.I. {$sEstudianteCedula}) en la Evaluacion #{$nContenidoCursoId}"
+                            );
+                        } else {
+                            $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: Error al eliminar.";
+                        }
+                    }
                     continue;
                 }
 
@@ -192,34 +220,55 @@ class CursoNotasController extends AppController
                     }
                 }
 
-                $oNota = $notasTable->findOrCreate(
-                    [
-                        'contenido_curso_id' => $nContenidoCursoId,
-                        'estudiante_id' => $nEstudianteId,
-                    ],
-                    function ($entity) use ($sCalificacion, $sResponsable) {
-                        $entity->calificacion = $sCalificacion;
-                        $entity->responsable = $sResponsable;
-                    }
-                );
-
-                if ($oNota->isNew() || $oNota->isDirty('calificacion')) {
-                    $oNota->calificacion = $sCalificacion;
-                    $oNota->responsable = $sResponsable;
-                }
-
-                if ($notasTable->save($oNota)) {
-                    $nGuardadas++;
-                } else {
-                    $aErroresVal = $oNota->getErrors();
-                    if (!empty($aErroresVal)) {
-                        foreach ($aErroresVal as $aCampo => $aMensajes) {
-                            foreach ($aMensajes as $sMsg) {
-                                $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: {$sMsg}";
-                            }
+                if ($oExistente) {
+                    $sCalifAnterior = $oExistente->calificacion;
+                    $oExistente->calificacion = $sCalificacion;
+                    $oExistente->responsable = $sResponsable;
+                    if ($notasTable->save($oExistente)) {
+                        $nGuardadas++;
+                        if ($sCalifAnterior !== $sCalificacion) {
+                            $this->Auditorias->registrar(
+                                'MODIFICA',
+                                "Modifica calificacion [{$sCalifAnterior}] -> [{$sCalificacion}] del estudiante {$sEstudianteNombre} (C.I. {$sEstudianteCedula}) en la Evaluacion #{$nContenidoCursoId}"
+                            );
                         }
                     } else {
-                        $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: Error al guardar.";
+                        $aErroresVal = $oExistente->getErrors();
+                        if (!empty($aErroresVal)) {
+                            foreach ($aErroresVal as $aCampo => $aMensajes) {
+                                foreach ($aMensajes as $sMsg) {
+                                    $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: {$sMsg}";
+                                }
+                            }
+                        } else {
+                            $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: Error al guardar.";
+                        }
+                    }
+                } else {
+                    $oNota = $notasTable->newEntity([
+                        'contenido_curso_id' => $nContenidoCursoId,
+                        'estudiante_id' => $nEstudianteId,
+                        'calificacion' => $sCalificacion,
+                        'responsable' => $sResponsable,
+                    ]);
+
+                    if ($notasTable->save($oNota)) {
+                        $nGuardadas++;
+                        $this->Auditorias->registrar(
+                            'REGISTRA',
+                            "Registra calificacion [{$sCalificacion}] al estudiante {$sEstudianteNombre} (C.I. {$sEstudianteCedula}) en la Evaluacion #{$nContenidoCursoId}"
+                        );
+                    } else {
+                        $aErroresVal = $oNota->getErrors();
+                        if (!empty($aErroresVal)) {
+                            foreach ($aErroresVal as $aCampo => $aMensajes) {
+                                foreach ($aMensajes as $sMsg) {
+                                    $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: {$sMsg}";
+                                }
+                            }
+                        } else {
+                            $aErrores[] = "Estudiante #{$nEstudianteId}, Evaluación #{$nContenidoCursoId}: Error al guardar.";
+                        }
                     }
                 }
             }
