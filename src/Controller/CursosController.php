@@ -66,7 +66,7 @@ class CursosController extends AppController
     {
         $curso = $this->Cursos->get($id, [
             'contain' => ['Sedes', 'Periodos', 'Carreras', 'Trayectos', 'Asignaturas', 'Docentes', 'Aulas',
-                'EstudianteCursos.Estudiantes', 'IndicadorCursos'],
+                'IndicadorCursos'],
         ]);
 
         $nombresProgramas = [];
@@ -83,8 +83,19 @@ class CursosController extends AppController
             }
         }
         $curso->programas = implode(', ', $nombresProgramas);
+
+        $estudianteCursosTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
+        $query = $estudianteCursosTable->find()
+            ->contain(['Estudiantes'])
+            ->where(['EstudianteCursos.curso_id' => $id])
+            ->order(['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC']);
+
+        $estudianteCursos = $this->paginate($query);
+
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Cursos ' . json_encode($curso->toArray()));
         $this->set('curso', $curso);
+        $this->set('estudianteCursos', $estudianteCursos);
+        $this->set('nTotalEstudiantes', $estudianteCursosTable->find()->where(['curso_id' => $id])->count());
     }
 
     /**

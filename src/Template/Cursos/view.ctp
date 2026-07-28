@@ -100,7 +100,7 @@
     <div class="col-md-12">
         <div class="box box-default box-solid">
             <div class="box-header with-border">                
-                <h3 class="box-title"><i class="fa fa-users"></i>&nbsp;Estudiantes Inscritos (<?= count($curso->estudiante_cursos) ?>)</h3>
+                <h3 class="box-title"><i class="fa fa-users"></i>&nbsp;Estudiantes Inscritos (<?= $nTotalEstudiantes ?>)</h3>
                 <div class="box-tools pull-right">
                     <div class="btn-group">
                         <?= $this->Html->link('<i class="fa fa-print"></i>&nbsp;Imprimir',
@@ -115,7 +115,7 @@
                 </div>
             </div>
             <div class="box-body table-responsive no-padding">
-                <?php if (!empty($curso->estudiante_cursos)): ?>
+                <?php if (!empty($estudianteCursos)): ?>
                     <table class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
@@ -125,27 +125,30 @@
                                 <th class="text-center">Calificación</th>
                                 <th class="text-center">Recuperación</th>
                                 <th class="text-center">Definitiva</th>
-                                <th>Responsable</th>
-                                <th>Observación</th>
+                                <th>Análista</th>
+                                <th>Calificador</th>
                                 <th class="text-center">Activo</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($curso->estudiante_cursos as $i => $ec): ?>
+                            <?php
+                                $nPagina = (int)$this->request->getQuery('page', 1);
+                                $nLimite = 20;
+                                $nOffset = ($nPagina - 1) * $nLimite;
+                            ?>
+                            <?php foreach ($estudianteCursos as $i => $ec): ?>
                                 <tr>
-                                    <td class="text-center"><?= ($i + 1) ?></td>
+                                    <td class="text-center"><?= ($nOffset + $i + 1) ?></td>
                                     <td><?= $ec->has('estudiante') ? $this->Number->format($ec->estudiante->cedula) : h($ec->estudiante_id) ?></td>
                                     <td>
-                                        <?= $ec->has('estudiante')
-                                            ? $this->Html->link($ec->estudiante->full_name, ['controller' => 'Datos', 'action' => 'estudiante', $ec->estudiante->id])
-                                            : h($ec->estudiante_id) ?>
+                                        <?= $ec->has('estudiante') ? $ec->estudiante->full_name : h($ec->estudiante_id) ?>
                                     </td>
                                     <td class="text-center"><?= h($ec->calificacion ?? '') ?></td>
                                     <td class="text-center"><?= h($ec->recuperacion ?? '') ?></td>
                                     <td class="text-center"><?= h($ec->definitiva ?? '') ?></td>
+                                    <td><?= h($ec->analista) ?></td>
                                     <td><?= h($ec->responsable) ?></td>
-                                    <td><?= h($ec->observacion ?? '') ?></td>
                                     <td class="text-center"><?= $ec->activo ? 'Sí' : 'No' ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>',
@@ -157,13 +160,28 @@
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    <div class="box-footer clearfix">
+                        <div class="text-center">
+                            <?= $this->Paginator->controls([
+                                'prev' => '<i class="fa fa-chevron-left"></i>',
+                                'next' => '<i class="fa fa-chevron-right"></i>',
+                            ], [
+                                'class' => 'pagination pagination-sm no-margin',
+                                'before' => '<div class="pagination-wrapper">',
+                                'after' => '</div>',
+                            ]) ?>
+                        </div>
+                    </div>
                 <?php else: ?>
                     <p class="text-center text-muted">No hay estudiantes inscritos en este curso.</p>
                 <?php endif; ?>
             </div>
             <div class="box-footer">
-                <?= $this->Html->link('<i class="fa fa-users"></i>&nbsp;Registrar Participantes',
-                    ['#'], ['id' => 'btn-registrar-participantes', 'class' => 'btn btn-primary btn-flat pull-right', 'escape' => false])
+                <?php
+                    if ($curso->cerrado == 0){
+                        echo $this->Html->link('<i class="fa fa-users"></i>&nbsp;Registrar Participantes',
+                        ['#'], ['id' => 'btn-registrar-participantes', 'class' => 'btn btn-primary btn-flat pull-right', 'escape' => false]);
+                    }
                 ?>
                 <span class="text-muted" style="margin-left:15px;"><i class="fa fa-info-circle"></i> Para inscribir estudiantes individualmente, utilice la vista del estudiante &rarr; Inscripciones.</span>
             </div>            
@@ -235,7 +253,7 @@
     var BASE_URL = <?= json_encode($this->Url->build('/')) ?>;
     var cursoId = <?= json_encode($curso->id) ?>;
     var rpCursoCupos = 0;
-    var rpCursoInscritos = <?= json_encode(count($curso->estudiante_cursos)) ?>;
+    var rpCursoInscritos = <?= json_encode($nTotalEstudiantes) ?>;
     var rpFaltantes = 0;
 
     $(document).off('click.rpabrir').on('click.rpabrir', '#btn-registrar-participantes', function(e) {
