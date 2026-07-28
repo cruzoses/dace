@@ -601,6 +601,7 @@ $(document).ready(function () {
 
         var $btn = $(this);
         $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>&nbsp;Guardando...');
+        $('#btnCerrarActa').prop('disabled', true);
 
         $.ajax({
             url: sBasePath + 'guardar',
@@ -635,6 +636,7 @@ $(document).ready(function () {
             },
             complete: function () {
                 $btn.prop('disabled', false).html('<i class="fa fa-save"></i>&nbsp;Guardar Notas');
+                $('#btnCerrarActa').prop('disabled', false);
             }
         });
     });
