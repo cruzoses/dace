@@ -194,7 +194,7 @@
                         </button>
                         <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;Volver',
                             ['controller' => 'profesores', 'action' => 'listadeclase', $oCurso->id],
-                            ['class' => 'btn bg-maroon btn-lg', 'escape' => false]) 
+                            ['class' => 'btn bg-maroon', 'escape' => false]) 
                         ?>
                     </div>
                 </div>
@@ -223,6 +223,7 @@ $(document).ready(function () {
     var nTipoCalificacion = <?= $nTipoCalificacion ?>;
     var bCalifica = <?= $bCalifica ? 'true' : 'false' ?>;
     var nEvalActiva = 0;
+    var nNotaMinima = <?= $nNotaMinima ?>;
 
     var aEvalMeta = [
         <?php $nMetaIdx = 0; ?>
@@ -361,6 +362,40 @@ $(document).ready(function () {
         });
     }
 
+    function fnColorearTotales() {
+        $('#grillaNotas tbody tr').each(function () {
+            var $fila = $(this);
+            var nEstudiante = $fila.find('.nota-input').first().data('estudiante');
+            if (!nEstudiante) return;
+
+            var $total = $fila.find('#total-' + nEstudiante);
+            var $final = $fila.find('#final-' + nEstudiante);
+
+            $total.removeClass('nota-aprobada nota-reprobada');
+            $final.removeClass('nota-aprobada nota-reprobada');
+
+            if (nTipoCalificacion == 1) {
+                var sTotal = ($total.text() || '').trim().toUpperCase();
+                var sFinal = ($final.text() || '').trim().toUpperCase();
+                if (sTotal === 'A') $total.addClass('nota-aprobada');
+                else if (sTotal === 'R') $total.addClass('nota-reprobada');
+                if (sFinal === 'A') $final.addClass('nota-aprobada');
+                else if (sFinal === 'R') $final.addClass('nota-reprobada');
+            } else {
+                var nTotalVal = parseFloat($total.text());
+                if (!isNaN(nTotalVal) && nTotalVal > 0) {
+                    if (nTotalVal >= nNotaMinima) $total.addClass('nota-aprobada');
+                    else $total.addClass('nota-reprobada');
+                }
+                var nFinalVal = parseFloat($final.text());
+                if (!isNaN(nFinalVal) && nFinalVal > 0) {
+                    if (nFinalVal >= nNotaMinima) $final.addClass('nota-aprobada');
+                    else $final.addClass('nota-reprobada');
+                }
+            }
+        });
+    }
+
     $.ajax({
         url: sBasePath + 'getNotas/<?= $nCursoId ?>',
         type: 'GET',
@@ -376,6 +411,7 @@ $(document).ready(function () {
             });
             fnCalcularTotales();
             fnAplicarColores();
+            fnColorearTotales();
         }
     });
 
@@ -488,6 +524,7 @@ $(document).ready(function () {
         }
         fnCalcularTotales();
         fnAplicarColores();
+        fnColorearTotales();
     });
 
     $(document).on('keydown', 'input.nota-input:not(:disabled)', function (e) {
