@@ -68,10 +68,15 @@ class EstudianteCursosTable extends AppTable
             ->allowEmptyString('definitiva');
 
         $validator
+            ->scalar('analista')
+            ->maxLength('analista', 50)
+            ->requirePresence('analista', 'create')
+            ->notEmptyString('analista');
+
+        $validator
             ->scalar('responsable')
             ->maxLength('responsable', 50)
-            ->requirePresence('responsable', 'create')
-            ->notEmptyString('responsable');
+            ->allowEmptyString('responsable');
 
         $validator
             ->scalar('observacion')

@@ -260,4 +260,8 @@ class DatosController extends AppController
 
         return $this->redirect(['action' => 'estudiante', $id]);
     }
+
+    public function facilitadores(){}
+
+    public function facilitador(){}
 }

@@ -15,8 +15,10 @@ class EstudianteCursosController extends AppController
 
     public function isAuthorized($user = null)
     {
-        if (isset($user['activo']) && isset($user['rols']) && $user['activo'] && $this->tienePermiso([1, 2, 3])) {
-            return true;
+        if (isset($user['activo']) && isset($user['rols']) && $user['activo'] ) {
+            if ( $this->tienePermiso([2,3])) {
+                return true;
+            }            
         }
         return parent::isAuthorized($user);
     }
@@ -79,7 +81,7 @@ class EstudianteCursosController extends AppController
         $data = $this->request->getData();
         $estudianteId = $data['estudiante_id'];
         $cursoIds = $data['curso_id'] ?? [];
-        $responsable = $this->_getUsuarioActual();
+        $analista = $this->_getUsuarioActual();
 
         if (empty($cursoIds)) {
             return $this->response->withType('application/json')
@@ -123,7 +125,7 @@ class EstudianteCursosController extends AppController
             $entity = $this->EstudianteCursos->newEntity();
             $entity->curso_id = $cursoId;
             $entity->estudiante_id = $estudianteId;
-            $entity->responsable = $responsable;
+            $entity->analista = $analista;
             $entity->activo = 1;
 
             if ($this->EstudianteCursos->save($entity)) {
@@ -305,7 +307,7 @@ class EstudianteCursosController extends AppController
         $html .= '<th class="text-center" style="width:30px;"><input type="checkbox" id="check-todos" title="Seleccionar todos"></th>';
         $html .= '<th class="text-center">Curso</th><th>Carrera</th><th>Trayecto</th>';
         $html .= '<th class="text-center">Sección</th><th>Asignatura</th>';
-        $html .= '<th class="text-center">Fecha</th><th>Responsable</th>';
+        $html .= '<th class="text-center">Fecha</th><th>Analista</th>';
         $html .= '</tr></thead><tbody>';
 
         if ($count > 0) {
@@ -321,7 +323,7 @@ class EstudianteCursosController extends AppController
                 $html .= '</td>';
                 $html .= '<td>' . ($ins->curso->has('asignatura') ? h($ins->curso->asignatura->codename) : '') . '</td>';
                 $html .= '<td class="text-center">' . $ins->created->format('d/m/Y') . '</td>';
-                $html .= '<td>' . h($ins->responsable) . '</td>';
+                $html .= '<td>' . h($ins->analista) . '</td>';
                 $html .= '</tr>';
             }
         } else {
@@ -623,7 +625,7 @@ class EstudianteCursosController extends AppController
 
         $cursoId = $this->request->getData('curso_id');
         $estudianteIds = $this->request->getData('estudiante_ids') ?? [];
-        $responsable = $this->_getUsuarioActual();
+        $analista = $this->_getUsuarioActual();
 
         if (empty($estudianteIds)) {
             return $this->response->withType('application/json')
@@ -666,7 +668,7 @@ class EstudianteCursosController extends AppController
             $entity = $this->EstudianteCursos->newEntity();
             $entity->curso_id = $cursoId;
             $entity->estudiante_id = $estudianteId;
-            $entity->responsable = $responsable;
+            $entity->analista = $analista;
             $entity->activo = 1;
 
             if ($this->EstudianteCursos->save($entity)) {

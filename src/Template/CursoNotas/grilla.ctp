@@ -451,9 +451,9 @@ $(document).ready(function () {
             Swal.fire({
                 title: 'Cerrar Acta',
                 text: 'Se calculará la nota final de cada estudiante y se actualizará su calificación en el curso. Esta acción no se puede deshacer.',
-                icon: 'warning',
+                icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#dd4b39',
+                confirmButtonColor: '#4190d1',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Sí, cerrar acta',
                 cancelButtonText: 'Cancelar'

@@ -159,29 +159,23 @@
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
+                        <tfoot class="no-padding">
+                            <tr>
+                                <td colspan="13" class="text-center">
+                                    <div class="paginator">
+                                        <ul class="pagination pagination-sm">
+                                            <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                            <?= $this->Paginator->prev('<i class="fa fa-angle-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                            <?= $this->Paginator->numbers(['before' => '','after' => '']) ?>
+                                            <?= $this->Paginator->next('<i class="fa fa-angle-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                            <?= $this->Paginator->last('<i class="fa fa-angle-double-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        </ul>
+                                        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
-                    <div class="box-footer clearfix">
-                        <div class="text-center">
-                            <?= $this->Paginator->prev(
-                                '<i class="fa fa-chevron-left"></i>',
-                                ['escape' => false, 'class' => 'btn btn-default btn-sm', 'disabledTag' => 'span'],
-                                '<span class="btn btn-default btn-sm disabled"><i class="fa fa-chevron-left"></i></span>'
-                            ) ?>
-                            <?= $this->Paginator->numbers([
-                                'class' => 'pagination pagination-sm no-margin',
-                                'tag' => 'li',
-                                'activeClass' => 'active',
-                                'disabledTag' => 'span',
-                                'before' => '<ul class="pagination pagination-sm no-margin">',
-                                'after' => '</ul>',
-                            ]) ?>
-                            <?= $this->Paginator->next(
-                                '<i class="fa fa-chevron-right"></i>',
-                                ['escape' => false, 'class' => 'btn btn-default btn-sm', 'disabledTag' => 'span'],
-                                '<span class="btn btn-default btn-sm disabled"><i class="fa fa-chevron-right"></i></span>'
-                            ) ?>
-                        </div>
-                    </div>
                 <?php else: ?>
                     <p class="text-center text-muted">No hay estudiantes inscritos en este curso.</p>
                 <?php endif; ?>

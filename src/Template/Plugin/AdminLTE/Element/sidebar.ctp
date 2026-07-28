@@ -59,7 +59,7 @@
 					</a>
 					<ul class="treeview-menu">
 						<li>
-							<a href="<?= $this->Url->build(['controller' => 'docentes','action' => 'index'])?>">
+							<a href="<?= $this->Url->build(['controller' => 'datos','action' => 'facilitadores'])?>">
 								<i class="far fa-dot-circle"></i>&nbsp;Docentes
 							</a>
 						</li>

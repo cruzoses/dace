@@ -12,6 +12,7 @@ use Cake\ORM\Entity;
  * @property string|null $calificacion
  * @property string|null $recuperacion
  * @property string|null $definitiva
+ * @property string $analista
  * @property string $responsable
  * @property string|null $observacion
  * @property bool $activo
@@ -29,6 +30,7 @@ class EstudianteCurso extends Entity
         'calificacion' => true,
         'recuperacion' => true,
         'definitiva' => true,
+        'analista' => true,
         'responsable' => true,
         'observacion' => true,
         'activo' => true,

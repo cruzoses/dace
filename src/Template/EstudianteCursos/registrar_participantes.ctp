@@ -7,7 +7,9 @@
 ?>
 <div class="modal-header bg-aqua">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h4 class="modal-title"><i class="fa fa-users"></i>&nbsp;Registrar Participantes — <?= h($curso->asignatura->nombre ?? '') ?> <?= h($curso->seccion) ?></h4>
+    <h4 class="modal-title">
+        <i class="fa fa-users"></i>&nbsp;
+        Registrar Participantes — <?= h($curso->asignatura->nombre ?? '') ?> Sección <?= h($curso->seccion) ?></h4>
 </div>
 
 <div class="modal-body">
