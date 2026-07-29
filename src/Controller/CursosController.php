@@ -22,9 +22,11 @@ class CursosController extends AppController
 
 	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([2,3]) )
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] )
         {
-            return true;
+            if ($this->tienePermiso([2,3])) {
+                return true;
+            }            
         }
 		return parent::isAuthorized($user);
 	}
@@ -222,6 +224,110 @@ class CursosController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function calificar()
+    {
+        $nCursoId = $this->request->getQuery('nCursoId');
+        $sNota = $this->request->getQuery('sNota');
+
+        if (!in_array($sNota, ['calificacion', 'recuperacion', 'definitiva'])) {
+            $this->Flash->error('Tipo de nota inválido.');
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $oCurso = $this->Cursos->get($nCursoId, [
+            'contain' => ['Asignaturas', 'Periodos', 'Docentes'],
+        ]);
+
+        if (!$oCurso) {
+            $this->Flash->error('Curso no encontrado.');
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $nTipoCalificacion = (int)($oCurso->asignatura->calificacion ?? 0);
+        $nNotaMinima = $this->_resolverNotaMinima($oCurso);
+        $bReadonly = $oCurso->cerrado == 1;
+
+        if ($this->request->is('post') || $this->request->is('ajax')) {
+            $this->autoRender = false;
+            $this->response = $this->response->withType('application/json');
+
+            $notas = $this->request->getData('notas');
+            if (empty($notas)) {
+                $this->response = $this->response->withStringBody(json_encode([
+                    'success' => false, 'message' => 'No se recibieron notas.'
+                ]));
+                return $this->response;
+            }
+
+            if ($bReadonly) {
+                $this->response = $this->response->withStringBody(json_encode([
+                    'success' => false, 'message' => 'El curso está cerrado.'
+                ]));
+                return $this->response;
+            }
+
+            $estudianteCursosTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
+            $errors = [];
+
+            foreach ($notas as $ecId => $valor) {
+                $valor = trim($valor);
+
+                if ($nTipoCalificacion == 0) {
+                    if (!preg_match('/^\d+(\.\d{1,2})?$/', $valor)) {
+                        $errors[] = "El valor '$valor' no es un número válido (máx. 2 decimales).";
+                        continue;
+                    }
+                    $nValor = (float)$valor;
+                    if ($nValor < 1 || $nValor > 20) {
+                        $errors[] = "El valor '$valor' debe estar entre 1 y 20.";
+                        continue;
+                    }
+                } else {
+                    $valor = strtoupper($valor);
+                    if (!in_array($valor, ['A', 'R'])) {
+                        $errors[] = "El valor '$valor' debe ser A o R.";
+                        continue;
+                    }
+                }
+
+                $entity = $estudianteCursosTable->get($ecId);
+                $entity->{$sNota} = ($nTipoCalificacion == 0) ? $valor : strtoupper($valor);
+                $entity->responsable = $this->Auth->user('alias');
+
+                if ($estudianteCursosTable->save($entity)) {
+                    $this->Auditorias->registrar('MODIFICA',
+                        "{$sNota}: EstudianteCurso #{$ecId} = {$valor} (Curso #{$nCursoId})");
+                } else {
+                    $errors[] = "Error al guardar registro #{$ecId}.";
+                }
+            }
+
+            if (empty($errors)) {
+                $this->response = $this->response->withStringBody(json_encode([
+                    'success' => true, 'message' => 'Notas guardadas correctamente.'
+                ]));
+            } else {
+                $this->response = $this->response->withStringBody(json_encode([
+                    'success' => false,
+                    'message' => 'Se guardaron con errores: ' . implode(' ', $errors)
+                ]));
+            }
+
+            return $this->response;
+        }
+
+        $estudianteCursosTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
+        $query = $estudianteCursosTable->find()
+            ->contain(['Estudiantes'])
+            ->where(['curso_id' => $nCursoId, 'activo' => 1])
+            ->order(['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC']);
+
+        $estudianteCursos = $this->paginate($query);
+
+        $this->set(compact('estudianteCursos', 'sNota', 'nTipoCalificacion', 'nNotaMinima', 'bReadonly'));
+        $this->set('curso', $oCurso);
     }
 
     /**

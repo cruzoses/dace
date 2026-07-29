@@ -2,9 +2,9 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\ORM\TableRegistry;
 
 /**
  * Datos Controller
@@ -64,10 +64,7 @@ class DatosController extends AppController
         $this->set('estudiante', $estudiante);
     }
 
-    public function rendimiento()
-    {
-        
-    }
+    public function rendimiento(){}
 
     public function programas($estudianteId = null)
     {
@@ -261,7 +258,22 @@ class DatosController extends AppController
         return $this->redirect(['action' => 'estudiante', $id]);
     }
 
-    public function facilitadores(){}
+    public function facilitadores()
+    {
+        $oTableDocentes = TableRegistry::getTableLocator()->get('Docentes');
+        $conditions = $oTableDocentes->formatConditions($this->request->getQueryParams());
+
+        $this->paginate = [
+            'contain' => ['Departamentos', 'Usuarios','Cursos'],
+            'conditions' => $conditions,
+        ];
+
+        $docentes = $this->paginate($oTableDocentes);
+        $filtros = $this->request->getQuery();
+        $searchFields = $oTableDocentes->getSearchFields();
+
+        $this->set(compact('docentes', 'filtros', 'searchFields'));
+    }
 
     public function facilitador(){}
 }

@@ -15,20 +15,19 @@ use Cake\Core\Configure;
  */
 class DocentesController extends AppController
 {
-
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
 	}
 
-    /**
-     * 
-    */
 	public function isAuthorized($user = null)
 	{
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] )
+        {
+            if ($this->tienePermiso([2,3])) {
+                return true;
+            }            
+        }
 		return parent::isAuthorized($user);
 	}
 	
@@ -48,7 +47,7 @@ class DocentesController extends AppController
         $filtros = $this->request->getQuery();
         $searchFields = $this->Docentes->getSearchFields();
 
-        $searchFields['departamento_id']['options'] = $this->Docentes->Departamentos->find('list', ['limit' => 200])->toArray();
+        $searchFields['departamento_id']['options'] = $this->Docentes->Departamentos->find('list')->toArray();
 
         $this->set(compact('docentes', 'filtros', 'searchFields'));
     }

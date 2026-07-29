@@ -18,7 +18,7 @@
                 </div>
             </div>
             <?= $this->Form->create(null, [
-                'url' => ['action' => 'teachers'],
+                'url' => ['action' => 'facilitadores'],
                 'type' => 'get',
                 'role' => 'form',
                 'align' => [

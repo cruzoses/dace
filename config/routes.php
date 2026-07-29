@@ -78,6 +78,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/registrodocente', ['controller' => 'Usuarios', 'action' => 'registrodocente']);
     $routes->connect('/registroestudiante', ['controller' => 'Usuarios', 'action' => 'registroestudiante']);
 
+    $routes->connect('/facilitadores', ['controller' => 'datos', 'action' => 'facilitadores']);
+
     $routes->connect('/sedes', ['controller' => 'Sedes', 'action' => 'index']);
 
     $routes->connect(

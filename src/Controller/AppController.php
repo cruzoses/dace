@@ -492,6 +492,38 @@ class AppController extends Controller
         }
     }
 
+    protected function _resolverNotaMinima($oCurso)
+    {
+        $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+        $oMalla = $mallasTable->find()
+            ->where([
+                'Mallas.asignatura_id' => $oCurso->asignatura_id,
+                'Mallas.carrera_id' => $oCurso->carrera_id,
+            ])
+            ->first();
+
+        if ($oMalla && !empty($oMalla->nota_minima)) {
+            return (int)$oMalla->nota_minima;
+        }
+
+        if (!empty($oCurso->asignatura->nota_minima)) {
+            return (int)$oCurso->asignatura->nota_minima;
+        }
+
+        if (!empty($oCurso->programas)) {
+            $aProgramaIds = array_filter(explode(' ', $oCurso->programas));
+            if (!empty($aProgramaIds)) {
+                $programasTable = TableRegistry::getTableLocator()->get('Programas');
+                $oPrograma = $programasTable->get((int)reset($aProgramaIds));
+                if (!empty($oPrograma->nota_minima)) {
+                    return (int)$oPrograma->nota_minima;
+                }
+            }
+        }
+
+        return 10;
+    }
+
     private function _normalizarNota($nNota, $nEscala, $nPorcentaje = 100)
     {
         switch ((int)$nEscala) {

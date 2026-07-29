@@ -8,7 +8,8 @@
 				        <i class="fa fa-minus"></i>
 			        </button>
 			        <?= $this->Html->link('<i class="fa fa-times"></i>',
-				        ['action' => 'index'],['class'=>'btn btn-box-tool','title'=>'cerrar','escape'=>false]);
+				        ['action' => 'index'],
+                        ['class' => 'btn btn-box-tool', 'title' => 'cerrar', 'escape' => false]);
 			        ?>
                 </div>
             </div>
@@ -48,42 +49,49 @@
             })();
             </script>
             
-        	<div class="box-body">
-          		<dl class="dl-horizontal">
-                    <dt scope="row"><?= __('Sede') ?></dt>
-                    <dd><?= $curso->has('sede') ? $this->Html->link($curso->sede->codename, ['controller' => 'Sedes', 'action' => 'view', $curso->sede->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Periodo') ?></dt>
-                    <dd><?= $curso->has('periodo') ? $this->Html->link($curso->periodo->codename, ['controller' => 'Periodos', 'action' => 'view', $curso->periodo->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Carrera') ?></dt>
-                    <dd><?= $curso->has('carrera') ? $this->Html->link($curso->carrera->nombre, ['controller' => 'Carreras', 'action' => 'view', $curso->carrera->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Programas') ?></dt>
-                    <dd><?= h($curso->programas) ?></dd>
-                    <dt scope="row"><?= __('Trayecto') ?></dt>
-                    <dd><?= $curso->has('trayecto') ? $this->Html->link($curso->trayecto->codename, ['controller' => 'Trayectos', 'action' => 'view', $curso->trayecto->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Asignatura') ?></dt>
-                    <dd><?= $curso->has('asignatura') ? $this->Html->link($curso->asignatura->codename, ['controller' => 'Asignaturas', 'action' => 'view', $curso->asignatura->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Profesores') ?></dt>
-                    <dd><?= h($curso->profesores) ?></dd>
-                    <dt scope="row"><?= __('Docente') ?></dt>
-                    <dd><?= $curso->has('docente') ? $this->Html->link($curso->docente->codename, ['controller' => 'Docentes', 'action' => 'view', $curso->docente->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Seccion') ?></dt>
-                    <dd><?= h($curso->seccion) ?></dd>
-                    <dt scope="row"><?= __('Aula') ?></dt>
-                    <dd><?= $curso->has('aula') ? $this->Html->link($curso->aula->nombre, ['controller' => 'Aulas', 'action' => 'view', $curso->aula->id]) : '' ?></dd>
-                    <dt scope="row"><?= __('Horario') ?></dt>
-                    <dd><?= h($curso->horario) ?></dd>
-                    <dt scope="row"><?= __('Id') ?></dt>
-                    <dd><?= $this->Number->format($curso->id) ?></dd>
-                    <dt scope="row"><?= __('Cupos') ?></dt>
-                    <dd><?= $this->Number->format($curso->cupos) ?></dd>
-                    <dt scope="row"><?= __('Created') ?></dt>
-                    <dd><?= h($curso->created) ?></dd>
-                    <dt scope="row"><?= __('Modified') ?></dt>
-                    <dd><?= h($curso->modified) ?></dd>
-                    <dt scope="row"><?= __('Activo') ?></dt>
-                    <dd><?= $curso->activo ? __('Yes') : __('No'); ?></dd>
-                </dl>
+        	<div class="box-body table-responsive">
+                <table id="Cursos" class="table table-bordered table-striped">
+                    <tbody>
+                        <dl class="dl-horizontal">
+                            <dt scope="row"><?= __('No. de Id') ?></dt>
+                            <dd><?= $this->Number->format($curso->id) ?></dd>
+                            <dt scope="row"><?= __('Sede') ?></dt>
+                            <dd><?= $curso->has('sede') ? h($curso->sede->codename) : '' ?></dd>
+                            <dt scope="row"><?= __('Periodo') ?></dt>
+                            <dd><?= $curso->has('periodo') ? h($curso->periodo->codename) : '' ?></dd>
+                            <dt scope="row"><?= __('Carrera') ?></dt>
+                            <dd><?= $curso->has('carrera') ? h($curso->carrera->nombre) : '' ?></dd>
+                            <dt scope="row"><?= __('Programas') ?></dt>
+                            <dd><?= h($curso->programas) ?></dd>
+                            <dt scope="row"><?= __('Trayecto') ?></dt>
+                            <dd><?= $curso->has('trayecto') ?h($curso->trayecto->codename) : '' ?></dd>
+                            <dt scope="row"><?= __('Asignatura') ?></dt>
+                            <dd><?= $curso->has('asignatura') ? h($curso->asignatura->codename) : '' ?></dd>
+                            <dt scope="row"><?= __('Profesores') ?></dt>
+                            <dd><?= h($curso->profesores) ?></dd>
+                            <dt scope="row"><?= __('Docente') ?></dt>
+                            <dd><?= $curso->has('docente') ? h($curso->docente->codename) : '' ?></dd>
+                            <dt scope="row"><?= __('Seccion') ?></dt>
+                            <dd><?= h($curso->seccion) ?></dd>
+                            <dt scope="row"><?= __('Aula') ?></dt>
+                            <dd><?= $curso->has('aula') ? h($curso->aula->nombre) : '' ?></dd>
+                            <dt scope="row"><?= __('Horario') ?></dt>
+                            <dd><?= h($curso->horario) ?></dd>
+                            <dt scope="row"><?= __('Cupos') ?></dt>
+                            <dd><?= $this->Number->format($curso->cupos) ?></dd>
+                            <dt scope="row"><?= __('Cerrado') ?></dt>
+                            <dd><?= $curso->cerrado ? __('Yes') : __('No'); ?></dd>
+                            <dt scope="row"><?= __('Activo') ?></dt>
+                            <dd><?= $curso->activo ? __('Yes') : __('No'); ?></dd>
+                            <dt scope="row"><?= __('Created') ?></dt>
+                            <dd><?= h($curso->created) ?></dd>
+                            <dt scope="row"><?= __('Modified') ?></dt>
+                            <dd><?= h($curso->modified) ?></dd>
+                        </dl>
+                    </tbody>
+                </table>
             </div>
+
             <div class="box-footer">
 		        <?= $this->Html->link('<i class="fa fa-pencil"></i>&nbsp;'.__('Edit'),
 			        ['action' => 'edit',$curso->id],['class' => 'btn bg-olive btn-flat pull-left','escape' => false]); 
@@ -101,6 +109,22 @@
         <div class="box box-default box-solid">
             <div class="box-header with-border">                
                 <h3 class="box-title"><i class="fa fa-users"></i>&nbsp;Estudiantes Inscritos (<?= $nTotalEstudiantes ?>)</h3>
+                <?php if ($this->Permiso->tiene([1,2,3])) : ?>
+                    <div class="box-title">
+                        <?= $this->Html->link('C',
+                            ['action' => 'calificar','?' => ['nCursoId' => $curso->id, 'sNota' => 'calificacion'] ],
+                            ['class' => 'btn bg-purple btn-xs']);
+                        ?>&nbsp;
+                        <?= $this->Html->link('R',
+                            ['action' => 'calificar','?' => ['nCursoId' => $curso->id, 'sNota' => 'recuperacion'] ],
+                            ['class' => 'btn bg-olive btn-xs']);
+                        ?>&nbsp;
+                        <?= $this->Html->link('D',
+                            ['action' => 'calificar','?' => ['nCursoId' => $curso->id, 'sNota' => 'definitiva'] ],
+                            ['class' => 'btn bg-maroon btn-xs']);
+                        ?>&nbsp;
+                    </div>
+                <?php endif; ?>                
                 <div class="box-tools pull-right">
                     <div class="btn-group">
                         <?= $this->Html->link('<i class="fa fa-print"></i>&nbsp;Imprimir',
