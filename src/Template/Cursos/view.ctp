@@ -587,7 +587,7 @@ $(document).ready(function() {
         $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>&nbsp;Guardando...');
 
         $.ajax({
-            url: BASE_URL + 'estudiante-cursos/guardar-nota-individual/' + ecId,
+            url: basePath + 'estudiante-cursos/guardar-nota-individual/' + ecId,
             type: 'POST',
             data: { notas: datos, nCursoId: <?= $curso->id ?> },
             dataType: 'json',
