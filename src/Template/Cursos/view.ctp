@@ -175,6 +175,18 @@
                                     <td><?= h($ec->responsable) ?></td>
                                     <td class="text-center"><?= $ec->activo ? 'Sí' : 'No' ?></td>
                                     <td class="actions text-center">
+                                        <?php if ($this->Permiso->tiene([1,2,3])): ?>
+                                        <button type="button"
+                                            class="btn btn-warning btn-xs btn-calificar-individual"
+                                            data-id="<?= $ec->id ?>"
+                                            data-estudiante="<?= h($ec->has('estudiante') ? $ec->estudiante->full_name : '') ?>"
+                                            data-calificacion="<?= h($ec->calificacion ?? '') ?>"
+                                            data-recuperacion="<?= h($ec->recuperacion ?? '') ?>"
+                                            data-definitiva="<?= h($ec->definitiva ?? '') ?>"
+                                            title="Cargar nota individual">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                        <?php endif; ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>',
                                             ['controller' => 'EstudianteCursos', 'action' => 'eliminar', $ec->id],
                                             ['confirm' => '¿Está seguro de eliminar esta inscripción?', 'class' => 'btn btn-danger btn-xs', 'escape' => false])
@@ -490,5 +502,111 @@
         });
     });
 })();
+</script>
+
+<div class="modal fade" id="modal-calificar-individual" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-purple">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-edit"></i>&nbsp;Cargar Nota Individual</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center"><strong id="ci-estudiante"></strong></p>
+                <input type="hidden" id="ci-id">
+                <div class="form-group">
+                    <label>Calificación</label>
+                    <input type="text" id="ci-calificacion" class="form-control input-sm nota-input-ci" inputmode="decimal" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label>Recuperación</label>
+                    <input type="text" id="ci-recuperacion" class="form-control input-sm nota-input-ci" inputmode="decimal" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label>Definitiva</label>
+                    <input type="text" id="ci-definitiva" class="form-control input-sm nota-input-ci" inputmode="decimal" maxlength="5">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="btn-ci-guardar" class="btn bg-purple"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    var nTipoCal = <?= json_encode($nTipoCalificacion ?? 0) ?>;
+
+    $(document).on('click', '.btn-calificar-individual', function() {
+        var $btn = $(this);
+        $('#ci-estudiante').text($btn.data('estudiante'));
+        $('#ci-id').val($btn.data('id'));
+        $('#ci-calificacion').val($btn.data('calificacion'));
+        $('#ci-recuperacion').val($btn.data('recuperacion'));
+        $('#ci-definitiva').val($btn.data('definitiva'));
+        $('#modal-calificar-individual').modal('show');
+    });
+
+    if (nTipoCal === 0) {
+        var regex = /^\d*(\.\d{0,2})?$/;
+        $(document).on('input', '.nota-input-ci', function() {
+            var val = $(this).val();
+            if (!regex.test(val)) {
+                $(this).val(val.slice(0, -1));
+            }
+        });
+        $(document).on('change', '.nota-input-ci', function() {
+            var val = parseFloat($(this).val());
+            if (!isNaN(val)) {
+                if (val < 1) $(this).val('1');
+                else if (val > 20) $(this).val('20');
+            }
+        });
+    } else {
+        $(document).on('change', '.nota-input-ci', function() {
+            var val = $(this).val().toUpperCase();
+            if (val !== '' && val !== 'A' && val !== 'R') {
+                $(this).val('');
+            } else {
+                $(this).val(val);
+            }
+        });
+    }
+
+    $('#btn-ci-guardar').click(function() {
+        var $btn = $(this);
+        var ecId = $('#ci-id').val();
+        var datos = {
+            calificacion: $('#ci-calificacion').val(),
+            recuperacion: $('#ci-recuperacion').val(),
+            definitiva: $('#ci-definitiva').val()
+        };
+
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>&nbsp;Guardando...');
+
+        $.ajax({
+            url: BASE_URL + 'estudiante-cursos/guardar-nota-individual/' + ecId,
+            type: 'POST',
+            data: { notas: datos, nCursoId: <?= $curso->id ?> },
+            dataType: 'json',
+            success: function(resp) {
+                if (resp.success) {
+                    $('#modal-calificar-individual').modal('hide');
+                    toastr.success('Notas guardadas correctamente.');
+                    setTimeout(function() { location.reload(); }, 800);
+                } else {
+                    toastr.error(resp.message || 'Error al guardar.');
+                    $btn.prop('disabled', false).html('<i class="fa fa-save"></i>&nbsp;Guardar');
+                }
+            },
+            error: function() {
+                toastr.error('Error de conexión.');
+                $btn.prop('disabled', false).html('<i class="fa fa-save"></i>&nbsp;Guardar');
+            }
+        });
+    });
+});
 </script>
 

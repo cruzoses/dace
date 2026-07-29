@@ -16,7 +16,7 @@ class EstudianteCursosController extends AppController
     public function isAuthorized($user = null)
     {
         if (isset($user['activo']) && isset($user['rols']) && $user['activo'] ) {
-            if ( $this->tienePermiso([2,3])) {
+            if ( $this->tienePermiso([1, 2, 3])) {
                 return true;
             }            
         }
@@ -710,6 +710,84 @@ class EstudianteCursosController extends AppController
             'total_validos' => count($validos),
             'total_rechazados' => count($rechazados),
         ]));
+        return $this->response;
+    }
+
+    public function guardarNotaIndividual($ecId = null)
+    {
+        $this->request->allowMethod(['post', 'ajax']);
+        $this->autoRender = false;
+        $this->response = $this->response->withType('application/json');
+
+        if (!$ecId) {
+            $ecId = $this->request->getData('ecId');
+        }
+
+        $entity = $this->EstudianteCursos->get($ecId, [
+            'contain' => ['Cursos' => ['Asignaturas']],
+        ]);
+
+        if (!$entity) {
+            $this->response = $this->response->withStringBody(json_encode([
+                'success' => false, 'message' => 'Registro no encontrado.'
+            ]));
+            return $this->response;
+        }
+
+        $nTipo = (int)($entity->curso->asignatura->calificacion ?? 0);
+        $notas = $this->request->getData('notas');
+        $errors = [];
+
+        foreach (['calificacion', 'recuperacion', 'definitiva'] as $campo) {
+            $valor = isset($notas[$campo]) ? trim($notas[$campo]) : '';
+
+            if ($valor === '') {
+                $entity->{$campo} = null;
+                continue;
+            }
+
+            if ($nTipo == 0) {
+                if (!preg_match('/^\d+(\.\d{1,2})?$/', $valor)) {
+                    $errors[] = "$campo: '$valor' no es válido (máx. 2 decimales).";
+                    continue;
+                }
+                $nValor = (float)$valor;
+                if ($nValor < 1 || $nValor > 20) {
+                    $errors[] = "$campo: '$valor' debe estar entre 1 y 20.";
+                    continue;
+                }
+            } else {
+                $valor = strtoupper($valor);
+                if (!in_array($valor, ['A', 'R'])) {
+                    $errors[] = "$campo: '$valor' debe ser A o R.";
+                    continue;
+                }
+            }
+
+            $entity->{$campo} = $valor;
+        }
+
+        $entity->responsable = $this->Auth->user('alias');
+
+        if (!empty($errors)) {
+            $this->response = $this->response->withStringBody(json_encode([
+                'success' => false, 'message' => implode(' ', $errors)
+            ]));
+            return $this->response;
+        }
+
+        if ($this->EstudianteCursos->save($entity)) {
+            $this->Auditorias->registrar('MODIFICA',
+                'Nota individual EstudianteCurso #' . $ecId . ': ' . json_encode($notas));
+            $this->response = $this->response->withStringBody(json_encode([
+                'success' => true, 'message' => 'Notas guardadas correctamente.'
+            ]));
+        } else {
+            $this->response = $this->response->withStringBody(json_encode([
+                'success' => false, 'message' => 'Error al guardar el registro.'
+            ]));
+        }
+
         return $this->response;
     }
 

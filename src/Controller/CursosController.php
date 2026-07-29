@@ -94,10 +94,12 @@ class CursosController extends AppController
 
         $estudianteCursos = $this->paginate($query);
 
+        $nTipoCalificacion = (int)($curso->asignatura->calificacion ?? 0);
         $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Cursos ' . json_encode($curso->toArray()));
         $this->set('curso', $curso);
         $this->set('estudianteCursos', $estudianteCursos);
         $this->set('nTotalEstudiantes', $estudianteCursosTable->find()->where(['curso_id' => $id])->count());
+        $this->set('nTipoCalificacion', $nTipoCalificacion);
     }
 
     /**
