@@ -326,7 +326,7 @@ class CursosController extends AppController
             ->where(['EstudianteCursos.curso_id' => $nCursoId, 'EstudianteCursos.activo' => 1])
             ->order(['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC']);
 
-        $estudianteCursos = $this->paginate($query);
+        $estudianteCursos = $query->toArray();
 
         $this->set(compact('estudianteCursos', 'sNota', 'nTipoCalificacion', 'nNotaMinima', 'bReadonly'));
         $this->set('curso', $oCurso);

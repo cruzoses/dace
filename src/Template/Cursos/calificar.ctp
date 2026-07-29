@@ -75,16 +75,10 @@ select.nota-input:disabled {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        $nPagina = (int)$this->request->getQuery('page', 1);
-                        $nLimite = 20;
-                        $nOffset = ($nPagina - 1) * $nLimite;
-                        $sNotaMinima = (int)$nNotaMinima;
-                        ?>
                         <?php foreach ($estudianteCursos as $i => $ec): ?>
                         <?php
                             $sValor = $ec->{$sNota} ?? '';
-                            $bAprobado = ($nTipoCalificacion == 0 && is_numeric($sValor) && (float)$sValor >= $sNotaMinima)
+                            $bAprobado = ($nTipoCalificacion == 0 && is_numeric($sValor) && (float)$sValor >= $nNotaMinima)
                                 || ($nTipoCalificacion == 1 && strtoupper($sValor) === 'A');
                             $sClase = '';
                             if ($sValor !== '') {
@@ -92,7 +86,7 @@ select.nota-input:disabled {
                             }
                         ?>
                         <tr>
-                            <td class="text-center"><?= ($nOffset + $i + 1) ?></td>
+                            <td class="text-center"><?= ($i + 1) ?></td>
                             <td><?= $ec->has('estudiante') ? $this->Number->format($ec->estudiante->cedula) : '' ?></td>
                             <td><?= $ec->has('estudiante') ? h($ec->estudiante->full_name) : '' ?></td>
                             <td class="text-center">
