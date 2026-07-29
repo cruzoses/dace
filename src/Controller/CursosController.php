@@ -228,8 +228,8 @@ class CursosController extends AppController
 
     public function calificar()
     {
-        $nCursoId = $this->request->getQuery('nCursoId');
-        $sNota = $this->request->getQuery('sNota');
+        $nCursoId = $this->request->getQuery('nCursoId') ?: $this->request->getData('nCursoId');
+        $sNota = $this->request->getQuery('sNota') ?: $this->request->getData('sNota');
 
         if (!in_array($sNota, ['calificacion', 'recuperacion', 'definitiva'])) {
             $this->Flash->error('Tipo de nota inválido.');
