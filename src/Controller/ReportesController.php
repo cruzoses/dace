@@ -1047,7 +1047,7 @@ class ReportesController extends AppController
         }
 
         $cursos = $cursosTable->find()
-            ->contain(['Asignaturas', 'Docentes', 'Periodos'])
+            ->contain(['Asignaturas', 'Docentes', 'Periodos', 'Trayectos'])
             ->where($conditions)
             ->order(['Docentes.id' => 'ASC', 'Asignaturas.id' => 'ASC'])
             ->all();
@@ -1107,6 +1107,7 @@ class ReportesController extends AppController
                 $cid = $curso->id;
                 $data[] = [
                     'No.' => $i++,
+                    'Trayecto' => $curso->trayecto->codename ?? '',
                     'Asignatura' => $curso->asignatura->codename ?? '',
                     'Seccion' => $curso->seccion,
                     'Docente' => $curso->docente->full_name ?? '',
@@ -1123,7 +1124,8 @@ class ReportesController extends AppController
                 $pdfBuilder = new PdfBuilder('landscape');
                 $pdfBuilder->setColumns([
                     'No.' => ['justification' => 'center', 'width' => 30],
-                    'Asignatura' => ['justification' => 'left', 'width' => 200],
+                    'Trayecto' => ['justification' => 'center', 'width' => 50],
+                    'Asignatura' => ['justification' => 'left', 'width' => 180],
                     'Seccion' => ['justification' => 'center', 'width' => 50],
                     'Docente' => ['justification' => 'left', 'width' => 150],
                     'Indicadores' => ['justification' => 'center', 'width' => 60],
