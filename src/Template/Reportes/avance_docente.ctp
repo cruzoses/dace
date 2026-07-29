@@ -11,8 +11,11 @@
                 </div>
             </div>
             <?= $this->Form->create(null, [
-                'type' => 'get',
-                'role' => 'form',
+                'type' => 'get','role' => 'form',
+                'align' => [
+                    'sm' => ['left' => 6, 'middle' => 6, 'right' => 12],
+                    'md' => ['left' => 2,'middle' => 9,'right' => 1]
+                ],
                 'class' => 'horizontal',
             ]); ?>
             <div class="box-body">
@@ -40,6 +43,14 @@
                         'type' => 'select',
                         'options' => $carreras,
                         'empty' => '-- Todas --',
+                        'class' => 'form-control select2',
+                        'data-width' => '100%',
+                    ]) ?>
+                    <?= $this->Form->control('trayecto_id', [
+                        'label' => 'Trayecto',
+                        'type' => 'select',
+                        'options' => $trayectos,
+                        'empty' => '-- Todos --',
                         'class' => 'form-control select2',
                         'data-width' => '100%',
                     ]) ?>
@@ -84,6 +95,18 @@
                 <p>
                     <strong>Sede:</strong> <?= h($sTituloSede) ?> &nbsp;|&nbsp;
                     <strong>Periodo:</strong> <?= h($sTituloPeriodo) ?>
+                    <?php if (!empty($carreraId)): ?>
+                        &nbsp;|&nbsp; <strong>Carrera:</strong> <?php
+                            $oCarrera = \Cake\ORM\TableRegistry::getTableLocator()->get('Carreras')->get($carreraId);
+                            echo h($oCarrera->codename);
+                        ?>
+                    <?php endif; ?>
+                    <?php if (!empty($trayectoId)): ?>
+                        &nbsp;|&nbsp; <strong>Trayecto:</strong> <?php
+                            $oTrayecto = \Cake\ORM\TableRegistry::getTableLocator()->get('Trayectos')->get($trayectoId);
+                            echo h($oTrayecto->codename);
+                        ?>
+                    <?php endif; ?>
                     <?php if (!empty($docenteId)): ?>
                         &nbsp;|&nbsp; <strong>Docente:</strong> <?php
                             $oDocente = \Cake\ORM\TableRegistry::getTableLocator()->get('Docentes')->get($docenteId);

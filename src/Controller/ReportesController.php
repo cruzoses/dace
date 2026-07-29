@@ -1017,14 +1017,16 @@ class ReportesController extends AppController
         $sedeId = $this->request->getQuery('sede_id');
         $periodoId = $this->request->getQuery('periodo_id');
         $carreraId = $this->request->getQuery('carrera_id');
+        $trayectoId = $this->request->getQuery('trayecto_id');
         $docenteId = $this->request->getQuery('docente_id');
 
         if (!$sedeId || !$periodoId) {
             $sedes = $cursosTable->Sedes->find('list')->where(['activa' => 1])->order(['id' => 'ASC']);
             $periodos = $cursosTable->Periodos->find('list')->where(['activo' => 1])->order(['id' => 'DESC']);
             $carreras = $cursosTable->Carreras->find('list')->where(['activa' => 1])->order(['nombre' => 'ASC']);
+            $trayectos = $cursosTable->Trayectos->find('list')->where(['activo' => 1])->order(['nombre' => 'ASC']);
             $docentes = $cursosTable->Docentes->find('list')->where(['activo' => 1])->order(['apellidos' => 'ASC']);
-            $this->set(compact('sedes', 'periodos', 'carreras', 'docentes'));
+            $this->set(compact('sedes', 'periodos', 'carreras', 'trayectos', 'docentes'));
             $this->render('avance-docente');
             return;
         }
@@ -1036,6 +1038,9 @@ class ReportesController extends AppController
         ];
         if ($carreraId) {
             $conditions['Cursos.carrera_id'] = $carreraId;
+        }
+        if ($trayectoId) {
+            $conditions['Cursos.trayecto_id'] = $trayectoId;
         }
         if ($docenteId) {
             $conditions['Cursos.docente_id'] = $docenteId;
@@ -1096,7 +1101,7 @@ class ReportesController extends AppController
 
         $this->set(compact(
             'cursos', 'conteoIndicadores', 'conteoContenidos', 'conteoNotas',
-            'sTituloPeriodo', 'sTituloSede', 'sedeId', 'periodoId', 'carreraId', 'docenteId'
+            'sTituloPeriodo', 'sTituloSede', 'sedeId', 'periodoId', 'carreraId', 'trayectoId', 'docenteId'
         ));
         $this->render('avance-docente');
     }
