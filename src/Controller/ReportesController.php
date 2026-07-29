@@ -1012,6 +1012,7 @@ class ReportesController extends AppController
 
     public function listarAvanceDocente()
     {
+        $this->render('avance-docente');
         $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
 
         $sedeId = $this->request->getQuery('sede_id');
