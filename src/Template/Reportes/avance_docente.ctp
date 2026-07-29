@@ -87,7 +87,7 @@
                     <?php if (!empty($docenteId)): ?>
                         &nbsp;|&nbsp; <strong>Docente:</strong> <?php
                             $oDocente = \Cake\ORM\TableRegistry::getTableLocator()->get('Docentes')->get($docenteId);
-                            echo h($oDocente->codename);
+                            echo h($oDocente->full_name);
                         ?>
                     <?php endif; ?>
                 </p>
@@ -127,7 +127,7 @@
                             <td class="text-center"><?= $i++ ?></td>
                             <td><?= h($curso->asignatura->codename ?? '') ?></td>
                             <td class="text-center"><?= h($curso->seccion) ?></td>
-                            <td><?= h($curso->docente->codename ?? '') ?></td>
+                            <td><?= h($curso->docente->full_name ?? '') ?></td>
                             <td class="text-center">
                                 <?php if ($nInd > 0): ?>
                                     <span class="badge bg-green"><?= $nInd ?></span>

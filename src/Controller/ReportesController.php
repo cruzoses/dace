@@ -1020,7 +1020,7 @@ class ReportesController extends AppController
         $docenteId = $this->request->getQuery('docente_id');
 
         if (!$sedeId || !$periodoId) {
-            $sedes = $cursosTable->Sedes->find('list')->where(['activa' => 1])->order(['nombre' => 'ASC']);
+            $sedes = $cursosTable->Sedes->find('list')->where(['activa' => 1])->order(['id' => 'ASC']);
             $periodos = $cursosTable->Periodos->find('list')->where(['activo' => 1])->order(['id' => 'DESC']);
             $carreras = $cursosTable->Carreras->find('list')->where(['activa' => 1])->order(['nombre' => 'ASC']);
             $docentes = $cursosTable->Docentes->find('list')->where(['activo' => 1])->order(['apellidos' => 'ASC']);
@@ -1044,7 +1044,7 @@ class ReportesController extends AppController
         $cursos = $cursosTable->find()
             ->contain(['Asignaturas', 'Docentes', 'Periodos'])
             ->where($conditions)
-            ->order(['Docentes.codename' => 'ASC', 'Asignaturas.codename' => 'ASC'])
+            ->order(['Docentes.id' => 'ASC', 'Asignaturas.id' => 'ASC'])
             ->all();
 
         $cursoIds = $cursos->extract('id')->toArray();
