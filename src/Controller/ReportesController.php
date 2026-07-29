@@ -1012,7 +1012,6 @@ class ReportesController extends AppController
 
     public function listarAvanceDocente()
     {
-        $this->render('avance-docente');
         $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
 
         $sedeId = $this->request->getQuery('sede_id');
@@ -1026,6 +1025,7 @@ class ReportesController extends AppController
             $carreras = $cursosTable->Carreras->find('list')->where(['activa' => 1])->order(['nombre' => 'ASC']);
             $docentes = $cursosTable->Docentes->find('list')->where(['activo' => 1])->order(['apellidos' => 'ASC']);
             $this->set(compact('sedes', 'periodos', 'carreras', 'docentes'));
+            $this->render('avance-docente');
             return;
         }
 
@@ -1098,6 +1098,7 @@ class ReportesController extends AppController
             'cursos', 'conteoIndicadores', 'conteoContenidos', 'conteoNotas',
             'sTituloPeriodo', 'sTituloSede', 'sedeId', 'periodoId', 'carreraId', 'docenteId'
         ));
+        $this->render('avance-docente');
     }
 
     public function listarParticipantes($cursoId = null)
