@@ -179,6 +179,14 @@
                 <?php endif; ?>
             </div>
             <div class="box-footer">
+                <?= $this->Html->link('<i class="fa fa-file-pdf-o"></i>&nbsp;Descargar PDF',
+                    ['action' => 'listarAvanceDocente', '?' => [
+                        'sede_id' => $sedeId, 'periodo_id' => $periodoId,
+                        'carrera_id' => $carreraId, 'trayecto_id' => $trayectoId,
+                        'docente_id' => $docenteId, 'export' => 'pdf',
+                    ]],
+                    ['class' => 'btn btn-danger', 'escape' => false, 'target' => '_blank'])
+                ?>
                 <?= $this->Html->link('<i class="fa fa-arrow-left"></i>&nbsp;Volver al filtro',
                     ['action' => 'listarAvanceDocente'],
                     ['class' => 'btn btn-default', 'escape' => false])

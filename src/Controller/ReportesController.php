@@ -1099,6 +1099,50 @@ class ReportesController extends AppController
         $sTituloPeriodo = $periodo->codename ?? $periodo->codigo ?? '';
         $sTituloSede = $sede->codename ?? $sede->nombre ?? '';
 
+        $sExport = $this->request->getQuery('export');
+        if ($sExport === 'pdf') {
+            $data = [];
+            $i = 1;
+            foreach ($cursos as $curso) {
+                $cid = $curso->id;
+                $data[] = [
+                    'No.' => $i++,
+                    'Asignatura' => $curso->asignatura->codename ?? '',
+                    'Seccion' => $curso->seccion,
+                    'Docente' => $curso->docente->full_name ?? '',
+                    'Indicadores' => (string)($conteoIndicadores[$cid] ?? 0),
+                    'Plan Eval.' => (string)($conteoContenidos[$cid] ?? 0),
+                    'Notas' => (string)($conteoNotas[$cid] ?? 0),
+                ];
+            }
+
+            $noData = empty($data);
+            $sFileName = '';
+            if (!$noData) {
+                $titulo = 'AVANCE DOCENTE — ' . $sTituloSede . ' — ' . $sTituloPeriodo;
+                $pdfBuilder = new PdfBuilder('landscape');
+                $pdfBuilder->setColumns([
+                    'No.' => ['justification' => 'center', 'width' => 30],
+                    'Asignatura' => ['justification' => 'left', 'width' => 200],
+                    'Seccion' => ['justification' => 'center', 'width' => 50],
+                    'Docente' => ['justification' => 'left', 'width' => 150],
+                    'Indicadores' => ['justification' => 'center', 'width' => 60],
+                    'Plan Eval.' => ['justification' => 'center', 'width' => 60],
+                    'Notas' => ['justification' => 'center', 'width' => 60],
+                ]);
+
+                $pdfOutput = $pdfBuilder->generateSimpleReport($data, $titulo, 'REPORTE DE AVANCE DOCENTE');
+
+                $reportConfig = $this->_getReportConfig();
+                $filename = 'avance_docente_' . date('Ymd_His') . '.pdf';
+                file_put_contents($reportConfig['path'] . DS . $filename, $pdfOutput);
+                $sFileName = $reportConfig['webroot'] . $filename;
+            }
+            $this->set(compact('sFileName', 'noData'));
+            $this->render('showreport');
+            return;
+        }
+
         $this->set(compact(
             'cursos', 'conteoIndicadores', 'conteoContenidos', 'conteoNotas',
             'sTituloPeriodo', 'sTituloSede', 'sedeId', 'periodoId', 'carreraId', 'trayectoId', 'docenteId'
