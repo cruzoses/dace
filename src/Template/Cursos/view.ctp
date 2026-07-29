@@ -177,14 +177,14 @@
                                     <td class="actions text-center">
                                         <?php if ($this->Permiso->tiene([1,2,3])): ?>
                                         <button type="button"
-                                            class="btn btn-warning btn-xs btn-calificar-individual"
+                                            class="btn btn-primary btn-xs btn-calificar-individual"
                                             data-id="<?= $ec->id ?>"
                                             data-estudiante="<?= h($ec->has('estudiante') ? $ec->estudiante->full_name : '') ?>"
                                             data-calificacion="<?= h($ec->calificacion ?? '') ?>"
                                             data-recuperacion="<?= h($ec->recuperacion ?? '') ?>"
                                             data-definitiva="<?= h($ec->definitiva ?? '') ?>"
                                             title="Cargar nota individual">
-                                            <i class="fa fa-pencil"></i>
+                                            <i class="fa fa-edit"></i>
                                         </button>
                                         <?php endif; ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>',

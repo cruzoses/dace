@@ -286,6 +286,9 @@
 							<a href="/reportes/actadenotas"><i class="far fa-dot-circle"></i>&nbsp;Acta de Notas</a>
 						</li>
 						<li>
+							<a href="/reportes/listar-avance-docente"><i class="far fa-dot-circle"></i>&nbsp;Avance Docente</a>
+						</li>
+						<li>
 							<a href="/reportes/listamaterias"><i class="far fa-dot-circle"></i>&nbsp;Asignaturas</a>
 						</li>
 						<li>

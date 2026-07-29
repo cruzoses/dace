@@ -27,6 +27,10 @@ class ReportesController extends AppController
             if ( $this->tienePermiso([1,2]) ) 
             {
                 return true;
+            } elseif( $this->tienePermiso([3]) ) {
+                if (in_array($aValues, ['listarAvanceDocente'])) {
+                    return true;
+                }
             } elseif( $this->tienePermiso([4,5]) ) {
                 if (in_array($aValues,['listarParticipantes', 'listarActadeNotas'] )) {
                     return true;
@@ -1004,6 +1008,95 @@ class ReportesController extends AppController
         $this->response = $this->response->withHeader('Content-Disposition', 'inline;filename="' . $file . '"');
         $this->response->getBody()->write(file_get_contents($path));
         return $this->response;
+    }
+
+    public function listarAvanceDocente()
+    {
+        $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
+
+        $sedeId = $this->request->getQuery('sede_id');
+        $periodoId = $this->request->getQuery('periodo_id');
+        $carreraId = $this->request->getQuery('carrera_id');
+        $docenteId = $this->request->getQuery('docente_id');
+
+        if (!$sedeId || !$periodoId) {
+            $sedes = $cursosTable->Sedes->find('list')->where(['activa' => 1])->order(['nombre' => 'ASC']);
+            $periodos = $cursosTable->Periodos->find('list')->where(['activo' => 1])->order(['id' => 'DESC']);
+            $carreras = $cursosTable->Carreras->find('list')->where(['activa' => 1])->order(['nombre' => 'ASC']);
+            $docentes = $cursosTable->Docentes->find('list')->where(['activo' => 1])->order(['apellidos' => 'ASC']);
+            $this->set(compact('sedes', 'periodos', 'carreras', 'docentes'));
+            return;
+        }
+
+        $conditions = [
+            'Cursos.sede_id' => $sedeId,
+            'Cursos.periodo_id' => $periodoId,
+            'Cursos.activo' => 1,
+        ];
+        if ($carreraId) {
+            $conditions['Cursos.carrera_id'] = $carreraId;
+        }
+        if ($docenteId) {
+            $conditions['Cursos.docente_id'] = $docenteId;
+        }
+
+        $cursos = $cursosTable->find()
+            ->contain(['Asignaturas', 'Docentes', 'Periodos'])
+            ->where($conditions)
+            ->order(['Docentes.codename' => 'ASC', 'Asignaturas.codename' => 'ASC'])
+            ->all();
+
+        $cursoIds = $cursos->extract('id')->toArray();
+        $conteoIndicadores = [];
+        $conteoContenidos = [];
+        $conteoNotas = [];
+
+        if (!empty($cursoIds)) {
+            $indicadoresTable = TableRegistry::getTableLocator()->get('IndicadorCursos');
+            $rows = $indicadoresTable->find()
+                ->select(['curso_id', 'total' => $indicadoresTable->find()->func()->count('*')])
+                ->where(['curso_id IN' => $cursoIds])
+                ->group('curso_id')
+                ->enableHydration(false)
+                ->toArray();
+            foreach ($rows as $r) {
+                $conteoIndicadores[$r['curso_id']] = $r['total'];
+            }
+
+            $contenidosTable = TableRegistry::getTableLocator()->get('ContenidoCursos');
+            $rows = $contenidosTable->find()
+                ->select(['curso_id' => 'IndicadorCursos.curso_id', 'total' => $contenidosTable->find()->func()->count('*')])
+                ->innerJoinWith('IndicadorCursos')
+                ->where(['IndicadorCursos.curso_id IN' => $cursoIds])
+                ->group('IndicadorCursos.curso_id')
+                ->enableHydration(false)
+                ->toArray();
+            foreach ($rows as $r) {
+                $conteoContenidos[$r['curso_id']] = $r['total'];
+            }
+
+            $notasTable = TableRegistry::getTableLocator()->get('CursoNotas');
+            $rows = $notasTable->find()
+                ->select(['curso_id' => 'IndicadorCursos.curso_id', 'total' => $notasTable->find()->func()->count('*')])
+                ->innerJoinWith('ContenidoCursos.IndicadorCursos')
+                ->where(['IndicadorCursos.curso_id IN' => $cursoIds])
+                ->group('IndicadorCursos.curso_id')
+                ->enableHydration(false)
+                ->toArray();
+            foreach ($rows as $r) {
+                $conteoNotas[$r['curso_id']] = $r['total'];
+            }
+        }
+
+        $sede = $cursosTable->Sedes->get($sedeId);
+        $periodo = $cursosTable->Periodos->get($periodoId);
+        $sTituloPeriodo = $periodo->codename ?? $periodo->codigo ?? '';
+        $sTituloSede = $sede->codename ?? $sede->nombre ?? '';
+
+        $this->set(compact(
+            'cursos', 'conteoIndicadores', 'conteoContenidos', 'conteoNotas',
+            'sTituloPeriodo', 'sTituloSede', 'sedeId', 'periodoId', 'carreraId', 'docenteId'
+        ));
     }
 
     public function listarParticipantes($cursoId = null)
