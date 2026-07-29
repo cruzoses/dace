@@ -321,7 +321,7 @@ class CursosController extends AppController
         $estudianteCursosTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
         $query = $estudianteCursosTable->find()
             ->contain(['Estudiantes'])
-            ->where(['curso_id' => $nCursoId, 'activo' => 1])
+            ->where(['EstudianteCursos.curso_id' => $nCursoId, 'EstudianteCursos.activo' => 1])
             ->order(['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC']);
 
         $estudianteCursos = $this->paginate($query);
