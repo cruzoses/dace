@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 26/7/2026
+Modified: 31/7/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `auditorias`
   `usuario_id` Int NOT NULL,
   `fecha` Datetime NOT NULL,
   `evento` Varchar(40) NOT NULL,
-  `detalle` Text NOT NULL,
+  `detalle` Mediumtext NOT NULL,
   `host` Varchar(50) NOT NULL,
   `agente` Varchar(200) NOT NULL,
   `created` Datetime,
@@ -747,7 +747,8 @@ CREATE TABLE IF NOT EXISTS `estudiante_cursos`
   `calificacion` Varchar(10),
   `recuperacion` Varchar(10),
   `definitiva` Varchar(20),
-  `responsable` Varchar(50) NOT NULL,
+  `analista` Varchar(50) NOT NULL,
+  `responsable` Varchar(50),
   `observacion` Text,
   `activo` Tinyint(1) NOT NULL,
   `created` Datetime,

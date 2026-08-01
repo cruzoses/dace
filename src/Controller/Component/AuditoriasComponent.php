@@ -2,6 +2,7 @@
 namespace App\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 
 class AuditoriasComponent extends Component
@@ -20,6 +21,13 @@ class AuditoriasComponent extends Component
         $request = $controller->getRequest();
         $userId = $request->getSession()->read('Auth.User.id');
 
+        $detalle = (string)$detalle;
+        if (function_exists('mb_strcut')) {
+            $detalle = mb_strcut($detalle, 0, 65000, 'UTF-8');
+        } elseif (strlen($detalle) > 65000) {
+            $detalle = substr($detalle, 0, 65000);
+        }
+
         $auditoria = $this->Auditorias->newEntity([
             'usuario_id' => $userId,
             'fecha' => date('Y-m-d H:i:s'),
@@ -29,6 +37,10 @@ class AuditoriasComponent extends Component
             'agente' => $request->getEnv('HTTP_USER_AGENT'),
         ]);
 
-        $this->Auditorias->save($auditoria);
+        try {
+            $this->Auditorias->save($auditoria);
+        } catch (\Exception $e) {
+            Log::error('No se pudo registrar la auditoría: ' . $e->getMessage());
+        }
     }
 }

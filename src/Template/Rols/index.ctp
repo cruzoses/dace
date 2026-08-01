@@ -10,7 +10,8 @@
     <div class="col-xs-12">
         <div class="box box-sace box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Tipos de Usuarios</h3>
+                <i class="fa fa-book"></i>
+                <h3 class="box-title">Tipos de Usuarios</h3>
                 <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-print"></i>',
                         ['controller' => 'Reportes','action' => 'downloadPdf'],

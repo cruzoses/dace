@@ -19,7 +19,7 @@ class RolsController extends AppController
 		parent::beforeFilter($event);
 	}
 
-	public function isAuthorized($user = [])
+	public function isAuthorized($user = null)
 	{
 		return parent::isAuthorized($user);
 	}
@@ -45,13 +45,27 @@ class RolsController extends AppController
     */
     public function view($id = null)
     {
-        $rol = $this->Rols->get($id, [
-            'contain' => ['Usuarios'],
-        ]);
+        $rol = $this->Rols->get($id);
 
-        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Rol ' . json_encode($rol->toArray()));
+        $query = $this->Rols->Usuarios->find()
+            ->matching('Rols', function ($q) use ($id) {
+                return $q->where(['Rols.id' => $id]);
+            });
 
-        $this->set('rol', $rol);
+        $nTotalUsuarios = $query->count();
+
+        $usuarios = $this->paginate($query->order(['Usuarios.id' => 'ASC']));
+
+        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS Rol ' . json_encode([
+            'id' => $rol->id,
+            'nombre' => $rol->nombre,
+            'activo' => $rol->activo,
+            'created' => $rol->created,
+            'modified' => $rol->modified,
+            'total_usuarios' => $nTotalUsuarios,
+        ]));
+
+        $this->set(compact('rol', 'usuarios', 'nTotalUsuarios'));
     }
 
 
