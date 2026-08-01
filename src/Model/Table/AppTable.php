@@ -60,10 +60,17 @@ class AppTable extends Table
             if (isset($data[$campo]) && !empty($data[$campo])) 
             {
                 $fechaOriginal = str_replace('/', '-', $data[$campo]);
-                $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
-                if ($fechaFormateada === false) 
-                {
-                    $fechaFormateada = Time::createFromFormat('Y-m-d', $fechaOriginal);
+                try {
+                    $fechaFormateada = Time::createFromFormat('d-m-Y', $fechaOriginal);
+                } catch (\InvalidArgumentException $e) {
+                    $fechaFormateada = false;
+                }
+                if ($fechaFormateada === false) {
+                    try {
+                        $fechaFormateada = Time::createFromFormat('Y-m-d', $fechaOriginal);
+                    } catch (\InvalidArgumentException $e) {
+                        $fechaFormateada = false;
+                    }
                 }
                 if ($fechaFormateada !== false) 
                 {

@@ -424,6 +424,9 @@
 					</ul>
 				</li>											
 			<?php endif; ?>
+			<?php if( $this->Permiso->tiene(9) ) : ?>
+				<?= $this->Element('Estudiantes/opciones') ?>
+			<?php endif; ?>			
 			<?php if( $this->Permiso->tiene(10) ) : ?>
 				<li class="treeview">
 					<a href="#"><i class="fa fa-archive"></i><span>&nbsp;Datos</span>
@@ -449,8 +452,7 @@
 						<a href="<?= $this->Url->build(['controller' => 'usuarios','action' => 'cambiaclave'])?>">
 							<i class="far fa-dot-circle"></i>&nbsp;Cambiar Contraseña
 						</a>
-					</li>					
-
+					</li>
                     <li>
 						<a href="<?= $this->Url->build(['controller' => 'usuarios','action' => 'perfil'])?>">
 							<i class="far fa-dot-circle"></i>&nbsp;Perfil de Usuario

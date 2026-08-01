@@ -23,11 +23,17 @@ class EstudiantesController extends AppController
 
 	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([2,3]) )
+        $aValues = $this->request->getParam('action');
+		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] ) 
         {
-            return true;
-        }
-		return parent::isAuthorized($user);
+            if ( $this->tienePermiso([2,3]) ) 
+            {
+                return true;
+            } elseif( $this->tienePermiso(9) && in_array($aValues,['situacion']) ) {
+                return true;
+            }
+		}
+        return parent::isAuthorized($user);
 	}
 	
     /**
@@ -162,6 +168,141 @@ class EstudiantesController extends AppController
 
     }
 
+    /**
+     * Delete method
+     *
+     * @param string|null $id Estudiante id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+    */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $estudiante = $this->Estudiantes->get($id);
+        if ($this->Estudiantes->delete($estudiante)) {
+            $this->Flash->success(__('The {0} has been deleted.', 'Estudiante'));
+            $this->Auditorias->registrar('ELIMINA', 'ELIMINA LOS DATOS Estudiantes ' . json_encode($estudiante->toArray()));
+        } else {
+            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Estudiante'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+
+    public function situacion($id = null)
+    {
+        $programaId = null;
+        $estudiante = $this->Estudiantes->get($id);
+
+        $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+        $programasQuery = $programasTable->find()
+            ->where(['EstudianteProgramas.estudiante_id' => $id])
+            ->contain(['Carreras', 'Programas']);
+
+        if ($programaId) {
+            $programasQuery->where(['EstudianteProgramas.programa_id' => $programaId]);
+        }
+
+        $programas = $programasQuery->toArray();
+
+        $situacionEstudiantesTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+        foreach ($programas as $programa) {
+            $situacionEstudiantesTable->registrarDesdeMalla(
+                $id,
+                $programa->programa_id,
+                $programa->carrera_id,
+                $programa->periodo_id
+            );
+        }
+
+        $situaciones = [];
+        foreach ($programas as $programa) {
+            $asignaturasTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
+            $asignaturas = $asignaturasTable->find()
+                ->where([
+                    'SituacionEstudiantes.estudiante_id' => $id,
+                    'SituacionEstudiantes.programa_id' => $programa->programa_id,
+                ])
+                ->contain(['Asignaturas', 'Trayectos', 'Periodos'])
+                ->order(['SituacionEstudiantes.programa_id' => 'ASC', 'SituacionEstudiantes.trayecto_id' => 'ASC', 'SituacionEstudiantes.asignatura_id' => 'ASC'])
+                ->toArray();
+
+            $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
+            $mallas = $mallasTable->find()
+                ->where(['Mallas.programa_id' => $programa->programa_id])
+                ->toArray();
+            $mallasPorAsignatura = [];
+            foreach ($mallas as $m) {
+                $mallasPorAsignatura[$m->asignatura_id] = $m;
+            }
+
+            $notaMinimaPrograma = (float)$programa->programa->nota_minima;
+            $totalCreditosPrograma = (int)$programa->programa->creditos;
+            $totalAsignaturas = count($asignaturas);
+            $totalCreditosAprobados = 0;
+            $totalAsignaturasAprobadas = 0;
+            $isaNumerador = 0;
+            $isaDenominador = 0;
+            $iraNumerador = 0;
+            $iraDenominador = 0;
+
+            foreach ($asignaturas as $asig) {
+                if (empty($asig->calificacion)) {
+                    continue;
+                }
+                $esCualitativa = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
+                if ($esCualitativa) {
+                    $aprobada = strtoupper($asig->calificacion) === 'A';
+                    $notaISA = strtoupper($asig->calificacion) === 'A' ? 20 : 0;
+                } else {
+                    $notaMinima = $notaMinimaPrograma;
+                    if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
+                        $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
+                    }
+                    $aprobada = (float)$asig->calificacion >= $notaMinima;
+                    $notaISA = (float)$asig->calificacion;
+                }
+                if ($aprobada) {
+                    $totalCreditosAprobados += (int)$asig->asignatura->creditos;
+                    $totalAsignaturasAprobadas++;
+                }
+                $creditosAsig = (int)$asig->asignatura->creditos;
+                $isaNumerador += $notaISA * $creditosAsig;
+                $isaDenominador += $creditosAsig;
+
+                if (!empty($asig->acumulado) && (int)$asig->acumulado > 0) {
+                    $iraNumerador += (int)$asig->acumulado;
+                } else {
+                    $notaIRA = $esCualitativa ? $notaISA : (float)$asig->calificacion;
+                    $iraNumerador += $notaIRA * $creditosAsig;
+                }
+                $iraDenominador += $creditosAsig * (int)$asig->cursada;
+            }
+
+            $porcentajeAprobado = $totalCreditosPrograma > 0
+                ? round(($totalCreditosAprobados / $totalCreditosPrograma) * 100, 1)
+                : 0;
+
+            $isa = $isaDenominador > 0 ? round($isaNumerador / $isaDenominador, 5) : 0;
+            $ira = $iraDenominador > 0 ? round($iraNumerador / $iraDenominador, 5) : 0;
+
+            $situaciones[] = [
+                'programa' => $programa,
+                'asignaturas' => $asignaturas,
+                'mallasPorAsignatura' => $mallasPorAsignatura,
+                'totalCreditosPrograma' => $totalCreditosPrograma,
+                'totalAsignaturas' => $totalAsignaturas,
+                'totalCreditosAprobados' => $totalCreditosAprobados,
+                'totalAsignaturasAprobadas' => $totalAsignaturasAprobadas,
+                'porcentajeAprobado' => $porcentajeAprobado,
+                'isa' => $isa,
+                'ira' => $ira,
+            ];
+        }
+        $this->set('title', 'Situación');
+        $this->set(compact('estudiante', 'situaciones'));
+        $this->viewBuilder()->setLayout('ajax');
+    }
 
     /**
      * Get estados by pais_id (AJAX)
@@ -229,25 +370,4 @@ class EstudiantesController extends AppController
         return $this->response;
     }
 
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Estudiante id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-    */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $estudiante = $this->Estudiantes->get($id);
-        if ($this->Estudiantes->delete($estudiante)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Estudiante'));
-            $this->Auditorias->registrar('ELIMINA', 'ELIMINA LOS DATOS Estudiantes ' . json_encode($estudiante->toArray()));
-        } else {
-            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Estudiante'));
-        }
-
-        return $this->redirect(['action' => 'index']);
-    }
 }

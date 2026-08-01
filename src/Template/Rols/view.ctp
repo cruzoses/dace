@@ -1,4 +1,12 @@
-<!-- Main content -->
+<?php 
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Rol $rol
+ * @var \Cake\Collection\CollectionInterface|string[] $usuarios
+ * @var int $nTotalUsuarios
+ * @var string $sClass 
+ */
+?>
 <div class="row">
     <div class="col-md-12">
         <div class="box box-sace box-solid">
@@ -29,6 +37,7 @@
                     <dd><?= $rol->activo ? __('Yes') : __('No'); ?></dd>
                 </dl>
             </div>
+            <div class="box-footer"></div>
         </div>
     </div>
 </div>
@@ -57,6 +66,7 @@
                             <th scope="col" class="text-center"><?= __('Modified') ?></th>
                         </tr>
                         <?php foreach ($usuarios as $usuario): ?>
+                            <?php $sClass = ($usuario->activo) ? 'label-success' : 'label-danger'; ?>
                             <tr>
                                 <td><?= $this->Number->format($usuario->id) ?></td>
                                 <td><?= $this->Number->format($usuario->cedula) ?></td>
@@ -64,7 +74,11 @@
                                 <td><?= h($usuario->apellidos) ?></td>
                                 <td class="text-center"><?= h($usuario->fecha_nacimiento) ?></td>
                                 <td class="text-center"><?= h($usuario->sexo) ?></td>
-                                <td class="text-center"><?= h($usuario->activo)  ? 'SI' : 'NO'  ?></td>
+                                <td class="text-center">
+                                    <span class="label <?= $sClass ?>">
+                                        <?= h($usuario->activo)  ? 'SI' : 'NO'  ?>
+                                    </span>
+                                </td>
                                 <td class="text-center"><?= h($usuario->created) ?></td>
                                 <td class="text-center"><?= h($usuario->modified) ?></td>
                             </tr>

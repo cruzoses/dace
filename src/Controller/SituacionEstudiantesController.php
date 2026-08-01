@@ -11,24 +11,28 @@ use Cake\ORM\TableRegistry;
  * @property \App\Model\Table\SituacionEstudiantesTable $SituacionEstudiantes
  *
  * @method \App\Model\Entity\SituacionEstudiante[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class SituacionEstudiantesController extends AppController
 {
 
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
 	}
 
-    /**
-     * 
-    */
 	public function isAuthorized($user = null)
 	{
-		return parent::isAuthorized($user);
+        $aValues = $this->request->getParam('action');
+		if (isset($user['activo']) && isset($user['rols']) && $user['activo'] ) 
+        {
+            if ( $this->tienePermiso([2,3]) ) 
+            {
+                return true;
+            } elseif( $this->tienePermiso(9) && in_array($aValues,['situacion']) ) {
+                return true;
+            }
+		}
+        return parent::isAuthorized($user);
 	}
 	
     /**

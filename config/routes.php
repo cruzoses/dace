@@ -99,6 +99,16 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/cursos/get-horarios', ['controller' => 'Cursos', 'action' => 'getHorarios']);
     $routes->connect('/cursos/get-aulas', ['controller' => 'Cursos', 'action' => 'getAulas']);
 
+    $routes->connect(
+        '/rendimiento/:id',
+        ['controller' => 'Estudiantes', 'action' => 'situacion']
+    )
+    ->setPatterns(['id' => '\d+'])
+    ->setPass(['id']);
+
+
+    $routes->connect('/rendimiento', ['controller' => 'Estudiantes', 'action' => 'situacion']);
+
     /*
      * Connect catchall routes for all controllers.
      *
@@ -157,4 +167,18 @@ Router::scope('/api', function (RouteBuilder $routes) {
     $routes->connect('/aulas', ['controller' => 'Api', 'action' => 'aulas']);
     $routes->connect('/carreras', ['controller' => 'Api', 'action' => 'carreras']);
     $routes->connect('/trayectos', ['controller' => 'Api', 'action' => 'trayectos']);
+
+    $routes->connect('/captcha', ['controller' => 'Api', 'action' => 'captcha']);
+    $routes->connect('/registro-estudiante', ['controller' => 'Api', 'action' => 'registroEstudiante']);
+    $routes->connect('/registro-docente', ['controller' => 'Api', 'action' => 'registroDocente']);
+    $routes->connect('/recuperar-clave', ['controller' => 'Api', 'action' => 'recuperarClave']);
+
+    $routes->connect('/me-estudiante', ['controller' => 'Api', 'action' => 'meEstudiante']);
+    $routes->connect('/situacion', ['controller' => 'Api', 'action' => 'situacion']);
+    $routes->connect('/notas-lapso', ['controller' => 'Api', 'action' => 'notasLapso']);
+    $routes->connect('/inscripciones', ['controller' => 'Api', 'action' => 'inscripciones']);
+    $routes->connect('/historicos', ['controller' => 'Api', 'action' => 'historicos']);
+    $routes->connect('/noticias', ['controller' => 'Api', 'action' => 'noticias']);
+    $routes->connect('/noticias/{id}', ['controller' => 'Api', 'action' => 'noticiaView'], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('/perfil', ['controller' => 'Api', 'action' => 'perfilUpdate']);
 });

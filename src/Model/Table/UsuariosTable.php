@@ -198,7 +198,7 @@ class UsuariosTable extends AppTable
         $query
             //->select(['id', 'username', 'password'])
             ->where(['Usuarios.activo' => 1])
-            ->contain(['Rols']);
+            ->contain(['Rols','Estudiantes','Docentes','Empleados']);
         return $query;
     }
 
