@@ -99,16 +99,6 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/cursos/get-horarios', ['controller' => 'Cursos', 'action' => 'getHorarios']);
     $routes->connect('/cursos/get-aulas', ['controller' => 'Cursos', 'action' => 'getAulas']);
 
-    $routes->connect(
-        '/rendimiento/:id',
-        ['controller' => 'Estudiantes', 'action' => 'situacion']
-    )
-    ->setPatterns(['id' => '\d+'])
-    ->setPass(['id']);
-
-
-    $routes->connect('/rendimiento', ['controller' => 'Estudiantes', 'action' => 'situacion']);
-
     /*
      * Connect catchall routes for all controllers.
      *

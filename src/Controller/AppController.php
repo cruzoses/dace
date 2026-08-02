@@ -86,7 +86,6 @@ class AppController extends Controller
         } else {
             $this->viewBuilder()->setLayout("default");
         }
-        //$this->set('userActivo', $this->Auth->user());
         $this->set(compact('userActivo'));
 
         $aPermisosId = [];

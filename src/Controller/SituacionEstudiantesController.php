@@ -68,7 +68,6 @@ class SituacionEstudiantesController extends AppController
         $this->set('situacionEstudiante', $situacionEstudiante);
     }
 
-
     /**
      * Add method
      *
@@ -93,7 +92,6 @@ class SituacionEstudiantesController extends AppController
         $periodos = $this->SituacionEstudiantes->Periodos->find('list', ['limit' => 200]);
         $this->set(compact('situacionEstudiante', 'estudiantes', 'programas', 'asignaturas', 'periodos'));
     }
-
 
     /**
      * Edit method
@@ -124,7 +122,6 @@ class SituacionEstudiantesController extends AppController
         $this->set(compact('situacionEstudiante', 'estudiantes', 'programas', 'asignaturas', 'periodos'));
     }
 
-
     /**
      * Delete method
      *
@@ -151,7 +148,7 @@ class SituacionEstudiantesController extends AppController
      *
      * @param string|null $id Situacion Estudiante id.
      * @return \Cake\Http\Response|null
-     */
+    */
     public function califica($id = null)
     {
         $this->request->allowMethod(['ajax', 'get']);
@@ -180,7 +177,7 @@ class SituacionEstudiantesController extends AppController
      * Guarda la calificación de una asignatura vía AJAX.
      *
      * @return \Cake\Http\Response|null JSON response.
-     */
+    */
     public function guardarCalifica()
     {
         $this->request->allowMethod(['ajax', 'post']);
@@ -383,7 +380,7 @@ class SituacionEstudiantesController extends AppController
      *
      * @param string|null $id Situacion Estudiante id.
      * @return \Cake\Http\Response|null JSON response.
-     */
+    */
     public function eliminarCalifica($id = null)
     {
         $this->request->allowMethod(['ajax', 'post']);

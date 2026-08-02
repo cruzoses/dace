@@ -35,6 +35,10 @@ class ReportesController extends AppController
                 if (in_array($aValues,['listarParticipantes', 'listarActadeNotas'] )) {
                     return true;
                 }                
+            } elseif( $this->tienePermiso([9]) ) {
+                if (in_array($aValues, ['situacionAcademica'])) {
+                    return true;
+                }
             }
 		}
         return parent::isAuthorized($user);
@@ -107,6 +111,11 @@ class ReportesController extends AppController
 
     public function situacionAcademica($estudianteId = null, $programaId = null)
     {
+        $userActivo = $this->request->getSession()->read('Auth.User');
+        if (isset($userActivo['estudiantes'][0]['id'])) {
+            $estudianteId = (int)$userActivo['estudiantes'][0]['id'];
+        }
+
         $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
         $estudiante = $estudiantesTable->get($estudianteId);
 
@@ -211,7 +220,11 @@ class ReportesController extends AppController
 
         $this->set($result);
         $this->set('estudianteId', $estudianteId);
-        $this->render('/Datos/visorpdf');
+        if (isset($userActivo['estudiantes'][0]['id'])) {
+            $this->render('/Estudiantes/visorpdf');
+        } else {
+            $this->render('/Datos/visorpdf');
+        }
     }
 
     public function notasCertificadas($estudianteId = null, $programaId = null)

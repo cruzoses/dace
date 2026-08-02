@@ -52,6 +52,7 @@ class IndicadorCursosTable extends AppTable
             'joinType' => 'INNER',
         ]);
         $this->hasMany('ContenidosCursos', [
+            'className' => 'ContenidoCursos',
             'foreignKey' => 'indicador_curso_id',
         ]);
     }

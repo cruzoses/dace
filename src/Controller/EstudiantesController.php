@@ -29,7 +29,7 @@ class EstudiantesController extends AppController
             if ( $this->tienePermiso([2,3]) ) 
             {
                 return true;
-            } elseif( $this->tienePermiso(9) && in_array($aValues,['situacion']) ) {
+            } elseif( $this->tienePermiso(9) && in_array($aValues,['situacion', 'notasLapso']) ) {
                 return true;
             }
 		}
@@ -191,19 +191,34 @@ class EstudiantesController extends AppController
 
     public function situacion($id = null)
     {
-        $programaId = null;
-        $estudiante = $this->Estudiantes->get($id);
-
-        $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
-        $programasQuery = $programasTable->find()
-            ->where(['EstudianteProgramas.estudiante_id' => $id])
-            ->contain(['Carreras', 'Programas']);
-
-        if ($programaId) {
-            $programasQuery->where(['EstudianteProgramas.programa_id' => $programaId]);
+        if (!$id) 
+        {
+            $this->Flash->error(__('No se especificó el estudiante.'));
+            return $this->redirect(['action' => 'homepage']);
         }
 
-        $programas = $programasQuery->toArray();
+        $userActivo = $this->request->getSession()->read('Auth.User');
+
+        if (isset($userActivo['estudiantes'][0]['id'])) 
+        {
+            $nId = (int)$userActivo['estudiantes'][0]['id'];
+        }
+
+        if ( isset($nId) && $nId !== (int)$id ) 
+        {
+            $this->Flash->error(__('No tiene permiso para ver la situación de este estudiante.'));
+            return $this->redirect(['action' => 'homepage']);
+        }
+
+        $estudiante = $this->Estudiantes->get($id, [
+            'contain' => ['Usuarios'],
+        ]);
+
+        $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+        $programas = $programasTable->find()
+            ->where(['EstudianteProgramas.estudiante_id' => $id])
+            ->contain(['Carreras', 'Programas'])
+            ->toArray();
 
         $situacionEstudiantesTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
         foreach ($programas as $programa) {
@@ -217,8 +232,7 @@ class EstudiantesController extends AppController
 
         $situaciones = [];
         foreach ($programas as $programa) {
-            $asignaturasTable = TableRegistry::getTableLocator()->get('SituacionEstudiantes');
-            $asignaturas = $asignaturasTable->find()
+            $asignaturas = $situacionEstudiantesTable->find()
                 ->where([
                     'SituacionEstudiantes.estudiante_id' => $id,
                     'SituacionEstudiantes.programa_id' => $programa->programa_id,
@@ -299,14 +313,91 @@ class EstudiantesController extends AppController
                 'ira' => $ira,
             ];
         }
+
+        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LOS DATOS SITUACION Estudiantes ' . json_encode($estudiante->toArray()));
         $this->set('title', 'Situación');
         $this->set(compact('estudiante', 'situaciones'));
-        $this->viewBuilder()->setLayout('ajax');
+    }
+
+    public function notasLapso()
+    {
+        $userActivo = $this->request->getSession()->read('Auth.User');
+        $estudianteId = isset($userActivo['estudiantes'][0]['id']) ? (int)$userActivo['estudiantes'][0]['id'] : null;
+
+        if (!$estudianteId) {
+            $this->Flash->error(__('No se encontró el estudiante asociado al usuario.'));
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $estudiante = $this->Estudiantes->get($estudianteId, [
+            'contain' => ['Usuarios'],
+        ]);
+
+        $estudianteCursosTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
+        $ecs = $estudianteCursosTable->find()
+            ->where(['EstudianteCursos.estudiante_id' => $estudianteId])
+            ->contain(['Cursos' => ['Asignaturas', 'Periodos']])
+            ->order(['Cursos.periodo_id' => 'DESC', 'Cursos.id' => 'ASC'])
+            ->toArray();
+
+        $indicadorCursosTable = TableRegistry::getTableLocator()->get('IndicadorCursos');
+        $cursoNotasTable = TableRegistry::getTableLocator()->get('CursoNotas');
+
+        $periodos = [];
+        foreach ($ecs as $ec) {
+            $curso = $ec->curso;
+
+            $contenidoIds = [];
+            $indicadores = $indicadorCursosTable->find()
+                ->where(['curso_id' => $curso->id])
+                ->contain(['ContenidosCursos'])
+                ->toArray();
+
+            foreach ($indicadores as $ind) {
+                if (empty($ind->contenidos_cursos)) {
+                    continue;
+                }
+                foreach ($ind->contenidos_cursos as $cc) {
+                    if ((int)$cc->activo === 1) {
+                        $contenidoIds[] = $cc->id;
+                    }
+                }
+            }
+
+            $notas = [];
+            if (!empty($contenidoIds)) {
+                $notas = $cursoNotasTable->find()
+                    ->where([
+                        'CursoNotas.estudiante_id' => $estudianteId,
+                        'CursoNotas.contenido_curso_id IN' => $contenidoIds,
+                    ])
+                    ->contain(['ContenidoCursos' => ['IndicadorCursos']])
+                    ->order(['ContenidoCursos.fecha' => 'ASC'])
+                    ->toArray();
+            }
+
+            $periodoId = $curso->periodo_id;
+            if (!isset($periodos[$periodoId])) {
+                $periodos[$periodoId] = [
+                    'periodo' => $curso->periodo,
+                    'cursos' => [],
+                ];
+            }
+            $periodos[$periodoId]['cursos'][] = [
+                'ec' => $ec,
+                'curso' => $curso,
+                'notas' => $notas,
+            ];
+        }
+
+        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LAS NOTAS DE LAPSO Estudiantes ' . json_encode($estudiante->toArray()));
+        $this->set('title', 'Notas de Lapso');
+        $this->set(compact('estudiante', 'periodos'));
     }
 
     /**
      * Get estados by pais_id (AJAX)
-     */
+    */
     public function getEstados()
     {
         $this->request->allowMethod(['ajax', 'get']);

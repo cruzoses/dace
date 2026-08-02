@@ -11,5 +11,11 @@
                 <i class="far fa-dot-circle"></i>&nbsp;Situación Académica
             </a>
 		</li>
+        <li>
+            <a href="<?= $this->Url->build(['controller' => 'Estudiantes','action' => 'notasLapso',
+                $userActivo['estudiantes'][0]['id']])?>">
+                <i class="far fa-dot-circle"></i>&nbsp;Notas de Lapso
+            </a>
+		</li>
     </ul>
 </li>
