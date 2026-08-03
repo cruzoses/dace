@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Lib\NotasCalculador;
 use Cake\Event\Event;
 use Cake\Core\Configure;
 use Cake\Mailer\Email;
@@ -1036,7 +1037,10 @@ class ApiController extends AppController
 
         $estudianteCursosTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
         $ecs = $estudianteCursosTable->find()
-            ->where(['EstudianteCursos.estudiante_id' => $estudiante->id])
+            ->where([
+                'EstudianteCursos.estudiante_id' => $estudiante->id,
+                'Cursos.activo' => 1,
+            ])
             ->contain(['Cursos' => ['Asignaturas', 'Periodos', 'Docentes', 'Aulas']])
             ->order(['Cursos.id' => 'DESC'])
             ->toArray();
@@ -1056,6 +1060,7 @@ class ApiController extends AppController
 
             $contenidoIds = [];
             $contenidos = [];
+            $aContenidos = [];
             foreach ($indicadores as $ind) {
                 if (!empty($ind->contenidos_cursos)) {
                     foreach ($ind->contenidos_cursos as $cc) {
@@ -1071,6 +1076,8 @@ class ApiController extends AppController
                             'escala_nota' => $ind->escala_nota,
                             'indicador' => $ind->has('indicador') ? $ind->indicador->nombre : null,
                         ];
+                        $cc->indicador_curso = $ind;
+                        $aContenidos[] = $cc;
                     }
                 }
             }
@@ -1086,8 +1093,22 @@ class ApiController extends AppController
             }
 
             $notasMap = [];
+            $aNotasMap = [];
             foreach ($notas as $n) {
                 $notasMap[(int)$n->contenido_curso_id] = $n->calificacion;
+                $aNotasMap[(int)$n->estudiante_id][(int)$n->contenido_curso_id] = $n->calificacion;
+            }
+
+            $resumen = null;
+            if (!empty($aContenidos)) {
+                $aTotales = NotasCalculador::calcularTotales(
+                    (int)$curso->asignatura->calificacion,
+                    $aContenidos,
+                    $aNotasMap
+                );
+                if (isset($aTotales[$estudiante->id])) {
+                    $resumen = $aTotales[$estudiante->id];
+                }
             }
 
             $evaluaciones = [];
@@ -1121,6 +1142,11 @@ class ApiController extends AppController
                 'observacion' => $ec->observacion,
                 'activo' => (int)$ec->activo,
                 'evaluaciones' => $evaluaciones,
+                'resumen' => $resumen ? [
+                    'total' => $resumen['total'],
+                    'final' => $resumen['final'],
+                    'por_indicador' => $resumen['porIndicador'],
+                ] : null,
             ];
         }
 

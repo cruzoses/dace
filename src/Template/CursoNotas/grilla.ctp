@@ -239,7 +239,9 @@ $(document).ready(function () {
         { ponderacion: <?= (int)$oEvaluacion->ponderacion ?>,
           escala: <?= $nEscala ?>,
           maxNota: <?= $nMaxNota ?>,
-          contenidoId: <?= (int)$oEvaluacion->id ?> }<?= ++$nMetaIdx < count($aEvaluaciones) ? ',' : '' ?>
+          contenidoId: <?= (int)$oEvaluacion->id ?>,
+          indicadorId: <?= (int)$oEvaluacion->indicador_curso_id ?>,
+          indicadorPorcentaje: <?= (float)$oEvaluacion->indicador_curso->porcentaje ?> }<?= ++$nMetaIdx < count($aEvaluaciones) ? ',' : '' ?>
         <?php endforeach; ?>
     ];
 
@@ -247,7 +249,7 @@ $(document).ready(function () {
         switch (nEscala) {
             case 1:  return (nNota / 20) * 100;
             case 2:  return (nNota / nMaxNota) * 100;
-            case 3:  return nNota;
+            case 3:  return (nNota / nMaxNota) * 100;
             default: return 0;
         }
     }
@@ -276,6 +278,12 @@ $(document).ready(function () {
         return 20;
     }
 
+    var nSumaPlan = 0;
+    for (var i = 0; i < aEvalMeta.length; i++) {
+        nSumaPlan += aEvalMeta[i].ponderacion;
+    }
+    var bSobreCargado = nSumaPlan > 100;
+
     function fnCalcularTotales() {
         $('#grillaNotas tbody tr').each(function () {
             var $fila = $(this);
@@ -295,11 +303,55 @@ $(document).ready(function () {
                 return;
             }
 
-            var nTotalNat = 0;
-            var nTotalNorm = 0;
-            var bCompleto = false;
-            var bMixto = false;
-            var nPrimeraEscala = 0;
+            if (!bSobreCargado) {
+                var nTotalNat = 0;
+                var nTotalNorm = 0;
+                var bCompleto = false;
+                var bMixto = false;
+                var nPrimeraEscala = 0;
+
+                $fila.find('.nota-input').each(function () {
+                    var $input = $(this);
+                    var sVal = ($input.val() || '').toString().trim();
+                    if (sVal === '') return;
+
+                    var nNota = parseFloat(sVal);
+                    if (isNaN(nNota)) return;
+
+                    var nEvalIdx = parseInt($input.data('eval')) - 1;
+                    var oMeta = aEvalMeta[nEvalIdx];
+                    if (!oMeta) return;
+
+                    bCompleto = true;
+
+                    if (nPrimeraEscala === 0) {
+                        nPrimeraEscala = oMeta.escala;
+                    } else if (oMeta.escala !== nPrimeraEscala) {
+                        bMixto = true;
+                    }
+
+                    nTotalNat += nNota * (oMeta.ponderacion / 100);
+                    nTotalNorm += fnNormalizar(nNota, oMeta.escala, oMeta.maxNota) * (oMeta.ponderacion / 100);
+                });
+
+                if (!bCompleto) {
+                    $fila.find('#total-' + nEstudiante).html('&mdash;');
+                    $fila.find('#final-' + nEstudiante).html('&mdash;');
+                    return;
+                }
+
+                if (!bMixto && nPrimeraEscala === 1) {
+                    $fila.find('#total-' + nEstudiante).text(nTotalNat.toFixed(2));
+                    $fila.find('#final-' + nEstudiante).text(String(Math.round(nTotalNat)));
+                } else {
+                    $fila.find('#total-' + nEstudiante).text(nTotalNorm.toFixed(2));
+                    $fila.find('#final-' + nEstudiante).text(fnAEscala20(nTotalNorm));
+                }
+
+                return;
+            }
+
+            var aIndicadores = {};
 
             $fila.find('.nota-input').each(function () {
                 var $input = $(this);
@@ -309,36 +361,45 @@ $(document).ready(function () {
                 var nNota = parseFloat(sVal);
                 if (isNaN(nNota)) return;
 
-                bCompleto = true;
                 var nEvalIdx = parseInt($input.data('eval')) - 1;
                 var oMeta = aEvalMeta[nEvalIdx];
                 if (!oMeta) return;
 
-                if (nPrimeraEscala === 0) {
-                    nPrimeraEscala = oMeta.escala;
-                } else if (oMeta.escala !== nPrimeraEscala) {
-                    bMixto = true;
+                if (!aIndicadores[oMeta.indicadorId]) {
+                    aIndicadores[oMeta.indicadorId] = {
+                        numerador: 0,
+                        peso: 0,
+                        indicadorPorcentaje: oMeta.indicadorPorcentaje
+                    };
                 }
 
-                nTotalNat += nNota * (oMeta.ponderacion / 100);
-
                 var nNorm = fnNormalizar(nNota, oMeta.escala, oMeta.maxNota);
-                nTotalNorm += nNorm * (oMeta.ponderacion / 100);
+                aIndicadores[oMeta.indicadorId].numerador += nNorm * oMeta.ponderacion;
+                aIndicadores[oMeta.indicadorId].peso += oMeta.ponderacion;
             });
 
-            if (!bCompleto) {
+            var nTotal = 0;
+            var nSumaPesos = 0;
+            for (var nIndId in aIndicadores) {
+                var oInd = aIndicadores[nIndId];
+                if (oInd.peso <= 0) continue;
+
+                var nScoreInd = oInd.numerador / oInd.peso;
+                var nPorcentajeInd = parseFloat(oInd.indicadorPorcentaje) || 0;
+                nTotal += nScoreInd * (nPorcentajeInd / 100);
+                nSumaPesos += nPorcentajeInd;
+            }
+
+            if (nSumaPesos <= 0) {
                 $fila.find('#total-' + nEstudiante).html('&mdash;');
                 $fila.find('#final-' + nEstudiante).html('&mdash;');
                 return;
             }
 
-            $fila.find('#total-' + nEstudiante).text(nTotalNat.toFixed(2));
+            var nTotalNormalizado = (nTotal / nSumaPesos) * 100;
 
-            if (!bMixto && nPrimeraEscala === 1) {
-                $fila.find('#final-' + nEstudiante).text(nTotalNat.toFixed(0));
-            } else {
-                $fila.find('#final-' + nEstudiante).text(fnAEscala20(nTotalNorm));
-            }
+            $fila.find('#total-' + nEstudiante).text(nTotalNormalizado.toFixed(2));
+            $fila.find('#final-' + nEstudiante).text(fnAEscala20(nTotalNormalizado));
         });
     }
 
@@ -384,7 +445,8 @@ $(document).ready(function () {
             } else {
                 var nTotalVal = parseFloat($total.text());
                 if (!isNaN(nTotalVal) && nTotalVal > 0) {
-                    if (nTotalVal >= nNotaMinima) $total.addClass('nota-aprobada');
+                    var nUmbral = bSobreCargado ? nNotaMinima * 5 : nNotaMinima;
+                    if (nTotalVal >= nUmbral) $total.addClass('nota-aprobada');
                     else $total.addClass('nota-reprobada');
                 }
                 var nFinalVal = parseFloat($final.text());

@@ -309,7 +309,7 @@ class EstudianteCursosController extends AppController
         $html .= '<th class="text-center" style="width:30px;"><input type="checkbox" id="check-todos" title="Seleccionar todos"></th>';
         $html .= '<th class="text-center">Curso</th><th>Carrera</th><th>Trayecto</th>';
         $html .= '<th class="text-center">Sección</th><th>Asignatura</th>';
-        $html .= '<th class="text-center">Fecha</th><th>Analista</th>';
+        $html .= '<th class="text-center">Fecha</th><th>Responsable</th>';
         $html .= '</tr></thead><tbody>';
 
         if ($count > 0) {
@@ -325,7 +325,7 @@ class EstudianteCursosController extends AppController
                 $html .= '</td>';
                 $html .= '<td>' . ($ins->curso->has('asignatura') ? h($ins->curso->asignatura->codename) : '') . '</td>';
                 $html .= '<td class="text-center">' . $ins->created->format('d/m/Y') . '</td>';
-                $html .= '<td>' . h($ins->analista) . '</td>';
+                $html .= '<td>' . h(!empty($ins->responsable) ? $ins->responsable : $ins->analista) . '</td>';
                 $html .= '</tr>';
             }
         } else {

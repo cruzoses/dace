@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 31/7/2026
+Modified: 2/8/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -711,6 +711,7 @@ CREATE TABLE IF NOT EXISTS `curso_notas`
   `estudiante_id` Int NOT NULL,
   `calificacion` Varchar(10),
   `responsable` Varchar(50),
+  `procesada` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,
   PRIMARY KEY (`id`)

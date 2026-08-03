@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Lib\NotasCalculador;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -65,6 +66,142 @@ class DatosController extends AppController
     }
 
     public function rendimiento(){}
+
+    /**
+     * Consulta las notas por periodo del estudiante (vista Ficha -> Notas de Lapso).
+     *
+     * @param int|null $id
+     * @return \Cake\Http\Response|null
+     */
+    public function evaluaciones($id = null)
+    {
+        if (!$id) {
+            $this->Flash->error(__('No se especificó el estudiante.'));
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($id, ['contain' => ['Usuarios']]);
+
+        if (!$estudiante) {
+            $this->Flash->error(__('No se encontró el estudiante.'));
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $estudianteCursosTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
+        $ecs = $estudianteCursosTable->find()
+            ->where([
+                'EstudianteCursos.estudiante_id' => $id,
+                'Cursos.activo' => 1,
+            ])
+            ->contain(['Cursos' => ['Asignaturas', 'Periodos']])
+            ->order(['Cursos.periodo_id' => 'DESC', 'Cursos.id' => 'ASC'])
+            ->toArray();
+
+        $indicadorCursosTable = TableRegistry::getTableLocator()->get('IndicadorCursos');
+        $cursoNotasTable = TableRegistry::getTableLocator()->get('CursoNotas');
+
+        $aProgramaIds = [];
+        foreach ($ecs as $ec) {
+            if (!empty($ec->curso->programas)) {
+                foreach (array_filter(explode(' ', $ec->curso->programas)) as $nPid) {
+                    $aProgramaIds[] = (int)$nPid;
+                }
+            }
+        }
+        $aProgramaIds = array_unique($aProgramaIds);
+
+        $aProgramas = [];
+        if (!empty($aProgramaIds)) {
+            $programasTable = TableRegistry::getTableLocator()->get('Programas');
+            $aProgramas = $programasTable->find('list', ['keyField' => 'id', 'valueField' => 'codigo'])
+                ->where(['Programas.id IN' => $aProgramaIds])
+                ->toArray();
+        }
+
+        $periodos = [];
+        foreach ($ecs as $ec) {
+            $curso = $ec->curso;
+
+            $sProgramaCodigo = '';
+            if (!empty($curso->programas)) {
+                $aIds = array_filter(explode(' ', $curso->programas));
+                $nPid = (int)reset($aIds);
+                $sProgramaCodigo = isset($aProgramas[$nPid]) ? $aProgramas[$nPid] : '';
+            }
+
+            $contenidoIds = [];
+            $aContenidos = [];
+            $indicadores = $indicadorCursosTable->find()
+                ->where(['curso_id' => $curso->id])
+                ->contain(['ContenidosCursos'])
+                ->toArray();
+
+            foreach ($indicadores as $ind) {
+                if (empty($ind->contenidos_cursos)) {
+                    continue;
+                }
+                foreach ($ind->contenidos_cursos as $cc) {
+                    if ((int)$cc->activo === 1) {
+                        $contenidoIds[] = $cc->id;
+                        $cc->indicador_curso = $ind;
+                        $aContenidos[] = $cc;
+                    }
+                }
+            }
+
+            $notas = [];
+            if (!empty($contenidoIds)) {
+                $notas = $cursoNotasTable->find()
+                    ->where([
+                        'CursoNotas.estudiante_id' => $id,
+                        'CursoNotas.contenido_curso_id IN' => $contenidoIds,
+                    ])
+                    ->contain(['ContenidoCursos' => ['IndicadorCursos']])
+                    ->order(['ContenidoCursos.fecha' => 'ASC'])
+                    ->toArray();
+            }
+
+            $aNotasMap = [];
+            foreach ($notas as $oNota) {
+                $aNotasMap[(int)$oNota->estudiante_id][(int)$oNota->contenido_curso_id] = $oNota->calificacion;
+            }
+
+            $oResumen = null;
+            if (!empty($aContenidos)) {
+                $aTotales = NotasCalculador::calcularTotales(
+                    (int)$curso->asignatura->calificacion,
+                    $aContenidos,
+                    $aNotasMap
+                );
+                if (isset($aTotales[$id])) {
+                    $oResumen = $aTotales[$id];
+                }
+            }
+
+            $periodoId = $curso->periodo_id;
+            if (!isset($periodos[$periodoId])) {
+                $periodos[$periodoId] = [
+                    'periodo' => $curso->periodo,
+                    'cursos' => [],
+                ];
+            }
+            $periodos[$periodoId]['cursos'][] = [
+                'ec' => $ec,
+                'curso' => $curso,
+                'notas' => $notas,
+                'programa_codigo' => $sProgramaCodigo,
+                'total' => $oResumen ? $oResumen['total'] : null,
+                'final' => $oResumen ? $oResumen['final'] : null,
+                'por_indicador' => $oResumen ? $oResumen['porIndicador'] : [],
+            ];
+        }
+
+        $this->Auditorias->registrar('CONSULTA', 'CONSULTA LAS NOTAS DE LAPSO DE LA FICHA Estudiantes ' . json_encode($estudiante->toArray()));
+        $this->set('title', 'Notas de Lapso');
+        $this->set(compact('estudiante', 'periodos'));
+        $this->viewBuilder()->setLayout('ajax');
+    }
 
     public function programas($estudianteId = null)
     {

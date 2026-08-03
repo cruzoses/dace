@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Lib\NotasCalculador;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -260,23 +261,29 @@ class EstudiantesController extends AppController
             $iraNumerador = 0;
             $iraDenominador = 0;
 
-            foreach ($asignaturas as $asig) {
-                if (empty($asig->calificacion)) {
+            foreach ($asignaturas as $asig) 
+            {
+                if ( empty($asig->calificacion) ) 
+                {
                     continue;
                 }
+
                 $esCualitativa = $asig->has('asignatura') && (int)$asig->asignatura->calificacion === 1;
-                if ($esCualitativa) {
+                if ($esCualitativa) 
+                {
                     $aprobada = strtoupper($asig->calificacion) === 'A';
                     $notaISA = strtoupper($asig->calificacion) === 'A' ? 20 : 0;
                 } else {
                     $notaMinima = $notaMinimaPrograma;
-                    if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) {
+                    if (isset($mallasPorAsignatura[$asig->asignatura_id]) && !empty($mallasPorAsignatura[$asig->asignatura_id]->nota_minima)) 
+                    {
                         $notaMinima = (float)$mallasPorAsignatura[$asig->asignatura_id]->nota_minima;
                     }
                     $aprobada = (float)$asig->calificacion >= $notaMinima;
                     $notaISA = (float)$asig->calificacion;
                 }
-                if ($aprobada) {
+                if ($aprobada) 
+                {
                     $totalCreditosAprobados += (int)$asig->asignatura->creditos;
                     $totalAsignaturasAprobadas++;
                 }
@@ -324,7 +331,8 @@ class EstudiantesController extends AppController
         $userActivo = $this->request->getSession()->read('Auth.User');
         $estudianteId = isset($userActivo['estudiantes'][0]['id']) ? (int)$userActivo['estudiantes'][0]['id'] : null;
 
-        if (!$estudianteId) {
+        if (!$estudianteId) 
+        {
             $this->Flash->error(__('No se encontró el estudiante asociado al usuario.'));
             return $this->redirect(['action' => 'index']);
         }
@@ -335,7 +343,10 @@ class EstudiantesController extends AppController
 
         $estudianteCursosTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
         $ecs = $estudianteCursosTable->find()
-            ->where(['EstudianteCursos.estudiante_id' => $estudianteId])
+            ->where([
+                'EstudianteCursos.estudiante_id' => $estudianteId,
+                'Cursos.activo' => 1,
+            ])
             ->contain(['Cursos' => ['Asignaturas', 'Periodos']])
             ->order(['Cursos.periodo_id' => 'DESC', 'Cursos.id' => 'ASC'])
             ->toArray();
@@ -343,29 +354,61 @@ class EstudiantesController extends AppController
         $indicadorCursosTable = TableRegistry::getTableLocator()->get('IndicadorCursos');
         $cursoNotasTable = TableRegistry::getTableLocator()->get('CursoNotas');
 
+        $aProgramaIds = [];
+        foreach ($ecs as $ec) {
+            if (!empty($ec->curso->programas)) {
+                foreach (array_filter(explode(' ', $ec->curso->programas)) as $nPid) {
+                    $aProgramaIds[] = (int)$nPid;
+                }
+            }
+        }
+        $aProgramaIds = array_unique($aProgramaIds);
+
+        $aProgramas = [];
+        if (!empty($aProgramaIds)) {
+            $programasTable = TableRegistry::getTableLocator()->get('Programas');
+            $aProgramas = $programasTable->find('list', ['keyField' => 'id', 'valueField' => 'codigo'])
+                ->where(['Programas.id IN' => $aProgramaIds])
+                ->toArray();
+        }
+
         $periodos = [];
         foreach ($ecs as $ec) {
             $curso = $ec->curso;
 
+            $sProgramaCodigo = '';
+            if (!empty($curso->programas)) {
+                $aIds = array_filter(explode(' ', $curso->programas));
+                $nPid = (int)reset($aIds);
+                $sProgramaCodigo = isset($aProgramas[$nPid]) ? $aProgramas[$nPid] : '';
+            }
+
             $contenidoIds = [];
+            $aContenidos = [];
             $indicadores = $indicadorCursosTable->find()
                 ->where(['curso_id' => $curso->id])
                 ->contain(['ContenidosCursos'])
                 ->toArray();
 
-            foreach ($indicadores as $ind) {
-                if (empty($ind->contenidos_cursos)) {
+            foreach ($indicadores as $ind) 
+            {
+                if (empty($ind->contenidos_cursos)) 
+                {
                     continue;
                 }
-                foreach ($ind->contenidos_cursos as $cc) {
+                foreach ($ind->contenidos_cursos as $cc) 
+                {
                     if ((int)$cc->activo === 1) {
                         $contenidoIds[] = $cc->id;
+                        $cc->indicador_curso = $ind;
+                        $aContenidos[] = $cc;
                     }
                 }
             }
 
             $notas = [];
-            if (!empty($contenidoIds)) {
+            if (!empty($contenidoIds)) 
+            {
                 $notas = $cursoNotasTable->find()
                     ->where([
                         'CursoNotas.estudiante_id' => $estudianteId,
@@ -376,8 +419,26 @@ class EstudiantesController extends AppController
                     ->toArray();
             }
 
+            $aNotasMap = [];
+            foreach ($notas as $oNota) {
+                $aNotasMap[(int)$oNota->estudiante_id][(int)$oNota->contenido_curso_id] = $oNota->calificacion;
+            }
+
+            $oResumen = null;
+            if (!empty($aContenidos)) {
+                $aTotales = NotasCalculador::calcularTotales(
+                    (int)$curso->asignatura->calificacion,
+                    $aContenidos,
+                    $aNotasMap
+                );
+                if (isset($aTotales[$estudianteId])) {
+                    $oResumen = $aTotales[$estudianteId];
+                }
+            }
+
             $periodoId = $curso->periodo_id;
-            if (!isset($periodos[$periodoId])) {
+            if (!isset($periodos[$periodoId])) 
+            {
                 $periodos[$periodoId] = [
                     'periodo' => $curso->periodo,
                     'cursos' => [],
@@ -387,6 +448,10 @@ class EstudiantesController extends AppController
                 'ec' => $ec,
                 'curso' => $curso,
                 'notas' => $notas,
+                'programa_codigo' => $sProgramaCodigo,
+                'total' => $oResumen ? $oResumen['total'] : null,
+                'final' => $oResumen ? $oResumen['final'] : null,
+                'por_indicador' => $oResumen ? $oResumen['porIndicador'] : [],
             ];
         }
 
@@ -405,7 +470,8 @@ class EstudiantesController extends AppController
         $pais_id = $this->request->getQuery('pais_id');
 
         $estados = [];
-        if ($pais_id) {
+        if ($pais_id) 
+        {
             $estados = $this->Estudiantes->Estados->find('list', ['limit' => 200])
                 ->where(['pais_id' => $pais_id])
                 ->order(['nombre' => 'ASC'])

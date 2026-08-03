@@ -19,6 +19,7 @@ use Cake\Event\EventInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use App\Lib\NotasCalculador;
 
 /**
  * Application Controller
@@ -374,6 +375,8 @@ class AppController extends Controller
             $aNotasMap[$nEstId][$nContId] = $oNota->calificacion;
         }
 
+        $aTotales = NotasCalculador::calcularTotales($nTipoCalificacion, $aEvaluaciones, $aNotasMap);
+
         $aGrillas = [];
         foreach ($aEstudiantes as $oEc) {
             $nEstId = (int)$oEc->estudiante_id;
@@ -385,61 +388,17 @@ class AppController extends Controller
                 'notas' => [],
                 'total' => '',
                 'final' => '',
+                'por_indicador' => [],
             ];
 
-            if ($nTipoCalificacion === 1) {
-                $nA = 0;
-                $nR = 0;
-                foreach ($aEvaluaciones as $oCont) {
-                    $sVal = $aNotasMap[$nEstId][$oCont->id] ?? '';
-                    $aRow['notas'][$oCont->id] = $sVal;
-                    $sVal = strtoupper(trim($sVal));
-                    if ($sVal === 'A') $nA++;
-                    elseif ($sVal === 'R') $nR++;
-                }
-                $sResultado = ($nA + $nR === 0) ? '' : ($nA >= $nR ? 'A' : 'R');
-                $aRow['total'] = $sResultado;
-                $aRow['final'] = $sResultado;
-            } else {
-                $nTotalNat = 0;
-                $nTotalNorm = 0;
-                $bCompleto = false;
-                $bMixto = false;
-                $nPrimeraEscala = 0;
+            foreach ($aEvaluaciones as $oCont) {
+                $aRow['notas'][$oCont->id] = $aNotasMap[$nEstId][$oCont->id] ?? '';
+            }
 
-                foreach ($aEvaluaciones as $oCont) {
-                    $sVal = $aNotasMap[$nEstId][$oCont->id] ?? '';
-                    $aRow['notas'][$oCont->id] = $sVal;
-
-                    if (trim($sVal) === '') continue;
-
-                    $nNota = (float)$sVal;
-                    $nEscala = (int)$oCont->indicador_curso->escala_nota;
-                    $nPonderacion = (int)$oCont->ponderacion;
-                    $nMaxNota = ($nEscala == 2 || $nEscala == 3) ? $nPonderacion : 20;
-
-                    $bCompleto = true;
-
-                    if ($nPrimeraEscala === 0) {
-                        $nPrimeraEscala = $nEscala;
-                    } elseif ($nEscala !== $nPrimeraEscala) {
-                        $bMixto = true;
-                    }
-
-                    $nTotalNat += $nNota * ($nPonderacion / 100);
-
-                    $nNorm = $this->_normalizarNota($nNota, $nEscala, $nMaxNota);
-                    $nTotalNorm += $nNorm * ($nPonderacion / 100);
-                }
-
-                if ($bCompleto) {
-                    $aRow['total'] = number_format($nTotalNat, 2, '.', '');
-                    if (!$bMixto && $nPrimeraEscala === 1) {
-                        $aRow['final'] = (string)round($nTotalNat);
-                    } else {
-                        $aRow['final'] = (string)$this->_convertirAEscala20($nTotalNorm);
-                    }
-                }
+            if (isset($aTotales[$nEstId])) {
+                $aRow['total'] = $aTotales[$nEstId]['total'];
+                $aRow['final'] = $aTotales[$nEstId]['final'];
+                $aRow['por_indicador'] = $aTotales[$nEstId]['porIndicador'];
             }
 
             $aGrillas[] = $aRow;
@@ -521,41 +480,6 @@ class AppController extends Controller
         }
 
         return 10;
-    }
-
-    private function _normalizarNota($nNota, $nEscala, $nPorcentaje = 100)
-    {
-        switch ((int)$nEscala) {
-            case 1: return ($nNota / 20) * 100;
-            case 2: return ($nNota / $nPorcentaje) * 100;
-            case 3: return $nNota;
-            default: return 0;
-        }
-    }
-
-    private function _convertirAEscala20($nValor)
-    {
-        $nValor = max(1, min(100, round($nValor)));
-        if ($nValor <= 5)  return 1;
-        if ($nValor <= 10) return 2;
-        if ($nValor <= 15) return 3;
-        if ($nValor <= 20) return 4;
-        if ($nValor <= 25) return 5;
-        if ($nValor <= 30) return 6;
-        if ($nValor <= 35) return 7;
-        if ($nValor <= 40) return 8;
-        if ($nValor <= 45) return 9;
-        if ($nValor <= 50) return 10;
-        if ($nValor <= 55) return 11;
-        if ($nValor <= 60) return 12;
-        if ($nValor <= 65) return 13;
-        if ($nValor <= 70) return 14;
-        if ($nValor <= 75) return 15;
-        if ($nValor <= 80) return 16;
-        if ($nValor <= 85) return 17;
-        if ($nValor <= 90) return 18;
-        if ($nValor <= 95) return 19;
-        return 20;
     }
 
 }

@@ -60,7 +60,8 @@
                             <?php if ($nPeriodos > 3 && $i === 3): ?>
                                 <div class="btn-group" style="margin-left:5px">
                             <?php endif; ?>
-                            <a href="#periodo-<?= $pid ?>" class="btn btn-info btn-sm" style="margin-bottom:4px">
+                            <a href="#periodo-<?= $pid ?>" data-periodo="<?= $pid ?>"
+                               class="btn btn-sm btn-periodo<?= $i === 0 ? ' btn-info active' : ' btn-default' ?>" style="margin-bottom:4px">
                                 <i class="fa fa-chevron-right"></i>&nbsp;<?= h($periodoNav->codigo) ?> 
                             </a>
                             <?php if ($nPeriodos > 3 && $i === $nPeriodos - 1): ?>
@@ -71,7 +72,7 @@
                 </div>
                 <?php foreach ($periodos as $pid => $periodoItem): ?>
                     <?php $periodo = $periodoItem['periodo']; ?>
-                    <div class="box box-info" id="periodo-<?= $pid ?>">
+                    <div class="box box-info periodo-box" id="periodo-<?= $pid ?>"<?= $pid === $periodoIds[0] ? '' : ' style="display:none"' ?>>
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="fa fa-calendar"></i>&nbsp;<?= $periodo->has('codigo') ? h($periodo->codigo) : '' ?> : <?= h($periodo->nombre) ?></h3>
                             <div class="box-tools pull-right">
@@ -94,50 +95,24 @@
 
                                     $tipoCalificacion = $curso->has('asignatura') ? (int)$curso->asignatura->calificacion : 0;
 
-                                    if ($tipoCalificacion === 1) {
-                                        $nA = 0;
-                                        $nR = 0;
-                                        foreach ($notas as $nota) {
-                                            $sNota = strtoupper((string)$nota->calificacion);
-                                            if ($sNota === 'A') {
-                                                $nA++;
-                                            } elseif ($sNota === 'R') {
-                                                $nR++;
-                                            }
-                                        }
-                                        $sTotalNotas = ($nA > $nR) ? 'Aprobada' : 'Reprobada';
-                                    } else {
-                                        $nEscala = 0;
-                                        foreach ($notas as $nota) {
-                                            if ($nota->has('contenido_curso') && $nota->contenido_curso->has('indicador_curso')) {
-                                                $nEscala = (int)$nota->contenido_curso->indicador_curso->escala_nota;
-                                                break;
-                                            }
-                                        }
-
-                                        $nTotalNotas = 0;
-                                        foreach ($notas as $nota) {
-                                            $nNota = (float)$nota->calificacion;
-                                            if ($nEscala === 1) {
-                                                $nTotalNotas += $nNota * ((float)$nota->contenido_curso->ponderacion / 100);
-                                            } else {
-                                                $nTotalNotas += $nNota;
-                                            }
-                                        }
-
-                                        if ($nEscala === 3) {
-                                            $sTotalNotas = $this->Number->format(
-                                                $this->EscalaNotas->aEscala20($nTotalNotas),
-                                                ['precision' => 0]
-                                            );
+                                    $sTotalNotas = '';
+                                    $sFinalNotas = '';
+                                    if ($cursoItem['total'] !== null) {
+                                        if ($tipoCalificacion === 1) {
+                                            $sTotalNotas = ($cursoItem['final'] === 'A') ? 'Aprobada' : 'Reprobada';
+                                            $sFinalNotas = $cursoItem['final'];
                                         } else {
-                                            $sTotalNotas = $this->Number->format($nTotalNotas, ['precision' => 2]);
+                                            $sTotalNotas = $this->Number->format($cursoItem['total'], ['precision' => 2]);
+                                            $sFinalNotas = $cursoItem['final'];
                                         }
                                     }
                                 ?>
                                 <div class="box box-default">
                                     <div class="box-header with-border">
                                         <h3 class="box-title" style="font-weight:bold">
+                                            <?php if (!empty($cursoItem['programa_codigo'])): ?>
+                                                <?= h($cursoItem['programa_codigo']) ?> -
+                                            <?php endif; ?>
                                             <?= $curso->has('asignatura') ? h($curso->asignatura->codigo) : '' ?>
                                             - <?= $curso->has('asignatura') ? h($curso->asignatura->nombre) : '' ?>
                                             - <?= h($curso->seccion) ?>
@@ -147,15 +122,15 @@
                                         </div>
                                     </div>
                                     <div class="box-body table-responsive no-padding">
-                                        <table class="table table-bordered table-hover table-condensed">
+                                        <table class="table table-bordered table-hover table-condensed tabla-notas">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center" style="width:45px">No.</th>
-                                                    <th>Descripci&oacute;n</th>
-                                                    <th class="text-center" style="width:90px">Nota</th>
-                                                    <th class="text-center" style="width:120px">Ponderaci&oacute;n (%)</th>
-                                                    <th class="text-center" style="width:110px">Fecha</th>
-                                                    <th class="text-center">Responsable</th>
+                                                    <th class="text-center" style="width:5%">No.</th>
+                                                    <th style="width:35%">Descripci&oacute;n</th>
+                                                    <th class="text-center" style="width:10%">Nota</th>
+                                                    <th class="text-center" style="width:15%">Ponderaci&oacute;n (%)</th>
+                                                    <th class="text-center" style="width:15%">Fecha</th>
+                                                    <th class="text-center" style="width:20%">Responsable</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -188,6 +163,14 @@
                                                         <td></td>
                                                         <td></td>
                                                     </tr>
+                                                    <tr class="bg-gray">
+                                                        <td class="text-center"><strong>Final</strong></td>
+                                                        <td></td>
+                                                        <td class="text-center"><strong><?= $sFinalNotas ?></strong></td>
+                                                        <td class="text-center"></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
                                                 </tfoot>
                                             <?php endif; ?>
                                         </table>
@@ -205,3 +188,24 @@
         </div>
     </div>
 </div>
+<?php if (!empty($periodos)): ?>
+<style>
+.tabla-notas { table-layout: fixed; width: 100%; }
+.tabla-notas td { word-break: break-word; }
+</style>
+<script>
+$(document).ready(function() {
+    var $btns = $('.btn-periodo');
+    var $boxes = $('.periodo-box');
+
+    $btns.on('click', function(e) {
+        e.preventDefault();
+        var pid = $(this).data('periodo');
+        $btns.removeClass('active btn-info').addClass('btn-default');
+        $(this).addClass('active btn-info').removeClass('btn-default');
+        $boxes.hide();
+        $('#periodo-' + pid).show();
+    });
+});
+</script>
+<?php endif; ?>

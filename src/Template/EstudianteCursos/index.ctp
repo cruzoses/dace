@@ -112,7 +112,7 @@
                                             </td>
                                             <td><?= $ins->curso->has('asignatura') ? h($ins->curso->asignatura->codename) : '' ?></td>
                                             <td class="text-center"><?= $ins->created->format('d/m/Y') ?></td>
-                                            <td><?= h($ins->responsable) ?></td>
+                                            <td><?= h(!empty($ins->responsable) ? $ins->responsable : $ins->analista) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
