@@ -43,6 +43,32 @@ class IndicadorCursosController extends AppController
             default: return [];
         }
     }
+
+    private function _getCursosOrigen($nDocenteId, $nCursoId, $lConContenidos = false)
+    {
+        $query = TableRegistry::getTableLocator()->get('Cursos')->find()
+            ->where([
+                'Cursos.docente_id' => $nDocenteId,
+                'Cursos.id !=' => $nCursoId,
+            ])
+            ->contain(['Asignaturas', 'Periodos'])
+            ->matching('IndicadorCursos')
+            ->distinct()
+            ->order(['Cursos.id' => 'DESC']);
+
+        if ($lConContenidos) {
+            $query->matching('IndicadorCursos.ContenidosCursos');
+        }
+
+        $result = [];
+        foreach ($query->toArray() as $oCurso) {
+            $result[$oCurso->id] = $oCurso->seccion
+                . ' - ' . ($oCurso->asignatura->codigo ?? '')
+                . ' ' . ($oCurso->asignatura->nombre ?? '')
+                . ' (' . ($oCurso->periodo->codigo ?? '') . ')';
+        }
+        return $result;
+    }
 	
     /**
      * Index method
@@ -76,7 +102,12 @@ class IndicadorCursosController extends AppController
             'total' => $oQueryPorcentaje->func()->sum('porcentaje')
         ])->first()->total;
 
-        $this->set(compact('oCurso', 'indicadorCursos', 'nCursoId', 'aEscala', 'nPorcentajeDefinido'));
+        $cursosOrigen = [];
+        if (empty($indicadorCursos)) {
+            $cursosOrigen = $this->_getCursosOrigen($oCurso->docente_id, $nCursoId, true);
+        }
+
+        $this->set(compact('oCurso', 'indicadorCursos', 'nCursoId', 'aEscala', 'nPorcentajeDefinido', 'cursosOrigen'));
     }
 
     /**

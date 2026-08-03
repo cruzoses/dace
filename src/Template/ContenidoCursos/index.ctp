@@ -142,6 +142,25 @@
                         ['action' => 'add', $nCursoId], ['class'=>'btn btn-success pull-left','escape' => false]) 
                     ?>
                 <?php endif; ?>
+                <?php if (empty($contenidoCursos) && !empty($cursosOrigen)): ?>
+                    <div class="pull-left" style="margin-left: 10px;">
+                        <?= $this->Form->create(null, [
+                            'url' => ['controller' => 'Profesores', 'action' => 'importarContenidos', $nCursoId],
+                            'class' => 'form-inline',
+                        ]) ?>
+                        <?= $this->Form->control('curso_origen_id', [
+                            'label' => 'Importar evaluaciones desde:',
+                            'options' => $cursosOrigen,
+                            'class' => 'form-control input-sm',
+                            'style' => 'width: auto;',
+                        ]) ?>
+                        <?= $this->Form->button('<i class="fa fa-download"></i>&nbsp;Importar', [
+                            'class' => 'btn btn-warning btn-sm',
+                            'escape' => false,
+                        ]) ?>
+                        <?= $this->Form->end() ?>
+                    </div>
+                <?php endif; ?>
                 <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
                     ['controller' => 'profesores','action' => 'listadeclase',$oCurso->id], 
                     ['class'=>'btn bg-maroon pull-right','escape' => false]) 

@@ -89,9 +89,14 @@ class ContenidoCursosController extends AppController
             ->where(['indicador_curso_id IN' => $aIndicadorCursoIds])
             ->count();
 
+        $cursosOrigen = [];
+        if (empty($contenidoCursos)) {
+            $cursosOrigen = $this->_getCursosOrigen($oCurso->docente_id, $nCursoId);
+        }
+
         $this->set(compact('contenidoCursos','oCurso','nCursoId','nPorcentajeDefinido',
             'nIndicadoresMin','nIndicadoresMax','nIndicadoresDefinidos',
-            'nEvaluacionesDefinidas'));
+            'nEvaluacionesDefinidas','cursosOrigen'));
     }
 
     /**
@@ -220,6 +225,28 @@ class ContenidoCursosController extends AppController
             ->where(['IndicadorCursos.curso_id' => $nCursoId])
             ->count();
         return (bool) $oIndicadores > 0;
+    }
+
+    private function _getCursosOrigen($nDocenteId, $nCursoId)
+    {
+        $query = TableRegistry::getTableLocator()->get('Cursos')->find()
+            ->where([
+                'Cursos.docente_id' => $nDocenteId,
+                'Cursos.id !=' => $nCursoId,
+            ])
+            ->contain(['Asignaturas', 'Periodos'])
+            ->matching('IndicadorCursos.ContenidosCursos')
+            ->distinct()
+            ->order(['Cursos.id' => 'DESC']);
+
+        $result = [];
+        foreach ($query->toArray() as $oCurso) {
+            $result[$oCurso->id] = $oCurso->seccion
+                . ' - ' . ($oCurso->asignatura->codigo ?? '')
+                . ' ' . ($oCurso->asignatura->nombre ?? '')
+                . ' (' . ($oCurso->periodo->codigo ?? '') . ')';
+        }
+        return $result;
     }
 
     private function _getIndicadoresByCurso($nCursoId)
