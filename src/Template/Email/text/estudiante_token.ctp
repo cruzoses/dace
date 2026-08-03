@@ -7,25 +7,22 @@ use Cake\Core\Configure;
 
 Estimado(a) estudiante <?= $estudiante->nombres ?> <?= $estudiante->apellidos ?>,
 
-Bienvenido(a) al SACE UPTBAL. Su registro como estudiante ha sido procesado exitosamente.
-
-A continuación se muestran sus datos de inscripción y el token de verificación para acceder al sistema:
+Ha solicitado su clave de registro al sistema SACE UPTBAL. A continuación se muestran sus datos y la información necesaria para crear su usuario:
 
     Cédula: <?= $estudiante->cedula ?>
 
+    Fecha de nacimiento: <?= $estudiante->fecha_nacimiento ? $estudiante->fecha_nacimiento->format('d/m/Y') : '' ?>
+
     Correo electrónico: <?= $estudiante->email ?>
 
-    <?php if (!empty($estudiante->telefonos)): ?>
-    Teléfono: <?= $estudiante->telefonos ?>
+    Número de expediente: <?= $estudiante->expediente ?>
 
-    <?php endif; ?>
-    Token de acceso: <?= $estudiante->token ?>
+    Clave de registro: <?= $estudiante->token ?>
 
 
-Ingrese al sistema usando el siguiente enlace:
-https://www.uptbal.info.ve/registro?usuario=COEEST
+Ingrese al sistema y utilice su cédula, número de expediente y clave de registro. Sus datos personales se cargarán automáticamente; solo deberá elegir su usuario (alias) y contraseña.
 
-Conserve este token, ya que le será solicitado durante el proceso de inscripción y consultas académicas.
+Si no solicitó este registro, por favor comuníquese con la coordinación académica.
 
 Atentamente,
-Control de Estudios - SACE
+Coordinación Académica - SACE

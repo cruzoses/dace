@@ -162,6 +162,8 @@ Router::scope('/api', function (RouteBuilder $routes) {
     $routes->connect('/registro-estudiante', ['controller' => 'Api', 'action' => 'registroEstudiante']);
     $routes->connect('/registro-docente', ['controller' => 'Api', 'action' => 'registroDocente']);
     $routes->connect('/recuperar-clave', ['controller' => 'Api', 'action' => 'recuperarClave']);
+    $routes->connect('/solicitar-token', ['controller' => 'Api', 'action' => 'solicitarToken']);
+    $routes->connect('/auto-registro-estudiante', ['controller' => 'Api', 'action' => 'autoRegistroEstudiante']);
 
     $routes->connect('/me-estudiante', ['controller' => 'Api', 'action' => 'meEstudiante']);
     $routes->connect('/situacion', ['controller' => 'Api', 'action' => 'situacion']);

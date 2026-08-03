@@ -813,6 +813,181 @@ class ApiController extends AppController
         return $this->_respond(['success' => true, 'message' => 'Si el correo existe, recibirá una nueva contraseña.']);
     }
 
+    // ==================== SOLICITAR TOKEN DE REGISTRO ====================
+
+    public function solicitarToken()
+    {
+        if (!$this->request->is('post')) {
+            return $this->_respond(['error' => 'Método no permitido'], 405);
+        }
+
+        $data = $this->request->getData();
+
+        $captchaId = $data['captcha_id'] ?? null;
+        $captchaCode = $data['captcha_code'] ?? null;
+        if (empty($captchaId) || !$this->Captcha->validate($captchaCode, $captchaId)) {
+            return $this->_respond(['success' => false, 'error' => 'Código captcha incorrecto.'], 400);
+        }
+
+        $cedula = $data['cedula'] ?? null;
+        $fechaNacimiento = $data['fecha_nacimiento'] ?? null;
+        $email = $data['email'] ?? null;
+        if (empty($cedula) || empty($fechaNacimiento) || empty($email)) {
+            return $this->_respond(['success' => false, 'error' => 'Debe ingresar su cédula, fecha de nacimiento y correo electrónico.'], 400);
+        }
+
+        $usuariosTable = TableRegistry::getTableLocator()->get('Usuarios');
+
+        $estudiante = $usuariosTable->Estudiantes->find()
+            ->where(['cedula' => $cedula, 'usuario_id IS' => null, 'activo' => 1])
+            ->first();
+
+        $fechaRegistrada = $estudiante && $estudiante->fecha_nacimiento ? $estudiante->fecha_nacimiento->format('Y-m-d') : null;
+        $emailValido = $estudiante && !empty($estudiante->email)
+            && strtolower(trim($estudiante->email)) === strtolower(trim($email));
+
+        if ($estudiante && $emailValido && !empty($fechaRegistrada) && $fechaRegistrada === $fechaNacimiento) {
+            $estudiante->token = $this->generateToken();
+
+            if ($usuariosTable->Estudiantes->save($estudiante)) {
+                $this->_enviarTokenEstudiante($estudiante);
+                $this->Auditorias->registrar('SOLICITA', 'Solicitud de clave de registro para estudiante ' . $estudiante->id);
+            }
+        }
+
+        return $this->_respond(['success' => true, 'message' => 'Si los datos son correctos, recibirá su número de expediente y clave de registro en su correo electrónico.']);
+    }
+
+    public function autoRegistroEstudiante()
+    {
+        if (!$this->request->is('post')) {
+            return $this->_respond(['error' => 'Método no permitido'], 405);
+        }
+
+        $data = $this->request->getData();
+
+        $captchaId = $data['captcha_id'] ?? null;
+        $captchaCode = $data['captcha_code'] ?? null;
+        if (empty($captchaId) || !$this->Captcha->validate($captchaCode, $captchaId)) {
+            return $this->_respond(['success' => false, 'error' => 'Código captcha incorrecto.'], 400);
+        }
+
+        if (empty($data['password_confirmar']) || $data['password'] !== $data['password_confirmar']) {
+            return $this->_respond(['success' => false, 'error' => 'Las contraseñas no coinciden.'], 400);
+        }
+
+        $cedula = $data['cedula'] ?? null;
+        $fechaNacimiento = $data['fecha_nacimiento'] ?? null;
+        $email = $data['email'] ?? null;
+        $token = $data['token'] ?? null;
+        $expediente = $data['expediente'] ?? null;
+        $username = $data['username'] ?? null;
+        $password = $data['password'] ?? null;
+        if (empty($cedula) || empty($fechaNacimiento) || empty($email) || empty($token) || empty($expediente) || empty($username) || empty($password)) {
+            return $this->_respond(['success' => false, 'error' => 'Debe completar todos los datos de validación.'], 400);
+        }
+
+        $usuariosTable = TableRegistry::getTableLocator()->get('Usuarios');
+        $rolEstudiante = $usuariosTable->Rols->findByNombre('ESTUDIANTE')->first();
+        if (!$rolEstudiante) {
+            return $this->_respond(['success' => false, 'error' => 'El rol ESTUDIANTE no está configurado.'], 500);
+        }
+
+        $estudiante = $usuariosTable->Estudiantes->find()
+            ->where(['cedula' => $cedula, 'usuario_id IS' => null, 'activo' => 1])
+            ->first();
+
+        $fechaRegistrada = $estudiante && $estudiante->fecha_nacimiento ? $estudiante->fecha_nacimiento->format('Y-m-d') : null;
+        $datosValidos = $estudiante
+            && !empty($estudiante->email) && strtolower(trim($estudiante->email)) === strtolower(trim($email))
+            && !empty($fechaRegistrada) && $fechaRegistrada === $fechaNacimiento
+            && $estudiante->expediente === $expediente
+            && $estudiante->token === $token;
+
+        if (!$datosValidos) {
+            return $this->_respond(['success' => false, 'error' => 'Los datos de validación no son correctos. Revise su correo o solicite una nueva clave de registro.'], 400);
+        }
+
+        $usuarioData = [
+            'username' => $username,
+            'password' => $password,
+            'cedula' => $estudiante->cedula,
+            'nombres' => $estudiante->nombres,
+            'apellidos' => $estudiante->apellidos,
+            'email' => $estudiante->email,
+            'sexo' => $estudiante->sexo,
+            'fecha_nacimiento' => $estudiante->fecha_nacimiento ? $estudiante->fecha_nacimiento->format('Y-m-d') : null,
+            'activo' => 1,
+        ];
+
+        if (!empty($estudiante->telefonos)) {
+            $usuarioData['telefonos'] = $estudiante->telefonos;
+        }
+
+        $usuario = $usuariosTable->newEntity($usuarioData);
+        if (!$usuariosTable->save($usuario)) {
+            $msg = 'No se pudo completar el registro.';
+            foreach ($usuario->getErrors() as $field => $fieldErrors) {
+                $msg .= ' ' . $field . ': ' . implode(', ', (array)$fieldErrors);
+            }
+            return $this->_respond(['success' => false, 'error' => $msg], 400);
+        }
+
+        $usuariosTable->Rols->link($usuario, [$rolEstudiante]);
+        $estudiante->usuario_id = $usuario->id;
+        $usuariosTable->Estudiantes->save($estudiante);
+
+        $tokenApi = bin2hex(random_bytes(32));
+        $usuario->api_token = $tokenApi;
+        $usuariosTable->save($usuario);
+
+        $userData = $usuariosTable->get($usuario->id, ['contain' => ['Rols']]);
+
+        $this->Auditorias->registrar('REGISTRA', 'Auto-registro estudiante para usuario ' . $usuario->username);
+
+        return $this->_respond([
+            'success' => true,
+            'message' => 'Registro exitoso. Ya puede ingresar al sistema.',
+            'token' => $tokenApi,
+            'user' => [
+                'id' => $userData->id,
+                'cedula' => $userData->cedula,
+                'nombres' => $userData->nombres,
+                'apellidos' => $userData->apellidos,
+                'email' => $userData->email,
+                'username' => $userData->username,
+                'sexo' => $userData->sexo,
+                'foto' => $userData->foto,
+                'roles' => $userData->rols,
+            ],
+        ]);
+    }
+
+    private function _enviarTokenEstudiante($estudiante)
+    {
+        $profile = Configure::read('App.emailProfile', 'default');
+        $email = new Email($profile);
+        try {
+            $email->setTo($estudiante->email)
+                ->emailFormat('both')
+                ->setSubject('Clave de registro - SACE UPTBAL')
+                ->setTemplate('estudiante_token')
+                ->setViewVars(['estudiante' => $estudiante])
+                ->attachments([
+                    'logo.png' => [
+                        'file' => WWW_ROOT . 'img' . DS . 'logos' . DS . 'logouptbal.png',
+                        'mimetype' => 'image/png',
+                        'contentId' => '734h3r38',
+                    ]
+                ])
+                ->send();
+            return true;
+        } catch (\Exception $e) {
+            $this->log('Error al enviar email a ' . $estudiante->email . ': ' . $e->getMessage(), 'error');
+            return false;
+        }
+    }
+
     // ==================== ESTUDIANTE (módulos de la app) ====================
 
     private function _resolverEstudiante($usuarioId, $cedula)
