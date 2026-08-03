@@ -87,11 +87,14 @@
                                 <?php $notas = $cursoItem['notas']; ?>
                                 <?php
                                     $sumaPonderaciones = 0;
+                                    $aIndIds = [];
                                     foreach ($notas as $nota) {
                                         if ($nota->has('contenido_curso')) {
                                             $sumaPonderaciones += (float)$nota->contenido_curso->ponderacion;
+                                            $aIndIds[$nota->contenido_curso->indicador_curso_id] = true;
                                         }
                                     }
+                                    $nIndicadores = count($aIndIds);
 
                                     $tipoCalificacion = $curso->has('asignatura') ? (int)$curso->asignatura->calificacion : 0;
 
@@ -167,7 +170,11 @@
                                                         <td class="text-center"><strong>Final</strong></td>
                                                         <td></td>
                                                         <td class="text-center"><strong><?= $sFinalNotas ?></strong></td>
-                                                        <td class="text-center"></td>
+                                                        <td class="text-center">
+                                                            <?php if ($sumaPonderaciones > 100 && $nIndicadores > 0): ?>
+                                                                <strong><?= $this->Number->format($sumaPonderaciones / $nIndicadores, ['precision' => 2]) ?></strong>
+                                                            <?php endif; ?>
+                                                        </td>
                                                         <td></td>
                                                         <td></td>
                                                     </tr>
