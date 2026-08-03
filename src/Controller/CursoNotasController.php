@@ -22,7 +22,7 @@ class CursoNotasController extends AppController
     public function isAuthorized($user = null)
     {
         if (isset($user['activo']) && isset($user['rols']) && $user['activo']) {
-            if ($this->tienePermiso([1, 2, 3, 5])) {
+            if ($this->tienePermiso([2, 3, 5])) {
                 return true;
             }
         }
@@ -34,7 +34,7 @@ class CursoNotasController extends AppController
      *
      * @param int|string $nCursoId
      * @return \Cake\Http\Response|null
-     */
+    */
     public function grilla($nCursoId = null)
     {
         $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
@@ -223,6 +223,7 @@ class CursoNotasController extends AppController
                         'estudiante_id' => $nEstudianteId,
                         'calificacion' => $sCalificacion,
                         'responsable' => $sResponsable,
+                        'procesada' => false
                     ]);
 
                     if ($notasTable->save($oNota)) {

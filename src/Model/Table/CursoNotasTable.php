@@ -63,6 +63,11 @@ class CursoNotasTable extends AppTable
             ->requirePresence('responsable', 'create')
             ->notEmptyString('responsable');
 
+        $validator
+            ->boolean('procesada')
+            ->requirePresence('procesada', 'create')
+            ->notEmptyString('procesada');
+
         return $validator;
     }
 

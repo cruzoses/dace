@@ -31,7 +31,8 @@ class ContenidoCursosController extends AppController
 	{
         if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] )
         {
-            if ( $this->tienePermiso([4,5,6]) ) {
+            if ( $this->tienePermiso([4,5,6]) ) 
+            {
                 return true;
             }            
         }
@@ -79,6 +80,7 @@ class ContenidoCursosController extends AppController
 
         $oQueryPonderacion = $this->ContenidoCursos->find()
             ->where(['indicador_curso_id IN' => $aIndicadorCursoIds]);
+            
         $nPorcentajeDefinido = (int)$oQueryPonderacion->select([
             'total' => $oQueryPonderacion->func()->sum('ponderacion')
         ])->first()->total;

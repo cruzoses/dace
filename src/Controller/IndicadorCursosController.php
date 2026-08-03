@@ -70,7 +70,13 @@ class IndicadorCursosController extends AppController
             'conditions' => ['IndicadorCursos.curso_id' => $nCursoId]
         ]);
 
-        $this->set(compact('oCurso', 'indicadorCursos', 'nCursoId', 'aEscala'));
+        $oQueryPorcentaje = $this->IndicadorCursos->find()
+            ->where(['IndicadorCursos.curso_id' => $nCursoId]);
+        $nPorcentajeDefinido = (int)$oQueryPorcentaje->select([
+            'total' => $oQueryPorcentaje->func()->sum('porcentaje')
+        ])->first()->total;
+
+        $this->set(compact('oCurso', 'indicadorCursos', 'nCursoId', 'aEscala', 'nPorcentajeDefinido'));
     }
 
     /**

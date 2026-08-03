@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property int $estudiante_id
  * @property string|null $calificacion
  * @property string $responsable
+ * @property bool $procesada
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
@@ -24,6 +25,7 @@ class CursoNota extends Entity
         'estudiante_id' => true,
         'calificacion' => true,
         'responsable' => true,
+        'procesada' => true,
         'created' => true,
         'modified' => true,
         'contenido_curso' => true,

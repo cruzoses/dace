@@ -24,7 +24,8 @@ class CursosController extends AppController
 	{
         if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] )
         {
-            if ($this->tienePermiso([2,3])) {
+            if ($this->tienePermiso([2,3])) 
+            {
                 return true;
             }            
         }

@@ -107,9 +107,16 @@
                 </table>
             </div>
             <div class="box-footer">
-                <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
-                    ['action' => 'add',$nCursoId], ['class'=>'btn btn-success pull-left','escape' => false]) 
-                ?>
+                <?php if ($nPorcentajeDefinido >= 100): ?>
+                    <button type="button" class="btn btn-success pull-left" disabled
+                            title="Los indicadores del Plan de Evaluación están completos (100%)">
+                        <i class="fa fa-plus"></i>&nbsp;<?= __('New') ?>
+                    </button>
+                <?php else: ?>
+                    <?= $this->Html->link('<i class="fa fa-plus"></i>&nbsp;'.__('New'), 
+                        ['action' => 'add',$nCursoId], ['class'=>'btn btn-success pull-left','escape' => false]) 
+                    ?>
+                <?php endif; ?>
                 <?= $this->Html->link('<i class="fa fa-times"></i>&nbsp;'.__('Go Back'),
                     ['controller' => 'profesores', 'action' => 'listadeclase',$nCursoId], 
                     ['class'=>'btn bg-maroon pull-right','escape' => false]) 

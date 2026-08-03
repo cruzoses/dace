@@ -109,7 +109,7 @@
         <div class="box box-default box-solid">
             <div class="box-header with-border">                
                 <h3 class="box-title"><i class="fa fa-users"></i>&nbsp;Estudiantes Inscritos (<?= $nTotalEstudiantes ?>)</h3>
-                <?php if ($this->Permiso->tiene([1,2,3])) : ?>
+                <?php if ( $nTotalEstudiantes > 0 && $this->Permiso->tiene([1,2,3])) : ?>
                     <div class="box-title">
                         <?= $this->Html->link('C',
                             ['action' => 'calificar','?' => ['nCursoId' => $curso->id, 'sNota' => 'calificacion'] ],
@@ -124,19 +124,22 @@
                             ['class' => 'btn bg-maroon btn-xs']);
                         ?>&nbsp;
                     </div>
-                <?php endif; ?>                
-                <div class="box-tools pull-right">
-                    <div class="btn-group">
-                        <?= $this->Html->link('<i class="fa fa-print"></i>&nbsp;Imprimir',
-                            ['controller' => 'Reportes', 'action' => 'listarParticipantes', $curso->id],
-                            ['class' => 'btn btn-default btn-sm', 'escape' => false, 'title' => 'Imprimir Lista'])
-                        ?>
-                        <?= $this->Html->link('<i class="fas fa-file-excel"></i>&nbsp;Exportar',
-                            ['controller' => 'Archivos', 'action' => 'exportarParticipantes', $curso->id],
-                            ['class' => 'btn btn-default btn-sm', 'escape' => false, 'title' => 'Exportar Lista'])
-                        ?>
+                    <div class="box-tools pull-right">
+                        <div class="btn-group">
+                            <?= $this->Html->link('<i class="fa fa-print"></i>&nbsp;Imprimir',
+                                ['controller' => 'Reportes', 'action' => 'listarParticipantes', $curso->id],
+                                ['class' => 'btn btn-default btn-sm', 'escape' => false, 'title' => 'Imprimir Lista'])
+                            ?>
+                            <?= $this->Html->link('<i class="fas fa-file-excel"></i>&nbsp;Exportar',
+                                ['controller' => 'Archivos', 'action' => 'exportarParticipantes', $curso->id],
+                                ['class' => 'btn btn-default btn-sm', 'escape' => false, 'title' => 'Exportar Lista'])
+                            ?>
+			                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+				                <i class="fa fa-minus"></i>
+			                </button>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
             <div class="box-body table-responsive no-padding">
                 <?php if (!empty($estudianteCursos)): ?>
@@ -242,7 +245,7 @@
                             <tr>
                                 <th scope="col"><?= __('Id') ?></th>
                                 <th scope="col"><?= __('Curso Id') ?></th>
-                                <th scope="col"><?= __('Indicador Id') ?></th>
+                                <th scope="col"><?= __('Indicador') ?></th>
                                 <th scope="col"><?= __('Desde') ?></th>
                                 <th scope="col"><?= __('Hasta') ?></th>
                                 <th scope="col"><?= __('Escala Nota') ?></th>
@@ -264,7 +267,7 @@
                                     <td><?= h($indicadorCursos->modified) ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'IndicadorCursos', 'action' => 'view', $indicadorCursos->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'IndicadorCursos', 'action' => 'edit', $indicadorCursos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-edit"></i>', ['controller' => 'IndicadorCursos', 'action' => 'edit', $indicadorCursos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'IndicadorCursos', 'action' => 'delete', $indicadorCursos->id], ['confirm' => __('Are you sure you want to delete # {0}?', $indicadorCursos->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     </td>
                                 </tr>

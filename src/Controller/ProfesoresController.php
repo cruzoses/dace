@@ -69,7 +69,7 @@ class ProfesoresController extends AppController
                     'Cursos.periodo_id' => $periodoId,
                 ])
                 ->contain(['Asignaturas', 'Carreras', 'Trayectos', 'Sedes', 'Aulas', 'Periodos'])
-                ->order(['Cursos.seccion' => 'ASC'])
+                ->order(['Cursos.id' => 'DESC'])
                 ->toArray();
         }
 
