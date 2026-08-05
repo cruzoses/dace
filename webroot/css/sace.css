@@ -35,6 +35,12 @@ body.home-page .logo-container img {
     }
 }
 
+@media (max-width: 767px) {
+    body.fixed.layout-top-nav .content-wrapper {
+        padding-top: 50px;
+    }
+}
+
 .logoAbajo{
 	position:absolute;
     bottom:55px;
