@@ -8,6 +8,12 @@
 			        <button type="button" class="btn btn-box-tool" id="goSearch" title="Buscar">
 				        <i class="fa fa-search"></i>
 			        </button>
+                    <?php if($this->Permiso->tiene([1])) : ?>
+                        <?= $this->Html->link('<i class="fas fa-tasks"></i>',
+                            ['action' => 'cierreActas'], 
+                            ['class'=>'btn btn-box-tool', 'title'=>'Cierre de Actas','escape' => false]) 
+                        ?>
+                    <?php endif; ?>
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
 			        </button>
@@ -18,7 +24,9 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('search_form', ['title' => 'Buscar Curso', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
+			        <?= $this->element('search_form', 
+                        ['title' => 'Buscar Curso', 'searchFields' => $searchFields, 'filtros' => $filtros]);
+                    ?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
@@ -63,7 +71,10 @@
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $curso->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $curso->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
-                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $curso->id], ['confirm' => __('Are you sure you want to delete # {0}?', $curso->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
+                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', 
+                                        ['action' => 'delete', $curso->id], 
+                                        ['confirm' => __('Are you sure you want to delete # {0}?', $curso->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) 
+                                    ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
