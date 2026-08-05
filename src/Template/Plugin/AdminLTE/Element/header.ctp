@@ -72,7 +72,7 @@
             <i class="fas fa-bars"></i>
             <span class="sr-only">Toggle navigation</span>
         </a>
-        <span class="navbar-brand namenav hidden-xs">
+        <span class="navbar-brand namenav hidden-xs hidden-sm">
             <strong><?= Configure::read('Universidad.Nombre');?></strong>
         </span>
         <span class="navbar-brand logo-lg visible-xs">

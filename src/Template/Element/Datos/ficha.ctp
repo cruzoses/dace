@@ -20,13 +20,13 @@
                             ['action' => 'programas',$estudiante->id],
                             ['id' => 'btnProgramas','class' => 'btn bg-maroon btn-sm menuh btnTools','title' => 'Programas Asignados','role' => 'button']); 
                         ?>
-                        <?= $this->Html->link('Histórico',
-                            ['action' => 'historico',$estudiante->id],
-                            ['class' => 'btn bg-olive btn-sm menuh btnTools','title' => 'Histórico de Notas','role' => 'button', 'id' => 'btnHistorico']); 
-                        ?>
                         <?= $this->Html->link('Notas de Lapso',
                             ['action' => 'evaluaciones',$estudiante->id],
                             ['id' => 'btnNotas','class' => 'btn btn-warning btn-sm menuh btnTools','title' => 'Notas de Lapso','role' => 'button']); 
+                        ?>
+                        <?= $this->Html->link('Histórico',
+                            ['action' => 'historico',$estudiante->id],
+                            ['class' => 'btn bg-olive btn-sm menuh btnTools','title' => 'Histórico de Notas','role' => 'button', 'id' => 'btnHistorico']); 
                         ?>
                         <?= $this->Html->link('Situación',/*'#'*/ 
                             ['action' => 'situacion',$estudiante->id],
@@ -47,8 +47,62 @@
                 </tr>
             </table>
         </div>
-        <div class="btn-group visible-xs visible-sm" role="group" aria-label="Opciones">
-            <button type="button" class="btn btn-info">Action</button>
+        <div class="visible-xs visible-sm">
+            <div class="btn-group btn-lg">
+                <button type="button" class="btn btn-info">Opciones Disponibles</button>
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <?= $this->Html->link('Datos',
+                            ['action' => 'estudiante',$estudiante->id],
+                            ['id' => 'btnDatos', 'class' => 'btnTools', 'role' => 'button']); 
+                        ?>
+                    </li>
+                    <li>
+                        <?= $this->Html->link('Programas',
+                            ['action' => 'programas',$estudiante->id],
+                            ['id' => 'btnProgramas','class' => 'btnTools','title' => 'Programas Asignados','role' => 'button']); 
+                        ?>
+                    </li>
+                    <li>
+                        <?= $this->Html->link('Notas de Lapso',
+                            ['action' => 'evaluaciones',$estudiante->id],
+                            ['id' => 'btnNotas','class' => 'btnTools','title' => 'Notas de Lapso','role' => 'button']); 
+                        ?>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <?= $this->Html->link('Histórico',
+                            ['action' => 'historico',$estudiante->id],
+                            ['id' => 'btnHistorico','class' => 'btnTools','title' => 'Histórico de Notas','role' => 'button']); 
+                        ?>
+                    </li>
+                    <li>
+                        <?= $this->Html->link('Situación',/*'#'*/ 
+                            ['action' => 'situacion',$estudiante->id],
+                            ['id' => 'btnSituacion','class' => 'btnTools','title' => 'Situación Académica','role' => 'button']); 
+                        ?>
+                    </li>
+                    <li class="divider"></li>
+                    <?php if( isset($historep) && $historep  ) : ?>
+                        <li>
+                            <?= $this->Html->link('Imprimir Hostórico',
+                                ['controller' => 'reportes', 'action' => 'historialacademico', $estudiante->id],
+                                ['id' => 'btnPrintHistorico','class' => 'btnTools','escape' => false]);                            
+                            ?>
+                        </li>
+                    <?php endif; ?>
+                    <li>
+                        <?= $this->Html->link('Inscripciones',
+                            ['controller' => 'EstudianteCursos', 'action' => 'index',$estudiante->id],
+                            ['id' => 'btnInscripcion','class' => 'btnTools','title' => 'Inscripciones','role' => 'button']); 
+                        ?>  
+                    </li>
+                </ul>
+            </div>
         </div>
     <?php endif; ?>
 
