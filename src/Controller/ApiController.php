@@ -839,7 +839,8 @@ class ApiController extends AppController
         $usuariosTable = TableRegistry::getTableLocator()->get('Usuarios');
 
         $estudiante = $usuariosTable->Estudiantes->find()
-            ->where(['cedula' => $cedula, 'usuario_id IS' => null, 'activo' => 1])
+            ->where(['cedula' => $cedula])
+            ->order(['Estudiantes.id' => 'DESC'])
             ->first();
 
         $fechaRegistrada = $estudiante && $estudiante->fecha_nacimiento ? $estudiante->fecha_nacimiento->format('Y-m-d') : null;
@@ -894,7 +895,11 @@ class ApiController extends AppController
         }
 
         $estudiante = $usuariosTable->Estudiantes->find()
-            ->where(['cedula' => $cedula, 'usuario_id IS' => null, 'activo' => 1])
+            ->where(['cedula' => $cedula])
+            ->andWhere(function ($exp) {
+                return $exp->or_(['usuario_id IS' => null, 'usuario_id' => '']);
+            })
+            ->order(['Estudiantes.id' => 'DESC'])
             ->first();
 
         $fechaRegistrada = $estudiante && $estudiante->fecha_nacimiento ? $estudiante->fecha_nacimiento->format('Y-m-d') : null;
