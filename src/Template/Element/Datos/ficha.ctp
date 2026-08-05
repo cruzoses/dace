@@ -7,7 +7,7 @@
 <div class="col-md-12">
 
     <?php if( isset($showOptions) && $showOptions ) : ?>
-        <div class="box no-shadow no-border no-bg">
+        <div class="box no-shadow no-border no-bg hidden-xs hidden-sm">
             <table>
                 <tr>
                     <td class="pad"><strong>Estudiante</strong></td>
@@ -46,6 +46,9 @@
                     </td>
                 </tr>
             </table>
+        </div>
+        <div class="btn-group visible-xs visible-sm" role="group" aria-label="Opciones">
+            <button type="button" class="btn btn-info">Action</button>
         </div>
     <?php endif; ?>
 

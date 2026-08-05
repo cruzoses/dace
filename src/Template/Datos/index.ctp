@@ -3,7 +3,7 @@
  * @var \App\View\AppView $this
  */
 ?>
-<div class="content row">
+<div class="row">
     <div class="col-md-12">
         <div class="box box-sace box-solid">
             <div class="box-header with-border">
