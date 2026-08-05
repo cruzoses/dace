@@ -7,7 +7,9 @@ use Cake\Core\Configure;
 ?>
 
 <div class="row">
-    <?= $this->element('Datos/ficha',['estudiante' => $estudiante, 'showOptions' => true]); ?>
+    <div class="col-md-12">
+        <?= $this->element('Datos/ficha',['estudiante' => $estudiante, 'showOptions' => true]); ?>
+    </div>
 </div>
 <div class="row">
     <div class="col-md-12">
@@ -72,7 +74,6 @@ use Cake\Core\Configure;
         <div class="oculto" id="ajax-content"></div>
     </div>
 </div>
-
 
 <script>
 $(document).ready(function() {

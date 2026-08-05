@@ -28,17 +28,28 @@
                 <div class="box-body" style="padding-bottom: 0;">
                     <?php foreach ($periodoIds as $i => $pid): ?>
                         <?php $periodoNav = $periodos[$pid]['periodo']; ?>
-                        <?php if ($nPeriodos > 3 && $i === 3): ?>
-                            <div class="btn-group" style="margin-left:5px">
-                        <?php endif; ?>
                         <a href="#periodo-<?= $pid ?>" data-periodo="<?= $pid ?>"
-                           class="btn btn-sm btn-periodo<?= $i === 0 ? ' btn-info active' : ' btn-default' ?>" style="margin-bottom:4px">
+                           class="btn btn-sm btn-periodo<?= $i === 0 ? ' btn-info active' : ' btn-default' ?><?= $i >= 3 ? ' hidden-xs hidden-sm' : '' ?>" style="margin-bottom:4px">
                             <i class="fa fa-chevron-right"></i>&nbsp;<?= h($periodoNav->codigo) ?>
                         </a>
-                        <?php if ($nPeriodos > 3 && $i === $nPeriodos - 1): ?>
-                            </div>
-                        <?php endif; ?>
                     <?php endforeach; ?>
+                    <?php if ($nPeriodos > 3): ?>
+                        <div class="btn-group hidden-md hidden-lg" style="margin-left:5px">
+                            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Mas&nbsp;<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php foreach (array_slice($periodoIds, 3) as $pid): ?>
+                                    <?php $periodoNav = $periodos[$pid]['periodo']; ?>
+                                    <li>
+                                        <a href="#periodo-<?= $pid ?>" data-periodo="<?= $pid ?>" class="btn-periodo-menu">
+                                            <i class="fa fa-chevron-right"></i>&nbsp;<?= h($periodoNav->codigo) ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php foreach ($periodos as $pid => $periodoItem): ?>
@@ -167,21 +178,35 @@
 </div>
 
 <style>
-.tabla-notas { table-layout: fixed; width: 100%; }
-.tabla-notas td { word-break: break-word; }
+.tabla-notas { width: 100%; min-width: 760px; }
+.tabla-notas td { word-break: break-word; overflow-wrap: break-word; }
+.dropdown-menu > li > a.btn-periodo-menu.active {
+    background-color: #00c0ef;
+    color: #fff;
+}
 </style>
 <script>
     (function () {
         var $btns = $('.btn-periodo');
+        var $btnsMenu = $('.btn-periodo-menu');
         var $boxes = $('.periodo-box');
 
-        $btns.on('click', function (e) {
-            e.preventDefault();
-            var pid = $(this).data('periodo');
+        function activarPeriodo($btn, pid) {
             $btns.removeClass('active btn-info').addClass('btn-default');
-            $(this).addClass('active btn-info').removeClass('btn-default');
+            $btnsMenu.removeClass('active');
+            if ($btn.hasClass('btn-periodo-menu')) {
+                $btn.addClass('active');
+            } else {
+                $btn.removeClass('btn-default').addClass('active btn-info');
+            }
+            $('.btn-group.open').removeClass('open');
             $boxes.hide();
             $('#periodo-' + pid).show();
+        }
+
+        $btns.add($btnsMenu).on('click', function (e) {
+            e.preventDefault();
+            activarPeriodo($(this), $(this).data('periodo'));
         });
     })();
 </script>

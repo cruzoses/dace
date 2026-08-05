@@ -65,7 +65,11 @@ class DatosController extends AppController
         $this->set('estudiante', $estudiante);
     }
 
-    public function rendimiento(){}
+    public function historico($estudianteId = null)
+    {
+        $this->viewBuilder()->setLayout('ajax');
+        return $this->redirect(['action' => 'estudiante', $estudianteId]);
+    }
 
     /**
      * Consulta las notas por periodo del estudiante (vista Ficha -> Notas de Lapso).
