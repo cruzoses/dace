@@ -6,9 +6,9 @@
 ?>
 <div class="row">
     <div class="col-md-12">    
-        <div class="box box-primary box-solid">
+        <div class="box box-purple box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Firmas</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Editar Firma</h3>
 		        <div class="box-tools pull-right">
 			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
 				        <i class="fa fa-minus"></i>
@@ -29,11 +29,11 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('codigo');
-                    echo $this->Form->control('nombres');
-                    echo $this->Form->control('datos');
-                    echo $this->Form->control('texto');
-                    echo $this->Form->control('lugar');
+                    echo $this->Form->control('codigo',['label' => 'Código']);
+                    echo $this->Form->control('nombres',['label' => 'Nombres']);
+                    echo $this->Form->control('datos',['label' => 'Datos']);
+                    echo $this->Form->control('texto',['label' => 'Texto']);
+                    echo $this->Form->control('lugar',['label' => 'Lugar']);
               ?>
             </div>            
             <div class="box-footer">

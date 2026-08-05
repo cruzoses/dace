@@ -114,11 +114,6 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?= $this->Url->build(['controller' => 'ofertas','action' => 'index'])?>">
-								<i class="far fa-dot-circle"></i>&nbsp;Oferta Acad&eacute;mica
-							</a>
-						</li>
-						<li>
 							<a href="<?= $this->Url->build(['controller' => 'periodos','action' => 'index'])?>">
 								<i class="far fa-dot-circle"></i>&nbsp;Periodos
 							</a>

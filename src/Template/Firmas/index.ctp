@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-sace box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Firmas</h3>
                 <div class="box-tools pull-right">
@@ -41,14 +41,14 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="7" class="text-center">
                                 <div class="paginator">
-                                    <ul class="pagination">
-                                        <?= $this->Paginator->first('<< ' . __('first')) ?>
-                                        <?= $this->Paginator->prev('< ' . __('previous')) ?>
+                                    <ul class="pagination pagination-sm">
+                                        <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->prev('<i class="fa fa-angle-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                         <?= $this->Paginator->numbers(['before' => '','after' => '']) ?>
-                                        <?= $this->Paginator->next(__('next') . ' >') ?>
-                                        <?= $this->Paginator->last(__('last') . ' >>') ?>
+                                        <?= $this->Paginator->next('<i class="fa fa-angle-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->last('<i class="fa fa-angle-double-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
                                     </ul>
                                     <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
                                 </div>
