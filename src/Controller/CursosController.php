@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Lib\CierreActas;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 
@@ -331,6 +332,171 @@ class CursosController extends AppController
 
         $this->set(compact('estudianteCursos', 'sNota', 'nTipoCalificacion', 'nNotaMinima', 'bReadonly'));
         $this->set('curso', $oCurso);
+    }
+
+    /**
+     * Cierre masivo de actas de notas (UI).
+     *
+     * GET: muestra los cursos de un periodo con su estado.
+     * POST/AJAX: cierra el acta de un curso o de todos los cursos pendientes de un periodo.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function cierreActas()
+    {
+        $periodosTable = TableRegistry::getTableLocator()->get('Periodos');
+
+        if ($this->request->is(['post', 'ajax'])) {
+            $this->request->allowMethod(['post', 'ajax']);
+            $this->autoRender = false;
+            $this->response = $this->response->withType('application/json');
+
+            $nPeriodoId = (int)$this->request->getData('periodo_id');
+            $nCursoId = (int)$this->request->getData('curso_id');
+            $bDryRun = (bool)$this->request->getData('dry_run');
+
+            try {
+                if ($nCursoId) {
+                    $aResultado = CierreActas::cerrarCurso($nCursoId, $bDryRun);
+                    $this->Auditorias->registrar(
+                        'CIERRA ACTA',
+                        "Cierre de acta del curso #{$nCursoId} ({$aResultado['asignatura']} - Sección {$aResultado['seccion']}): " .
+                        "estado {$aResultado['estado']}, actualizados {$aResultado['actualizados']}, con total {$aResultado['con_total']}"
+                    );
+
+                    return $this->response->withStringBody(json_encode([
+                        'success' => true,
+                        'message' => $this->_mensajeCurso($aResultado),
+                        'resultado' => $aResultado,
+                    ]));
+                }
+
+                if ($nPeriodoId) {
+                    $aResultado = CierreActas::cerrarPeriodo($nPeriodoId, $bDryRun);
+                    $s = $aResultado['resumen'];
+                    $this->Auditorias->registrar(
+                        'CIERRA ACTA',
+                        "Cierre masivo de actas del periodo #{$nPeriodoId} ({$aResultado['periodo']['codigo']}): " .
+                        "cursos {$s['total_cursos']}, cerrados {$s['cerrados']}, ya cerrados {$s['ya_cerrados']}, " .
+                        "saltados {$s['saltados']}, actualizados {$s['actualizados']}"
+                    );
+
+                    return $this->response->withStringBody(json_encode([
+                        'success' => true,
+                        'message' => $this->_mensajePeriodo($aResultado),
+                        'resultado' => $aResultado,
+                    ]));
+                }
+
+                return $this->response->withStringBody(json_encode([
+                    'success' => false,
+                    'message' => 'Debe indicar un periodo o un curso.',
+                ]));
+            } catch (\Exception $e) {
+                return $this->response->withStringBody(json_encode([
+                    'success' => false,
+                    'message' => 'Error del servidor: ' . $e->getMessage(),
+                ]));
+            }
+        }
+
+        $periodos = $periodosTable->find('list', [
+            'keyField' => 'id',
+            'valueField' => 'codename',
+        ])
+        ->where(['Periodos.activo' => 1, 'Periodos.califica' => 1])
+        ->order(['Periodos.id' => 'DESC'])
+        ->toArray();
+
+        $periodoId = $this->request->getQuery('periodo_id');
+        if (!$periodoId || !isset($periodos[$periodoId])) {
+            $periodoId = $periodos ? array_key_first($periodos) : null;
+        }
+
+        $cursos = [];
+        $oPeriodo = null;
+        if ($periodoId) {
+            $oPeriodo = $periodosTable->get($periodoId);
+
+            $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
+            $cursos = $cursosTable->find()
+                ->where(['Cursos.periodo_id' => $periodoId])
+                ->contain(['Asignaturas', 'Docentes', 'Periodos'])
+                ->order(['Cursos.id' => 'ASC'])
+                ->toArray();
+
+            $aCursoIds = array_map(function ($o) {
+                return $o->id;
+            }, $cursos);
+
+            if (!empty($aCursoIds)) {
+                $ecTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
+                $aConteoEstudiantes = $ecTable->find()
+                    ->select(['curso_id', 'total' => $ecTable->find()->func()->count('*')])
+                    ->where(['curso_id IN' => $aCursoIds, 'activo' => 1])
+                    ->group('curso_id')
+                    ->toArray();
+                $aEstudiantesPorCurso = [];
+                foreach ($aConteoEstudiantes as $fila) {
+                    $aEstudiantesPorCurso[(int)$fila->curso_id] = (int)$fila->total;
+                }
+
+                $icTable = TableRegistry::getTableLocator()->get('IndicadorCursos');
+                $aIndicadoresPorCurso = [];
+                foreach ($icTable->find()
+                    ->select(['curso_id', 'id'])
+                    ->where(['curso_id IN' => $aCursoIds])
+                    ->toArray() as $oInd) {
+                    $aIndicadoresPorCurso[$oInd->curso_id][] = $oInd->id;
+                }
+
+                $ccTable = TableRegistry::getTableLocator()->get('ContenidoCursos');
+                $aEvalPorCurso = [];
+                foreach ($aIndicadoresPorCurso as $nCurso => $aIndIds) {
+                    $aEvalPorCurso[$nCurso] = $ccTable->find()
+                        ->where(['indicador_curso_id IN' => $aIndIds])
+                        ->count();
+                }
+
+                $aInfo = [];
+                foreach ($cursos as $oCurso) {
+                    $aInfo[$oCurso->id] = [
+                        'n_estudiantes' => $aEstudiantesPorCurso[$oCurso->id] ?? 0,
+                        'n_evaluaciones' => $aEvalPorCurso[$oCurso->id] ?? 0,
+                    ];
+                }
+            }
+        }
+
+        $this->set(compact('periodos', 'periodoId', 'oPeriodo', 'cursos', 'aInfo'));
+    }
+
+    /**
+     * @param array $aR
+     * @return string
+     */
+    private function _mensajeCurso(array $aR)
+    {
+        if ($aR['estado'] === 'OK' || $aR['estado'] === 'PARCIAL') {
+            return "Acta del curso #{$aR['curso_id']} ({$aR['asignatura']} - Sección {$aR['seccion']}) cerrada. " .
+                "Se actualizó la calificación de {$aR['actualizados']} estudiante(s). " .
+                ($aR['sin_total'] ? "Sin total: {$aR['sin_total']} estudiante(s)." : '');
+        }
+
+        return "Curso #{$aR['curso_id']}: {$aR['motivo']}";
+    }
+
+    /**
+     * @param array $aResultado
+     * @return string
+     */
+    private function _mensajePeriodo(array $aResultado)
+    {
+        $s = $aResultado['resumen'];
+
+        return "Cierre del periodo {$aResultado['periodo']['codigo']} completado: " .
+            "{$s['cerrados']} curso(s) cerrado(s), {$s['ya_cerrados']} ya cerrado(s), " .
+            "{$s['saltados']} sin datos, {$s['actualizados']} calificación(es) actualizada(s).";
     }
 
     /**
