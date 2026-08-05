@@ -853,6 +853,13 @@ class ApiController extends AppController
             if ($usuariosTable->Estudiantes->save($estudiante)) {
                 $this->_enviarTokenEstudiante($estudiante);
                 $this->Auditorias->registrar('SOLICITA', 'Solicitud de clave de registro para estudiante ' . $estudiante->id);
+
+                return $this->_respond([
+                    'success' => true,
+                    'message' => 'Revise su correo; también le mostramos sus datos de registro.',
+                    'expediente' => $estudiante->expediente,
+                    'token' => $estudiante->token,
+                ]);
             }
         }
 
