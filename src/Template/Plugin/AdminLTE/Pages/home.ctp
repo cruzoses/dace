@@ -9,6 +9,11 @@
         ); ?>
     </div>
     <h1><p class="text-center"><strong><?= \Cake\Core\Configure::read('Sistema.Siglas')?></strong></p></h1>
+    <div class="visible-xs text-center" style="margin-top:15px;">
+        <?= $this->Html->link('<i class="fab fa-android"></i>&nbsp;Descargar SACE Estudiante',
+            $this->Url->build('/files/apk/saceuptbal.apk'),
+            ['class' => 'btn btn-success btn-block', 'escape' => false]); ?>
+    </div>
 <?php else: ?>
     <div class="logoAbajo">
         <?= $this->Html->image('logos/logouptbal.png', [
