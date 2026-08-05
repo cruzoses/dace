@@ -48,8 +48,8 @@ class Application extends BaseApplication
         */        
         if (Configure::read('debug')) {
             //Configure::write('DebugKit.safeTld', ['edu', 'dev', 'web']);
-            //Configure::write('DebugKit.forceEnable', true);
-            //$this->addPlugin('DebugKit');
+            Configure::write('DebugKit.forceEnable', true);
+            $this->addPlugin('DebugKit');
         }
         $this->addPlugin('BootstrapUI');
         $this->addPlugin('AdminLTE');
