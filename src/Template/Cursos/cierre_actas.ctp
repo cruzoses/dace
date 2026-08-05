@@ -4,17 +4,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-file-text-o"></i>&nbsp;Cierre de Actas de Notas</h3>
                 <div class="box-tools pull-right">
-                    <?php
-                        $nPendientes = 0;
-                        if (!empty($cursos)) {
-                            foreach ($cursos as $oCurso) {
-                                $info = isset($aInfo[$oCurso->id]) ? $aInfo[$oCurso->id] : ['n_estudiantes' => 0, 'n_evaluaciones' => 0];
-                                if ((int)$oCurso->cerrado === 0 && $info['n_evaluaciones'] > 0 && $info['n_estudiantes'] > 0) {
-                                    $nPendientes++;
-                                }
-                            }
-                        }
-                    ?>
+                    <?php $nPendientes = $nPendientesPeriodo; ?>
                     <?php if ($nPendientes > 0) : ?>
                         <button type="button" class="btn btn-success btn-sm" id="btnCerrarPeriodo">
                             <i class="fa fa-lock"></i>&nbsp;Cerrar todos los pendientes (<?= $nPendientes ?>)
@@ -24,7 +14,7 @@
                         <i class="fa fa-minus"></i>
                     </button>
                     <?= $this->Html->link('<i class="fa fa-times"></i>',
-                        ['controller' => 'Pages', 'action' => 'display', 'home'],
+                        ['action' => 'index'],
                         ['class' => 'btn btn-box-tool', 'escape' => false]);
                     ?>
                 </div>
@@ -41,12 +31,24 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="docenteSelect">Docente</label>
+                        <select id="docenteSelect" class="form-control select2">
+                            <option value="">Todos</option>
+                            <?php foreach ($aDocentes as $nId => $sNombre) : ?>
+                                <option value="<?= $nId ?>"<?= (int)$nId === (int)$docenteId ? ' selected' : '' ?>>
+                                    <?= h($sNombre) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
                 </div>
 
                 <?php if ($oPeriodo) : ?>
                     <div class="callout callout-info">
                         <i class="fa fa-calendar"></i>&nbsp;<strong><?= h($oPeriodo->codigo) ?> : <?= h($oPeriodo->nombre) ?></strong>
-                        &nbsp;|&nbsp;Cursos: <?= count($cursos) ?>&nbsp;|&nbsp;Pendientes: <?= $nPendientes ?>
+                        &nbsp;|&nbsp;Cursos: <?= $nTotalCursos ?>&nbsp;|&nbsp;Pendientes: <?= $nPendientes ?>
                     </div>
                 <?php endif; ?>
 
@@ -70,7 +72,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $nIdx = 1; ?>
+                                <?php $nIdx = (($this->Paginator->param('page') - 1) * $this->Paginator->param('perPage')) + 1; ?>
                                 <?php foreach ($cursos as $oCurso) : ?>
                                     <?php
                                         $info = isset($aInfo[$oCurso->id]) ? $aInfo[$oCurso->id] : ['n_estudiantes' => 0, 'n_evaluaciones' => 0];
@@ -102,7 +104,7 @@
                                             <?= $oCurso->has('asignatura') ? h($oCurso->asignatura->codigo) . ' - ' . h($oCurso->asignatura->nombre) : '' ?>
                                         </td>
                                         <td class="text-center"><?= h($oCurso->seccion) ?></td>
-                                        <td><?= $oCurso->has('docente') && $oCurso->docente ? h($oCurso->docente->codename) : 'SIN DOCENTE' ?></td>
+                                        <td><?= $oCurso->has('docente') && $oCurso->docente ? h($oCurso->docente->name) : 'SIN DOCENTE' ?></td>
                                         <td class="text-center"><?= $info['n_estudiantes'] ?></td>
                                         <td class="text-center"><?= $info['n_evaluaciones'] ?></td>
                                         <td class="text-center">
@@ -124,6 +126,21 @@
                                     <?php $nIdx++; ?>
                                 <?php endforeach; ?>
                             </tbody>
+                            <tfoot class="no-padding">
+                                <tr>
+                                    <td colspan="8" class="text-center">
+                                <div class="paginator">
+                                    <ul class="pagination pagination-sm">
+                                        <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->prev('<i class="fa fa-angle-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->numbers(['before' => '','after' => '']) ?>
+                                        <?= $this->Paginator->next('<i class="fa fa-angle-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                        <?= $this->Paginator->last('<i class="fa fa-angle-double-right"></i>',['class' => 'btn btn-sm','escape' => false]) ?>
+                                    </ul>
+                                    <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+                                </div>                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 <?php endif; ?>
@@ -141,6 +158,14 @@ $(document).ready(function () {
         var nId = $(this).val();
         if (nId) {
             window.location.href = sBaseUrl + '?periodo_id=' + nId;
+        }
+    });
+
+    $('#docenteSelect').on('change', function () {
+        var nPeriodo = $('#periodoSelect').val();
+        var nDocente = $(this).val();
+        if (nPeriodo) {
+            window.location.href = sBaseUrl + '?periodo_id=' + nPeriodo + '&docente_id=' + (nDocente || '');
         }
     });
 
@@ -194,15 +219,20 @@ $(document).ready(function () {
     $('#btnCerrarPeriodo').on('click', function () {
         var $btn = $(this);
         var nPeriodo = <?= $periodoId ?: 'null' ?>;
+        var nDocenteId = parseInt($('#docenteSelect').val()) || 0;
 
         if (!nPeriodo) {
             toastr.warning('Seleccione un periodo.');
             return;
         }
 
+        var sTexto = nDocenteId
+            ? 'Se cerrará el acta de los cursos pendientes del docente seleccionado en este periodo. Esta acción no se puede deshacer.'
+            : 'Se cerrará el acta de todos los cursos pendientes del periodo. Esta acción no se puede deshacer.';
+
         Swal.fire({
             title: 'Cerrar todas las actas del periodo',
-            text: 'Se cerrará el acta de todos los cursos pendientes del periodo. Esta acción no se puede deshacer.',
+            text: sTexto,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#4190d1',
@@ -214,7 +244,7 @@ $(document).ready(function () {
                 return;
             }
             $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>&nbsp;Procesando...');
-            fnCerrar({ periodo_id: nPeriodo }).done(function (response) {
+            fnCerrar({ periodo_id: nPeriodo, docente_id: nDocenteId }).done(function (response) {
                 if (response.success) {
                     Swal.fire({ title: '¡Éxito!', text: response.message, icon: 'success', confirmButtonText: 'Aceptar' })
                         .then(function () { window.location.reload(); });

@@ -216,9 +216,10 @@ class CierreActas
      * @param bool $bDryRun Solo reporta, no guarda.
      * @param bool $bRecalcular Permite procesar cursos ya cerrados.
      * @param string|null $sResponsableOverride
+     * @param int|null $nDocenteId Si se indica, solo cierra los cursos de ese docente.
      * @return array ['periodo' => id, 'cursos' => array de resultados, 'resumen' => [...]]
      */
-    public static function cerrarPeriodo($nPeriodoId, $bDryRun = false, $bRecalcular = false, $sResponsableOverride = null)
+    public static function cerrarPeriodo($nPeriodoId, $bDryRun = false, $bRecalcular = false, $sResponsableOverride = null, $nDocenteId = null)
     {
         $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
         $oPeriodo = $cursosTable->Periodos->find()
@@ -240,8 +241,13 @@ class CierreActas
             ];
         }
 
+        $aCond = ['Cursos.periodo_id' => $nPeriodoId];
+        if ($nDocenteId) {
+            $aCond['Cursos.docente_id'] = $nDocenteId;
+        }
+
         $aCursos = $cursosTable->find()
-            ->where(['Cursos.periodo_id' => $nPeriodoId])
+            ->where($aCond)
             ->order(['Cursos.id' => 'ASC'])
             ->extract('id')
             ->toArray();

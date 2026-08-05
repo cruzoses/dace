@@ -353,6 +353,7 @@ class CursosController extends AppController
 
             $nPeriodoId = (int)$this->request->getData('periodo_id');
             $nCursoId = (int)$this->request->getData('curso_id');
+            $nDocenteId = (int)$this->request->getData('docente_id');
             $bDryRun = (bool)$this->request->getData('dry_run');
 
             try {
@@ -372,7 +373,7 @@ class CursosController extends AppController
                 }
 
                 if ($nPeriodoId) {
-                    $aResultado = CierreActas::cerrarPeriodo($nPeriodoId, $bDryRun);
+                    $aResultado = CierreActas::cerrarPeriodo($nPeriodoId, $bDryRun, false, null, $nDocenteId ?: null);
                     $s = $aResultado['resumen'];
                     $this->Auditorias->registrar(
                         'CIERRA ACTA',
@@ -414,26 +415,62 @@ class CursosController extends AppController
         }
 
         $cursos = [];
+        $aInfo = [];
+        $aDocentes = [];
+        $nTotalCursos = 0;
+        $nPendientesPeriodo = 0;
         $oPeriodo = null;
+        $docenteId = null;
         if ($periodoId) {
             $oPeriodo = $periodosTable->get($periodoId);
 
             $cursosTable = TableRegistry::getTableLocator()->get('Cursos');
-            $cursos = $cursosTable->find()
-                ->where(['Cursos.periodo_id' => $periodoId])
-                ->contain(['Asignaturas', 'Docentes', 'Periodos'])
-                ->order(['Cursos.id' => 'ASC'])
+
+            $docentesTable = TableRegistry::getTableLocator()->get('Docentes');
+            $aDocenteIdList = $cursosTable->find()
+                ->select(['docente_id'])
+                ->where(['periodo_id' => $periodoId, 'docente_id IS NOT' => null])
+                ->distinct()
+                ->extract('docente_id')
                 ->toArray();
+            if (!empty($aDocenteIdList)) {
+                foreach ($docentesTable->find()
+                    ->select(['Docentes.id', 'Docentes.cedula', 'Docentes.nombres', 'Docentes.apellidos'])
+                    ->where(['Docentes.activo' => 1, 'Docentes.id IN' => $aDocenteIdList])
+                    ->order(['Docentes.apellidos' => 'ASC', 'Docentes.nombres' => 'ASC'])
+                    ->toArray() as $oDocente) {
+                    $aDocentes[$oDocente->id] = $oDocente->name;
+                }
+            }
 
-            $aCursoIds = array_map(function ($o) {
-                return $o->id;
-            }, $cursos);
+            $sDocenteId = $this->request->getQuery('docente_id');
+            if ($sDocenteId && isset($aDocentes[(int)$sDocenteId])) {
+                $docenteId = (int)$sDocenteId;
+            }
 
-            if (!empty($aCursoIds)) {
+            $aCond = ['Cursos.periodo_id' => $periodoId];
+            if ($docenteId) {
+                $aCond['Cursos.docente_id'] = $docenteId;
+            }
+
+            $aPeriodoCursos = $cursosTable->find()
+                ->select(['id', 'cerrado'])
+                ->where($aCond)
+                ->toArray();
+            $nTotalCursos = count($aPeriodoCursos);
+
+            $aPeriodoCursoIds = [];
+            $aCerrado = [];
+            foreach ($aPeriodoCursos as $oCursoBasico) {
+                $aPeriodoCursoIds[] = (int)$oCursoBasico->id;
+                $aCerrado[(int)$oCursoBasico->id] = (int)$oCursoBasico->cerrado;
+            }
+
+            if (!empty($aPeriodoCursoIds)) {
                 $ecTable = TableRegistry::getTableLocator()->get('EstudianteCursos');
                 $aConteoEstudiantes = $ecTable->find()
                     ->select(['curso_id', 'total' => $ecTable->find()->func()->count('*')])
-                    ->where(['curso_id IN' => $aCursoIds, 'activo' => 1])
+                    ->where(['curso_id IN' => $aPeriodoCursoIds, 'activo' => 1])
                     ->group('curso_id')
                     ->toArray();
                 $aEstudiantesPorCurso = [];
@@ -445,7 +482,7 @@ class CursosController extends AppController
                 $aIndicadoresPorCurso = [];
                 foreach ($icTable->find()
                     ->select(['curso_id', 'id'])
-                    ->where(['curso_id IN' => $aCursoIds])
+                    ->where(['curso_id IN' => $aPeriodoCursoIds])
                     ->toArray() as $oInd) {
                     $aIndicadoresPorCurso[$oInd->curso_id][] = $oInd->id;
                 }
@@ -458,17 +495,28 @@ class CursosController extends AppController
                         ->count();
                 }
 
-                $aInfo = [];
-                foreach ($cursos as $oCurso) {
-                    $aInfo[$oCurso->id] = [
-                        'n_estudiantes' => $aEstudiantesPorCurso[$oCurso->id] ?? 0,
-                        'n_evaluaciones' => $aEvalPorCurso[$oCurso->id] ?? 0,
+                foreach ($aPeriodoCursoIds as $nCursoId) {
+                    $nEstudiantes = $aEstudiantesPorCurso[$nCursoId] ?? 0;
+                    $nEvaluaciones = $aEvalPorCurso[$nCursoId] ?? 0;
+                    $aInfo[$nCursoId] = [
+                        'n_estudiantes' => $nEstudiantes,
+                        'n_evaluaciones' => $nEvaluaciones,
                     ];
+                    if ($aCerrado[$nCursoId] === 0 && $nEvaluaciones > 0 && $nEstudiantes > 0) {
+                        $nPendientesPeriodo++;
+                    }
                 }
             }
+
+            $query = $cursosTable->find()
+                ->where($aCond)
+                ->contain(['Asignaturas', 'Docentes', 'Periodos'])
+                ->order(['Cursos.id' => 'ASC']);
+
+            $cursos = $this->paginate($query, ['limit' => 50]);
         }
 
-        $this->set(compact('periodos', 'periodoId', 'oPeriodo', 'cursos', 'aInfo'));
+        $this->set(compact('periodos', 'periodoId', 'docenteId', 'aDocentes', 'oPeriodo', 'cursos', 'aInfo', 'nTotalCursos', 'nPendientesPeriodo'));
     }
 
     /**
