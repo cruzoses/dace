@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 4/8/2026
+Modified: 6/8/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -286,6 +286,7 @@ CREATE TABLE IF NOT EXISTS `programas`
   `subsistema_id` Int NOT NULL,
   `nota_minima` Smallint(6) NOT NULL,
   `creditos` Smallint(6) NOT NULL,
+  `codigo_opsu` Varchar(20),
   `pasantia` Tinyint(1) NOT NULL,
   `califica` Tinyint(1) NOT NULL,
   `activo` Tinyint(1) NOT NULL,
