@@ -65,13 +65,13 @@
                     echo $this->Form->control('etnia', ['type' => 'select', 'options' => array(0 => 'NO', 1 => 'SI'), 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                ?>
-                <h4 class="box-sub-title-info">Datos de Ubicaci&oacute;n</h4>
-                <?php
-                    echo $this->Form->control('lugar_nacimiento', ['rows' => 1,
+                    echo $this->Form->control('lugar_nacimiento', ['rows' => 1, 'class' => 'isUpper',
                         'placeholder' => 'Lugar de nacimiento',
                         'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
+                ?>
+                <h4 class="box-sub-title-info">Datos de Ubicaci&oacute;n</h4>
+                <?php
                     echo $this->Form->control('pais_id', ['type' => 'select', 'options' => $paises, 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
@@ -84,11 +84,15 @@
                     echo $this->Form->control('parroquia_id', ['type' => 'select', 'options' => $parroquias, 'empty' => true,
                         'class' => 'form-control select2', 'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->control('direccion', ['rows' => 2,'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('telefonos', ['type' => 'tel',  'pattern' => '[0-9]{3}-[0-9]{2}-[0-9]{3}',
+                    echo $this->Form->control('direccion', ['label' => 'Dirección de Habitación',
+                        'rows' => 2,'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('telefonos', ['label' => 'Teléfonos de Contacto','type' => 'tel',
+                        'placeholder' => 'Formato 0000-000-00-00', 'pattern' => '04\d{2}-\d{3}-\d{2}-\d{2}',
                         'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->control('email', ['class' => 'isLower','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('email', ['label' => 'Correo Electrónico','type' => 'email',
+                        'class' => 'isLower','prepend' => '<i class="fa fa-asterisk"></i>']);
                 ?>
                 <h4 class="box-sub-title-info">Informaci&oacute;n Acad&eacute;mica</h4>
                 <?php
@@ -127,7 +131,7 @@
                     echo $this->Form->hidden('usuario_id');
                     echo $this->Form->hidden('activo', ['type' => 'checkbox', 'value' => 1, 'checked' => true]);
                 ?>
-            </div>            
+            </div>
             <div class="box-footer">
 		        <?= $this->Form->button('<i class="fa fa-save"></i>&nbsp;Guardar',
 			        ['type' => 'submit','class'=>'btn btn-success btn-flat pull-left','escape'=>false]); 

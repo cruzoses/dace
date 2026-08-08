@@ -141,6 +141,8 @@ class IndicadorCursosController extends AppController
             ->contain(['Asignaturas'])
             ->first();
 
+        $nTipoIndicador = $oCurso->asignatura->frecuencia ?? null;
+
         $indicadorCurso = $this->IndicadorCursos->newEntity();
         if ($this->request->is('post')) 
         {
@@ -156,7 +158,7 @@ class IndicadorCursosController extends AppController
         $aEscala = Configure::read('aEscala');
         $aPorcentajes = $this->_getOpcionesPorcentaje($oCurso->asignatura->frecuencia);
         $cursos = $this->IndicadorCursos->Cursos->find('list')->where(['Cursos.id' => $nCursoId])->first();
-        $indicadores = $this->IndicadorCursos->Indicadores->find('list', ['limit' => 200]);
+        $indicadores = $this->IndicadorCursos->Indicadores->find('list')->where(['Indicadores.frecuencia' => $nTipoIndicador])->order(['Indicadores.nombre' => 'ASC']);
         $this->set(compact('indicadorCurso', 'cursos', 'indicadores','aEscala','oCurso','aPorcentajes'));
     }
 

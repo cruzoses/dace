@@ -10,7 +10,7 @@
 ?>
 <div class="row">
     <div class="col-md-12">    
-        <div class="box box-warning box-solid">
+        <div class="box box-purple box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Horarios</h3>
 		        <div class="box-tools pull-right">
@@ -43,10 +43,10 @@
                         'class' => 'form-control select2', 'data-widh' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('desde', ['type' => 'text', 'empty' => true,
-                        'class' => 'form-control timepicker','prepend' => '<i class="fa fa-clock-o"></i>']
+                        'class' => 'form-control timepicker','prepend' => '<i class="far fa-clock"></i>']
                     );
                     echo $this->Form->control('hasta', ['type' => 'text', 'empty' => true,
-                        'class' => 'form-control timepicker','prepend' => '<i class="fa fa-clock-o"></i>']
+                        'class' => 'form-control timepicker','prepend' => '<i class="far fa-clock"></i>']
                     );
                     echo $this->Form->control('codigo', ['label' => 'Código',
                         'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>', 'readonly' => true]

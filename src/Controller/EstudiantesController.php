@@ -159,8 +159,7 @@ class EstudiantesController extends AppController
         $aGenero = Configure::read('aGeneros');
         $aEdoCivil = Configure::read('aEstadoCivil');
         $aSedes = TableRegistry::getTableLocator()->get('Sedes')->find('list')->where(['Sedes.activa' => 1])->toArray();
-        $aPeriodos = TableRegistry::getTableLocator()->get('Periodos')->find('list')->where(['Periodos.activo' => 1])
-            ->order(['Periodos.id' => 'DESC'])->toArray();
+        $aPeriodos = TableRegistry::getTableLocator()->get('Periodos')->find('list')->order(['Periodos.id' => 'DESC'])->toArray();
         $aCarreras = TableRegistry::getTableLocator()->get('Carreras')->find('list')->where(['Carreras.activa' => 1])->toArray();
         $paises = $this->Estudiantes->Paises->find('list', ['limit' => 200]);
         $usuarios = $this->Estudiantes->Usuarios->find('list', ['limit' => 200]);
