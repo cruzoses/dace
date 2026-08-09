@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property string $nombre
  * @property int $mension_carrera_id
  * @property string $titulo_otorgado
+ * @property int $nivel
  * @property bool $activa
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -36,6 +37,7 @@ class Carrera extends Entity
         'nombre' => true,
         'mension_carrera_id' => true,
         'titulo_otorgado' => true,
+        'nivel' => true,
         'activa' => true,
         'created' => true,
         'modified' => true,

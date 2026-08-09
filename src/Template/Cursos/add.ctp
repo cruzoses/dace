@@ -84,6 +84,7 @@
 <?= $this->Html->script('cursos') ?>
 <script>
 var CURSOS_PROGRAMAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getProgramas']) ?>';
+var CURSOS_TRAYECTOS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getTrayectos']) ?>';
 var CURSOS_ASIGNATURAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAsignaturas']) ?>';
 var CURSOS_AULAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAulas']) ?>';
 var CURSOS_HORARIOS_ALL = <?= $horariosJson ?>;

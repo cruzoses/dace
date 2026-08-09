@@ -194,7 +194,7 @@ class CursosController extends AppController
         $sedes = $this->Cursos->Sedes->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
         $periodos = $this->Cursos->Periodos->find('list', ['limit' => 200])->where(['activo' => 1])->order(['id' => 'DESC']);
         $carreras = $this->Cursos->Carreras->find('list', ['limit' => 200])->where(['activa' => 1])->order(['id' => 'ASC']);
-        $trayectos = $this->Cursos->Trayectos->find('list', ['limit' => 200])->where(['activo' => 1]);
+        $trayectos = $this->_getTrayectosPorCarrera($curso->carrera_id);
         $asignaturas = $this->Cursos->Asignaturas->find('list')->where(['activa' => 1]);
         $docentes = $this->Cursos->Docentes->find('list')->where(['activo' => 1]);
         $profesores = $this->Cursos->Docentes->find('list', [
@@ -648,6 +648,48 @@ class CursosController extends AppController
         $this->response = $this->response->withType('application/json');
         $this->response = $this->response->withStringBody(json_encode(['aulas' => $aulas]));
         return $this->response;
+    }
+
+    /**
+     * Get trayectos by carrera_id (AJAX)
+     *
+     * @return \Cake\Http\Response
+     */
+    public function getTrayectos()
+    {
+        $this->request->allowMethod(['ajax', 'get']);
+        $this->autoRender = false;
+        $carrera_id = $this->request->getQuery('carrera_id');
+
+        $trayectos = $this->_getTrayectosPorCarrera($carrera_id);
+
+        $this->response = $this->response->withType('application/json');
+        $this->response = $this->response->withStringBody(json_encode(['trayectos' => $trayectos]));
+        return $this->response;
+    }
+
+    private function _getTrayectosPorCarrera($carreraId)
+    {
+        $trayectos = [];
+        if (empty($carreraId)) {
+            return $trayectos;
+        }
+        $oCarrera = $this->Cursos->Carreras->find()
+            ->select(['nivel'])
+            ->where(['Carreras.id' => $carreraId])
+            ->first();
+        if (!$oCarrera) {
+            return $trayectos;
+        }
+        $query = $this->Cursos->Trayectos->find('list')
+            ->where(['Trayectos.activo' => 1])
+            ->order(['Trayectos.id' => 'ASC']);
+        if ((int)$oCarrera->nivel === 1) {
+            $query->where(['Trayectos.codigo IN' => ['I', '1', '2']]);
+        } else {
+            $query->where(['Trayectos.codigo NOT IN' => ['I', '1', '2']]);
+        }
+        return $query->toArray();
     }
 
     private function _getHorariosAll()

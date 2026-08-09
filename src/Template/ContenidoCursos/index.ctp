@@ -99,7 +99,7 @@
                             </tr>
                             <?php $nRow++; ?>
                         <?php endforeach; ?>
-                        <?php if ($nPorcentajeDefinido < 100): ?>
+                        <?php if ($nEvaluacionesDefinidas > 0 && $nPorcentajeDefinido < 100): ?>
                             <tr>
                                 <td colspan="9">
                                     <div class="callout callout-info">

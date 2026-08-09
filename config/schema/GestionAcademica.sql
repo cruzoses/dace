@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 6/8/2026
+Modified: 8/8/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -236,6 +236,7 @@ CREATE TABLE IF NOT EXISTS `carreras`
   `nombre` Varchar(80) NOT NULL,
   `mension_carrera_id` Int NOT NULL,
   `titulo_otorgado` Varchar(80) NOT NULL,
+  `nivel` Smallint(6) NOT NULL,
   `activa` Tinyint(1) NOT NULL,
   `created` Datetime,
   `modified` Datetime,

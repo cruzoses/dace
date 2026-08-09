@@ -102,10 +102,24 @@ class IndicadorCursosTable extends AppTable
         $rules->add($rules->existsIn(['curso_id'], 'Cursos'));
         $rules->add($rules->existsIn(['indicador_id'], 'Indicadores'));
 
-        $rules->add($rules->isUnique(
-            ['curso_id', 'indicador_id'],
-            'Ya existe un registro con estas datos.'
-        ));
+        $rules->add(function ($entity, $options) {
+            $table = $options['repository'];
+
+            $query = $table->find()
+                ->where(['curso_id' => $entity->curso_id]);
+
+            if ($entity->id) {
+                $query->where(['id !=' => $entity->id]);
+            }
+
+            $nExistente = $query->where(['indicador_id' => $entity->indicador_id])->count();
+            if ($nExistente > 0) {
+                $entity->setError('indicador_id', ['Ya existe un registro con estas datos.']);
+                return false;
+            }
+
+            return true;
+        }, 'validarUnicoIndicador');
 
         $rules->add(function ($entity, $options) {
             $table = $options['repository'];
@@ -130,43 +144,43 @@ class IndicadorCursosTable extends AppTable
             switch ($nFrecuencia) {
                 case 1:
                     if ($nCantidad > 1) {
-                        $options['errors'][] = 'Solo se permite 1 indicador para frecuencia TRIMESTRAL.';
+                        $entity->setError('indicador_id', ['Solo se permite 1 indicador para frecuencia TRIMESTRAL.']);
                         return false;
                     }
                     if ($nNuevoPorcentaje != 100) {
-                        $options['errors'][] = 'Para TRIMESTRAL el porcentaje debe ser 100%.';
+                        $entity->setError('porcentaje', ['Para TRIMESTRAL el porcentaje debe ser 100%.']);
                         return false;
                     }
                     break;
 
                 case 2:
                     if ($nCantidad > 2) {
-                        $options['errors'][] = 'Solo se permiten 2 indicadores para frecuencia SEMESTRAL.';
+                        $entity->setError('indicador_id', ['Solo se permiten 2 indicadores para frecuencia SEMESTRAL.']);
                         return false;
                     }
                     if ($nNuevoPorcentaje != 50) {
-                        $options['errors'][] = 'Para SEMESTRAL el porcentaje debe ser 50%.';
+                        $entity->setError('porcentaje', ['Para SEMESTRAL el porcentaje debe ser 50%.']);
                         return false;
                     }
                     break;
 
                 case 3:
                     if ($nCantidad > 3) {
-                        $options['errors'][] = 'Solo se permiten 3 indicadores para frecuencia ANUALIZADA.';
+                        $entity->setError('indicador_id', ['Solo se permiten 3 indicadores para frecuencia ANUALIZADA.']);
                         return false;
                     }
                     if ($nTotal > 100) {
-                        $options['errors'][] = 'El total de porcentajes no puede exceder 100%.';
+                        $entity->setError('porcentaje', ['El total de porcentajes no puede exceder 100%.']);
                         return false;
                     }
                     $aPermitidos = [30, 40];
                     if (!in_array($nNuevoPorcentaje, $aPermitidos)) {
-                        $options['errors'][] = 'Para ANUALIZADA solo se permiten porcentajes de 30% o 40%.';
+                        $entity->setError('porcentaje', ['Para ANUALIZADA solo se permiten porcentajes de 30% o 40%.']);
                         return false;
                     }
                     if (count($aExistentes) == 2 && $nTotal != 100) {
                         $nFaltante = 100 - $nTotalActual;
-                        $options['errors'][] = 'El tercer indicador debe ser ' . $nFaltante . '% para completar 100%.';
+                        $entity->setError('porcentaje', ['El tercer indicador debe ser ' . $nFaltante . '% para completar 100%.']);
                         return false;
                     }
                     break;

@@ -32,6 +32,41 @@ function cargarAsignaturas(programaIds, trayectoId, selectedValue) {
     });
 }
 
+function cargarTrayectos(carreraId, selectedValue) {
+    var $trayecto = $('#trayecto-id');
+    var currentText = $trayecto.find('option:selected').text();
+    if (!carreraId) {
+        $trayecto.empty().append('<option value="" selected>Seleccione una Opción</option>');
+        $trayecto.val('').trigger('change');
+        return;
+    }
+    $.ajax({
+        url: CURSOS_TRAYECTOS_URL,
+        type: 'GET',
+        data: { carrera_id: carreraId },
+        dataType: 'json',
+        beforeSend: function () {
+            $trayecto.empty().append('<option value="">Cargando...</option>');
+        }
+    }).done(function (response) {
+        $trayecto.empty().append('<option value="" selected>Seleccione una Opción</option>');
+        var found = !selectedValue;
+        $.each(response.trayectos, function (value, text) {
+            var selected = (value == selectedValue) ? ' selected' : '';
+            if (value == selectedValue) {
+                found = true;
+            }
+            $trayecto.append('<option value="' + value + '"' + selected + '>' + text + '</option>');
+        });
+        if (!found && selectedValue) {
+            $trayecto.append('<option value="' + selectedValue + '" selected>' + (currentText || selectedValue) + '</option>');
+        }
+        $trayecto.val(selectedValue || '').trigger('change');
+    }).fail(function () {
+        $trayecto.empty().append('<option value="" selected>Error al cargar trayectos</option>');
+    });
+}
+
 function cargarAulas(sedeId, selectedValue) {
     var $aula = $('#aula-id');
     if (!sedeId) {
@@ -94,7 +129,14 @@ function initCursos() {
 
     filterHorarios(initialSede, initialPeriodo, initialHorario);
 
+    var trayectoActual = (typeof CURSOS_TRAYECTO_ACTUAL !== 'undefined') ? CURSOS_TRAYECTO_ACTUAL : null;
+    if (initialCarrera) {
+        cargarTrayectos(initialCarrera, esEdicion ? trayectoActual : null);
+    }
+
     $('#carrera-id').on('change', function () {
+        var carreraId = $(this).val();
+        cargarTrayectos(carreraId, null);
         if (!esEdicion) {
             $('#asignatura-id').empty().append('<option value="" selected>Seleccione una Opción</option>');
         }

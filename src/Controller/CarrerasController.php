@@ -75,6 +75,7 @@ class CarrerasController extends AppController
     public function add()
     {
         $carrera = $this->Carreras->newEntity();
+        $carrera->nivel = 1;
         if ($this->request->is('post')) {
             $carrera = $this->Carreras->patchEntity($carrera, $this->request->getData());
             if ($this->Carreras->save($carrera)) {

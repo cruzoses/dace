@@ -32,11 +32,17 @@
                         'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
                     );
                     echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('mension_carrera_id', ['type' => 'select', 'options' => $mensionCarreras, 'empty' => true, 
-                        'label' => 'Mensión Carrera', 'class' => 'form-control select2', 'data-width' => '100%',
+                    echo $this->Form->control('mension_carrera_id', ['type' => 'select', 'options' => $mensionCarreras, 
+                        'empty' => true, 'label' => 'Mensión Carrera', 'class' => 'form-control select2', 
+                        'data-width' => '100%','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('titulo_otorgado', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('nivel', ['type' => 'select',
+                        'options' => [1 => 'TECNICO SUPERIOR', 2 => 'LICENCIADO / INGENIERO'],
+                        'empty' => true, 'label' => 'Nivel',
+                        'class' => 'form-control select2', 'data-width' => '100%',
                         'prepend' => '<i class="fa fa-asterisk"></i>']
                     );
-                    echo $this->Form->control('titulo_otorgado', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);                    
                     echo $this->Form->control('sedes._ids', ['prepend' => '<i class="fa fa-asterisk"></i>','options' => $sedes]);
                     echo $this->Form->control('activa', ['type' => 'checkbox', 'value' => 1, 'checked' => true]); 
                 ?>

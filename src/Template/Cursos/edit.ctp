@@ -82,11 +82,13 @@
 <?= $this->Html->script('cursos') ?>
 <script>
 var CURSOS_PROGRAMAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getProgramas']) ?>';
+var CURSOS_TRAYECTOS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getTrayectos']) ?>';
 var CURSOS_ASIGNATURAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAsignaturas']) ?>';
 var CURSOS_AULAS_URL = '<?= $this->Url->build(['controller' => 'Cursos', 'action' => 'getAulas']) ?>';
 var CURSOS_HORARIOS_ALL = <?= $horariosJson ?>;
 var CURSOS_HORARIO_ACTUAL = <?= json_encode(!empty($curso->horario) ? explode(' ', $curso->horario) : []) ?>;
 var CURSOS_ASIGNATURA_ACTUAL = '<?= h($curso->asignatura_id) ?>';
+var CURSOS_TRAYECTO_ACTUAL = '<?= h($curso->trayecto_id) ?>';
 var CURSOS_PROGRAMAS_ACTUAL = '<?= h($curso->programas) ?>';
 var CURSOS_AULA_ACTUAL = '<?= h($curso->aula_id) ?>';
 

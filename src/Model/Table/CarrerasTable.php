@@ -111,6 +111,12 @@ class CarrerasTable extends AppTable
             ->requirePresence('activa', 'create')
             ->notEmptyString('activa');
 
+        $validator
+            ->integer('nivel')
+            ->requirePresence('nivel', 'create')
+            ->notEmptyString('nivel')
+            ->inList('nivel', [1, 2], 'Nivel no válido.');
+
         return $validator;
     }
 

@@ -737,11 +737,11 @@ select.nota-input:disabled {
     <i class="fa fa-info-circle"></i>&nbsp;<strong>No tiene estudiantes inscritos en este curso.</strong>
 </div>
 <?php else : ?>
-<div class="callout callout-warning">
+<div class="callout callout-info">
     <i class="fa fa-exclamation-triangle"></i>&nbsp;<strong>No hay evaluaciones definidas en el plan de evaluaci&oacute;n.</strong>
     <br>Debe definir las evaluaciones antes de cargar notas.
     <?= $this->Html->link('Ir al Plan de Evaluaci&oacute;n',
         ['controller' => 'ContenidoCursos', 'action' => 'index', $nCursoId],
-        ['class' => 'btn btn-sm btn-warning', 'escape' => false]) ?>
+        ['class' => 'btn btn-sm bg-olive', 'escape' => false]) ?>
 </div>
 <?php endif; ?>
