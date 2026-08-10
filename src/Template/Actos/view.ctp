@@ -14,12 +14,12 @@
         	</div>        
         	<div class="box-body">
           		<dl class="dl-horizontal">
+                    <dt scope="row"><?= __('Id') ?></dt>
+                    <dd><?= $this->Number->format($acto->id) ?></dd>
                     <dt scope="row"><?= __('Nombre') ?></dt>
                     <dd><?= h($acto->nombre) ?></dd>
                     <dt scope="row"><?= __('Cohorte') ?></dt>
                     <dd><?= h($acto->cohorte) ?></dd>
-                    <dt scope="row"><?= __('Id') ?></dt>
-                    <dd><?= $this->Number->format($acto->id) ?></dd>
                     <dt scope="row"><?= __('Lapso') ?></dt>
                     <dd><?= $this->Number->format($acto->lapso) ?></dd>
                     <dt scope="row"><?= __('Fecha') ?></dt>

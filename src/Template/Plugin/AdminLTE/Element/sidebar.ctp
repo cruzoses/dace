@@ -259,6 +259,11 @@
 							<a href="/actos/index"><i class="far fa-dot-circle"></i>&nbsp;Acto de Grado</a>
 						</li>
 						<li>
+							<a href="<?php echo $this->Url->build('/graduandos')?>">
+								<i class="far fa-dot-circle"></i>&nbsp;Graduandos
+							</a>
+						</li>
+						<li>
 							<a href="/actos/actas"><i class="far fa-dot-circle"></i>&nbsp;Libro de Actas</a>
 						</li>
 					</ul>

@@ -42,7 +42,9 @@ class ActosController extends AppController
         $this->paginate['order'] = ['Actos.id' => 'desc'];
         $this->paginate['limit'] = 10;
 
-        $actos = $this->paginate($this->Actos);
+        $actos = $this->paginate($this->Actos, [
+            'contain' => ['Graduandos'],
+        ]);
         $filtros = $this->request->getQuery();
 
         $searchFields = $this->Actos->getSearchFields();

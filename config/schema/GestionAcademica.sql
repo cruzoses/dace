@@ -1,6 +1,6 @@
 ﻿/*
 Created: 22/6/2026
-Modified: 8/8/2026
+Modified: 9/8/2026
 Model: GestionAcademica
 Database: MySQL 8.0
 */
@@ -796,17 +796,18 @@ CREATE INDEX `IX_HIstorico_Asignatura` ON `historicos` (`asignatura_id`)
 
 CREATE TABLE IF NOT EXISTS `graduandos`
 (
-  `id` Int NOT NULL,
+  `id` Int NOT NULL AUTO_INCREMENT,
   `institucion` Smallint(6) NOT NULL,
   `acto_id` Int(11) NOT NULL,
   `carrera_id` Int NOT NULL,
-  `programa_:id` Int NOT NULL,
+  `programa_id` Int NOT NULL,
   `estudiante_id` Int,
   `indice` Double NOT NULL,
   `solicitud` Smallint(6) NOT NULL,
   `control` Varchar(10),
   `created` Datetime,
-  `modified` Datetime
+  `modified` Datetime,
+  PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
 ;
 
@@ -819,10 +820,7 @@ CREATE INDEX `IX_Grado_Estudiante` ON `graduandos` (`estudiante_id`)
 CREATE INDEX `IX_Graduando_Carrera` ON `graduandos` (`carrera_id`)
 ;
 
-CREATE INDEX `IX_Graduando_Programa` ON `graduandos` (`programa_:id`)
-;
-
-ALTER TABLE `graduandos` ADD PRIMARY KEY (`id`)
+CREATE INDEX `IX_Graduando_Programa` ON `graduandos` (`programa_id`)
 ;
 
 -- Table situacion_estudiantes
@@ -1037,6 +1035,6 @@ ALTER TABLE `estudiante_programas` ADD CONSTRAINT `pfk_periodo_estudiante_progra
 ALTER TABLE `graduandos` ADD CONSTRAINT `pfk_carrera_graduandos` FOREIGN KEY (`carrera_id`) REFERENCES `carreras` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 
-ALTER TABLE `graduandos` ADD CONSTRAINT `pfk_programa_graduando` FOREIGN KEY (`programa_:id`) REFERENCES `programas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
+ALTER TABLE `graduandos` ADD CONSTRAINT `pfk_programa_graduando` FOREIGN KEY (`programa_id`) REFERENCES `programas` (`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ;
 

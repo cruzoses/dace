@@ -33,7 +33,7 @@
                     echo $this->Form->control('estudiante_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $estudiantes, 'empty' => true]);
                     echo $this->Form->control('indice', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('solicitud', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('control', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('control', ['class' => 'isUpper isNumGuion','prepend' => '<i class="fa fa-asterisk"></i>']);
                 ?>
             </div>            
             <div class="box-footer">

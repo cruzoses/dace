@@ -21,12 +21,12 @@
         	</div>        
         	<div class="box-body">
           		<dl class="dl-horizontal">
+                    <dt scope="row"><?= __('Id') ?></dt>
+                    <dd><?= $this->Number->format($periodo->id) ?></dd>
                     <dt scope="row"><?= __('Codigo') ?></dt>
                     <dd><?= h($periodo->codigo) ?></dd>
                     <dt scope="row"><?= __('Nombre') ?></dt>
                     <dd><?= h($periodo->nombre) ?></dd>
-                    <dt scope="row"><?= __('Id') ?></dt>
-                    <dd><?= $this->Number->format($periodo->id) ?></dd>
                     <dt scope="row"><?= __('Lapso') ?></dt>
                     <dd><?= $this->Number->format($periodo->lapso) ?></dd>
                     <dt scope="row"><?= __('Nota Minima') ?></dt>

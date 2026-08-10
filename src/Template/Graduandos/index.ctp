@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-info box-solid">
+        <div class="box box-sace box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Lista de Graduandos</h3>
                 <div class="box-tools pull-right">
@@ -17,7 +17,7 @@
             </div>        
             <div class="box-body table-responsive no-padding">
 		        <div class="oculto" id="buscar">
-			        <?= $this->element('buscador');?>
+			        <?= $this->element('search_form', ['title' => 'Buscar Graduando', 'searchFields' => $searchFields, 'filtros' => $filtros]);?>
 		        </div>
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
@@ -40,16 +40,16 @@
                         <?php foreach ($graduandos as $graduando): ?>
                             <tr>
                                 <td><?= $this->Number->format($graduando->id) ?></td>
-                                        <td><?= $this->Number->format($graduando->institucion) ?></td>
-                            <td><?= $graduando->has('acto') ? $this->Html->link($graduando->acto->id, ['controller' => 'Actos', 'action' => 'view', $graduando->acto->id]) : '' ?></td>
-                                <td><?= $graduando->has('carrera') ? $this->Html->link($graduando->carrera->codename, ['controller' => 'Carreras', 'action' => 'view', $graduando->carrera->id]) : '' ?></td>
-                                <td><?= $graduando->has('programa') ? $this->Html->link($graduando->programa->codename, ['controller' => 'Programas', 'action' => 'view', $graduando->programa->id]) : '' ?></td>
-                                <td><?= $graduando->has('estudiante') ? $this->Html->link($graduando->estudiante->full_name, ['controller' => 'Estudiantes', 'action' => 'view', $graduando->estudiante->id]) : '' ?></td>
-                                            <td><?= $this->Number->format($graduando->indice) ?></td>
-                                        <td><?= $this->Number->format($graduando->solicitud) ?></td>
-                                        <td><?= h($graduando->control) ?></td>
-                                        <td><?= h($graduando->created) ?></td>
-                                        <td><?= h($graduando->modified) ?></td>
+                                <td><?= $this->Number->format($graduando->institucion) ?></td>
+                                <td><?= $graduando->has('acto') ? h($graduando->acto->nombre) : '' ?></td>
+                                <td><?= $graduando->has('carrera') ? h($graduando->carrera->codigo) : '' ?></td>
+                                <td><?= $graduando->has('programa') ? h($graduando->programa->codigo) : '' ?></td>
+                                <td><?= $graduando->has('estudiante') ? h($graduando->estudiante->full_name) : '' ?></td>
+                                <td><?= $this->Number->format($graduando->indice) ?></td>
+                                <td><?= $this->Number->format($graduando->solicitud) ?></td>
+                                <td><?= h($graduando->control) ?></td>
+                                <td><?= h($graduando->created) ?></td>
+                                <td><?= h($graduando->modified) ?></td>
                                 <td class="actions text-center">
                                     <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $graduando->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
                                     <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $graduando->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
@@ -60,7 +60,7 @@
                     </tbody>
                     <tfoot class="no-padding">
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="12" class="text-center">
                                 <div class="paginator">
                                     <ul class="pagination pagination-sm">
                                         <?= $this->Paginator->first('<i class="fa fa-angle-double-left"></i>',['class' => 'btn btn-sm','escape' => false]) ?>

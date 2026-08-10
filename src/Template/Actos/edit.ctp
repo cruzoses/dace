@@ -6,9 +6,9 @@
 ?>
 <div class="row">
     <div class="col-md-12">    
-        <div class="box box-warning box-solid">
+        <div class="box box-purple box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Actos</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Editar Acto</h3>
 		        <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['action' => 'index'],
@@ -26,11 +26,22 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('nombre', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('cohorte', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('lapso', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('fecha', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('activo', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('nombre', ['label' => 'Nombre de Promoción',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('cohorte', ['label' => 'Cohorte',
+                        'class' => 'isNumGuion','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('lapso', ['label' => 'Lapso', 'type' => 'text',
+                        'class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('fecha', ['label' => 'Fecha del Acto', 'type' => 'text',
+                        'class' => 'calendario', 'append' => '<i class="fa fa-calendar"></i>',
+                        'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('activo', ['label' => 'Activo',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                 ?>
             </div>            
             <div class="box-footer">

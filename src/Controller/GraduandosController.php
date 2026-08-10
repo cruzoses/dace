@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\Core\Configure;
 
 /**
  * Graduandos Controller
@@ -10,23 +11,23 @@ use Cake\Event\Event;
  * @property \App\Model\Table\GraduandosTable $Graduandos
  *
  * @method \App\Model\Entity\Graduando[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+*/
 class GraduandosController extends AppController
 {
 
-    /**
-     * 
-    */
 	public function beforeFilter(Event $event)
 	{
 		parent::beforeFilter($event);
 	}
 
-    /**
-     * 
-    */
 	public function isAuthorized($user = null)
 	{
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] )
+        {
+            if ($this->tienePermiso([2,3])) {
+                return true;
+            }            
+        }
 		return parent::isAuthorized($user);
 	}
 	
@@ -37,12 +38,40 @@ class GraduandosController extends AppController
     */
     public function index()
     {
+        $conditions = $this->Graduandos->formatConditions($this->request->getQueryParams());
         $this->paginate = [
             'contain' => ['Actos', 'Carreras', 'Programas', 'Estudiantes'],
+            'conditions' => $conditions,
+            'order' => ['Graduandos.id' => 'DESC'],
         ];
         $graduandos = $this->paginate($this->Graduandos);
+        $filtros = $this->request->getQuery();
+        $searchFields = $this->Graduandos->getSearchFields();
 
-        $this->set(compact('graduandos'));
+        $searchFields['acto_id']['options'] = $this->Graduandos->Actos->find('list', [
+            'keyField' => 'id',
+            'valueField' => function ($acto) {
+                return $acto->nombre . ' (' . $acto->cohorte . ')';
+            },
+            'conditions' => ['Actos.activo' => 1],
+            'order' => ['Actos.id' => 'DESC'],
+        ])->toArray();
+
+        $searchFields['carrera_id']['options'] = $this->Graduandos->Carreras->find('list', [
+            'conditions' => ['Carreras.activa' => 1],
+            'order' => ['Carreras.nombre' => 'ASC'],
+        ])->toArray();
+
+        $searchFields['programa_id']['options'] = $this->Graduandos->Programas->find('list', [
+            'conditions' => ['Programas.activo' => 1],
+            'order' => ['Programas.nombre' => 'ASC'],
+        ])->toArray();
+
+        $searchFields['estudiante_id']['options'] = $this->Graduandos->Estudiantes->find('list', [
+            'order' => ['Estudiantes.apellidos' => 'ASC', 'Estudiantes.nombres' => 'ASC'],
+        ])->toArray();
+
+        $this->set(compact('graduandos', 'filtros', 'searchFields'));
     }
 
     /**
@@ -72,7 +101,14 @@ class GraduandosController extends AppController
     public function add()
     {
         $graduando = $this->Graduandos->newEntity();
+
+        $estudianteId = $this->request->getQuery('estudiante_id');
+        $programaId = $this->request->getQuery('programa_id');
+
         if ($this->request->is('post')) {
+            $estudianteId = $estudianteId ?: $this->request->getData('estudiante_id');
+            $programaId = $programaId ?: $this->request->getData('programa_id');
+
             $graduando = $this->Graduandos->patchEntity($graduando, $this->request->getData());
             if ($this->Graduandos->save($graduando)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Graduando'));
@@ -82,11 +118,35 @@ class GraduandosController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Graduando'));
         }
+
+        $estudiante = null;
+        $programa = null;
+        $carrera = null;
+        if (!empty($estudianteId) && !empty($programaId)) {
+            $estudiantePrograma = $this->Graduandos->Estudiantes->EstudianteProgramas->find()
+                ->where([
+                    'EstudianteProgramas.estudiante_id' => $estudianteId,
+                    'EstudianteProgramas.programa_id' => $programaId,
+                ])
+                ->contain(['Estudiantes', 'Programas' => ['Carreras']])
+                ->first();
+
+            if ($estudiantePrograma) {
+                $estudiante = $estudiantePrograma->estudiante;
+                $programa = $estudiantePrograma->programa;
+                $carrera = $programa->carrera;
+            } else {
+                $estudiante = $this->Graduandos->Estudiantes->get($estudianteId);
+                $programa = $this->Graduandos->Programas->get($programaId, ['contain' => ['Carreras']]);
+                $carrera = $programa->carrera;
+            }
+        }
+
         $actos = $this->Graduandos->Actos->find('list', ['limit' => 200]);
-        $carreras = $this->Graduandos->Carreras->find('list', ['limit' => 200]);
-        $programas = $this->Graduandos->Programas->find('list', ['limit' => 200]);
-        $estudiantes = $this->Graduandos->Estudiantes->find('list', ['limit' => 200]);
-        $this->set(compact('graduando', 'actos', 'carreras', 'programas', 'estudiantes'));
+        $instituciones = Configure::read('aInstituciones');
+        $solicitudes = [1 => 'ACTO SOLEMNE', 2 => 'SECRETARIA'];
+
+        $this->set(compact('graduando', 'estudiante', 'programa', 'carrera', 'actos', 'instituciones', 'solicitudes'));
     }
 
 

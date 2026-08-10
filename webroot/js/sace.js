@@ -33,6 +33,10 @@ $(document).ready( function () {
         //$(this).val($(this).val().replace(/[^0-9]/g, ''));
     });
 
+    $('.isNumGuion').on('input', function() {
+        this.value = this.value.replace(/[^0-9-]/g, '');
+    });
+
     $('.isDecimal').on('input', function() {
         this.value = this.value.replace(/[^0-9.]/g, '')
             .replace(/(\..*?)\./g, '$1')

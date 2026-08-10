@@ -53,8 +53,7 @@ def calificacion_a_numero(calificacion):
         return 0
 
 
-def buscar_convalidacion(estudiante_id, codigos_alternativos, nota_minima_prog,
-                         asignaturas_by_codigo, notas_por_estudiante, mallas_nota_minima):
+def buscar_convalidacion(estudiante_id, codigos_alternativos, nota_minima_prog, asignaturas_by_codigo, notas_por_estudiante, mallas_nota_minima):
     if not codigos_alternativos:
         return None
     for cod in codigos_alternativos:

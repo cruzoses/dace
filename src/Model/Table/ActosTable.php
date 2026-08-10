@@ -25,7 +25,7 @@ use Cake\Validation\Validator;
 class ActosTable extends AppTable
 {
     protected $searchFields = [
-        'id' => ['type' => 'int', 'label' => 'No. de ID', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'id' => ['type' => 'int', 'label' => 'No. de Id.', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'nombre' => ['type' => 'text', 'label' => 'Nombre de la Promoción', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'cohorte' => ['type' => 'text', 'label' => 'Cohorte', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'lapso' => ['type' => 'int', 'label' => 'Lapso', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
@@ -42,7 +42,7 @@ class ActosTable extends AppTable
         parent::initialize($config);
 
         $this->setTable('actos');
-        $this->setDisplayField('id');
+        $this->setDisplayField('nombre');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

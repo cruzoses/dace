@@ -30,7 +30,7 @@ use Cake\Validation\Validator;
 class CarrerasTable extends AppTable
 {
     protected $searchFields = [
-        'id' => ['type' => 'int', 'label' => 'No. de ID', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'id' => ['type' => 'int', 'label' => 'No. de Id', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'codigo' => ['type' => 'exact', 'label' => 'Código', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'activa' => ['type' => 'select', 'options' => [0 => 'NO', 1 => 'SI'],'label' => 'Activa', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => true],
@@ -61,6 +61,9 @@ class CarrerasTable extends AppTable
             'foreignKey' => 'carrera_id',
         ]);
         $this->hasMany('EstudianteProgramas', [
+            'foreignKey' => 'carrera_id',
+        ]);
+        $this->hasMany('Graduandos', [
             'foreignKey' => 'carrera_id',
         ]);
         $this->hasMany('Mallas', [
@@ -107,15 +110,15 @@ class CarrerasTable extends AppTable
             ->notEmptyString('titulo_otorgado');
 
         $validator
-            ->boolean('activa')
-            ->requirePresence('activa', 'create')
-            ->notEmptyString('activa');
-
-        $validator
             ->integer('nivel')
             ->requirePresence('nivel', 'create')
             ->notEmptyString('nivel')
             ->inList('nivel', [1, 2], 'Nivel no válido.');
+            
+        $validator
+            ->boolean('activa')
+            ->requirePresence('activa', 'create')
+            ->notEmptyString('activa');
 
         return $validator;
     }
@@ -130,6 +133,8 @@ class CarrerasTable extends AppTable
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['mension_carrera_id'], 'MensionCarreras'));
+        $rules->add($rules->existsIn(['programa_id'], 'Programas'));
+        $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
 
         return $rules;
     }
