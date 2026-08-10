@@ -211,7 +211,7 @@ class SituacionEstudiantesTable extends Table
             }
         }
 
-        $tablanotasTable = TableRegistry::getTableLocator()->get('Historicos');
+        $tablanotasTable = TableRegistry::getTableLocator()->get('Tablanotas');
 
         $notas = $tablanotasTable->find()
             ->where([
@@ -408,7 +408,7 @@ class SituacionEstudiantesTable extends Table
         }
 
         $asignaturasTable = TableRegistry::getTableLocator()->get('Asignaturas');
-        $tablanotasTable = TableRegistry::getTableLocator()->get('Historicos');
+        $tablanotasTable = TableRegistry::getTableLocator()->get('Tablanotas');
         $mallasTable = TableRegistry::getTableLocator()->get('Mallas');
 
         $alternativas = $asignaturasTable->find()
