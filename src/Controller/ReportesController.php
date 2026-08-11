@@ -1338,6 +1338,37 @@ class ReportesController extends AppController
         $this->render('showreport');
     }
 
+    public function notasAnteriores($estudianteId = null, $programaId = null)
+    {
+        $estudiantesTable = TableRegistry::getTableLocator()->get('Estudiantes');
+        $estudiante = $estudiantesTable->get($estudianteId);
+
+        $programasTable = TableRegistry::getTableLocator()->get('EstudianteProgramas');
+        $programa = $programasTable->find()
+            ->where([
+                'EstudianteProgramas.estudiante_id' => $estudianteId,
+                'EstudianteProgramas.programa_id' => $programaId,
+            ])
+            ->contain(['Carreras', 'Programas'])
+            ->first();
+
+        $tablanotasTable = TableRegistry::getTableLocator()->get('Tablanotas');
+        $notas = $tablanotasTable->find()
+            ->where([
+                'Tablanotas.estudiante_id' => $estudianteId,
+            ])
+            ->contain(['Asignaturas', 'Periodos'])
+            ->order(['Tablanotas.asignatura_id' => 'ASC', 'Tablanotas.periodo_id' => 'ASC'])
+            ->toArray();
+
+        $report = new \App\Reportes\NotasAnteriores($estudiante, $programa, $notas);
+        $result = $report->generate();
+
+        $this->set($result);
+        $this->set('estudianteId', $estudianteId);
+        $this->render('/Datos/visorpdf');
+    }
+
     private function _obtenerOpcionesProceso($nFrecuencia)
     {
         switch ((int)$nFrecuencia) {
@@ -1380,4 +1411,5 @@ class ReportesController extends AppController
 
         return ['path' => $dir, 'webroot' => $webroot];
     }
+
 }

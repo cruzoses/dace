@@ -114,6 +114,11 @@ class GraduandosTable extends AppTable
         $rules->add($rules->existsIn(['programa_id'], 'Programas'));
         $rules->add($rules->existsIn(['estudiante_id'], 'Estudiantes'));
 
+        $rules->add($rules->isUnique(['institucion', 'acto_id', 
+            'carrera_id', 'programa_id', 'estudiante_id', 'solicitud'],
+            __('This combination has already been used.')
+        ));
+
         return $rules;
     }
 }

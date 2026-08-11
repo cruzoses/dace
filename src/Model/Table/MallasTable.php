@@ -121,8 +121,8 @@ class MallasTable extends AppTable
         $rules->add($rules->existsIn(['asignatura_id'], 'Asignaturas'));
         $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
 
-        $rules->add($rules->isUnique(
-            ['carrera_id', 'programa_id','trayecto_id', 'asignatura_id',],
+        $rules->add($rules->isUnique([
+            'carrera_id', 'programa_id', 'trayecto_id', 'asignatura_id',],
             __('This combination has already been used.')
         ));
 

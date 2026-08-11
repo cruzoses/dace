@@ -192,6 +192,11 @@ class CursosTable extends AppTable
         $rules->add($rules->existsIn(['docente_id'], 'Docentes'));
         $rules->add($rules->existsIn(['aula_id'], 'Aulas'));
 
+        $rules->add($rules->isUnique(['sede_id', 'periodo_id', 
+            'carrera_id', 'trayecto_id', 'asignatura_id', 'docente_id', 'seccion'],
+            __('This combination has already been used.')
+        ));
+
         return $rules;
     }
 }

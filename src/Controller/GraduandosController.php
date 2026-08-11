@@ -98,14 +98,19 @@ class GraduandosController extends AppController
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
     */
-    public function add()
+    public function add($estudianteId = null, $programaId = null)
     {
         $graduando = $this->Graduandos->newEntity();
 
-        $estudianteId = $this->request->getQuery('estudiante_id');
-        $programaId = $this->request->getQuery('programa_id');
+        if ($estudianteId === null) {
+            return $this->redirect(['action' => 'homepage']);
+        }
+        if ($programaId === null) {
+            return $this->redirect(['action' => 'homepage']);
+        }
 
-        if ($this->request->is('post')) {
+        if ($this->request->is('post')) 
+        {
             $estudianteId = $estudianteId ?: $this->request->getData('estudiante_id');
             $programaId = $programaId ?: $this->request->getData('programa_id');
 
@@ -142,7 +147,7 @@ class GraduandosController extends AppController
             }
         }
 
-        $actos = $this->Graduandos->Actos->find('list', ['limit' => 200]);
+        $actos = $this->Graduandos->Actos->find('list')->where(['activo' => 1])->order(['id' => 'DESC'])->toArray();
         $instituciones = Configure::read('aInstituciones');
         $solicitudes = [1 => 'ACTO SOLEMNE', 2 => 'SECRETARIA'];
 
@@ -172,11 +177,34 @@ class GraduandosController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Graduando'));
         }
-        $actos = $this->Graduandos->Actos->find('list', ['limit' => 200]);
-        $carreras = $this->Graduandos->Carreras->find('list', ['limit' => 200]);
-        $programas = $this->Graduandos->Programas->find('list', ['limit' => 200]);
-        $estudiantes = $this->Graduandos->Estudiantes->find('list', ['limit' => 200]);
-        $this->set(compact('graduando', 'actos', 'carreras', 'programas', 'estudiantes'));
+        $estudiante = $graduando->estudiante_id ? $this->Graduandos->Estudiantes->get($graduando->estudiante_id) : null;
+        $programa = $graduando->programa_id ? $this->Graduandos->Programas->get($graduando->programa_id, ['contain' => ['Carreras']]) : null;
+        $carrera = $programa ? $programa->carrera_id : null;
+        if (!empty($estudianteId) && !empty($programaId)) {
+            $estudiantePrograma = $this->Graduandos->Estudiantes->EstudianteProgramas->find()
+                ->where([
+                    'EstudianteProgramas.estudiante_id' => $estudianteId,
+                    'EstudianteProgramas.programa_id' => $programaId,
+                ])
+                ->contain(['Estudiantes', 'Programas' => ['Carreras']])
+                ->first();
+
+            if ($estudiantePrograma) {
+                $estudiante = $estudiantePrograma->estudiante;
+                $programa = $estudiantePrograma->programa;
+                $carrera = $programa->carrera;
+            } else {
+                $estudiante = $this->Graduandos->Estudiantes->get($estudianteId);
+                $programa = $this->Graduandos->Programas->get($programaId, ['contain' => ['Carreras']]);
+                $carrera = $programa->carrera;
+            }
+        }
+
+        $actos = $this->Graduandos->Actos->find('list')->where(['activo' => 1])->order(['id' => 'DESC'])->toArray();
+        $instituciones = Configure::read('aInstituciones');
+        $solicitudes = [1 => 'ACTO SOLEMNE', 2 => 'SECRETARIA'];
+
+        $this->set(compact('graduando', 'estudiante', 'programa', 'carrera', 'actos', 'instituciones', 'solicitudes'));
     }
 
 

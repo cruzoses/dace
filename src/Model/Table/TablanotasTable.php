@@ -12,5 +12,15 @@ class TablanotasTable extends Table
         $this->setTable('tablanotas');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('Estudiantes', [
+            'foreignKey' => 'estudiante_id',
+        ]);
+        $this->belongsTo('Asignaturas', [
+            'foreignKey' => 'asignatura_id',
+        ]);
+        $this->belongsTo('Periodos', [
+            'foreignKey' => 'periodo_id',
+        ]);
     }
 }

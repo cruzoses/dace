@@ -213,7 +213,7 @@
                                                     <div class="col-md-12">
                                                         <?= $this->Html->link(
                                                             '<i class="fa fa-graduation-cap"></i>&nbsp;Solicitar Acto de Grado',
-                                                            ['controller' => 'Reportes', 'action' => 'actoGrado', $estudiante->id, $programa->programa_id],
+                                                            ['controller' => 'graduandos', 'action' => 'add', $estudiante->id, $programa->programa_id],
                                                             ['class' => 'btn btn-success btn-flat', 'escape' => false]
                                                         ) ?>
                                                     </div>

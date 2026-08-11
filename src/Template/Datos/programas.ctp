@@ -57,6 +57,12 @@
                                     ['controller' => 'EstudianteProgramas','action' => 'eliminar', $key->id], 
                                     ['confirm' => __('Are you sure you want to delete # {0}?', $key->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) 
                                 ?>
+                                <?php if( $this->Permiso->tiene(1)) : ?>
+                                    <?= $this->Html->link('<i class="fas fa-user-tie"></i>',
+                                        ['controller' => 'Reportes', 'action' => 'notasAnteriores', $key->estudiante_id ,$key->programa_id],
+                                        ['class' => 'btn btn-xs bg-olive', 'escape' => false, 'title' => 'Ver notas anteriores']) 
+                                    ?>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

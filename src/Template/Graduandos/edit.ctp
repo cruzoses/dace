@@ -6,7 +6,7 @@
 ?>
 <div class="row">
     <div class="col-md-12">    
-        <div class="box box-warning box-solid">
+        <div class="box box-purple box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Graduandos</h3>
 		        <div class="box-tools pull-right">
@@ -26,14 +26,36 @@
             ?>
             <div class="box-body">
                 <?php
-                    echo $this->Form->control('institucion', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('acto_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $actos]);
-                    echo $this->Form->control('carrera_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $carreras]);
-                    echo $this->Form->control('programa_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $programas]);
-                    echo $this->Form->control('estudiante_id', ['prepend' => '<i class="fa fa-asterisk"></i>','class' => 'isUpper','options' => $estudiantes, 'empty' => true]);
-                    echo $this->Form->control('indice', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('solicitud', ['class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']);
-                    echo $this->Form->control('control', ['class' => 'isUpper isNumGuion','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->hidden('estudiante_id', ['value' => $estudiante ? $estudiante->id : '']);
+                    echo $this->Form->hidden('carrera_id', ['value' => $carrera ? $carrera->id : '']);
+                    echo $this->Form->hidden('programa_id', ['value' => $programa ? $programa->id : '']);
+
+                    echo $this->Form->control('estudiante', [
+                        'type' => 'text', 'label' => 'Estudiante',
+                        'value' => $estudiante ? $estudiante->full_name : '', 'disabled' => true,]
+                    );
+                    echo $this->Form->control('carrera', ['type' => 'text', 'label' => 'Carrera',
+                        'value' => $carrera ? $carrera->codename : '', 'disabled' => true,]
+                    );
+                    echo $this->Form->control('programa', ['type' => 'text', 'label' => 'Programa',
+                        'value' => $programa ? $programa->codename : '', 'disabled' => true,]
+                    );
+                    echo $this->Form->control('institucion', ['label' => 'Institución', 'type' => 'select', 
+                        'options' => $instituciones, 'empty' => true, 'class' => 'form-control select2', 
+                        'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('acto_id', ['label' => 'Promoción', 'type' => 'select', 
+                        'options' => $actos, 'empty' => true, 'class' => 'form-control select2', 
+                        'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('solicitud', ['type' => 'select', 'label' => 'Solicitud',
+                        'options' => $solicitudes, 'empty' => true, 'class' => 'form-control select2',
+                        'data-width' => '100%', 'prepend' => '<i class="fa fa-asterisk"></i>',
+                    ]);                    
+                    echo $this->Form->control('indice', ['type' => 'text',
+                        'class' => 'isDouble','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->hidden('control');
                 ?>
             </div>            
             <div class="box-footer">

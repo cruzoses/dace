@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS tablanotas SELECT * FROM historicos ORDER BY id;

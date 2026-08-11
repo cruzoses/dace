@@ -1,3 +1,3 @@
-SELECT rol_id, CAST(id AS UNSIGNED) AS usuario_id
-FROM usuarios AS rols_usuarios
-ORDER BY id
+SELECT rol_id, usuario_id
+FROM rols_usuarios
+ORDER BY rol_id,usuario_id
