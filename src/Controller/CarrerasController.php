@@ -19,11 +19,13 @@ class CarrerasController extends AppController
 		parent::beforeFilter($event);
 	}
 
-	public function isAuthorized($user = array() )
+	public function isAuthorized($user = null)
 	{
-        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] && $this->tienePermiso([1,2,3]) )
+        if( isset( $user['activo'] ) && isset( $user['rols'] ) && $user['activo'] )
         {
-            return true;
+            if ($this->tienePermiso([2,3])) {
+                return true;
+            }            
         }
 		return parent::isAuthorized($user);
 	}

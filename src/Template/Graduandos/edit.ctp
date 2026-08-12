@@ -8,7 +8,7 @@
     <div class="col-md-12">    
         <div class="box box-purple box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Graduandos</h3>
+                <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Editar Graduando</h3>
 		        <div class="box-tools pull-right">
 			        <?= $this->Html->link('<i class="fa fa-times"></i>',
 				        ['action' => 'index'],

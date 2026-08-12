@@ -6,6 +6,8 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
+use Cake\Core\Configure;
+
 /**
  * Graduandos Model
  *
@@ -28,7 +30,9 @@ use Cake\Validation\Validator;
 class GraduandosTable extends AppTable
 {
     protected $searchFields = [
-        'institucion' => ['type' => 'int', 'label' => 'Institución', 'class' => 'form-control', 'prepend' => '<i class="fa fa-asterisk"></i>'],
+        'institucion' => ['label' => 'Institución', 'type' => 'select', 'options' => [1=>'UPTBAL', 2=>'MISION SUCRE'],
+            'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => true 
+        ],
         'acto_id' => ['type' => 'select', 'label' => 'Acto', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => '-- Todos --'],
         'carrera_id' => ['type' => 'select', 'label' => 'Carrera', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => '-- Todas --'],
         'programa_id' => ['type' => 'select', 'label' => 'Programa', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => '-- Todos --'],
@@ -39,7 +43,7 @@ class GraduandosTable extends AppTable
      *
      * @param array $config The configuration for the Table.
      * @return void
-     */
+    */
     public function initialize(array $config)
     {
         parent::initialize($config);
@@ -72,7 +76,7 @@ class GraduandosTable extends AppTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
-     */
+    */
     public function validationDefault(Validator $validator)
     {
         $validator
@@ -106,7 +110,7 @@ class GraduandosTable extends AppTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
-     */
+    */
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['acto_id'], 'Actos'));

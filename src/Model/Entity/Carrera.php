@@ -18,6 +18,9 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\MensionCarrera $mension_carrera
  * @property \App\Model\Entity\Curso[] $cursos
+ * @property \App\Model\Entity\EstudiantePrograma[] $estudiante_programas
+ * @property \App\Model\Entity\Graduando[] $graduandos
+ * @property \App\Model\Entity\Malla[] $mallas
  * @property \App\Model\Entity\Programa[] $programas
  * @property \App\Model\Entity\Sede[] $sedes
 */
@@ -43,6 +46,9 @@ class Carrera extends Entity
         'modified' => true,
         'mension_carrera' => true,
         'cursos' => true,
+        'estudiante_programas' => true,
+        'graduandos' => true,
+        'mallas' => true,
         'programas' => true,
         'sedes' => true,
     ];
@@ -55,3 +61,4 @@ class Carrera extends Entity
         return $this->codigo .' : '. $this->nombre;
     }
 }
+

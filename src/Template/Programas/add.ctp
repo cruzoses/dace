@@ -36,6 +36,12 @@
                     );
                     echo $this->Form->control('nota_minima', ['type' => 'text','class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']);
                     echo $this->Form->control('creditos', ['type' => 'text','class' => 'isNumeric','prepend' => '<i class="fa fa-asterisk"></i>']);
+                    echo $this->Form->control('codigo_opsu', ['label' => 'Código OPSU',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
+                    echo $this->Form->control('credencial', ['label' => 'Título Otorgado',
+                        'class' => 'isUpper','prepend' => '<i class="fa fa-asterisk"></i>']
+                    );
                     echo $this->Form->control('pasantia', ['type' => 'checkbox', 'value' => 0,'label' => 'Requiere Practica Profesional']);
                     echo $this->Form->control('califica', ['type' => 'checkbox', 'value' => 0,'label' => 'Califica']);
                     echo $this->Form->hidden('activo', ['type' => 'checkbox', 'value' => 1]);

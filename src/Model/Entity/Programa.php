@@ -11,8 +11,12 @@ use Cake\ORM\Entity;
  * @property string $nombre
  * @property int $carrera_id
  * @property int $subsistema_id
- * @property string $nota_minima
+ * @property int $nota_minima
  * @property int $creditos
+ * @property string|null $codigo_opsu
+ * @property string|null $credencial
+ * @property bool $pasantia
+ * @property bool $califica
  * @property bool $activo
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -41,15 +45,18 @@ class Programa extends Entity
         'subsistema_id' => true,
         'nota_minima' => true,
         'creditos' => true,
+        'codigo_opsu' => true,
+        'credencial' => true,
         'pasantia' => true,
         'califica' => true,
         'activo' => true,
         'created' => true,
         'modified' => true,
         'carrera' => true,
+        'graduandos' => true,
         'subsistema' => true,
-        'cursos' => true,
         'estudiante_programas' => true,
+        'situacion_estudiantes' => true,
         'mallas' => true,
     ];
 

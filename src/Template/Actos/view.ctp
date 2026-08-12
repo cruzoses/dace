@@ -48,7 +48,7 @@
     <div class="col-md-12">
         <div class="box box-default box-solid">
             <div class="box-header with-border">                
-                <h3 class="box-title"><i class="fa fa-share-alt"></i>&nbsp;Graduandos</h3>
+                <h3 class="box-title"><i class="fa fa-share-alt"></i>&nbsp;Lista de Graduandos</h3>
             </div>
             <div class="box-body">
                 <?php if (!empty($acto->graduandos)): ?>
@@ -79,7 +79,7 @@
                                     <td><?= h($graduandos->modified) ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'Graduandos', 'action' => 'view', $graduandos->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'Graduandos', 'action' => 'edit', $graduandos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-edit"></i>', ['controller' => 'Graduandos', 'action' => 'edit', $graduandos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'Graduandos', 'action' => 'delete', $graduandos->id], ['confirm' => __('Are you sure you want to delete # {0}?', $graduandos->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     </td>
                                 </tr>

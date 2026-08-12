@@ -154,7 +154,6 @@ class GraduandosController extends AppController
         $this->set(compact('graduando', 'estudiante', 'programa', 'carrera', 'actos', 'instituciones', 'solicitudes'));
     }
 
-
     /**
      * Edit method
      *
@@ -167,9 +166,11 @@ class GraduandosController extends AppController
         $graduando = $this->Graduandos->get($id, [
             'contain' => []
         ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        if ($this->request->is(['patch', 'post', 'put'])) 
+        {
             $graduando = $this->Graduandos->patchEntity($graduando, $this->request->getData());
-            if ($this->Graduandos->save($graduando)) {
+            if ($this->Graduandos->save($graduando)) 
+            {
                 $this->Flash->success(__('The {0} has been saved.', 'Graduando'));
                 $this->Auditorias->registrar('MODIFICA', 'MODIFICA LOS DATOS Graduandos ' . json_encode($this->request->getData()));
 
@@ -179,8 +180,9 @@ class GraduandosController extends AppController
         }
         $estudiante = $graduando->estudiante_id ? $this->Graduandos->Estudiantes->get($graduando->estudiante_id) : null;
         $programa = $graduando->programa_id ? $this->Graduandos->Programas->get($graduando->programa_id, ['contain' => ['Carreras']]) : null;
-        $carrera = $programa ? $programa->carrera_id : null;
-        if (!empty($estudianteId) && !empty($programaId)) {
+        $carrera = $graduando->carrera_id ? $this->Graduandos->Carreras->get($graduando->carrera_id) :  null;
+        if (!empty($estudianteId) && !empty($programaId)) 
+        {
             $estudiantePrograma = $this->Graduandos->Estudiantes->EstudianteProgramas->find()
                 ->where([
                     'EstudianteProgramas.estudiante_id' => $estudianteId,

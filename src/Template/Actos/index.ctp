@@ -44,7 +44,7 @@
                                 <td class="text-center"><?= h($acto->fecha) ?></td>
                                 <td class="text-center">
                                     <span class="label <?= $sClass ?>">
-                                        <?= h($acto->activo) ? 'SI' : 'NO' ?>
+                                        <?= h($acto->activo) ? 'Si' : 'No' ?>
                                     </span>
                                 </td>
                                 <td class="text-center"><?= h($acto->created) ?></td>

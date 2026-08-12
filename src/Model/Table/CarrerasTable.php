@@ -42,7 +42,7 @@ class CarrerasTable extends AppTable
      *
      * @param array $config The configuration for the Table.
      * @return void
-     */
+    */
     public function initialize(array $config)
     {
         parent::initialize($config);
@@ -133,9 +133,7 @@ class CarrerasTable extends AppTable
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['mension_carrera_id'], 'MensionCarreras'));
-        $rules->add($rules->existsIn(['programa_id'], 'Programas'));
-        $rules->add($rules->existsIn(['carrera_id'], 'Carreras'));
-
+        $rules->add($rules->isUnique(['codigo'],'El código de la carrera ya existe.'));
         return $rules;
     }
 }

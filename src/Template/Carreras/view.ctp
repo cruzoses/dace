@@ -89,7 +89,7 @@
                                     <td><?= h($sedes->modified) ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'Sedes', 'action' => 'view', $sedes->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'Sedes', 'action' => 'edit', $sedes->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-edit"></i>', ['controller' => 'Sedes', 'action' => 'edit', $sedes->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'Sedes', 'action' => 'delete', $sedes->id], ['confirm' => __('Are you sure you want to delete # {0}?', $sedes->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     </td>
                                 </tr>
@@ -140,7 +140,7 @@
                                     <td><?= h($cursos->cupos) ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'Cursos', 'action' => 'view', $cursos->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'Cursos', 'action' => 'edit', $cursos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-edit"></i>', ['controller' => 'Cursos', 'action' => 'edit', $cursos->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'Cursos', 'action' => 'delete', $cursos->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cursos->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     </td>
                                 </tr>
@@ -180,6 +180,7 @@
                         </thead>
                         <tbody>
                             <?php foreach ($carrera->programas as $programas): ?>
+                                <?php $sClass = $programas->activo ? 'label-success' : 'label-danger' ?>
                                 <tr>
                                     <td><?= h($programas->id) ?></td>
                                     <td><?= h($programas->codigo) ?></td>
@@ -188,12 +189,14 @@
                                     <td><?= h($programas->subsistema_id) ?></td>
                                     <td><?= h($programas->nota_minima) ?></td>
                                     <td><?= h($programas->creditos) ?></td>
-                                    <td><?= h($programas->activo) ?></td>
+                                    <td>
+                                        <span class="label <?= $sClass ?>"><?= h($programas->activo) ? 'Sí' : 'No' ?></span>
+                                    </td>
                                     <td><?= h($programas->created) ?></td>
                                     <td><?= h($programas->modified) ?></td>
                                     <td class="actions text-center">
                                         <?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'Programas', 'action' => 'view', $programas->id], ['class'=>'btn btn-warning btn-xs','escape' => false]) ?>
-                                        <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['controller' => 'Programas', 'action' => 'edit', $programas->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
+                                        <?= $this->Html->link('<i class="fa fa-edit"></i>', ['controller' => 'Programas', 'action' => 'edit', $programas->id], ['class'=>'btn btn-info btn-xs','escape' => false]) ?>
                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['controller' => 'Programas', 'action' => 'delete', $programas->id], ['confirm' => __('Are you sure you want to delete # {0}?', $programas->id), 'class'=>'btn btn-danger btn-xs','escape' => false]) ?>
                                     </td>
                                 </tr>

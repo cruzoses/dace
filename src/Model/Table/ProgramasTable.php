@@ -11,9 +11,10 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\CarrerasTable&\Cake\ORM\Association\BelongsTo $Carreras
  * @property \App\Model\Table\SubsistemasTable&\Cake\ORM\Association\BelongsTo $Subsistemas
- * @property \App\Model\Table\CursosTable&\Cake\ORM\Association\HasMany $Cursos
  * @property \App\Model\Table\EstudianteProgramasTable&\Cake\ORM\Association\HasMany $EstudianteProgramas
+ * @property \App\Model\Table\GraduandosTable&\Cake\ORM\Association\HasMany $Graduandos
  * @property \App\Model\Table\MallasTable&\Cake\ORM\Association\HasMany $Mallas
+ * @property \App\Model\Table\SituacionEstudiantesTable&\Cake\ORM\Association\HasMany $SituacionEstudiantes
  *
  * @method \App\Model\Entity\Programa get($primaryKey, $options = [])
  * @method \App\Model\Entity\Programa newEntity($data = null, array $options = [])
@@ -25,21 +26,21 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Programa findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
+*/
 class ProgramasTable extends AppTable
 {
     protected $searchFields = [
         'id' => ['type' => 'int', 'label' => 'No. de Id', 'class' => 'form-control isNumeric', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'codigo' => ['type' => 'exact', 'label' => 'Código', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
         'nombre' => ['type' => 'text', 'label' => 'Nombre', 'class' => 'form-control isUpper', 'prepend' => '<i class="fa fa-asterisk"></i>'],
-        'carrera_id' => ['type' => 'select', 'label' => 'Carrera', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => '-- Todas --'],
+        'carrera_id' => ['type' => 'select', 'label' => 'Carrera', 'prepend' => '<i class="fa fa-asterisk"></i>', 'empty' => true],
     ];
     /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
      * @return void
-     */
+    */
     public function initialize(array $config)
     {
         parent::initialize($config);
@@ -107,6 +108,16 @@ class ProgramasTable extends AppTable
             ->notEmptyString('creditos');
 
         $validator
+            ->scalar('codigo_opsu')
+            ->maxLength('codigo_opsu', 20)
+            ->allowEmptyString('codigo_opsu');
+
+        $validator
+            ->scalar('credencial')
+            ->maxLength('credencial', 80)
+            ->allowEmptyString('credencial');
+
+        $validator
             ->boolean('pasantia')
             ->requirePresence('pasantia', 'create')
             ->notEmptyString('pasantia');
@@ -130,7 +141,7 @@ class ProgramasTable extends AppTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
-     */
+    */
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->isUnique(['codigo'], 'Ya existe una programa con este código.'));

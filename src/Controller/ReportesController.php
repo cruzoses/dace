@@ -339,6 +339,36 @@ class ReportesController extends AppController
         $this->render('/Datos/visorpdf');
     }
 
+    public function actasdegrado()
+    {
+        $aInstituciones = Configure::read('aInstituciones');
+        $aPromociones = TableRegistry::getTableLocator()->get('Actos')
+            ->find('list')
+            ->where(['Actos.activo' => 1])
+            ->toArray();
+
+        if ($this->request->is('post') && $this->request->getData('promocion')) {
+            $report = new \App\Reportes\ReporteActasGrado([
+                'promocion' => $this->request->getData('promocion'),
+                'fecha' => $this->request->getData('fecha_firma'),
+                'carrera' => $this->request->getData('carrera'),
+                'institucion' => $this->request->getData('institucion'),
+                'credencial' => $this->request->getData('usar_credencial'),
+            ]);
+            $result = $report->generate();
+
+            $this->set($result);
+            $this->render('showreport');
+            return;
+        }
+
+        $filtros = [];
+        $graduandos = null;
+        $totalGraduandos = 0;
+
+        $this->set(compact('aPromociones', 'aInstituciones', 'filtros', 'graduandos', 'totalGraduandos'));
+    }
+
     public function downloadPdf()
     {
         $rolsTable = TableRegistry::getTableLocator()->get('Rols');
