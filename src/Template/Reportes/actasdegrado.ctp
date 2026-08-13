@@ -4,11 +4,8 @@
             <div class="box-header">
                 <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;Actas de Grado</h3>
                 <div class="box-tools pull-right">
-			        <button type="button" class="btn btn-box-tool" data-widget="collapse">
-				        <i class="fa fa-minus"></i>
-			        </button>
                     <?= $this->Html->link('<i class="fa fa-times"></i>',
-                        ['controller' => 'Actos', 'action' => 'homepage'], ['class'=>'btn btn-box-tool','escape' => false]) 
+                        ['action' => 'homepage'], ['class'=>'btn btn-box-tool','escape' => false]) 
                     ?>
                 </div>
             </div>
@@ -67,7 +64,7 @@
                 </fieldset>
             </div>
             <div class="box-footer">
-                <?= $this->Form->button('<i class="fa fa-cog"></i>&nbsp;Generar Acta',
+                <?= $this->Form->button('<i class="fas fa-print"></i>&nbsp;Generar Reporte',
 			        ['type' => 'submit','class'=>'btn btn-success btn-flat pull-left','escape'=>false]);
 		        ?>
 		        <?= $this->Html->link('<i class="fa fa-power-off"></i>&nbsp;Cerrar',
@@ -125,6 +122,17 @@
 
 <script>
 $(document).ready(function() {
+    $('#formActaGrado').on('submit', function() {
+        Swal.fire({
+            title: 'Generando Reporte...',
+            text: 'Por favor, espere.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    });
+
     function cargarCarreras() {
         var actoId = $('#promocion').val();
         var institucion = $('#institucion').val();

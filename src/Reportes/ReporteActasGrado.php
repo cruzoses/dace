@@ -2,6 +2,7 @@
 namespace App\Reportes;
 
 use Cake\Core\Configure;
+use Cake\I18n\Number;
 use Cake\ORM\TableRegistry;
 
 use Cezpdf;
@@ -157,8 +158,8 @@ class ReporteActasGrado
                     : ($oCarrera ? $oCarrera->titulo_otorgado : '');
                 $oPdf->ezText('<b>' . $sTitulo . '</b>', 12, ['justification' => 'center', 'width' => $nWidthArea]);
 
-                $sTexto = 'A: <b>' . $oGraduando->estudiante->apellidos . '  ' . $oGraduando->estudiante->nombres . '</b>,  titular  de  la ';
-                $sTexto .= ' Cédula  de  Identidad  No. <b> ' . $this->_fnc($oGraduando->estudiante->cedula) . '</b>, por haber aprobado satisfactoriamente el plan de estudios ';
+                $sTexto = 'A: <b>' . $oGraduando->estudiante->apellidos .'  '. $oGraduando->estudiante->nombres . '</b>,  titular  de  la ';
+                $sTexto .= ' Cédula  de  Identidad  No. <b> ' . Number::format($oGraduando->estudiante->cedula) . '</b>, por haber aprobado satisfactoriamente el plan de estudios ';
                 $sTexto .= 'en tal opción y cumplido los requisitos de Ley que rigen la materia.';
 
                 $oPdf->ezSetDy(-10);
@@ -199,7 +200,7 @@ class ReporteActasGrado
                 $oPdf->line($nPosX + 24, $nPosY, $nPosX + $nWidth, $nPosY);
 
                 $oPdf->ezText('<b>' . $sNameStudent . '</b>', 10, ['justification' => 'center', 'width' => $nWidthArea, 'fontSize' => 10]);
-                $oPdf->ezText($this->_fnc($oGraduando->estudiante->cedula), 10, ['justification' => 'center', 'width' => $nWidthArea, 'fontSize' => 10]);
+                $oPdf->ezText(Number::format($oGraduando->estudiante->cedula), 10, ['justification' => 'center', 'width' => $nWidthArea, 'fontSize' => 10]);
                 $oPdf->ezText('GRADUANDO', 10, ['justification' => 'center', 'width' => $nWidthArea, 'fontSize' => 12]);
 
                 $oPdf->ezSetDy(-10);
@@ -250,7 +251,7 @@ class ReporteActasGrado
         if ($sRubrica === null) {
             return '';
         }
-        $sRubrica = str_replace(["\r\n", "\r", "\n"], '<br>', $sRubrica);
+        //$sRubrica = str_replace(["\r\n", "\r", "\n"], '<br>', $sRubrica);
 
         return $sRubrica;
     }
@@ -263,33 +264,6 @@ class ReporteActasGrado
         ];
 
         return $aMeses[(int)$monthNum] ?? '';
-    }
-
-    private function _fnc($nCedula)
-    {
-        $nLen = strlen((string)$nCedula);
-        switch ($nLen) {
-            case 5:
-                $cMask = substr($nCedula, 0, 1) . '.' . substr($nCedula, 2, 3);
-                break;
-            case 6:
-                $cMask = substr($nCedula, 0, 2) . '.' . substr($nCedula, 3, 3);
-                break;
-            case 7:
-                $cMask = substr($nCedula, 0, 1) . '.' . substr($nCedula, 1, 3) . '.' . substr($nCedula, 4, 3);
-                break;
-            case 8:
-                $cMask = substr($nCedula, 0, 2) . '.' . substr($nCedula, 2, 3) . '.' . substr($nCedula, 5, 3);
-                break;
-            case 9:
-                $cMask = substr($nCedula, 0, 3) . '.' . substr($nCedula, 4, 3) . '.' . substr($nCedula, 7, 3);
-                break;
-            default:
-                $cMask = $nCedula;
-                break;
-        }
-
-        return $cMask;
     }
 
     private function _getReportConfig()
